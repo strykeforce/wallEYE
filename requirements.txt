@@ -1,0 +1,4 @@
+pyntcore
+robotpy-wpimath
+Flask
+opencv-python

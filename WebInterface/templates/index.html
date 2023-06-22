@@ -1,0 +1,98 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Testing</title>
+    <script>
+        var data = {
+            "clicked": null,
+            "tableName": null,
+            "teamNum": null,
+            "gain": null,
+            "exposure": null,
+            "resolution": null,
+            "camNum": null,
+        }
+
+        function sendData() {
+            fetch('/', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data),
+            }).then((response) => response.text()).then(function (r) {
+                document.open();
+                document.write(r);
+                document.close();
+            });
+        }
+
+    </script>
+</head>
+
+<body style="text-align: center;">
+    <h1>State at response: {{state.currentState}}</h1>
+
+    <hr>
+
+    <h2> Calibration Testing </h2>
+
+    
+    <button onclick="data.clicked = 'shutdown'; sendData()">Shutdown</button>
+
+    <button onclick="data.clicked = 'Processing'; sendData()">Start PNP</button>
+
+    <form id="form" onsubmit="return false;">
+        <input type="text" id="userInput" />
+        <input type="number" id="userInputTwo" />
+        <button onclick="data.tableName = document.getElementById('userInput').value; sendData()">Change Table Name</button>
+        <button onclick="data.teamNum = document.getElementById('userInputTwo').value; sendData()">Change Team Num</button>
+    </form>
+    <h3>Calibration images</h3>
+    {% for img in state.calImgPaths %}
+    <a href="{{ url_for('files', path=img) }}">{{ img }} </a>
+    <br>
+    {% endfor %}
+
+
+    {% if state.calFilePath is not none %}
+    <h3>Saved Calibration: </h3>
+    <a href="{{ url_for('files', path=state.calFilePath) }}">{{ state.calFilePath }} </a>
+    {% endif %}
+
+    {% if state.reprojectionError is not none %}
+    <h3>Reprojection error: {{state.reprojectionError}}</h3>
+    {% endif %}
+
+    <hr>
+    <h2> Video Streams </h2>
+    <p>Available cameras: {{state.cameraIDs}}</p>
+
+    {% for camID in state.cameraIDs %}
+    <h2>Camera Stream {{ camID }}</h2>
+        <div class="slider">
+            <p>Gain: {{state.gain[camID]}}</p>
+            <input type="range" id="SliderForGain{{camID}}" step = "0.01" min="-1" max="1" value={{state.gain[camID]}} onchange="data.gain = document.getElementById('SliderForGain{{camID}}').value; data.camNum = {{camID}}; sendData()"">
+        </div>
+        <div class="slider">
+            <p>Exposure: {{state.exposure[camID]}}</p>
+            <input type="range" id="SliderForExposure{{camID}}" step = "0.01" min="0" max="100" value={{state.exposure[camID]}} onchange="data.exposure = document.getElementById('SliderForExposure{{camID}}').value; data.camNum = {{camID}}; sendData()"">
+        </div>
+        <label for="res{{camID}}">Select a Resolution</label>
+        <select name="res{{camID}}" id="res{{camID}}" onchange="data.resolution = document.getElementById('res{{camID}}').value; data.camNum={{camID}}; sendData()"">
+            {% for res in state.cameraResolutions[camID] %}
+            <option value="{{res}}" {% if res == state.resolution[camID] %}selected{% endif %}>{{res}}</option>
+            {% endfor %}
+        </select>
+        <button onclick="data.clicked='toggleCalibration'; data.camNum={{camID}}; sendData();">{{ "Stop Calibration" if
+            state.currentState==state.States.BEGIN_CALIBRATION else "Start Calibration" }}</button>
+    
+        <button onclick="data.clicked = 'generateCalibration'; data.camNum={{camID}}; sendData();">Generate Calibration</button>
+    
+    <img src="{{ url_for('video_feed', camID=camID) }}" alt="Camera stream failed">
+    {% endfor %}
+</body>
+
+</html>
