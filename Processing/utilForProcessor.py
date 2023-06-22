@@ -13,10 +13,11 @@ def addCorners(tagPos, cornerPos):
 
 def imagePose(images, K, D, layout, arucoDetector, squareLength):
     poses = []
-    num = 0
+    
     for img in images:
-        (corners, ids, rej) = arucoDetector.detectMarkers(img)
+        corners, ids, rej = arucoDetector.detectMarkers(img)
         if len(corners) > 0:
+            num = 0
             cv2.aruco.drawDetectedMarkers(img, corners, ids)
             tagLoc = None
             cornerLoc = None
@@ -46,8 +47,9 @@ def imagePose(images, K, D, layout, arucoDetector, squareLength):
                                        (rvecs[0][0] ** 2 + rvecs[1][0] ** 2 + rvecs[2][0] ** 2) ** 0.5)
 
                 poses.append(wpi.Pose3d(wpi.Translation3d(+transVec[2], -transVec[0], -transVec[1]), rot3D))    
+                num += 1
         else:
             poses.append(wpi.Pose3d(wpi.Translation3d(2767, 2767, 2767), wpi.Rotation3d()))
-        num += 1
+        
 
     return poses

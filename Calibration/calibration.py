@@ -10,13 +10,13 @@ class Calibration:
         self,
         delay: float,
         cornerShape: tuple[int, int],
-        camID: int,
+        camPath: str,
         imgPath: str,
     ):
         self.delay = delay
         self.cornerShape = cornerShape
         self.imgPath = imgPath
-        self.camID = camID
+        self.camPath = camPath
 
         self.reference = np.zeros((cornerShape[0] * cornerShape[1], 3), np.float32)
         self.reference[:, :2] = np.mgrid[
@@ -169,7 +169,7 @@ class Calibration:
         with open(calFile, "w") as f:
             json.dump(
                 {
-                    "camID": self.camID,
+                    "camPath": self.camPath,
                     "K": camMtx.tolist(),
                     "dist": distortion.tolist(),
                     "r": np.asarray(rot).tolist(),
@@ -251,8 +251,11 @@ class Calibration:
 
     @staticmethod
     def parseCalibration(file: str):
+        print(f"Looking for calibration stored at {file}")
+
         with open(file, "r") as f:
             calibrationData = json.load(f)
+
         calibrationData["K"] = np.array(calibrationData["K"])
         calibrationData["dist"] = np.array(calibrationData["dist"])
         calibrationData["r"] = np.array(calibrationData["r"])

@@ -86,7 +86,7 @@ while True:
         camBuffers[state.cameraInCalibration].update(returned)
 
     elif state.currentState == state.States.GENERATE_CALIBRATION:
-        state.calFilePath = f"Calibration/Cam{cams.by_pathIndexs[state.cameraInCalibration]}CalData.json"
+        state.calFilePath = f"Calibration/Cam{cams.cameraPaths[state.cameraInCalibration].replace('.', '-')}CalData.json"
 
         cals[state.cameraInCalibration].generateCalibration(
             state.calFilePath
@@ -97,21 +97,23 @@ while True:
         state.currentState = state.States.IDLE
 
     elif state.currentState == state.States.PROCESSING:
+        images = cams.getFrames()
         poses = poseEstimator.getPose(images, cams.K, cams.D)       
         for i in range(len(poses)):
             robotPublisher.publish(i, robotPublisher.getTime(), poses[i])
+        for i in range(len(images)):
+            camBuffers[i].update(images[i])
 
     elif state.currentState == state.States.SHUTDOWN:
         break
+    
+    if state.currentState != state.States.PROCESSING:
+        for i in range(len(cams.cameras)):
+            if (
+                i == state.cameraInCalibration
+                and state.currentState in state.CALIBRATION_STATES
+            ): continue
 
-    for i in range(len(cams.cameras)):
-        if (
-            i == state.cameraInCalibration
-            and state.currentState in state.CALIBRATION_STATES
-        ): continue
-
-        _, img = cams.cameras[i].read()
-        images = []
-        images.append(img)
-        camBuffers[i].update(img)
-
+            _, img = cams.cameras[i].read()
+            
+            camBuffers[i].update(img)

@@ -4,47 +4,50 @@ from Camera.BootUp import *
 from Calibration.calibration import Calibration
 import subprocess
 import re
+import os
 
 class Camera:
     def __init__(self):
         self.cameras = []
         self.index = 0
         self.names = []
-        camIndex = 0
-        self.by_pathIndexs = []
         self.supportedResolutions = []
 
         self.K = []
         self.D = []
-        # Sometimes there are gaps between the device index.
-        # We keep trying max_gaps times.
-        max_gaps = 3
 
+        self.cameraPaths = os.listdir(r"/dev/v4l/by-path")
 
-        for i in range(2):
-            path = f"/dev/v4l/by-path/platform-fc8{0 if i == 0 else 8}0000.usb-usb-0:1:1.0-video-index0"
+        for camPath in self.cameraPaths:
+            path = f"/dev/v4l/by-path/{camPath}"
             cam = cv2.VideoCapture(path)
-            self.by_pathIndexs.append(0 if i == 0 else 8)
-            if cam.isOpened():
 
+            if cam.isOpened():
                 self.D.append(None)
                 self.K.append(None)
+
                 self.supportedResolutions.append(sorted(list(set(map(lambda x: (int(x.split("x")[0]), int(x.split("x")[1])), re.findall("[0-9]+x[0-9]+", subprocess.run(["v4l2-ctl", "-d", path, "--list-formats-ext"], capture_output=True).stdout.decode("utf-8")))))))               
                 print(self.supportedResolutions[self.index])
-                cam.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)
+
+                cam.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1) # Do not auto expose
+
                 self.cameras.append(cam)
+
                 try:
-                    config = parseConfig(self.by_pathIndexs[self.index])
-                    calib = Calibration.parseCalibration(f"./Calibration/Cam{self.by_pathIndexs[self.index]}CalData.json")
+                    config = parseConfig(camPath.replace(".","-"))
+                    calib = Calibration.parseCalibration(f"./Calibration/Cam{camPath.replace('.','-')}CalData.json")
                     self.setCalibration(self.index, calib["K"], calib["dist"])
-                except:
-                    print(f"Calibration not found for camera {self.index}")
+
+                    print(f"Calibration found! Using\n{calib['K']}\n{calib['dist']}")
+                except FileNotFoundError:
+                    print(f"Calibration not found for camera {self.index} from path {camPath}")
+
                 if config["Resolution"] is not None:
                     self.setResolution(self.index, config["Resolution"])
                     self.setGain(self.index, config["Gain"])
                     self.setExposure(self.index, config["Exposure"])
                 #Save configs
-                writeConfig(self.by_pathIndexs[self.index], self.getResolution()[self.index], self.getGain()[self.index], self.getExposure()[self.index])
+                writeConfig(camPath.replace(".","-"), self.getResolution()[self.index], self.getGain()[self.index], self.getExposure()[self.index])
 
                 self.index += 1
         print(self.cameras)

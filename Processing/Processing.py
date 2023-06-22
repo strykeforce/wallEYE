@@ -13,3 +13,4 @@ class Processor:
 
     def getPose(self, images, K, D):
         return imagePose(images, K, D, self.tagLayout, self.arucoDetector, self.squareLength)
+    
