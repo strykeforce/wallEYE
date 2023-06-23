@@ -1,4 +1,4 @@
-pyntcore
+pyntcore == 2023.2.1.2
 robotpy-wpimath
 Flask
-opencv-python
+opencv-python >= 4.7.0

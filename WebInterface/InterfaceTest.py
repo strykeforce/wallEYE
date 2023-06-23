@@ -43,6 +43,7 @@ def index():
         data = request.get_json()
 
         print(data)
+        
         state.camNum = data["camNum"]
         state.TEAMNUMBER = data["teamNum"]
         state.TABLENAME = data["tableName"]
@@ -60,7 +61,7 @@ def index():
             state.currentState = state.States.PROCESSING
 
         if "toggleCalibration" == data["clicked"]:
-            if state.currentState == state.States.IDLE:
+            if state.currentState in (state.States.IDLE, state.States.PROCESSING):
                 state.currentState = state.States.BEGIN_CALIBRATION
                 state.cameraInCalibration = data["camNum"]
                 state.reprojectionError = None

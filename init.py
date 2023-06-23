@@ -61,7 +61,6 @@ while True:
         robotPublisher.destroy()
         robotPublisher = NetworkIO(True, lastTeamNum, lastTableName)
 
-    # print(f"Current state: {currentState}")
     if state.currentState == state.States.IDLE:
         pass
 
@@ -70,9 +69,9 @@ while True:
         cals[state.cameraInCalibration] = Calibration(
             state.calDelay,
             state.boardDims,
-            state.cameraInCalibration,
+            cams.cameraPaths[state.cameraInCalibration],
             f"Calibration/Cam{state.cameraInCalibration}CalImgs",
-        )  # values passed from config??
+        ) 
         state.currentState = state.States.CALIBRATION_CAPTURE
 
     elif state.currentState == state.States.CALIBRATION_CAPTURE:

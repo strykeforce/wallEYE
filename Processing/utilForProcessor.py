@@ -33,7 +33,7 @@ def imagePose(images, K, D, layout, arucoDetector, squareLength):
                 
                 if tagLoc is None:
                     cornerLoc = corners[num][0]
-                    tagLoc = np.array([c1,c2,c3,c4])
+                    tagLoc = np.array([c1, c2, c3, c4])
                 else:
                     cornerLoc = np.concatenate((cornerLoc, corners[num][0]), axis = 0)
                     tagLoc = np.concatenate((tagLoc, np.asarray([c1, c2, c3, c4])))
