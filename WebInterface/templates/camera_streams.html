@@ -32,7 +32,7 @@
                 <button class="btn btn-primary"
                     onclick="data.clicked='toggleCalibration'; data.camNum={{camID}}; sendData('camera_config');">{{ "Stop
                     Calibration" if
-                    state.currentState==state.States.BEGIN_CALIBRATION else "Start Calibration" }}</button>
+                    state.currentState==state.States.BEGIN_CALIBRATION or state.currentState==state.States.CALIBRATION_CAPTURE else "Start Calibration" }}</button>
 
                 <button class="btn btn-secondary"
                     onclick="data.clicked = 'generateCalibration'; data.camNum={{camID}}; sendData('camera_config');">Generate
