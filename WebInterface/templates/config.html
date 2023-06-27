@@ -1,0 +1,18 @@
+<h2>Network tables</h2>
+<form id="form" onsubmit="return false;">
+    <div class="input-group">
+        <span class="input-group-text">Table Name</span>
+        <input type="text" id="userInput" />
+        <button type="button" class="btn btn-info"
+            onclick="data.tableName = document.getElementById('userInput').value; sendData('config')">Change
+            Table Name</button>
+    </div>
+    <br>
+    <div class="input-group">
+        <span class="input-group-text">Team Number</span>
+        <input type="number" id="userInputTwo" />
+        <button type="button" class="btn btn-info"
+            onclick="data.teamNum = document.getElementById('userInputTwo').value; sendData('config')">Change
+            Team Num</button>
+    </div>
+</form>

@@ -2,11 +2,9 @@ from Calibration.calibration import Calibration
 from Camera.camera import Camera
 import threading
 import state
-import cv2
 from Publisher.NetworkTablePublisher import NetworkIO
 from Processing.Processing import Processor
 from Camera.camera import Camera
-import resource
 
 # cams = Camera()
 # cals = [None] * len(cams.cameras)  # Better init in the future
@@ -70,7 +68,7 @@ while True:
             state.calDelay,
             state.boardDims,
             cams.cameraPaths[state.cameraInCalibration],
-            f"Calibration/Cam{state.cameraInCalibration}CalImgs",
+            f"Calibration/Cam_{state.cameraInCalibration}CalImgs",
         ) 
         state.currentState = state.States.CALIBRATION_CAPTURE
 
@@ -85,7 +83,7 @@ while True:
         camBuffers[state.cameraInCalibration].update(returned)
 
     elif state.currentState == state.States.GENERATE_CALIBRATION:
-        state.calFilePath = f"Calibration/Cam{cams.cameraPaths[state.cameraInCalibration].replace('.', '-')}CalData.json"
+        state.calFilePath = f"Calibration/Cam_{cams.cameraPaths[state.cameraInCalibration].replace('.', '-').replace(':', '-')}CalData.json"
 
         cals[state.cameraInCalibration].generateCalibration(
             state.calFilePath

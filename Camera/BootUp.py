@@ -2,7 +2,7 @@ import json
 
 def parseConfig(camPath):
     try:
-        with open(f"./Camera/CameraConfigs/ConfigSettings{camPath}.json", 'r') as data:
+        with open(f"./Camera/CameraConfigs/ConfigSettings_{camPath}.json", 'r') as data:
             config = json.load(data)
             return config
 
@@ -14,12 +14,12 @@ def parseConfig(camPath):
             "Exposure" : None
         }
 
-        with open(f"./Camera/CameraConfigs/ConfigSettings{camPath}.json", 'w') as outFile:
+        with open(f"./Camera/CameraConfigs/ConfigSettings_{camPath}.json", 'w') as outFile:
             json.dump(fileDump, outFile)
         return fileDump
 
 def writeConfig(camPath, resolution, gain, exposure):
-    with open(f"./Camera/CameraConfigs/ConfigSettings{camPath}.json", 'w') as data:
+    with open(f"./Camera/CameraConfigs/ConfigSettings_{camPath}.json", 'w') as data:
         fileDump = {"Resolution" : resolution, "Gain" : gain, "Exposure" : exposure}
         json.dump(fileDump, data)
 

@@ -75,6 +75,8 @@ def index():
 
         elif "shutdown" == data["clicked"]:
             state.currentState = state.States.SHUTDOWN
+        
+        return render_template("index.html", state=state, page=data["page"])
 
-
-    return render_template("index.html", state=state)
+    else:
+        return render_template("index.html", state=state, page="dashboard")

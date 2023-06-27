@@ -1,0 +1,20 @@
+<h3>Calibration images</h3>
+
+{% for img in state.calImgPaths %}
+<a href="{{ url_for('files', path=img) }}">{{ img }} </a>
+<br>
+{% endfor %}
+
+
+{% if state.calFilePath is not none %}
+<h3>Saved Calibration: </h3>
+<a href="{{ url_for('files', path=state.calFilePath) }}">{{ state.calFilePath }} </a>
+{% else %}
+<p>No calibration was created during this session.</p>
+{% endif %}
+
+{% if state.reprojectionError is not none %}
+<h3>Reprojection error: {{state.reprojectionError}}</h3>
+{% else %}
+<p>If the reprojection error is not shown and a calibration was produced, regenerating the calibration can help.</p>
+{% endif %}

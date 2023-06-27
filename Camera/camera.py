@@ -5,6 +5,7 @@ from Calibration.calibration import Calibration
 import subprocess
 import re
 import os
+from sys import platform
 
 class Camera:
     def __init__(self):
@@ -16,40 +17,87 @@ class Camera:
         self.K = []
         self.D = []
 
-        self.cameraPaths = os.listdir(r"/dev/v4l/by-path")
+        self.cameraPaths = []
 
-        for camPath in self.cameraPaths:
-            path = f"/dev/v4l/by-path/{camPath}"
-            cam = cv2.VideoCapture(path)
+        if platform == "linux" or platform == "linux2":
+            # Automatically detect cameras
+            self.cameraPaths = os.listdir(r"/dev/v4l/by-path")
+            
+            for camPath in self.cameraPaths:
+                path = f"/dev/v4l/by-path/{camPath}"
+                cam = cv2.VideoCapture(path)
+
+                if cam.isOpened():
+                    self.D.append(None)
+                    self.K.append(None)
+
+                    self.supportedResolutions.append(sorted(list(set(map(lambda x: (int(x.split("x")[0]), int(x.split("x")[1])), re.findall("[0-9]+x[0-9]+", subprocess.run(["v4l2-ctl", "-d", path, "--list-formats-ext"], capture_output=True).stdout.decode("utf-8")))))))               
+                    
+                    print(self.supportedResolutions[self.index])
+
+                    cam.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1) # Do not auto expose
+
+                    self.cameras.append(cam)
+
+                    cleaned = camPath.replace(".","-").replace(":", "-")
+
+                    try:
+                        config = parseConfig(cleaned)
+                        calib = Calibration.parseCalibration(f"./Calibration/Cam_{cleaned}CalData.json")
+                        self.setCalibration(self.index, calib["K"], calib["dist"])
+
+                        print(f"Calibration found! Using\n{calib['K']}\n{calib['dist']}")
+                    except FileNotFoundError:
+                        print(f"Calibration not found for camera {self.index} from path {camPath}")
+
+                    if config["Resolution"] is not None:
+                        self.setResolution(self.index, config["Resolution"])
+                        self.setGain(self.index, config["Gain"])
+                        self.setExposure(self.index, config["Exposure"])
+                    #Save configs
+                    writeConfig(cleaned, self.getResolution()[self.index], self.getGain()[self.index], self.getExposure()[self.index])
+
+                    self.index += 1
+        elif platform == "win32":
+            # Debugging only
+            # One camera only
+
+            cam = cv2.VideoCapture(0)
 
             if cam.isOpened():
-                self.D.append(None)
-                self.K.append(None)
-
-                self.supportedResolutions.append(sorted(list(set(map(lambda x: (int(x.split("x")[0]), int(x.split("x")[1])), re.findall("[0-9]+x[0-9]+", subprocess.run(["v4l2-ctl", "-d", path, "--list-formats-ext"], capture_output=True).stdout.decode("utf-8")))))))               
-                print(self.supportedResolutions[self.index])
-
                 cam.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1) # Do not auto expose
 
                 self.cameras.append(cam)
+                self.supportedResolutions.append([(640, 480)])
+
+                self.D.append(None)
+                self.K.append(None)
+
+                placeholderPath = "Windows0"
+                
+                self.cameraPaths.append(placeholderPath)
 
                 try:
-                    config = parseConfig(camPath.replace(".","-"))
-                    calib = Calibration.parseCalibration(f"./Calibration/Cam{camPath.replace('.','-')}CalData.json")
+                    config = parseConfig(placeholderPath)
+                    calib = Calibration.parseCalibration(f"./Calibration/Cam_{placeholderPath}CalData.json")
                     self.setCalibration(self.index, calib["K"], calib["dist"])
 
                     print(f"Calibration found! Using\n{calib['K']}\n{calib['dist']}")
                 except FileNotFoundError:
-                    print(f"Calibration not found for camera {self.index} from path {camPath}")
+                    print(f"Calibration not found for camera {self.index} from path {placeholderPath}")
 
                 if config["Resolution"] is not None:
                     self.setResolution(self.index, config["Resolution"])
                     self.setGain(self.index, config["Gain"])
                     self.setExposure(self.index, config["Exposure"])
                 #Save configs
-                writeConfig(camPath.replace(".","-"), self.getResolution()[self.index], self.getGain()[self.index], self.getExposure()[self.index])
+                writeConfig(placeholderPath, self.getResolution()[self.index], self.getGain()[self.index], self.getExposure()[self.index])
 
                 self.index += 1
+
+        else:
+            print("Unknown platform!")
+
         print(self.cameras)
 
 
