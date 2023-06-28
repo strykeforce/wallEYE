@@ -25,7 +25,6 @@ class NetworkIO:
         t = pose.translation()
         r = pose.rotation()
         result = [t.X(), t.Y(), t.Z(), r.X(), r.Y(), r.Z(), time]
-        print(result)
         self.publishers[index].set(result)
 
     def destroy(self):

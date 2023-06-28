@@ -118,7 +118,7 @@ class Camera:
         if resolution is None:
             print("Resolution not set")
             return
-
+        writeConfig(self.cameraPaths[index].replace(".","-").replace(":", "-"), resolution, self.getGain()[index], self.getExposure()[index])
         print(index, resolution, (self.cameras[index].get(cv2.CAP_PROP_FRAME_WIDTH), self.cameras[index].get(cv2.CAP_PROP_FRAME_HEIGHT) ))
         self.cameras[index].set(cv2.CAP_PROP_FRAME_WIDTH, resolution[0])
         self.cameras[index].set(cv2.CAP_PROP_FRAME_HEIGHT, resolution[1])

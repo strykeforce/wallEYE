@@ -22,7 +22,7 @@ class Calibration:
         self.reference[:, :2] = np.mgrid[
             0 : cornerShape[0], 0 : cornerShape[1]
         ].T.reshape(-1, 2)
-
+        print(self.reference)
         self.objPoints = []
         self.imgPoints = []
         self.lastImageUsed = 0
@@ -151,6 +151,10 @@ class Calibration:
                 self.imgPoints.append(refined)
 
     def generateCalibration(self, calFile: str):
+        if len(self.objPoints) == 0:
+            print("Calibration failed: No images available for calibration!")
+            return
+        
         ret, camMtx, distortion, rot, trans = cv2.calibrateCamera(
             self.objPoints, self.imgPoints, self.imgShape, None, None
         )

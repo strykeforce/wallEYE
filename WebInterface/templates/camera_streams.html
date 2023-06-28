@@ -4,6 +4,7 @@
         <div class="card">
             <h2 class="card-header">Camera Stream {{ camID }}</h2>
             <div class="card-body">
+                <p class="card-text">Camera path: {{ state.camPaths[camID] }}</p>
                 {% if showConfig == true %}
                 <p class="card-text">Gain: {{state.gain[camID]}}</p>
                 <input type="range" class="form-range" style="max-width: 25%;" id="SliderForGain{{camID}}" step="0.01"
@@ -19,7 +20,7 @@
                     <label class=" card-text" for=" res{{camID}}">Select a Resolution</label>
 
                 <select class="btn btn-success dropdown-toggle" name="res{{camID}}" id="res{{camID}}"
-                    onchange="data.resolution = document.getElementById('res{{camID}}').value; data.camNum={{camID}}; sendData()"">
+                    onchange="data.resolution = document.getElementById('res{{camID}}').value; data.camNum={{camID}}; sendData('camera_config')"">
                     
                         {% for res in state.cameraResolutions[camID] %}
                         <option value=" {{res}}" {% if res==state.resolution[camID] %}selected{% endif %}>{{res}}

@@ -18,6 +18,7 @@ state.resolution = cams.getResolution()
 state.gain = cams.getGain()
 state.exposure = cams.getExposure()
 state.cameraResolutions = cams.supportedResolutions
+state.camPaths = cams.cameraPaths
 
 from WebInterface.InterfaceTest import camBuffers, socketio, app # After state.cameraIDs is set
 
@@ -34,6 +35,8 @@ lastTableName = 'Walleye'
 images = []
 
 poseEstimator = Processor(0.157)
+state.currentState = state.States.PROCESSING
+
 while True:
     if state.camNum is not None:
         if state.gain[state.camNum] is not None and state.gain[state.camNum] != cams.getGain()[state.camNum]:
@@ -95,7 +98,8 @@ while True:
 
     elif state.currentState == state.States.PROCESSING:
         images = cams.getFrames()
-        poses = poseEstimator.getPose(images, cams.K, cams.D)       
+        poses = poseEstimator.getPose(images, cams.K, cams.D)   
+        print(poses)
         for i in range(len(poses)):
             robotPublisher.publish(i, robotPublisher.getTime(), poses[i])
         for i in range(len(images)):
