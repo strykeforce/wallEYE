@@ -19,10 +19,10 @@ state.gain = cams.getGain()
 state.exposure = cams.getExposure()
 state.cameraResolutions = cams.supportedResolutions
 
-from WebInterface.InterfaceTest import camBuffers, app # After state.cameraIDs is set
+from WebInterface.InterfaceTest import camBuffers, socketio, app # After state.cameraIDs is set
 
 webServer = threading.Thread(
-    target=lambda: app.run(host="0.0.0.0", debug=True, use_reloader=False), daemon=True
+    target=lambda: socketio.run(app, host="0.0.0.0", debug=True, use_reloader=False), daemon=True
 ).start()
 
 print("Web server ready")
