@@ -42,7 +42,9 @@ while True:
         if state.gain[state.camNum] is not None and state.gain[state.camNum] != cams.getGain()[state.camNum]:
             cams.setGain(state.camNum, float(state.gain[state.camNum]))
 
+        print(state.exposure[state.camNum], cams.getExposure()[state.camNum])
         if state.exposure[state.camNum] is not None and state.exposure[state.camNum] != cams.getExposure()[state.camNum]:
+            print("exposure changed")
             cams.setExposure(state.camNum, float(state.exposure[state.camNum]))
 
         if state.resolution[state.camNum] is not None and state.resolution[state.camNum] != cams.getResolution()[state.camNum]:

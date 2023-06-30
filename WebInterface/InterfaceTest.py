@@ -53,25 +53,28 @@ def disconnect():
 @updateAfter
 def set_gain(camID, newValue):
     state.gain[int(camID)] = float(newValue)
+    state.camNum = int(camID)
 
 
 @socketio.on("set_exposure")
 @updateAfter
 def set_exposure(camID, newValue):
-    print(f"Old: {state.exposure[int(camID)]}")
     state.exposure[int(camID)] = float(newValue)
-    print(f"Setting exposure to {newValue}")
+    state.camNum = int(camID)
 
 
 @socketio.on("set_resolution")
 @updateAfter
 def set_resolution(camID, newValue):
-    state.resolution[int(camID)] = float(newValue)
+    w, h = map(int, newValue[1:-1].split(','))
+    state.resolution[int(camID)] = (w, h)
+    state.camNum = int(camID)
 
 
 @socketio.on("toggle_calibration")
 @updateAfter
 def toggle_calibration(camID):
+    state.camNum = int(camID)
     if state.currentState in (state.States.IDLE, state.States.PROCESSING):
         state.currentState = state.States.BEGIN_CALIBRATION
         state.cameraInCalibration = int(camID)
@@ -87,6 +90,7 @@ def toggle_calibration(camID):
 def generate_calibration(camID):
     state.currentState = state.States.GENERATE_CALIBRATION
     state.cameraInCalibration = int(camID)
+    state.camNum = int(camID)
 
 
 @socketio.on("set_table_name")
@@ -123,7 +127,7 @@ def disconnect():
 
 
 def sendStateUpdate():
-    print("Sending state update")
+    print(f"Sending state update : {state.getState()}")
     socketio.emit("state_update", state.getState())
 
 
