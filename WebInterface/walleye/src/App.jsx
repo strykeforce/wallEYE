@@ -6,7 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Dashboard from './Components/Dashboard.jsx';
 import CameraConfig from './Components/CameraConfig.jsx';
 import { socket } from './socket.js';
-import { Spinner } from 'react-bootstrap';
+import { Container, Spinner } from 'react-bootstrap';
 
 
 function App() {
@@ -105,10 +105,11 @@ function App() {
 
       <br />
 
-      {page === 'dashboard' && <Dashboard state={state} />}
-      {page === 'config' && <Config state={state} />}
-      {page === 'camera_config' && <CameraConfig state={state} />}
-
+      <Container>
+        {page === 'dashboard' && <Dashboard state={state} />}
+        {page === 'config' && <Config state={state} />}
+        {page === 'camera_config' && <CameraConfig state={state} />}
+      </Container>
     </div>
   );
 }
