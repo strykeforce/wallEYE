@@ -7,14 +7,8 @@ export default function CameraConfig(props) {
 
             <hr />
 
-            {props.state.calImgPaths.map((path) => <a href={'files/' + path}> {path} </a>) }
-
-            {props.state.calFilePath != null && 
-            <>
-                <h2>Saved Calibration: </h2>
-                <a href={'files/' + props.state.calFilePath}>{props.state.calFilePath}</a>
-            </>}
-
+            {props.state.calImgPaths.length > 0 && <h2>Captured Calibration Images:</h2>}
+            {props.state.calImgPaths.map((path) => <><br/><a href={'files/' + path}> {path} </a></>)}
         </>
 
     );

@@ -1,4 +1,5 @@
 from enum import Enum
+from Publisher.NetworkTablePublisher import NetworkIO
 
 
 class States(Enum):
@@ -9,9 +10,6 @@ class States(Enum):
     PROCESSING = "PROCESSING"
     SHUTDOWN = "SHUTDOWN"
 
-TEAMNUMBER = 2767
-TABLENAME = 'Walleye'
-
 
 CALIBRATION_STATES = (
     States.BEGIN_CALIBRATION,
@@ -19,24 +17,58 @@ CALIBRATION_STATES = (
     States.GENERATE_CALIBRATION,
 )
 
-currentState = States.IDLE
-cameraIDs = []
 
-# Calibration 
-cameraInCalibration = None
-boardDims = (7, 7)
-calDelay = 1
-calImgPaths = []
-reprojectionError = None
-calFilePath = None
+class Config:
+    def __init__(self) -> None:
+        self.teamNumber = 2767
+        self.tableName = "Walleye"
 
-# Configs
-resolution = []
-gain = []
-exposure = []
-camNum = None
+        self.currentState = States.PROCESSING
 
-cameraResolutions = []
+        # Calibration
+        self.cameraInCalibration = None
+        self.boardDims = (7, 7)
+        self.calDelay = 1
+        self.calImgPaths = []
+        self.reprojectionError = None
 
-def getState(): 
-    return {"TEAMNUMBER": TEAMNUMBER, "TABLENAME": TABLENAME, "currentState": currentState.value, "cameraIDs": cameraIDs, "cameraInCalibration": cameraInCalibration, "boardDims": boardDims, "calDelay": calDelay, "calImgPaths": calImgPaths, "reprojectionError": reprojectionError, "calFilePath": calFilePath, "resolution": resolution, "gain": gain, "exposure": exposure, "cameraResolutions": cameraResolutions, "camNum": camNum}
+        # Cams
+        self.cameras = None
+
+        self.robotPublisher = None
+
+    def makePublisher(self, teamNumber, tableName):
+        self.teamNumber = teamNumber
+        self.tableName = tableName
+
+        if self.robotPublisher is not None:
+            self.robotPublisher.destroy()
+        self.robotPublisher = NetworkIO(
+            True, walleyeData.teamNumber, walleyeData.tableName
+        )
+
+    def getCalFilePaths(self):
+        return {i.identifier: i.calibrationPath for i in self.cameras.info.values()}
+
+    def getState(self):
+        return {
+            "teamNumber": self.teamNumber,
+            "tableName": self.tableName,
+            "currentState": self.currentState.value,
+            "cameraIDs": list(self.cameras.info.keys()),
+            "cameraInCalibration": self.cameraInCalibration,
+            "boardDims": self.boardDims,
+            "calDelay": self.calDelay,
+            "calImgPaths": self.calImgPaths,
+            "reprojectionError": self.reprojectionError,
+            "calFilePaths": self.getCalFilePaths(),
+            "resolution": self.cameras.getResolutions(),
+            "gain": self.cameras.getGains(),
+            "exposure": self.cameras.getExposures(),
+            "supportedResolutions": {
+                k: v.supportedResolutions for k, v in self.cameras.info.items()
+            },
+        }
+
+
+walleyeData = Config()

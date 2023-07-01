@@ -1,4 +1,4 @@
-import { Card, Button, Image } from "react-bootstrap";
+import { Card, Button, Image, Col, Row } from "react-bootstrap";
 import CameraSettings from "./CameraSettings";
 import { socket } from "../socket";
 
@@ -7,27 +7,32 @@ export default function CameraStream(props) {
         <Card>
             <Card.Header>Camera Stream {props.camID}</Card.Header>
             <Card.Body>
-                {props.showConfig && <CameraSettings camID={props.camID} state={props.state} />}
+                <Row>
+                    {props.showConfig && <Col><CameraSettings camID={props.camID} state={props.state} /></Col>}
 
-                <Button variant="primary"
-                    onClick={() => {
-                        socket.emit("toggle_calibration", props.camID);
-                    }}>
-                    {
-                        (props.state.currentState === "BEGIN_CALIBRATION" || props.state.currentState === "CALIBRATION_CAPTURE") ? "Stop Calibration" : "Start Calibration"
-                    }
-                </Button >
+                    <Col>
+                        <Image src={"video_feed/" + props.camID} alt="Camera stream failed" fluid />
 
-                <Button variant="secondary"
-                    onClick={() => {
-                        socket.emit("generate_calibration", props.camID);
-                    }}>
-                    Generate Calibration
-                </Button>
+                        <br />
 
-                <br />
+                        <Button variant="primary" className="m-2"
+                            onClick={() => {
+                                socket.emit("toggle_calibration", props.camID);
+                            }}>
+                            {
+                                (props.state.currentState === "BEGIN_CALIBRATION" || props.state.currentState === "CALIBRATION_CAPTURE") ? "Stop Calibration" : "Start Calibration"
+                            }
+                        </Button >
 
-                <Image src={"video_feed/" + props.state.cameraIDs[props.camID]} alt="Camera stream failed" fluid />
+                        <Button variant="secondary" className="m-2"
+                            onClick={() => {
+                                socket.emit("generate_calibration", props.camID);
+                            }}>
+                            Generate Calibration
+                        </Button>
+                    </Col>
+                </Row>
+
             </Card.Body>
         </Card >
     );

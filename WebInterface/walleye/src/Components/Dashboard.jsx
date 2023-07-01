@@ -5,15 +5,14 @@ import { socket } from "../socket.js";
 export default function Dashboard(props) {
     return (
         <Container>
-            <Button variant="danger" onClick={() => { socket.emit("shutdown"); }}>SHUTDOWN</Button>
+            <h2>Controls</h2>
+            <Button variant="danger" className="m-2" onClick={() => { socket.emit("shutdown"); }}>SHUTDOWN</Button>
+            <Button variant="success" className="m-2" onClick={() => { socket.emit("toggle_pnp") }}>{props.state.currentState === "PROCESSING" ? "Stop PnP" : "Start PnP"}</Button>
 
-            <Button variant="success" onClick={() => { socket.emit("toggle_pnp") }}>Toggle PnP</Button>
-
-            <hr />
+            <br/>
 
             <h2> Cameras </h2>
-
-            <CameraStreamList state={props.state} showConfig={false} />
+            <CameraStreamList state={props.state} showConfig={false} /> 
         </Container>
     );
 }

@@ -1,11 +1,14 @@
 import cv2
-from flask import Response, Flask, render_template, request, send_file
-import state
+from flask import Response, Flask, send_file
 import os
 from flask_socketio import SocketIO, emit
+import json
+from Calibration.calibration import Calibration
+from state import walleyeData, States
+from Publisher.NetworkTablePublisher import NetworkIO
 
 
-class Buffer: 
+class Buffer:
     outputFrame = b""
 
     def update(self, img):
@@ -22,7 +25,7 @@ class Buffer:
 app = Flask(__name__, static_folder="./walleye/build", static_url_path="/")
 socketio = SocketIO(app, logger=True, cors_allowed_origins="*")
 
-camBuffers = [Buffer() for i in range(len(state.cameraIDs))]
+camBuffers = {identifier: Buffer() for identifier in walleyeData.cameras.info.keys()}
 
 
 def updateAfter(action):
@@ -32,16 +35,17 @@ def updateAfter(action):
 
     return actionAndUpdate
 
+# Commented out for easier debugging
+# @socketio.on_error_default
+# def default_error_handler(e):
+#     print(e)
+#     socketio.emit("error", "An error occured: " + str(e))
 
-@socketio.on_error_default 
-def default_error_handler(e):
-    print(e)
-    socketio.emit("error", "An error occured: " + str(e))
 
 @socketio.on("connect")
 @updateAfter
-def connect():
-    print("Client connected")
+def connect(test=None):
+    print("Client connected", test)
 
 
 @socketio.on("disconnect")
@@ -52,72 +56,93 @@ def disconnect():
 @socketio.on("set_gain")
 @updateAfter
 def set_gain(camID, newValue):
-    state.gain[int(camID)] = float(newValue)
-    state.camNum = int(camID)
+    walleyeData.cameras.setGain(camID, float(newValue))
 
 
 @socketio.on("set_exposure")
 @updateAfter
 def set_exposure(camID, newValue):
-    state.exposure[int(camID)] = float(newValue)
-    state.camNum = int(camID)
+    walleyeData.cameras.setExposure(camID, float(newValue))
 
 
 @socketio.on("set_resolution")
 @updateAfter
 def set_resolution(camID, newValue):
-    w, h = map(int, newValue[1:-1].split(','))
-    state.resolution[int(camID)] = (w, h)
-    state.camNum = int(camID)
+    w, h = map(int, newValue[1:-1].split(","))
+    walleyeData.cameras.setResolution(camID, (w, h))
 
 
 @socketio.on("toggle_calibration")
 @updateAfter
 def toggle_calibration(camID):
-    state.camNum = int(camID)
-    if state.currentState in (state.States.IDLE, state.States.PROCESSING):
-        state.currentState = state.States.BEGIN_CALIBRATION
-        state.cameraInCalibration = int(camID)
-        state.reprojectionError = None
-        state.calFilePath = None
+    if walleyeData.currentState in (States.IDLE, States.PROCESSING):
+        walleyeData.cameraInCalibration = camID
+        walleyeData.reprojectionError = None
+        walleyeData.currentState = States.BEGIN_CALIBRATION
+        
 
-    elif state.currentState == state.States.CALIBRATION_CAPTURE:
-        state.currentState = state.States.IDLE
+    elif walleyeData.currentState == States.CALIBRATION_CAPTURE:
+        walleyeData.currentState = States.IDLE
 
 
 @socketio.on("generate_calibration")
 @updateAfter
 def generate_calibration(camID):
-    state.currentState = state.States.GENERATE_CALIBRATION
-    state.cameraInCalibration = int(camID)
-    state.camNum = int(camID)
+    walleyeData.currentState = States.GENERATE_CALIBRATION
+    walleyeData.cameraInCalibration = camID
+
+
+@socketio.on("import_calibration")
+@updateAfter
+def import_calibration(camID, file):
+    with open(
+        Calibration.calibrationPathByCam(camID),
+        "w",
+    ) as outFile:
+        # Save
+        calData = json.loads(file.decode())
+        calData["camPath"] = camID
+        json.dump(calData, outFile)
+
+        # Load
+        currentCam = walleyeData.cameras.info[camID]
+        currentCam.K = calData["K"]
+        currentCam.D = calData["dist"]
+
+    print(f"Calibration imported for {camID}")
 
 
 @socketio.on("set_table_name")
 @updateAfter
 def set_table_name(name):
-    state.TABLENAME = name
+    walleyeData.makePublisher(walleyeData.teamNumber, name)
 
 
 @socketio.on("set_team_number")
 @updateAfter
 def set_team_number(number):
-    state.TEAMNUMBER = int(number)
+    walleyeData.makePublisher(int(number), walleyeData.tableName)
+
+
+@socketio.on("set_board_dims")
+@updateAfter
+def set_team_number(w, h):
+    walleyeData.boardDims = (int(w), int(h))
 
 
 @socketio.on("shutdown")
 @updateAfter
 def shutdown():
-    state.currentState = state.States.SHUTDOWN
+    walleyeData.currentState = States.SHUTDOWN
 
 
 @socketio.on("toggle_pnp")
 @updateAfter
-def generate_calibration():
-    if state.currentState == state.States.PROCESSING:
-        state.currentState = state.States.IDLE
+def toggle_pnp():
+    if walleyeData.currentState == States.PROCESSING:
+        walleyeData.currentState = States.IDLE
     else:
-        state.currentState = state.States.PROCESSING
+        walleyeData.currentState = States.PROCESSING
 
 
 @socketio.on("disconnect")
@@ -125,10 +150,9 @@ def generate_calibration():
 def disconnect():
     print("Client disconnected")
 
-
 def sendStateUpdate():
-    print(f"Sending state update : {state.getState()}")
-    socketio.emit("state_update", state.getState())
+    print(f"Sending state update : {walleyeData.getState()}")
+    socketio.emit("state_update", walleyeData.getState())
 
 
 @app.route("/files/<path:path>")
@@ -136,8 +160,12 @@ def files(path):
     return send_file(os.path.join(os.getcwd(), path), as_attachment=True)
 
 
-@app.route("/video_feed/<int:camID>")
+@app.route("/video_feed/<camID>")
 def video_feed(camID):
+    if camID not in camBuffers:
+        print("Bad cam id", camID)
+        return
+     
     return Response(
         camBuffers[camID].output(), mimetype="multipart/x-mixed-replace; boundary=frame"
     )

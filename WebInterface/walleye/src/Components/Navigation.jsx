@@ -4,7 +4,7 @@ export default function Navigation(props) {
     const handleSelect = (eventKey) => { props.setPage(eventKey) };
 
     return (
-        <Nav variant="tabs" activeKey={props.page} onSelect={handleSelect}>
+        <Nav variant="tabs" sticky="top" activeKey={props.page} onSelect={handleSelect}>
             {props.pages.map((page) => {
                 return (
                     <Nav.Item>

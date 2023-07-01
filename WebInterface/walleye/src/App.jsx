@@ -6,7 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Dashboard from './Components/Dashboard.jsx';
 import CameraConfig from './Components/CameraConfig.jsx';
 import { socket } from './socket.js';
-import { Container, Spinner } from 'react-bootstrap';
+import { Button, Col, Container, Row, Spinner } from 'react-bootstrap';
 
 
 function App() {
@@ -99,8 +99,11 @@ function App() {
 
   return (
     <div className="App">
-      <h1 className="display-1">WallEYE Testing Interface</h1>
-      <p className="lead">{(isConnected) ? "Connected" : "Not connected"} - Last server response at {timestamp}</p>
+      <center>
+        <h1 className="display-3">WallEYE Testing Interface</h1>
+        <p className="lead">{(isConnected) ? "Connected" : "Not connected"} - Last server response at {timestamp}</p>
+      </center>
+
       <Navigation sticky="top" page={page} pages={pages} setPage={setPage}></Navigation>
 
       <br />

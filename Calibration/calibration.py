@@ -3,6 +3,7 @@ import time
 import numpy as np
 import json
 import os
+import shutil
 
 
 class Calibration:
@@ -22,7 +23,7 @@ class Calibration:
         self.reference[:, :2] = np.mgrid[
             0 : cornerShape[0], 0 : cornerShape[1]
         ].T.reshape(-1, 2)
-        print(self.reference)
+
         self.objPoints = []
         self.imgPoints = []
         self.lastImageUsed = 0
@@ -34,8 +35,9 @@ class Calibration:
         self.prevCorner1 = np.array([0, 0])
         self.prevCorner2 = np.array([0, 0])
 
-        if not os.path.isdir(self.imgPath):
-            os.mkdir(self.imgPath)
+        if os.path.isdir(self.imgPath):
+            shutil.rmtree(self.imgPath)
+        os.mkdir(self.imgPath)
 
     def processFrame(
         self,
@@ -153,7 +155,7 @@ class Calibration:
     def generateCalibration(self, calFile: str):
         if len(self.objPoints) == 0:
             print("Calibration failed: No images available for calibration!")
-            return
+            return False
         
         ret, camMtx, distortion, rot, trans = cv2.calibrateCamera(
             self.objPoints, self.imgPoints, self.imgShape, None, None
@@ -182,6 +184,8 @@ class Calibration:
                 },
                 f,
             )
+
+        return ret
 
     def isStable(self, corners: np.ndarray, threshold: float = 1):
         corner1 = corners[0][0]
@@ -227,6 +231,10 @@ class Calibration:
         return requiredReadyCounts <= self.readyCounts
 
     def getReprojectionError(self) -> float:
+        if len(self.objPoints) == 0:
+            print("Cannot get reprojection error: No data")
+            return
+
         totalError = 0
 
         for i in range(len(self.objPoints)):
@@ -266,6 +274,10 @@ class Calibration:
         calibrationData["t"] = np.array(calibrationData["t"])
 
         return calibrationData
+    
+    @staticmethod
+    def calibrationPathByCam(camIdentifier):
+        return f"./Calibration/Cam_{camIdentifier.replace(':', '-').replace('.', '-')}CalData.json"
 
 
 if __name__ == "__main__":

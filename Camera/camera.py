@@ -1,5 +1,4 @@
 import cv2
-import time
 from Camera.BootUp import *
 from Calibration.calibration import Calibration
 import subprocess
@@ -7,154 +6,208 @@ import re
 import os
 from sys import platform
 
-class Camera:
+# Holds information about the camera including the object itself
+# Not any existing VideoCapture properties like exposure
+class CameraInfo:
+    def __init__(self, cam, identifier, supportedResolutions, K=None, D=None):
+        self.cam = cam
+        self.identifier = identifier
+        self.supportedResolutions = supportedResolutions
+
+        # Calibration
+        self.K = K
+        self.D = D
+
+        self.calibrationPath = None
+
+# Maintains camera info provided by cv2
+class Cameras:
     def __init__(self):
-        self.cameras = []
-        self.index = 0
-        self.names = []
-        self.supportedResolutions = []
-
-        self.K = []
-        self.D = []
-
-        self.cameraPaths = []
+        self.info = {} # Cameras identified by their path (or whatever unique identifier is available)
 
         if platform == "linux" or platform == "linux2":
             # Automatically detect cameras
-            self.cameraPaths = os.listdir(r"/dev/v4l/by-path")
-            
-            for camPath in self.cameraPaths:
+            cameraPaths = os.listdir(r"/dev/v4l/by-path")
+
+            for camPath in cameraPaths:
                 path = f"/dev/v4l/by-path/{camPath}"
                 cam = cv2.VideoCapture(path)
 
                 if cam.isOpened():
-                    self.D.append(None)
-                    self.K.append(None)
+                    supportedResolutions = sorted(
+                        list(
+                            set(
+                                map(
+                                    lambda x: (
+                                        int(x.split("x")[0]),
+                                        int(x.split("x")[1]),
+                                    ),
+                                    re.findall(
+                                        "[0-9]+x[0-9]+",
+                                        subprocess.run(
+                                            [
+                                                "v4l2-ctl",
+                                                "-d",
+                                                path,
+                                                "--list-formats-ext",
+                                            ],
+                                            capture_output=True,
+                                        ).stdout.decode("utf-8"),
+                                    ),
+                                )
+                            )
+                        )
+                    )
 
-                    self.supportedResolutions.append(sorted(list(set(map(lambda x: (int(x.split("x")[0]), int(x.split("x")[1])), re.findall("[0-9]+x[0-9]+", subprocess.run(["v4l2-ctl", "-d", path, "--list-formats-ext"], capture_output=True).stdout.decode("utf-8")))))))               
-                    
-                    print(self.supportedResolutions[self.index])
+                    print(supportedResolutions)
 
-                    cam.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1) # Do not auto expose
+                    cam.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # Do not auto expose
 
-                    self.cameras.append(cam)
+                    self.info[camPath] = CameraInfo(
+                        cam, camPath, supportedResolutions
+                    )
 
-                    cleaned = camPath.replace(".","-").replace(":", "-")
-
+                    cleaned = Calibration.calibrationPathByCam(camPath)
                     try:
                         config = parseConfig(cleaned)
-                        calib = Calibration.parseCalibration(f"./Calibration/Cam_{cleaned}CalData.json")
-                        self.setCalibration(self.index, calib["K"], calib["dist"])
+                        calib = Calibration.parseCalibration(cleaned)
 
-                        print(f"Calibration found! Using\n{calib['K']}\n{calib['dist']}")
+                        self.info[camPath].K = calib["K"]
+                        self.info[camPath].D = calib["dist"]
+
+                        self.info[camPath].calibrationPath = cleaned
+
+                        print(
+                            f"Calibration found! Using\n{calib['K']}\n{calib['dist']}"
+                        )
                     except FileNotFoundError:
-                        print(f"Calibration not found for camera {self.index} from path {camPath}")
+                        print(f"Calibration not found for camera {camPath}")
 
                     if config["Resolution"] is not None:
-                        self.setResolution(self.index, config["Resolution"])
-                        self.setGain(self.index, config["Gain"])
-                        self.setExposure(self.index, config["Exposure"])
-                    #Save configs
-                    writeConfig(cleaned, self.getResolution()[self.index], self.getGain()[self.index], self.getExposure()[self.index])
+                        self.setResolution(camPath, config["Resolution"])
+                        self.setGain(camPath, config["Gain"])
+                        self.setExposure(camPath, config["Exposure"])
 
-                    self.index += 1
+                    # Save configs
+                    writeConfig(
+                        self.cleanIdentifier(camPath),
+                        self.getResolutions()[camPath],
+                        self.getGains()[camPath],
+                        self.getExposures()[camPath],
+                    )
+
         elif platform == "win32":
             # Debugging only
             # One camera only
 
-            cam = cv2.VideoCapture(0)
+            cam = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 
             if cam.isOpened():
-                cam.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1) # Do not auto expose
+                cam.set(cv2.CAP_PROP_AUTO_EXPOSURE, -7)  # Do not auto expose
 
-                self.cameras.append(cam)
-                self.supportedResolutions.append([(640, 480)])
-
-                self.D.append(None)
-                self.K.append(None)
+                supportedResolutions = [(640, 480), (1280, 720)]
 
                 placeholderPath = "Windows0"
-                
-                self.cameraPaths.append(placeholderPath)
+
+                self.info[placeholderPath] = CameraInfo(cam, placeholderPath, supportedResolutions)
 
                 try:
                     config = parseConfig(placeholderPath)
-                    calib = Calibration.parseCalibration(f"./Calibration/Cam_{placeholderPath}CalData.json")
-                    self.setCalibration(self.index, calib["K"], calib["dist"])
+                    calib = Calibration.parseCalibration(
+                        f"./Calibration/Cam_{placeholderPath}CalData.json"
+                    )
+                    self.info[placeholderPath].K = calib["K"]
+                    self.info[placeholderPath].D = calib["dist"]
+
+                    self.info[placeholderPath].calibrationPath = f"./Calibration/Cam_{placeholderPath}CalData.json"
 
                     print(f"Calibration found! Using\n{calib['K']}\n{calib['dist']}")
                 except FileNotFoundError:
-                    print(f"Calibration not found for camera {self.index} from path {placeholderPath}")
+                    print(f"Calibration not found for camera {placeholderPath}")
 
                 if config["Resolution"] is not None:
-                    self.setResolution(self.index, config["Resolution"])
-                    self.setGain(self.index, config["Gain"])
-                    self.setExposure(self.index, config["Exposure"])
-                #Save configs
-                writeConfig(placeholderPath, self.getResolution()[self.index], self.getGain()[self.index], self.getExposure()[self.index])
+                    self.setResolution(placeholderPath, config["Resolution"])
+                    self.setGain(placeholderPath, config["Gain"])
+                    self.setExposure(placeholderPath, config["Exposure"])
 
-                self.index += 1
+                # Save configs
+                writeConfig(
+                    placeholderPath,
+                    self.getResolutions()[placeholderPath],
+                    self.getGains()[placeholderPath],
+                    self.getExposures()[placeholderPath],
+                )
 
         else:
             print("Unknown platform!")
 
-        print(self.cameras)
+        print(f"Camera list: {self.info}")
 
+    def setCalibration(self, identifier, K, D):
+        self.info[identifier].K = K
+        self.info[identifier].D = D
 
+    def listK(self):
+        return [i.K for i in self.info.values()]
+    
+    def listD(self):
+        return [i.D for i in self.info.values()]
 
-    def setCalibration(self, index, K, D):
-        self.K[index] = K
-        self.D[index] = D
-
-
+    # These functions call existing cv2 setters/getters
     def getFrames(self):
-        frames = []
-        for i in range(self.index):
-            _, img = self.cameras[i].read()
-            frames.append(img)
+        frames = {}
+        for identifier, camInfo in self.info.items():
+            _, img = camInfo.cam.read()
+            frames[identifier] = img
         return frames
 
-    def setResolution(self, index, resolution):
+    def setResolution(self, identifier, resolution):
         if resolution is None:
             print("Resolution not set")
             return
-        writeConfig(self.cameraPaths[index].replace(".","-").replace(":", "-"), resolution, self.getGain()[index], self.getExposure()[index])
-        print(index, resolution, (self.cameras[index].get(cv2.CAP_PROP_FRAME_WIDTH), self.cameras[index].get(cv2.CAP_PROP_FRAME_HEIGHT) ))
-        self.cameras[index].set(cv2.CAP_PROP_FRAME_WIDTH, resolution[0])
-        self.cameras[index].set(cv2.CAP_PROP_FRAME_HEIGHT, resolution[1])
+        writeConfig(
+            self.cleanIdentifier(identifier),
+            resolution,
+            self.getGains()[identifier],
+            self.getExposures()[identifier],
+        )
+        self.info[identifier].cam.set(cv2.CAP_PROP_FRAME_WIDTH, resolution[0])
+        self.info[identifier].cam.set(cv2.CAP_PROP_FRAME_HEIGHT, resolution[1])
 
-    def setGain(self, index, gain):
+    def setGain(self, identifier, gain):
         if gain is None:
             print("Gain not set")
             return
-        print(gain, self.cameras[index].get(cv2.CAP_PROP_GAIN))
-        print(self.cameras[index].set(cv2.CAP_PROP_GAIN, gain))
+        self.info[identifier].cam.set(cv2.CAP_PROP_GAIN, gain)
 
-    def setExposure(self, index, exposure):
+    def setExposure(self, identifier, exposure):
         if exposure is None:
             print("Exposure not set")
             return
-        print(index, exposure, self.cameras[index].get(cv2.CAP_PROP_EXPOSURE))
-        print(self.cameras[index].set(cv2.CAP_PROP_EXPOSURE, exposure))
+        self.info[identifier].cam.set(cv2.CAP_PROP_EXPOSURE, exposure)
 
-    def getExposure(self):
-        exposure = []
-        for cam in self.cameras:
-            exposure.append(cam.get(cv2.CAP_PROP_EXPOSURE))
+    def getExposures(self):
+        exposure = {}
+        for identifier, camInfo in self.info.items():
+            exposure[identifier] = camInfo.cam.get(cv2.CAP_PROP_EXPOSURE)
         return exposure
 
-    def getGain(self):
-        gain = []
-        for cam in self.cameras:
-            gain.append(cam.get(cv2.CAP_PROP_GAIN))
+    def getGains(self):
+        gain = {}
+        for identifier, camInfo in self.info.items():
+            gain[identifier] = camInfo.cam.get(cv2.CAP_PROP_GAIN)
         return gain
 
-    def getResolution(self):
-        resolution = []
-        for cam in self.cameras:
-            resolution.append((int(cam.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cam.get(cv2.CAP_PROP_FRAME_HEIGHT))))
+    def getResolutions(self):
+        resolution = {}
+        for identifier, camInfo in self.info.items():
+            resolution[identifier] = (
+                int(camInfo.cam.get(cv2.CAP_PROP_FRAME_WIDTH)),
+                int(camInfo.cam.get(cv2.CAP_PROP_FRAME_HEIGHT)),
+            )
+
         return resolution
 
-
-
-
+    @staticmethod
+    def cleanIdentifier(identifier):
+        return identifier.replace(":", "-").replace(".", "-")
