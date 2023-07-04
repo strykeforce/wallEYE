@@ -1,22 +1,21 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Navigation from './Components/Navigation.jsx';
-import { pages, emptyData } from './data.js';
+import { pages } from './data.js';
 import Config from './Components/Config.jsx';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import './bootstrap.min.css';
 import Dashboard from './Components/Dashboard.jsx';
 import CameraConfig from './Components/CameraConfig.jsx';
 import { socket } from './socket.js';
-import { Button, Col, Container, Row, Spinner } from 'react-bootstrap';
-
+import { Container, Form, Spinner, Stack } from 'react-bootstrap';
+import { Helmet } from "react-helmet";
+import './App.css';
 
 function App() {
   const [page, setPage] = useState("dashboard");
   const [state, setState] = useState(null);
-  // const [response, setResponse] = useState(data);
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [timestamp, setTimestamp] = useState("Never updated");
-
-  // data = structuredClone(emptyData);
+  const [isDark, setIsDark] = useState(true);
 
   // Runs once, force render after
   useEffect(() => {
@@ -50,59 +49,39 @@ function App() {
     };
   }, []);
 
-  // useEffect(() => {
-  //   fetch('/', {
-  //     method: 'POST',
-  //     headers: {
-  //       'Accept': 'application/json',
-  //       'Content-Type': 'application/json'
-  //     },
-  //     body: JSON.stringify(response),
-  //   }).then(res => res.json())
-  //     .then(
-  //       (result) => {
-  //         state.current = result;
-  //         setPage(pages[0].id);
-  //       },
-  //       (error) => {
-  //         alert("Fetch failed");
-  //       }
-  //     );
-  // }, []);
-
-  // // Avoid rerendering, just update - THIS RUNS AFTER RENDER!!!
-  // useEffect(() => {
-  //   fetch('/', {
-  //     method: 'POST',
-  //     headers: {
-  //       'Accept': 'application/json',
-  //       'Content-Type': 'application/json'
-  //     },
-  //     body: JSON.stringify(response),
-  //   }).then(res => res.json())
-  //     .then(
-  //       (result) => {
-  //         state.current = result;
-  //       },
-  //       (error) => {
-  //         alert("Fetch failed");
-  //       }
-  //     );
-  // });
   if (!state) {
     return (
-      <div className="d-flex align-items-center justify-content-center">
-        <Spinner animation="border" />
-      </div>
+      <>
+        <Helmet>
+          <html className="position-relative" />
+        </Helmet>
+        <Spinner animation="border" className="position-absolute top-50 start-50 translate-middle" />
+      </>
     );
   }
 
   return (
     <div className="App">
-      <center>
+      <Helmet>
+        <html data-bs-theme={isDark ? "dark" : "light"} />
+      </Helmet>
+
+      <center className="position-relative">
         <h1 className="display-3">WallEYE Testing Interface</h1>
-        <p className="lead">{(isConnected) ? "Connected" : "Not connected"} - Last server response at {timestamp}</p>
+        <p className="lead">{(isConnected) ? "Connected" : "Not connected"} - Last updated at {timestamp}</p>
+
+        <Stack direction="vertical" gap={1}>
+          <Form className="position-absolute top-50 end-0 translate-middle-y">
+            <Form.Check
+              type="switch"
+              onChange={() => setIsDark(!isDark)}
+              label="Dark Mode"
+              checked={isDark}
+            />
+          </Form>
+        </Stack>
       </center>
+
 
       <Navigation sticky="top" page={page} pages={pages} setPage={setPage}></Navigation>
 

@@ -8,7 +8,7 @@ export default function CameraSettings(props) {
             <Form.Group>
                 <Card.Text>Gain: {props.state.gain[props.camID]}</Card.Text>
 
-                <FormRange id={"SliderForGain" + props.camID}
+                <FormRange id={"SliderForGain" + props.camID} step="0.01"
                     min={-1} max={1} value={props.state.gain[props.camID]}
                     onChange={(e) => { socket.emit("set_gain", props.camID, e.target.value); }} />
             </Form.Group>
@@ -35,7 +35,7 @@ export default function CameraSettings(props) {
 
             <br />
             <Form.Group>
-                <Form.Label>Import Calibration</Form.Label>
+                <Form.Label> Import Calibration</Form.Label>
                 <Form.Control type="file" accept=".json" onChange={(e) => socket.emit("import_calibration", props.camID, e.target.files[0])} />
             </Form.Group>
 

@@ -15,7 +15,7 @@ class Calibration:
         imgPath: str,
     ):
         self.delay = delay
-        self.cornerShape = cornerShape
+        self.cornerShape = cornerShape # (col, row) format
         self.imgPath = imgPath
         self.camPath = camPath
 
@@ -156,10 +156,17 @@ class Calibration:
         if len(self.objPoints) == 0:
             print("Calibration failed: No images available for calibration!")
             return False
-        
+
         ret, camMtx, distortion, rot, trans = cv2.calibrateCamera(
-            self.objPoints, self.imgPoints, self.imgShape, None, None
-        )
+            self.objPoints,
+            self.imgPoints,
+            self.imgShape,
+            None,
+            None,
+            flags=cv2.CALIB_RATIONAL_MODEL
+            + cv2.CALIB_THIN_PRISM_MODEL
+            + cv2.CALIB_TILTED_MODEL,
+        ) 
 
         self.calibrationData = {
             "K": camMtx,
@@ -274,7 +281,7 @@ class Calibration:
         calibrationData["t"] = np.array(calibrationData["t"])
 
         return calibrationData
-    
+
     @staticmethod
     def calibrationPathByCam(camIdentifier):
         return f"./Calibration/Cam_{camIdentifier.replace(':', '-').replace('.', '-')}CalData.json"
