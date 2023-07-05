@@ -18,7 +18,7 @@ def parseConfig(camPath):
             json.dump(fileDump, outFile)
         return fileDump
 
-def writeConfig(camPath, resolution, gain, exposure, calibrationPath = None):
+def writeConfig(camPath, resolution, gain, exposure):
     with open(f"./Camera/CameraConfigs/ConfigSettings_{camPath}.json", 'w') as data:
         fileDump = {"Resolution" : resolution, "Gain" : gain, "Exposure" : exposure}
         json.dump(fileDump, data)

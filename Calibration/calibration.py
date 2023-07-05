@@ -4,9 +4,11 @@ import numpy as np
 import json
 import os
 import shutil
-
+import logging
 
 class Calibration:
+    logger = logging.getLogger(__name__)
+    
     def __init__(
         self,
         delay: float,
@@ -81,8 +83,9 @@ class Calibration:
             pathSaved = os.path.join(self.imgPath, f"{currTime}.png")
 
             cv2.imwrite(pathSaved, gray)
-            # print(f'Saved to {pathSaved}')
-
+            
+            Calibration.logger.info(f"Calibration image saved to {pathSaved}")
+   
         cv2.drawChessboardCorners(img, self.cornerShape, corners, found)
 
         if found:
@@ -154,7 +157,8 @@ class Calibration:
 
     def generateCalibration(self, calFile: str):
         if len(self.objPoints) == 0:
-            print("Calibration failed: No images available for calibration!")
+            print("Calibration failed: No image data available")
+            Calibration.logger.error("Calibration failed: No image data available")
             return False
 
         ret, camMtx, distortion, rot, trans = cv2.calibrateCamera(
@@ -191,6 +195,8 @@ class Calibration:
                 },
                 f,
             )
+        
+        Calibration.logger.info(f"Calibration successfully generated and saved to {calFile}")
 
         return ret
 
@@ -239,7 +245,8 @@ class Calibration:
 
     def getReprojectionError(self) -> float:
         if len(self.objPoints) == 0:
-            print("Cannot get reprojection error: No data")
+            print("Cannot compute reprojection error: No image data")
+            Calibration.logger.error("Cannot compute reprojection error: No image data")
             return
 
         totalError = 0
@@ -268,9 +275,11 @@ class Calibration:
         self.calibrationData["r"] = np.asarray(self.calibrationData["r"])
         self.calibrationData["t"] = np.asarray(self.calibrationData["t"])
 
+        Calibration.logger.info(f"Calibration loaded from {file}")
+
     @staticmethod
     def parseCalibration(file: str):
-        print(f"Looking for calibration stored at {file}")
+        Calibration.logger.info(f"Looking for calibration stored at {file}")
 
         with open(file, "r") as f:
             calibrationData = json.load(f)

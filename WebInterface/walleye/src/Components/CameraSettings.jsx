@@ -4,7 +4,7 @@ import { socket } from "../socket";
 
 export default function CameraSettings(props) {
     return (
-        <div>
+        <>
             <Form.Group>
                 <Card.Text>Gain: {props.state.gain[props.camID]}</Card.Text>
 
@@ -34,14 +34,12 @@ export default function CameraSettings(props) {
             </Form.Group>
 
             <br />
-            <Form.Group>
-                <Form.Label> Import Calibration</Form.Label>
-                <Form.Control type="file" accept=".json" onChange={(e) => socket.emit("import_calibration", props.camID, e.target.files[0])} />
-            </Form.Group>
+            <Form.Label> Import Calibration</Form.Label>
+            <Form.Control type="file" accept=".json" onChange={(e) => socket.emit("import_calibration", props.camID, e.target.files[0])} />
 
             <br />
 
             <Button variant="success" onClick={() => window.open("files/" + props.state.calFilePaths[props.camID], "_blank")} disabled={!props.state.calFilePaths[props.camID]}> Export Calibration </Button>
-        </div>
+        </>
     );
 }

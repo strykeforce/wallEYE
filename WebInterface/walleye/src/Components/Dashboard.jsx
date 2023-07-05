@@ -1,4 +1,4 @@
-import { Button, Row, Col } from "react-bootstrap"
+import { Button, Row, Col, Image } from "react-bootstrap"
 import CameraStreamList from "./CameraSteamList.jsx";
 import { socket } from "../socket.js";
 

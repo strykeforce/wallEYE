@@ -1,3 +1,17 @@
+import logging
+import sys
+
+LOG_FORMAT = "[%(asctime)s - %(levelname)s - %(filename)s:%(lineno)s - %(funcName)s()]  %(message)s"
+logging.basicConfig(
+    format=LOG_FORMAT,
+    handlers=[logging.FileHandler("walleye.log"), logging.StreamHandler(sys.stdout)],
+    datefmt="%d-%b-%y %H:%M:%S",
+    level=logging.DEBUG
+)
+
+logger = logging.getLogger(__name__)
+logger.info("----------- Starting Up -----------")
+
 from Calibration.calibration import Calibration
 from Camera.camera import Cameras
 import threading
@@ -18,8 +32,7 @@ webServer = threading.Thread(
     daemon=True,
 ).start()
 
-print("Web server ready")
-print("Starting main loop")
+logger.info("Web server ready")
 
 walleyeData.makePublisher(2767, "Walleye")
 
@@ -27,7 +40,9 @@ images = {}
 calibrators = {}
 
 poseEstimator = Processor(0.157)
-walleyeData.currentState = States.IDLE
+walleyeData.currentState = States.PROCESSING
+
+logger.info("Starting main loop")
 
 while True:
     # State changes
@@ -35,7 +50,7 @@ while True:
         pass
 
     elif walleyeData.currentState == States.BEGIN_CALIBRATION:
-        print("Beginning cal")
+        logger.info("Beginning cal")
         calibrators[walleyeData.cameraInCalibration] = Calibration(
             walleyeData.calDelay,
             walleyeData.boardDims,
@@ -71,6 +86,12 @@ while True:
             walleyeData.cameraInCalibration
         ].getReprojectionError()
 
+        walleyeData.cameras.setCalibration(
+            walleyeData.cameraInCalibration,
+            calibrators[walleyeData.cameraInCalibration].calibrationData["K"],
+            calibrators[walleyeData.cameraInCalibration].calibrationData["dist"],
+        )
+
         walleyeData.currentState = States.IDLE
 
     elif walleyeData.currentState == States.PROCESSING:
@@ -78,7 +99,8 @@ while True:
         poses = poseEstimator.getPose(
             images.values(), walleyeData.cameras.listK(), walleyeData.cameras.listD()
         )
-        print(poses)
+        logger.debug(f"Poses: {poses}")
+        
         for i in range(len(poses)):
             walleyeData.robotPublisher.publish(
                 i, walleyeData.robotPublisher.getTime(), poses[i]
@@ -87,6 +109,8 @@ while True:
             camBuffers[identifier].update(img)
 
     elif walleyeData.currentState == States.SHUTDOWN:
+        logger.info("Shutting down")
+        logging.shutdown()
         break
 
     if walleyeData.currentState != States.PROCESSING:

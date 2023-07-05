@@ -1,6 +1,6 @@
 from enum import Enum
 from Publisher.NetworkTablePublisher import NetworkIO
-
+import logging
 
 class States(Enum):
     IDLE = "IDLE"
@@ -19,6 +19,8 @@ CALIBRATION_STATES = (
 
 
 class Config:
+    logger = logging.getLogger(__name__)
+
     def __init__(self) -> None:
         self.teamNumber = 2767
         self.tableName = "Walleye"
@@ -43,9 +45,13 @@ class Config:
 
         if self.robotPublisher is not None:
             self.robotPublisher.destroy()
+            Config.logger.info("Existing publisher destroyed")
+
         self.robotPublisher = NetworkIO(
             True, walleyeData.teamNumber, walleyeData.tableName
         )
+
+        Config.logger.info(f"Robot publisher created: {teamNumber} - {tableName}")
 
     def getCalFilePaths(self):
         return {i.identifier: i.calibrationPath for i in self.cameras.info.values()}

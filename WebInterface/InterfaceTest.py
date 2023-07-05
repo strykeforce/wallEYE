@@ -5,13 +5,18 @@ from flask_socketio import SocketIO, emit
 import json
 from Calibration.calibration import Calibration
 from state import walleyeData, States
-from Publisher.NetworkTablePublisher import NetworkIO
+import logging
 
+logger = logging.getLogger(__name__)
 
 class Buffer:
     outputFrame = b""
 
     def update(self, img):
+        if img is None:
+            logger.error("Updated image is None - Skipping")
+            return
+
         self.outputFrame = cv2.imencode(".jpg", img)[1].tobytes()
 
     def output(self):
@@ -45,12 +50,12 @@ def updateAfter(action):
 @socketio.on("connect")
 @updateAfter
 def connect(test=None):
-    print("Client connected", test)
+    logger.info("Client connected", test)
 
 
 @socketio.on("disconnect")
 def disconnect():
-    print("Client disconnected")
+    logger.info("Client disconnected")
 
 
 @socketio.on("set_gain")
@@ -79,10 +84,12 @@ def toggle_calibration(camID):
         walleyeData.cameraInCalibration = camID
         walleyeData.reprojectionError = None
         walleyeData.currentState = States.BEGIN_CALIBRATION
+        logger.info(f"Starting calibration capture for {camID}")
         
 
     elif walleyeData.currentState == States.CALIBRATION_CAPTURE:
         walleyeData.currentState = States.IDLE
+        logger.info(f"Stopping calibration capture")
 
 
 @socketio.on("generate_calibration")
@@ -105,11 +112,9 @@ def import_calibration(camID, file):
         json.dump(calData, outFile)
 
         # Load
-        currentCam = walleyeData.cameras.info[camID]
-        currentCam.K = calData["K"]
-        currentCam.D = calData["dist"]
+        walleyeData.cameras.setCalibration(camID, calData["K"], calData["dist"])
 
-    print(f"Calibration imported for {camID}")
+    logger.info(f"Calibration sucessfully imported for {camID}")
 
 
 @socketio.on("set_table_name")
@@ -128,6 +133,7 @@ def set_team_number(number):
 @updateAfter
 def set_team_number(w, h):
     walleyeData.boardDims = (int(w), int(h))
+    logger.info("Board dimensions set: {(w, h)}")
 
 
 @socketio.on("shutdown")
@@ -141,17 +147,19 @@ def shutdown():
 def toggle_pnp():
     if walleyeData.currentState == States.PROCESSING:
         walleyeData.currentState = States.IDLE
+        logger.info("PnP stopped")
     else:
         walleyeData.currentState = States.PROCESSING
+        logger.info("PnP started")
 
 
 @socketio.on("disconnect")
 @updateAfter
 def disconnect():
-    print("Client disconnected")
+    logger.info("Client disconnected")
 
 def sendStateUpdate():
-    print(f"Sending state update : {walleyeData.getState()}")
+    logger.debug(f"Sending state update : {walleyeData.getState()}")
     socketio.emit("state_update", walleyeData.getState())
 
 
@@ -163,7 +171,7 @@ def files(path):
 @app.route("/video_feed/<camID>")
 def video_feed(camID):
     if camID not in camBuffers:
-        print("Bad cam id", camID)
+        logger.error(f"Bad cam id recieved: {camID}")
         return
      
     return Response(
