@@ -28,9 +28,8 @@ class Cameras:
     logger = logging.getLogger(__name__)
 
     def __init__(self):
-        self.info = (
-            {}
-        )  # Cameras identified by their path (or whatever unique identifier is available)
+        # Cameras identified by their path (or whatever unique identifier is available)
+        self.info = {}
 
         if platform == "linux" or platform == "linux2":
             Cameras.logger.info("Platform is linux")
@@ -40,7 +39,7 @@ class Cameras:
 
             for camPath in cameraPaths:
                 path = f"/dev/v4l/by-path/{camPath}"
-                cam = cv2.VideoCapture(path)
+                cam = cv2.VideoCapture(path, cv2.CAP_V4L2)
 
                 if cam.isOpened():
                     Cameras.logger.info(f"Camera found: {camPath}")
@@ -74,7 +73,13 @@ class Cameras:
                         f"Supported resolutions: {supportedResolutions}"
                     )
 
-                    cam.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # Do not auto expose
+                    cam.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+                    if cam.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1):
+                        Cameras.logger.info(f"Auto exposure disabled for {camPath}")
+                    else:
+                        Cameras.logger.warning(
+                            f"Failed to disable auto exposure for {camPath}"
+                        )
 
                     self.info[camPath] = CameraInfo(cam, camPath, supportedResolutions)
 
@@ -113,18 +118,24 @@ class Cameras:
                     )
 
         elif platform == "win32":
-            Cameras.logger.warning("Platform is windows")
             # Debugging only
             # One camera only
+            Cameras.logger.warning("Platform is windows")
 
             cam = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 
             if cam.isOpened():
-                cam.set(cv2.CAP_PROP_AUTO_EXPOSURE, -7)  # Do not auto expose
+                cam.set(cv2.CAP_PROP_BUFFERSIZE, 1)
 
                 supportedResolutions = [(640, 480), (1280, 720)]
-
                 placeholderPath = "Windows0"
+
+                if cam.set(cv2.CAP_PROP_AUTO_EXPOSURE, -7):
+                    Cameras.logger.info(f"Auto exposure disabled for {placeholderPath}")
+                else:
+                    Cameras.logger.warning(
+                        f"Failed to disable auto exposure for {placeholderPath}"
+                    )
 
                 self.info[placeholderPath] = CameraInfo(
                     cam, placeholderPath, supportedResolutions
@@ -212,9 +223,8 @@ class Cameras:
         if gain is None:
             Cameras.logger.info("Gain not set")
             return
-        self.info[identifier].cam.set(cv2.CAP_PROP_GAIN, gain)
 
-        if self.getGains()[identifier] != gain:
+        if self.info[identifier].cam.set(cv2.CAP_PROP_GAIN, gain):
             Cameras.logger.warning(f"Gain not set: {gain} not accepted")
         else:
             Cameras.logger.info(f"Gain set to {gain}")
@@ -229,16 +239,15 @@ class Cameras:
         if exposure is None:
             Cameras.logger.info("Exposure not set")
             return
-        self.info[identifier].cam.set(cv2.CAP_PROP_EXPOSURE, exposure)
 
-        if self.getExposures()[identifier] != exposure:
+        if self.info[identifier].cam.set(cv2.CAP_PROP_EXPOSURE, exposure):
             Cameras.logger.warning(f"Exposure not set: {exposure} not accepted")
         else:
             Cameras.logger.info(f"Exposure set to {exposure}")
 
             writeConfig(
                 self.cleanIdentifier(identifier),
-                self.getResolutions[identifier],
+                self.getResolutions()[identifier],
                 self.getGains()[identifier],
                 exposure,
             )

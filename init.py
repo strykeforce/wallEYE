@@ -6,7 +6,7 @@ logging.basicConfig(
     format=LOG_FORMAT,
     handlers=[logging.FileHandler("walleye.log"), logging.StreamHandler(sys.stdout)],
     datefmt="%d-%b-%y %H:%M:%S",
-    level=logging.DEBUG
+    level=logging.DEBUG,
 )
 
 logger = logging.getLogger(__name__)
@@ -96,15 +96,14 @@ while True:
 
     elif walleyeData.currentState == States.PROCESSING:
         images = walleyeData.cameras.getFrames()
+        imageTime = walleyeData.robotPublisher.getTime()
         poses = poseEstimator.getPose(
             images.values(), walleyeData.cameras.listK(), walleyeData.cameras.listD()
         )
-        logger.debug(f"Poses: {poses}")
-        
+        logger.debug(f"Poses at {imageTime}: {poses}")
+
         for i in range(len(poses)):
-            walleyeData.robotPublisher.publish(
-                i, walleyeData.robotPublisher.getTime(), poses[i]
-            )
+            walleyeData.robotPublisher.publish(i, imageTime, poses[i])
         for identifier, img in images.items():
             camBuffers[identifier].update(img)
 
