@@ -2,6 +2,7 @@ import json
 
 def parseConfig(camPath):
     try:
+        print(f"Looking for ./Camera/CameraConfigs/ConfigSettings_{camPath}.json")
         with open(f"./Camera/CameraConfigs/ConfigSettings_{camPath}.json", 'r') as data:
             config = json.load(data)
             return config

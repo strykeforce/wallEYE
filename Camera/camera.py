@@ -83,24 +83,26 @@ class Cameras:
 
                     self.info[camPath] = CameraInfo(cam, camPath, supportedResolutions)
 
-                    cleaned = Calibration.calibrationPathByCam(camPath)
+                    cleaned = self.cleanIdentifier(camPath)
+
+                    config = None
                     try:
                         config = parseConfig(cleaned)
-                        calib = Calibration.parseCalibration(cleaned)
+                        calib = Calibration.parseCalibration(Calibration.calibrationPathByCam(camPath))
 
-                        self.setCalibration(camPath, calib["K", calib["dist"]])
+                        self.setCalibration(camPath, calib["K"], calib["dist"])
 
-                        self.info[camPath].calibrationPath = cleaned
+                        self.info[camPath].calibrationPath = Calibration.calibrationPathByCam(camPath)
 
                         Cameras.logger.info(
                             f"Calibration found! Using\n{calib['K']}\n{calib['dist']}"
                         )
                     except FileNotFoundError:
                         Cameras.logger.warning(
-                            f"Calibration not found for camera {camPath}"
+                            f"Config or Calibration not found for camera {camPath}"
                         )
 
-                    if config["Resolution"] is not None:
+                    if config is not None:
                         self.setResolution(camPath, config["Resolution"])
                         self.setGain(camPath, config["Gain"])
                         self.setExposure(camPath, config["Exposure"])
@@ -141,6 +143,8 @@ class Cameras:
                     cam, placeholderPath, supportedResolutions
                 )
 
+                config = None
+
                 try:
                     config = parseConfig(placeholderPath)
                     calib = Calibration.parseCalibration(
@@ -160,10 +164,10 @@ class Cameras:
                     )
                 except FileNotFoundError:
                     Cameras.logger.warning(
-                        f"Calibration not found for camera {placeholderPath}"
+                        f"Config or Calibration not found for camera {placeholderPath}"
                     )
 
-                if config["Resolution"] is not None:
+                if config is not None:
                     self.setResolution(placeholderPath, config["Resolution"])
                     self.setGain(placeholderPath, config["Gain"])
                     self.setExposure(placeholderPath, config["Exposure"])
