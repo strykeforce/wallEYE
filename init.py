@@ -55,7 +55,7 @@ while True:
             walleyeData.calDelay,
             walleyeData.boardDims,
             walleyeData.cameraInCalibration,
-            f"Calibration/Cam_{walleyeData.cameraInCalibration}CalImgs",
+            f"Calibration/Cam_{Cameras.cleanIdentifier(walleyeData.cameraInCalibration)}CalImgs",
         )
         walleyeData.currentState = States.CALIBRATION_CAPTURE
 
@@ -67,7 +67,7 @@ while True:
         ].processFrame(img)
 
         if used:
-            walleyeData.calImgPaths.append(pathSaved)  # is saving this necessary?
+            walleyeData.calImgPaths.append(pathSaved)
 
         camBuffers[walleyeData.cameraInCalibration].update(returned)
 

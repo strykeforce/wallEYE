@@ -1,6 +1,7 @@
 import { Card, Button, Image, Col, Row, Badge } from "react-bootstrap";
 import CameraSettings from "./CameraSettings";
 import { socket } from "../socket";
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 export default function CameraStream(props) {
     return (
@@ -23,6 +24,7 @@ export default function CameraStream(props) {
                             onClick={() => {
                                 socket.emit("toggle_calibration", props.camID);
                             }}>
+                            <i class="bi bi-camera-video"></i>
                             {
                                 (props.state.currentState === "BEGIN_CALIBRATION" || props.state.currentState === "CALIBRATION_CAPTURE") ? "End Calibration" : "Start Calibration"
                             }
@@ -32,6 +34,7 @@ export default function CameraStream(props) {
                             onClick={() => {
                                 socket.emit("generate_calibration", props.camID);
                             }}>
+                            <i class="bi bi-check"></i>
                             Generate Calibration
                         </Button>
                     </Col>

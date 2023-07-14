@@ -1,6 +1,7 @@
 import { Button, Card, Form } from "react-bootstrap";
 import FormRange from "react-bootstrap/esm/FormRange";
 import { socket } from "../socket";
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 export default function CameraSettings(props) {
     return (
@@ -39,7 +40,7 @@ export default function CameraSettings(props) {
 
             <br />
 
-            <Button variant="success" onClick={() => window.open("files/" + props.state.calFilePaths[props.camID], "_blank")} disabled={!props.state.calFilePaths[props.camID]}> Export Calibration </Button>
+            <Button variant="success" onClick={() => window.open("files/" + props.state.calFilePaths[props.camID], "_blank")} disabled={!props.state.calFilePaths[props.camID]}> <i class="bi bi-filetype-json"></i> Export Calibration </Button>
         </>
     );
 }

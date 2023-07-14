@@ -1,5 +1,7 @@
 # WallEYE
-  WallEYE is an Apriltag processing software for use in FRC application. This software has a robotside implementation as well as a website interface. This software was made for Orange Pi 5 running Ubuntu.
+  WallEYE is an Apriltag processing software for use in FRC application. This software has a robotside implementation as well as a website interface. This software was made for Orange Pi 5 running Ubuntu, but it should run fine on a linux os with V4L2 and a recent Python version (tested with 3.10).
+
+  Use `python3 init.py` to run. If changes are made to the web interface (frontend portion), `cd WebInterface/walleye` and `npm run build` are required to update the site.  
   
 # Boot Up
   Before connecting a WallEYE installation to a robot network switch, connect the Orange Pi via ethernet directly and turn on the Pi. Upon turning on the Pi connect to the local website at the ip ---.---.--- FIX ME. Upon connecting it is recommended to set a static ip to the format `10.27.67.#` or one that conforms to a team number. Also set a unique name that identifies the WallEYE installation. Although Calibration may be done on the first bootup it is not required. 

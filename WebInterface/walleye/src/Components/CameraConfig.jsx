@@ -5,6 +5,5 @@ export default function CameraConfig(props) {
         <>
             <CameraStreamList state={props.state} showConfig={true} />
         </>
-
     );
 }

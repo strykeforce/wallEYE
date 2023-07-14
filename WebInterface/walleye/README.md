@@ -1,5 +1,5 @@
 # WallEYE Web Interface
-Unfortunately, the site must be built before running wallEYE.
+This site must be built before running wallEYE. It is written with [React.js](https://react.dev/)
 
 ### `npm run build`
 
