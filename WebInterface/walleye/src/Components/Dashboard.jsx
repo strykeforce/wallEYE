@@ -14,7 +14,7 @@ export default function Dashboard(props) {
             <br />
 
             <h2> Cameras </h2>
-            <CameraStreamList state={props.state} showConfig={false} />
+            <CameraStreamList state={props.state} poses={props.poses} showConfig={false} />
 
             <hr />
 

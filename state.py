@@ -39,6 +39,8 @@ class Config:
 
         self.robotPublisher = None
 
+        self.poses = {}
+
     def makePublisher(self, teamNumber, tableName):
         self.teamNumber = teamNumber
         self.tableName = tableName
@@ -52,6 +54,9 @@ class Config:
         )
 
         Config.logger.info(f"Robot publisher created: {teamNumber} - {tableName}")
+
+    def setPose(self,identifier, pose):
+        self.poses[identifier] = f"Translation: {round(pose.X(), 2)}, {round(pose.Y(), 2)}, {round(pose.Z(), 2)} - Rotation: {round(pose.rotation().X(), 2)}, {round(pose.rotation().Y(), 2)}, {round(pose.rotation().Z(), 2)}"
 
     def getCalFilePaths(self):
         return {i.identifier: i.calibrationPath for i in self.cameras.info.values()}
@@ -74,6 +79,7 @@ class Config:
             "supportedResolutions": {
                 k: v.supportedResolutions for k, v in self.cameras.info.items()
             },
+            "poses" : self.poses,
         }
 
 

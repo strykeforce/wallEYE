@@ -5,7 +5,7 @@ export default function CameraStreamList(props) {
     return (
         <Row>
             {
-                props.state.cameraIDs.map((camID) => <Col md="auto"><CameraStream camID={camID} state={props.state} showConfig={props.showConfig} /></Col>)
+                props.state.cameraIDs.map((camID) => <Col md="auto"><CameraStream camID={camID} state={props.state} poses={props.poses} showConfig={props.showConfig} /></Col>)
             }
         </Row >
     );

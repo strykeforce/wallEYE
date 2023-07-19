@@ -18,6 +18,7 @@ export default function CameraStream(props) {
                     <Col>
                         <Image src={"video_feed/" + props.camID} alt="Camera stream failed" fluid />
 
+                        <Card.Text> Estimated Pose: {props.poses ? props.poses[props.camID] : "Not available"} </Card.Text>
                         <br />
 
                         <Button variant="primary" className="m-2"

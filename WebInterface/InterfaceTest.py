@@ -43,14 +43,14 @@ def updateAfter(action):
 # Commented out for easier debugging
 # @socketio.on_error_default
 # def default_error_handler(e):
-#     print(e)
+#     logger.critical(e)
 #     socketio.emit("error", "An error occured: " + str(e))
 
 
 @socketio.on("connect")
 @updateAfter
-def connect(test=None):
-    logger.info("Client connected", test)
+def connect():
+    logger.info("Client connected")
 
 
 @socketio.on("disconnect")
@@ -152,6 +152,9 @@ def toggle_pnp():
         walleyeData.currentState = States.PROCESSING
         logger.info("PnP started")
 
+@socketio.on("pose_update")
+def pose_update():
+    socketio.emit("pose_update", walleyeData.poses)
 
 @socketio.on("disconnect")
 @updateAfter

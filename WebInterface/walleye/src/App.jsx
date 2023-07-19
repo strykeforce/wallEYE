@@ -16,6 +16,12 @@ function App() {
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [timestamp, setTimestamp] = useState("Never updated");
   const [isDark, setIsDark] = useState(true);
+  const [poses, setPoses] = useState(null);
+
+  // Not ideal way to get poses every 0.5 second
+  setInterval(function(){
+      socket.emit('pose_update'); 
+  }, 500);
 
   // Runs once, force render after
   useEffect(() => {
@@ -36,16 +42,22 @@ function App() {
       alert(error);
     }
 
+    function onPoseUpdate(poses) {
+      setPoses(poses);
+    }
+
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
     socket.on('state_update', onStateUpdate);
     socket.on('error', onError);
+    socket.on('pose_update', onPoseUpdate);
 
     return () => {
       socket.off('connect', onConnect);
       socket.off('disconnect', onDisconnect);
       socket.off('state_update', onStateUpdate);
       socket.off('error', onError);
+      socket.off('pose_update', onPoseUpdate);
     };
   }, []);
 
@@ -88,9 +100,9 @@ function App() {
       <br />
 
       <Container>
-        {page === 'dashboard' && <Dashboard state={state} />}
+        {page === 'dashboard' && <Dashboard state={state} poses={poses}/>}
         {page === 'config' && <Config state={state} />}
-        {page === 'camera_config' && <CameraConfig state={state} />}
+        {page === 'camera_config' && <CameraConfig state={state} poses={poses}/>}
       </Container>
     </div>
   );
