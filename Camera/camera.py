@@ -97,7 +97,7 @@ class Cameras:
                         Cameras.logger.info(
                             f"Calibration found! Using\n{calib['K']}\n{calib['dist']}"
                         )
-                    except FileNotFoundError:
+                    except (FileNotFoundError, json.decoder.JSONDecodeError):
                         Cameras.logger.warning(
                             f"Config or Calibration not found for camera {camPath}"
                         )
@@ -191,7 +191,7 @@ class Cameras:
         self.info[identifier].K = K
         self.info[identifier].D = D
 
-        Cameras.logger.info(f"Calibration set for {identifier}")
+        Cameras.logger.info(f"Calibration set for {identifier}, using {K}\n{D}")
 
     def listK(self):
         return [i.K for i in self.info.values()]

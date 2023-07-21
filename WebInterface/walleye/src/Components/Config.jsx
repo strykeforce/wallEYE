@@ -8,6 +8,7 @@ export default function Config(props) {
     const [newTeamNumber, setNewTeamNumber] = useState(props.state.teamNumber);
     const [newBoardDimsW, setNewBoardDimsW] = useState(props.state.boardDims[0]);
     const [newBoardDimsH, setNewBoardDimsH] = useState(props.state.boardDims[1]);
+    const [newStaticIP, setNewStaticIP] = useState(props.state.ip);
 
     return (
         <Form>
@@ -40,6 +41,21 @@ export default function Config(props) {
                         Update
                     </Button>
                 </InputGroup>
+            </Form.Group>
+            <br/>
+            <Form.Group className="mb-3" >
+                <InputGroup>
+                    <InputGroup.Text>Set Static IP</InputGroup.Text>
+                    <Form.Control type="text" value={newStaticIP} onChange={(e) => { setNewStaticIP(e.target.value) }} />
+                    <Button variant="info" onClick={() => { socket.emit("set_static_ip", newStaticIP); }}>
+                        Update
+                    </Button>
+                </InputGroup>
+            </Form.Group>
+            <Form.Group className="mb-3" >
+                <Button variant="info" onClick={() => { socket.emit("reset_networking"); }}>
+                    Reset Networking
+                </Button>
             </Form.Group>
         </Form >
     );

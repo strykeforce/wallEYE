@@ -1,11 +1,12 @@
 import cv2
 from flask import Response, Flask, send_file
 import os
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO
 import json
 from Calibration.calibration import Calibration
-from state import walleyeData, States
+from state import walleyeData, States, Config
 import logging
+import numpy as np
 
 logger = logging.getLogger(__name__)
 
@@ -55,7 +56,7 @@ def connect():
 
 @socketio.on("disconnect")
 def disconnect():
-    logger.info("Client disconnected")
+    logger.warning("Client disconnected")
 
 
 @socketio.on("set_gain")
@@ -112,6 +113,8 @@ def import_calibration(camID, file):
         json.dump(calData, outFile)
 
         # Load
+        calData["K"] = np.asarray(calData["K"])
+        calData["dist"] = np.asarray(calData["dist"])
         walleyeData.cameras.setCalibration(camID, calData["K"], calData["dist"])
 
     logger.info(f"Calibration sucessfully imported for {camID}")
@@ -131,9 +134,20 @@ def set_team_number(number):
 
 @socketio.on("set_board_dims")
 @updateAfter
-def set_team_number(w, h):
+def set_board_dims(w, h):
     walleyeData.boardDims = (int(w), int(h))
-    logger.info("Board dimensions set: {(w, h)}")
+    logger.info(f"Board dimensions set: {(w, h)}")
+
+@socketio.on("set_static_ip")
+@updateAfter
+def set_static_ip(ip):
+    print("TEST")
+    walleyeData.setIP(str(ip))
+
+@socketio.on("reset_networking")
+@updateAfter
+def reset_networking():
+    Config.resetNetworking()
 
 
 @socketio.on("shutdown")
@@ -154,15 +168,13 @@ def toggle_pnp():
 
 @socketio.on("pose_update")
 def pose_update():
+    socketio.sleep(0)
     socketio.emit("pose_update", walleyeData.poses)
-
-@socketio.on("disconnect")
-@updateAfter
-def disconnect():
-    logger.info("Client disconnected")
+    
 
 def sendStateUpdate():
     logger.debug(f"Sending state update : {walleyeData.getState()}")
+    socketio.sleep(0)
     socketio.emit("state_update", walleyeData.getState())
 
 

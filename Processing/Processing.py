@@ -6,6 +6,7 @@ import numpy as np
 
 class Processor:
     logger = logging.getLogger(__name__)
+    BAD_POSE = wpi.Pose3d(wpi.Translation3d(2767, 2767, 2767), wpi.Rotation3d())
 
     def __init__(self, tagLength):
         with open ('./Processing/AprilTagLayout.json', 'r') as f:
@@ -35,6 +36,10 @@ class Processor:
         poses = []
 
         for img in images:
+            if img is None:
+                poses.append(Processor.BAD_POSE)
+                continue
+
             corners, ids, rej = arucoDetector.detectMarkers(img)
             if len(corners) > 0:
                 num = 0
@@ -71,7 +76,7 @@ class Processor:
                     poses.append(wpi.Pose3d(wpi.Translation3d(transVec[2], -transVec[0], -transVec[1]), rot3D))    
                     num += 1
             else:
-                poses.append(wpi.Pose3d(wpi.Translation3d(2767, 2767, 2767), wpi.Rotation3d()))
+                poses.append(Processor.BAD_POSE)
             
 
         return poses

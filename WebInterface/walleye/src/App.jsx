@@ -18,10 +18,11 @@ function App() {
   const [isDark, setIsDark] = useState(true);
   const [poses, setPoses] = useState(null);
 
-  // Not ideal way to get poses every 0.5 second
-  setInterval(function(){
+  useEffect(() => {
+    setInterval(function(){
       socket.emit('pose_update'); 
-  }, 500);
+    }, 500);
+  }, []);
 
   // Runs once, force render after
   useEffect(() => {
