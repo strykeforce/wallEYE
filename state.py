@@ -1,4 +1,5 @@
 from enum import Enum
+import json
 from Publisher.NetworkTablePublisher import NetworkIO
 import logging
 import os
@@ -23,8 +24,24 @@ class Config:
     logger = logging.getLogger(__name__)
 
     def __init__(self) -> None:
-        self.teamNumber = 2767
-        self.tableName = "Walleye"
+        try:
+            with open('SystemData.json', 'r') as data:
+                config = json.load(data)
+                self.teamNumber = config["TeamNumber"]
+                self.tableName = config["TableName"]
+                self.ip = config["ip"]
+        except (FileNotFoundError, json.decoder.JSONDecodeError):
+            self.teamNumber = 2767
+            self.tableName = "WallEye"
+            try:
+                self.ip = Config.getCurrentIP
+                Config.logger.info(f"IP is {self.ip}")
+            except IndexError:
+                Config.logger.error("Could not get current IP")
+            dataDump = {"TeamNumber" : self.teamNumber, "TableName" : self.tableName, "ip" : self.ip}
+            with open('SystemData.json', 'w') as out:
+                json.dump(dataDump, out)
+
 
         self.currentState = States.PROCESSING
 
@@ -42,17 +59,20 @@ class Config:
 
         self.poses = {}
 
-        self.ip = None
-
-        try:
-            self.ip = Config.getCurrentIP()
-            Config.logger.info(f"IP is {self.ip}")
-        except IndexError:
-            Config.logger.error("Could not get current IP")
-
     def makePublisher(self, teamNumber, tableName):
+        try:
+            with open('SystemData.json', 'r') as file:
+                config = json.load(file)
+                config["TeamNumber"] = teamNumber
+                config["TableName"] = tableName
+                with open('SystemData.json', 'w') as out:
+                    json.dump(config, out)
+            
+        except (FileNotFoundError, json.decoder.JSONDecodeError):
+            Config.logger.error(f"Failed to write TableName | {tableName} | or TeamNumber | {teamNumber} |")
         self.teamNumber = teamNumber
         self.tableName = tableName
+
 
         if self.robotPublisher is not None:
             self.robotPublisher.destroy()
@@ -75,6 +95,15 @@ class Config:
         if not os.system(f"sudo ifconfig eth0 {ip} netmask 255.255.255.0"):
             Config.logger.info(f"Static IP set: {ip}")
             self.ip = ip
+        try:
+            with open('SystemData.json', 'r') as file:
+                config = json.load(file)
+                config["ip"] = self.ip
+                with open('SystemData.json', 'w') as out:
+                    json.dump(config, out)
+            
+        except (FileNotFoundError, json.decoder.JSONDecodeError):
+            Config.logger.error(f"Failed to write static ip: {ip}")
         else:
             Config.logger.error(f"Failed to set static ip: {ip}")
 
