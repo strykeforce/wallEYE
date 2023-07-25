@@ -49,7 +49,7 @@ class Processor:
                 tagCount = 0
                 for i in ids:
                     if i > 8 or i < 0:
-                        print(f'BAD TAG ID: {i}')
+                        Processor.logger.warning(f'BAD TAG ID: {i}')
                         continue
                     pose = Processor.makePoseObject(layout[int(i - 1)]["pose"])
                     c1 = Processor.translationToSolvePnP(pose + wpi.Transform3d(wpi.Translation3d(0, -self.squareLength / 2, -self.squareLength / 2), wpi.Rotation3d()))

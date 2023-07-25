@@ -111,6 +111,8 @@ try:
                 walleyeData.robotPublisher.publish(i, imageTime, poses[i])
                 
             for i, (identifier, img) in enumerate(images.items()):
+                if i > len(poses):
+                    break
                 camBuffers[identifier].update(img)
                 walleyeData.setPose(identifier, poses[i])
 

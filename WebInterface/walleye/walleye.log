@@ -1,0 +1,16 @@
+[25-Jul-23 18:13:58 - INFO - init.py:13 - <module>()]  ----------- Starting Up -----------
+[25-Jul-23 18:14:00 - ERROR - state.py:51 - __init__()]  Could not get current IP
+[25-Jul-23 18:14:00 - INFO - camera.py:35 - __init__()]  Platform is linux
+[25-Jul-23 18:14:00 - INFO - camera.py:45 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
+[25-Jul-23 18:14:00 - INFO - camera.py:72 - __init__()]  Supported resolutions: [(160, 120), (176, 144), (320, 240), (352, 288), (416, 240), (424, 240), (640, 360), (640, 480), (800, 448), (800, 600), (960, 544), (1280, 720), (1280, 800)]
+[25-Jul-23 18:14:00 - INFO - camera.py:78 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[25-Jul-23 18:14:00 - WARNING - camera.py:101 - __init__()]  Config or Calibration not found for camera platform-fc800000.usb-usb-0:1:1.0-video-index0
+[25-Jul-23 18:14:00 - WARNING - camera.py:110 - __init__()]  Camera config not found for camera platform-fc800000.usb-usb-0:1:1.0-video-index0
+[25-Jul-23 18:14:48 - INFO - init.py:13 - <module>()]  ----------- Starting Up -----------
+[25-Jul-23 18:14:48 - INFO - state.py:49 - __init__()]  IP is 10.27.67.100
+[25-Jul-23 18:14:48 - INFO - camera.py:35 - __init__()]  Platform is linux
+[25-Jul-23 18:14:48 - INFO - camera.py:45 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
+[25-Jul-23 18:14:48 - INFO - camera.py:72 - __init__()]  Supported resolutions: [(160, 120), (176, 144), (320, 240), (352, 288), (416, 240), (424, 240), (640, 360), (640, 480), (800, 448), (800, 600), (960, 544), (1280, 720), (1280, 800)]
+[25-Jul-23 18:14:48 - INFO - camera.py:78 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[25-Jul-23 18:14:48 - WARNING - camera.py:101 - __init__()]  Config or Calibration not found for camera platform-fc800000.usb-usb-0:1:1.0-video-index0
+[25-Jul-23 18:14:48 - WARNING - camera.py:110 - __init__()]  Camera config not found for camera platform-fc800000.usb-usb-0:1:1.0-video-index0

@@ -46,7 +46,7 @@ class Cameras:
 
                     supportedResolutions = sorted(
                         list(
-                            set(
+                            sorted(
                                 map(
                                     lambda x: (
                                         int(x.split("x")[0]),

@@ -1,5 +1,5 @@
 import cv2
-from flask import Response, Flask, send_file
+from flask import Response, Flask, send_from_directory
 import os
 from flask_socketio import SocketIO
 import json
@@ -41,11 +41,10 @@ def updateAfter(action):
 
     return actionAndUpdate
 
-# Commented out for easier debugging
-# @socketio.on_error_default
-# def default_error_handler(e):
-#     logger.critical(e)
-#     socketio.emit("error", "An error occured: " + str(e))
+@socketio.on_error_default
+def default_error_handler(e):
+    logger.critical(e)
+    socketio.emit("error", "An error occured: " + str(e))
 
 
 @socketio.on("connect")
@@ -141,13 +140,12 @@ def set_board_dims(w, h):
 @socketio.on("set_static_ip")
 @updateAfter
 def set_static_ip(ip):
-    print("TEST")
     walleyeData.setIP(str(ip))
 
 @socketio.on("reset_networking")
 @updateAfter
 def reset_networking():
-    Config.resetNetworking()
+    walleyeData.resetNetworking()
 
 
 @socketio.on("shutdown")
@@ -180,7 +178,7 @@ def sendStateUpdate():
 
 @app.route("/files/<path:path>")
 def files(path):
-    return send_file(os.path.join(os.getcwd(), path), as_attachment=True)
+    return send_from_directory(os.getcwd(), path, as_attachment=True)
 
 
 @app.route("/video_feed/<camID>")

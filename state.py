@@ -92,7 +92,7 @@ class Config:
     
     def setIP(self, ip):
         Config.logger.info("Attempting to set static IP")
-        if not os.system(f"sudo ifconfig eth0 {ip} netmask 255.255.255.0"):
+        if not os.system(f"/usr/sbin/ifconfig eth0 {ip} netmask 255.255.255.0"):
             Config.logger.info(f"Static IP set: {ip}")
             self.ip = ip
         try:
@@ -107,11 +107,11 @@ class Config:
         else:
             Config.logger.error(f"Failed to set static ip: {ip}")
 
-    @staticmethod
-    def resetNetworking():
-        if not os.system("sudo ifconfig eth0 down"):
-            if not os.system("sudo ifconfig eth0 up"):
-                Config.logger.info("Networking reset successful - IP might not be static")
+    def resetNetworking(self):
+        if not os.system("/usr/sbin/ifconfig eth0 down"):
+            if not os.system("/usr/sbin/ifconfig eth0 up"):
+                self.ip = Config.getCurrentIP()
+                Config.logger.info(f"Networking reset successful - IP might not be static: {self.ip}")
             else:
                 Config.logger.error("Networking failed to restart")
         else:
