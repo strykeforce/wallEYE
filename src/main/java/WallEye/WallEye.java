@@ -12,18 +12,24 @@ import WallEye.WallEyeResult;
 
 public class WallEye {
     ArrayList<DoubleArraySubscriber> dsub;
-    public WallEye(String tableName)
+    private int numCameras;
+    public WallEye(String tableName, int numCameras)
     {
+        this.numCameras = numCameras;
         NetworkTableInstance nt = NetworkTableInstance.getDefault();
         nt.startServer();
         NetworkTable table = nt.getTable(tableName);
         double[] def = {2767.0, 2767.0, 2767.0, 2767.0, 2767.0, 2767.0, 2767.0};
-        for (int i = 0; true; i++) {
+        for (int i = 0; i < numCameras; i++) {
             try {
                 dsub.add(table.getDoubleArrayTopic("Result" + i).subscribe(def));
             }
             catch (Exception e) {}
         }
+    }
+
+    public int getNumCameras() {
+        return numCameras;
     }
 
     public WallEyeResult[] getResults() {
