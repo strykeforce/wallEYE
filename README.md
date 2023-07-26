@@ -1,19 +1,25 @@
-# WallEYE
-  WallEYE is an Apriltag processing software for use in FRC application. This software has a robotside implementation as well as a website interface. This software was made for Orange Pi 5 running Ubuntu, but it should run fine on a linux os with V4L2 and a recent Python version (tested with 3.10).
+# WPILib Vendor Template
 
-  Use `python3 init.py` to run. If changes are made to the web interface (frontend portion), `cd WebInterface/walleye` and `npm run build` are required to update the site.  
-  
-# Boot Up
-  Before connecting a WallEYE installation to a robot network switch, connect the Orange Pi via ethernet directly and turn on the Pi. Upon turning on the Pi connect to the local website at the ip ---.---.--- FIX ME. Upon connecting it is recommended to set a static ip to the format `10.27.67.#` or one that conforms to a team number. Also set a unique name that identifies the WallEYE installation. Although Calibration may be done on the first bootup it is not required. 
-  
-# Web Interface
-  The WallEYE website has each camera ordered in a specificed manner that is used in other places such as the order of poses returned by the robot side code. This order will only change if cameras and their usb ports are changed. If usb ports are changed it is recommended to download the data from the usb port (calibrations and configuration file) and upload it to the new port number. 
-  
-# Calibration
-  Calibration is done one camera at a time. The calibration script will automatically take a picture once the checkerboard is stable and detected. Calibration will then be ended once ended by the user. Calibrations will automatically be assigned to cameras and calibrations may be uploaded by the user. Pose estimation will work once calibrations have been done for every camera.
-  
-# Pose Estimation
-  Pose estimation is done through cameras detecting Apriltags. It will give the pose of the camera sensor and not the center of the robot. To work for Odometry updates please note that the pose must be transfered to the center of the robot.
-  
-# Robot Side Code
-  Robot side code starts with making a WallEYE object and passing the unique name that was given to the WallEYE installation. Calling the `getResults()` method on the WallEYE object will return an array of `WallEYEResults` which are from the cameras so camera 1 on the website would be index 0, camera 2 would be index 1, etc. Getting the pose from a WallEYE result is done by calling the `getCameraPose()` which returns a `Pose3d`. As for the timestamp, call the method `getTimeStamp()` and that returns a `double` that is the timestamp of when that result was sent.
+This is the base WPILib vendor template for 2023.
+
+## Layout
+
+The build is split into 3 libraries. A java library is built. This has access to all of wpilib, and also can JNI load the driver library.
+
+A driver library is built. This should contain all low level code you want to access from both C++, Java and any other text based language. This will not work with LabVIEW. This library has access to the WPILib HAL and wpiutil. This library can only export C symbols. It cannot export C++ symbols at all, and all C symbols must be explicitly listed in the symbols.txt file in the driver folder. JNI symbols must be listed in this file as well. This library however can be written in C++. If you attempt to change this library to have access to all of wpilib, you will break JNI access and it will no longer work.
+
+A native C++ library is built. This has access to all of wpilib, and access to the driver library. This should implment the standard wpilib interfaces.
+
+## Customizing
+For Java, the library name will be the folder name the build is started from, so rename the folder to the name of your choosing. 
+
+For the native impl, you need to change the library name in the exportsConfigs block of build.gradle, the components block of build.gradle, and the taskList input array name in publish.gradle.
+
+For the driver, change the library name in privateExportsConfigs, the driver name in components, and the driverTaskList input array name. In addition, you'll need to change the `lib library` in the native C++ impl component, and the JNI library name in the JNI java class.
+
+For the maven artifact names, those are all in publish.gradle about 40 lines down.
+
+## Building and editing
+This uses gradle, and uses the same base setup as a standard GradleRIO robot project. This means you build with `./gradlew build`, and can install the native toolchain with `./gradlew installRoboRIOToolchain`. If you open this project in VS Code with the wpilib extension installed, you will get intellisense set up for both C++ and Java.
+
+By default, this template builds against the latest WPILib development build. To build against the last WPILib tagged release, build with `./gradlew build -PreleaseMode`.
