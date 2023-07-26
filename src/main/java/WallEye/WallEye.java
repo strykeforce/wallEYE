@@ -13,6 +13,14 @@ import WallEye.WallEyeResult;
 public class WallEye {
     ArrayList<DoubleArraySubscriber> dsub;
     private int numCameras;
+
+    /**
+     * Creates a WallEye object that can pull pose location and timestamp from Network Tables.
+     *   
+     *
+     * @param  tableName  a string that specifies the table name of the WallEye instance (Look at web interface)
+     * @param  numCameras a number that is equal to the number of cameras connected to the PI
+    */
     public WallEye(String tableName, int numCameras)
     {
         this.numCameras = numCameras;
