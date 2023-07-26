@@ -44,7 +44,7 @@ try:
     images = {}
     calibrators = {}
 
-    poseEstimator = Processor(0.157)
+    poseEstimator = Processor(walleyeData.tagSize)
     walleyeData.currentState = States.PROCESSING
 
     logger.info("Starting main loop")
@@ -100,6 +100,7 @@ try:
             walleyeData.currentState = States.IDLE
 
         elif walleyeData.currentState == States.PROCESSING:
+            poseEstimator.setTagSize(walleyeData.setTagSize)
             images = walleyeData.cameras.getFrames()
             imageTime = walleyeData.robotPublisher.getTime()
             poses = poseEstimator.getPose(

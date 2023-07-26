@@ -20,6 +20,9 @@ class Processor:
     def getPose(self, images, K, D):
         return self.imagePose(images, K, D, self.tagLayout, self.arucoDetector)
     
+    def setTagSize(self, size):
+        self.squareLength = size
+
     @staticmethod
     def translationToSolvePnP(translation):
         return np.asarray([-translation.Y(), -translation.Z(), translation.X()])

@@ -24,24 +24,6 @@ class Config:
     logger = logging.getLogger(__name__)
 
     def __init__(self) -> None:
-        try:
-            with open('SystemData.json', 'r') as data:
-                config = json.load(data)
-                self.teamNumber = config["TeamNumber"]
-                self.tableName = config["TableName"]
-                self.ip = config["ip"]
-        except (FileNotFoundError, json.decoder.JSONDecodeError):
-            self.teamNumber = 2767
-            self.tableName = "WallEye"
-            try:
-                self.ip = Config.getCurrentIP
-                Config.logger.info(f"IP is {self.ip}")
-            except IndexError:
-                Config.logger.error("Could not get current IP")
-            dataDump = {"TeamNumber" : self.teamNumber, "TableName" : self.tableName, "ip" : self.ip}
-            with open('SystemData.json', 'w') as out:
-                json.dump(dataDump, out)
-
 
         self.currentState = States.PROCESSING
 
@@ -58,6 +40,30 @@ class Config:
         self.robotPublisher = None
 
         self.poses = {}
+
+        #SolvePNP
+        self.tagSize = 0.157
+
+        try:
+            with open('SystemData.json', 'r') as data:
+                config = json.load(data)
+                self.teamNumber = config["TeamNumber"]
+                self.tableName = config["TableName"]
+                self.ip = config["ip"]
+                self.boardDims = config["BoardDim"]
+                self.tagSize = config["TagSize"]
+        except (FileNotFoundError, json.decoder.JSONDecodeError, KeyError):
+            self.teamNumber = 2767
+            self.tableName = "WallEye"
+            try:
+                self.ip = Config.getCurrentIP()
+                Config.logger.info(f"IP is {self.ip}")
+            except IndexError:
+                Config.logger.error("Could not get current IP")
+            dataDump = {"TeamNumber" : self.teamNumber, "TableName" : self.tableName, "ip" : self.ip, "BoardDim" : self.boardDims, "TagSize" : self.tagSize}
+            with open('SystemData.json', 'w') as out:
+                json.dump(dataDump, out)
+
 
     def makePublisher(self, teamNumber, tableName):
         try:
@@ -90,6 +96,28 @@ class Config:
     def getCalFilePaths(self):
         return {i.identifier: i.calibrationPath for i in self.cameras.info.values()}
     
+    def setBoardDim(self, dim):
+        try:
+            with open('SystemData.json', 'r') as file:
+                config = json.load(file)
+                config["BoardDim"] = dim 
+                with open('SystemData.json', 'w') as out:
+                    json.dump(config, out)
+            
+        except (FileNotFoundError, json.decoder.JSONDecodeError):
+            Config.logger.error(f"Failed to write Dimensions {dim}")
+
+    def setTagSize(self, size):
+        try:
+            with open('SystemData.json', 'r') as file:
+                config = json.load(file)
+                config["TagSize"] = size 
+                with open('SystemData.json', 'w') as out:
+                    json.dump(config, out)
+            
+        except (FileNotFoundError, json.decoder.JSONDecodeError):
+            Config.logger.error(f"Failed to write tag size {size}")
+
     def setIP(self, ip):
         Config.logger.info("Attempting to set static IP")
         if not os.system(f"/usr/sbin/ifconfig eth0 {ip} netmask 255.255.255.0"):
@@ -140,6 +168,7 @@ class Config:
                 k: v.supportedResolutions for k, v in self.cameras.info.items()
             },
             "ip" : self.ip,
+            "tagSize" : self.tagSize,
         }
 
 

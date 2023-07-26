@@ -9,6 +9,7 @@ export default function Config(props) {
     const [newBoardDimsW, setNewBoardDimsW] = useState(props.state.boardDims[0]);
     const [newBoardDimsH, setNewBoardDimsH] = useState(props.state.boardDims[1]);
     const [newStaticIP, setNewStaticIP] = useState(props.state.ip);
+    const [newTagSize, setNewTagSize] = useState(props.state.tagSize);
 
     return (
         <Form>
@@ -56,6 +57,15 @@ export default function Config(props) {
                 <Button variant="info" onClick={() => { socket.emit("reset_networking"); }}>
                     Reset Networking
                 </Button>
+            </Form.Group>
+            <Form.Group className="mb-3" >
+                <InputGroup>
+                    <InputGroup.Text>Set Tag Size</InputGroup.Text>
+                    <Form.Control type="number" value={newTagSize} onChange={(e) => { setNewTagSize(e.target.value) }} />
+                    <Button variant="info" onClick={() => { socket.emit("set_tag_size", newTagSize); }}>
+                        Update
+                    </Button>
+                </InputGroup>
             </Form.Group>
         </Form >
     );

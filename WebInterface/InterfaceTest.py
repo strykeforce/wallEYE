@@ -130,11 +130,17 @@ def set_table_name(name):
 def set_team_number(number):
     walleyeData.makePublisher(int(number), walleyeData.tableName)
 
+@socketio.on("set_tag_size")
+@updateAfter
+def set_tag_size(size):
+    walleyeData.setTagSize(float(size))
+
 
 @socketio.on("set_board_dims")
 @updateAfter
 def set_board_dims(w, h):
     walleyeData.boardDims = (int(w), int(h))
+    walleyeData.setBoardDim(walleyeData.boardDims)
     logger.info(f"Board dimensions set: {(w, h)}")
 
 @socketio.on("set_static_ip")
