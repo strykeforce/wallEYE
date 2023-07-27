@@ -15,11 +15,13 @@ class Calibration:
         cornerShape: tuple[int, int],
         camPath: str,
         imgPath: str,
+        resolution: tuple
     ):
         self.delay = delay
         self.cornerShape = cornerShape # (col, row) format
         self.imgPath = imgPath
         self.camPath = camPath
+        self.resolution = resolution
 
         self.reference = np.zeros((cornerShape[0] * cornerShape[1], 3), np.float32)
         self.reference[:, :2] = np.mgrid[
@@ -177,6 +179,7 @@ class Calibration:
             "dist": distortion,
             "r": rot,
             "t": trans,
+            "resolution": self.resolution,
         }
 
         reprojError = self.getReprojectionError()
@@ -192,11 +195,12 @@ class Calibration:
                     "r": np.asarray(rot).tolist(),
                     "t": np.asarray(trans).tolist(),
                     "reproj": reprojError,
+                    "resolution": self.resolution,
                 },
                 f,
             )
         
-        Calibration.logger.info(f"Calibration successfully generated and saved to {calFile}")
+        Calibration.logger.info(f"Calibration successfully generated and saved to {calFile} with resolution {self.resolution}")
 
         return ret
 
@@ -216,7 +220,7 @@ class Calibration:
 
         return self.lastImageStable
 
-    def isSharp(self, img: np.ndarray, threshold: float = 16, cutoff: float = 80):
+    def isSharp(self, img: np.ndarray, threshold: float = 13, cutoff: float = 80):
         (h, w) = img.shape
 
         fft = np.fft.fft2(img)
@@ -292,23 +296,6 @@ class Calibration:
         return calibrationData
 
     @staticmethod
-    def calibrationPathByCam(camIdentifier):
-        return f"./Calibration/Cam_{camIdentifier.replace(':', '-').replace('.', '-')}CalData.json"
+    def calibrationPathByCam(camIdentifier, resolution):
+        return f"./Calibration/Cam_{camIdentifier.replace(':', '-').replace('.', '-')}_{resolution}CalData.json"
 
-
-if __name__ == "__main__":
-    cam = cv2.VideoCapture(0)
-    cal = Calibration(1, (7, 7), 0, "calImgs")
-
-    while len(cal.imgPoints) < 15:
-        ret, img = cam.read()
-        cv2.imshow("Calibrator", cal.processFrame(img)[0])
-
-        if cv2.waitKey(1) == 27:
-            break
-
-    cv2.destroyAllWindows()
-
-    cal.generateCalibration("testCal.json")
-    cal.loadCalibration("testCal.json")
-    print(f"Reprojection error: {cal.getReprojectionError()}")

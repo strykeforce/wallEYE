@@ -16,12 +16,14 @@ class Processor:
         self.arucoDetector = cv2.aruco.ArucoDetector()
         self.arucoDetector.setDictionary(cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_APRILTAG_16H5))
         self.squareLength = tagLength
+        
 
     def getPose(self, images, K, D):
         return self.imagePose(images, K, D, self.tagLayout, self.arucoDetector)
     
     def setTagSize(self, size):
         self.squareLength = size
+    
 
     @staticmethod
     def translationToSolvePnP(translation):
@@ -37,9 +39,9 @@ class Processor:
 
     def imagePose(self, images, K, D, layout, arucoDetector):
         poses = []
-
-        for img in images:
-            if img is None:
+     
+        for imgIndex, img in enumerate(images):
+            if img is None or K[imgIndex] is None or D[imgIndex] is None:
                 poses.append(Processor.BAD_POSE)
                 continue
 
@@ -59,7 +61,6 @@ class Processor:
                     c2 = Processor.translationToSolvePnP(pose + wpi.Transform3d(wpi.Translation3d(0, self.squareLength / 2, -self.squareLength / 2), wpi.Rotation3d()))
                     c3 = Processor.translationToSolvePnP(pose + wpi.Transform3d(wpi.Translation3d(0, self.squareLength / 2, self.squareLength / 2), wpi.Rotation3d()))
                     c4 = Processor.translationToSolvePnP(pose + wpi.Transform3d(wpi.Translation3d(0, -self.squareLength / 2, self.squareLength / 2), wpi.Rotation3d()))
-                    
                     if tagLoc is None:
                         cornerLoc = corners[tagCount][0]
                         tagLoc = np.array([c1, c2, c3, c4])
@@ -69,7 +70,7 @@ class Processor:
                     tagCount += 1
                 
                 if cornerLoc is not None: # Make sure that tag is valid (i >= 0 and i <= 8)
-                    ret, rvecs, tvecs = cv2.solvePnP(tagLoc, cornerLoc, K[num], D[num], flags=cv2.SOLVEPNP_SQPNP)
+                    ret, rvecs, tvecs = cv2.solvePnP(tagLoc, cornerLoc, K[imgIndex], D[imgIndex], flags=cv2.SOLVEPNP_SQPNP)
                 
                     rotMat, _ = cv2.Rodrigues(rvecs)
                     transVec = -np.dot(np.transpose(rotMat), tvecs)

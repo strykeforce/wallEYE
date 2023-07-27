@@ -11,9 +11,10 @@ import logging
 # Holds information about the camera including the object itself
 # Not any existing VideoCapture properties like exposure
 class CameraInfo:
-    def __init__(self, cam, identifier, supportedResolutions, K=None, D=None):
+    def __init__(self, cam, identifier, supportedResolutions, resolution=None, K=None, D=None):
         self.cam = cam
         self.identifier = identifier
+        self.resolution = resolution
         self.supportedResolutions = supportedResolutions
 
         # Calibration
@@ -35,7 +36,11 @@ class Cameras:
             Cameras.logger.info("Platform is linux")
 
             # Automatically detect cameras
-            cameraPaths = os.listdir(r"/dev/v4l/by-path")
+            try:
+                cameraPaths = os.listdir(r"/dev/v4l/by-path")
+            except FileNotFoundError:
+                cameraPaths = []
+                Cameras.logger.error("No cameras detected!!")
 
             for camPath in cameraPaths:
                 path = f"/dev/v4l/by-path/{camPath}"
@@ -82,31 +87,30 @@ class Cameras:
                         )
 
                     self.info[camPath] = CameraInfo(cam, camPath, supportedResolutions)
+                    self.info[camPath].resolution = self.getResolutions()[camPath]
 
                     cleaned = self.cleanIdentifier(camPath)
 
                     config = None
                     try:
                         config = parseConfig(cleaned)
-                        calib = Calibration.parseCalibration(Calibration.calibrationPathByCam(camPath))
-
-                        self.setCalibration(camPath, calib["K"], calib["dist"])
-
-                        self.info[camPath].calibrationPath = Calibration.calibrationPathByCam(camPath)
 
                         Cameras.logger.info(
-                            f"Calibration found! Using\n{calib['K']}\n{calib['dist']}"
+                            f"Config found!"
                         )
                     except (FileNotFoundError, json.decoder.JSONDecodeError):
                         Cameras.logger.warning(
-                            f"Config or Calibration not found for camera {camPath}"
+                            f"Config not found for camera {camPath}"
                         )
 
+                    
+
                     if config is not None:
-                        self.setResolution(camPath, config["Resolution"])
+                        self.setResolution(camPath, config["Resolution"]) # Calls self.importCalibration
                         self.setGain(camPath, config["Gain"])
                         self.setExposure(camPath, config["Exposure"])
                     else:
+                        self.importCalibration(camPath)
                         Cameras.logger.warning(
                             f"Camera config not found for camera {camPath}"
                         )
@@ -118,71 +122,6 @@ class Cameras:
                         self.getGains()[camPath],
                         self.getExposures()[camPath],
                     )
-
-        elif platform == "win32":
-            # Debugging only
-            # One camera only
-            Cameras.logger.warning("Platform is windows")
-
-            cam = cv2.VideoCapture(0, cv2.CAP_DSHOW)
-
-            if cam.isOpened():
-                cam.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-
-                supportedResolutions = [(640, 480), (1280, 720)]
-                placeholderPath = "Windows0"
-
-                if cam.set(cv2.CAP_PROP_AUTO_EXPOSURE, -7):
-                    Cameras.logger.info(f"Auto exposure disabled for {placeholderPath}")
-                else:
-                    Cameras.logger.warning(
-                        f"Failed to disable auto exposure for {placeholderPath}"
-                    )
-
-                self.info[placeholderPath] = CameraInfo(
-                    cam, placeholderPath, supportedResolutions
-                )
-
-                config = None
-
-                try:
-                    config = parseConfig(placeholderPath)
-                    calib = Calibration.parseCalibration(
-                        f"./Calibration/Cam_{placeholderPath}CalData.json"
-                    )
-
-                    self.setCalibration(placeholderPath, calib["K"], calib["dist"])
-
-                    self.info[
-                        placeholderPath
-                    ].calibrationPath = (
-                        f"./Calibration/Cam_{placeholderPath}CalData.json"
-                    )
-
-                    Cameras.logger.info(
-                        f"Calibration found! Using\n{calib['K']}\n{calib['dist']}"
-                    )
-                except FileNotFoundError:
-                    Cameras.logger.warning(
-                        f"Config or Calibration not found for camera {placeholderPath}"
-                    )
-
-                if config is not None:
-                    self.setResolution(placeholderPath, config["Resolution"])
-                    self.setGain(placeholderPath, config["Gain"])
-                    self.setExposure(placeholderPath, config["Exposure"])
-                else:
-                    Cameras.logger.warning(
-                        f"Camera config not found for camera {camPath}"
-                    )
-
-                # Save configs
-                writeConfig(
-                    placeholderPath,
-                    self.getResolutions()[placeholderPath],
-                    self.getGains()[placeholderPath],
-                    self.getExposures()[placeholderPath],
-                )
 
         else:
             Cameras.logger.error("Unknown platform!")
@@ -213,6 +152,9 @@ class Cameras:
             return
         self.info[identifier].cam.set(cv2.CAP_PROP_FRAME_WIDTH, resolution[0])
         self.info[identifier].cam.set(cv2.CAP_PROP_FRAME_HEIGHT, resolution[1])
+
+        self.info[identifier].resolution = resolution            
+        self.importCalibration(identifier)    
 
         writeConfig(
             self.cleanIdentifier(identifier),
@@ -277,7 +219,26 @@ class Cameras:
             )
 
         return resolution
+    
+    def importCalibration(self, identifier):
+        resolution = tuple(self.info[identifier].resolution)
+        
+        try:
+            calib = Calibration.parseCalibration(Calibration.calibrationPathByCam(identifier, resolution))
 
+            self.setCalibration(identifier, calib["K"], calib["dist"])
+
+            self.info[identifier].calibrationPath = Calibration.calibrationPathByCam(identifier, resolution)
+
+            Cameras.logger.info(
+                f"Calibration found! Using\n{calib['K']}\n{calib['dist']}"
+            )
+        except (FileNotFoundError, json.decoder.JSONDecodeError):
+            self.info[identifier].calibrationPath = None
+            Cameras.logger.warning(
+                f"Calibration not found for camera {identifier} at resolution {resolution}"
+            ) 
+    
     @staticmethod
     def cleanIdentifier(identifier):
         return identifier.replace(":", "-").replace(".", "-")

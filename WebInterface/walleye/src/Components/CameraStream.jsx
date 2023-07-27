@@ -8,8 +8,7 @@ export default function CameraStream(props) {
         <Card>
             <Card.Header>
                 Camera Stream {props.camID} 
-                {props.state.calFilePaths[props.camID] && <Badge bg="success"   >Calibration found</Badge>}
-                {props.state.calFilePaths[props.camID] == null && <Badge bg="danger">Calibration not found</Badge>}
+                {props.state.calFilePaths[props.camID] ? <Badge bg="success"   >Calibration found</Badge> : props.state.calFilePaths[props.camID] == null && <Badge bg="danger">Calibration not found</Badge>}
             </Card.Header>
             <Card.Body>
                 <Row>

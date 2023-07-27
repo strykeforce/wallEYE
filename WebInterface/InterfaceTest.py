@@ -41,10 +41,10 @@ def updateAfter(action):
 
     return actionAndUpdate
 
-@socketio.on_error_default
-def default_error_handler(e):
-    logger.critical(e)
-    socketio.emit("error", "An error occured: " + str(e))
+# @socketio.on_error_default
+# def default_error_handler(e):
+#     logger.critical(e)
+#     socketio.emit("error", "An error occured: " + str(e))
 
 
 @socketio.on("connect")
@@ -103,7 +103,7 @@ def generate_calibration(camID):
 @updateAfter
 def import_calibration(camID, file):
     with open(
-        Calibration.calibrationPathByCam(camID),
+        Calibration.calibrationPathByCam(camID, walleyeData.cameras.info[camID].resolution),
         "w",
     ) as outFile:
         # Save
@@ -115,6 +115,7 @@ def import_calibration(camID, file):
         calData["K"] = np.asarray(calData["K"])
         calData["dist"] = np.asarray(calData["dist"])
         walleyeData.cameras.setCalibration(camID, calData["K"], calData["dist"])
+        walleyeData.cameras.info[camID].calibrationPath = file
 
     logger.info(f"Calibration sucessfully imported for {camID}")
 

@@ -61,6 +61,7 @@ try:
                 walleyeData.boardDims,
                 walleyeData.cameraInCalibration,
                 f"Calibration/Cam_{Cameras.cleanIdentifier(walleyeData.cameraInCalibration)}CalImgs",
+                walleyeData.cameras.info[walleyeData.cameraInCalibration].resolution
             )
             walleyeData.currentState = States.CALIBRATION_CAPTURE
 
@@ -80,7 +81,8 @@ try:
             walleyeData.cameras.info[
                 walleyeData.cameraInCalibration
             ].calibrationPath = Calibration.calibrationPathByCam(
-                walleyeData.cameraInCalibration
+                walleyeData.cameraInCalibration,
+                walleyeData.cameras.info[walleyeData.cameraInCalibration].resolution
             )
 
             calibrators[walleyeData.cameraInCalibration].generateCalibration(
@@ -100,7 +102,7 @@ try:
             walleyeData.currentState = States.IDLE
 
         elif walleyeData.currentState == States.PROCESSING:
-            poseEstimator.setTagSize(walleyeData.setTagSize)
+            poseEstimator.setTagSize(walleyeData.tagSize)
             images = walleyeData.cameras.getFrames()
             imageTime = walleyeData.robotPublisher.getTime()
             poses = poseEstimator.getPose(
@@ -112,7 +114,7 @@ try:
                 walleyeData.robotPublisher.publish(i, imageTime, poses[i])
                 
             for i, (identifier, img) in enumerate(images.items()):
-                if i > len(poses):
+                if i >= len(poses):
                     break
                 camBuffers[identifier].update(img)
                 walleyeData.setPose(identifier, poses[i])
@@ -120,6 +122,7 @@ try:
         elif walleyeData.currentState == States.SHUTDOWN:
             logger.info("Shutting down")
             logging.shutdown()
+            socketio.stop()
             break
 
         if walleyeData.currentState != States.PROCESSING:
@@ -135,3 +138,6 @@ try:
                 camBuffers[cameraInfo.identifier].update(img)
 except Exception as e:
     logging.critical(e, exc_info=True)
+    logger.info("Shutting down")
+    logging.shutdown()
+    socketio.stop()
