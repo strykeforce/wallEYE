@@ -10,6 +10,9 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import WallEye.WallEyeResult;
 
+/**
+ * A robot side code interface to interact and pull data from an Orange Pi running WallEye
+ */
 public class WallEye {
     ArrayList<DoubleArraySubscriber> dsub;
     private int numCameras;
@@ -36,15 +39,29 @@ public class WallEye {
         }
     }
 
+    /**
+     * Getter for the number of Cameras
+     *   
+     *
+     * @return Returns an integer value for the number of cameras attached to the pi as specified by intialization
+    */
     public int getNumCameras() {
         return numCameras;
     }
 
+    /**
+     * Pulls most recent poses from Network Tables. FIXME : WILL HAVE TO SORT OUT NON CHANGED POSES
+     *   
+     *
+     * @return Returns an array of WallEyeResult, with each nth result being the nth camera as shown on the web interface 
+     * @see WallEyeResult
+    */
     public WallEyeResult[] getResults() {
         ArrayList<WallEyeResult> results = new ArrayList<WallEyeResult>();
-        for(DoubleArraySubscriber sub: dsub) {
+        for(int i = 0; i < numCameras; ++i) {
+            DoubleArraySubscriber sub = dsub.get(i);
             double[] temp = sub.get();
-            results.add(new WallEyeResult(new Pose3d(new Translation3d(temp[0], temp[1], temp[2]), new Rotation3d(temp[3], temp[4], temp[5])), sub.getAtomic().timestamp));
+            results.add(new WallEyeResult(new Pose3d(new Translation3d(temp[0], temp[1], temp[2]), new Rotation3d(temp[3], temp[4], temp[5])), sub.getAtomic().timestamp, i));
         }
         WallEyeResult[] returnArray = new WallEyeResult[results.size()];
         returnArray = results.toArray(returnArray);
