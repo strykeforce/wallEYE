@@ -52,6 +52,9 @@ class Config:
                 self.ip = config["ip"]
                 self.boardDims = config["BoardDim"]
                 self.tagSize = config["TagSize"]
+
+                self.setIP(self.ip)
+
         except (FileNotFoundError, json.decoder.JSONDecodeError, KeyError):
             self.teamNumber = 2767
             self.tableName = "WallEye"
@@ -123,6 +126,9 @@ class Config:
         if not os.system(f"/usr/sbin/ifconfig eth0 {ip} netmask 255.255.255.0"):
             Config.logger.info(f"Static IP set: {ip}")
             self.ip = ip
+        else:
+            self.ip = Config.getCurrentIP()
+            Config.logger.error(f"Failed to set static ip: {ip}")
         try:
             with open('SystemData.json', 'r') as file:
                 config = json.load(file)
@@ -132,8 +138,6 @@ class Config:
             
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             Config.logger.error(f"Failed to write static ip: {ip}")
-        else:
-            Config.logger.error(f"Failed to set static ip: {ip}")
 
     def resetNetworking(self):
         if not os.system("/usr/sbin/ifconfig eth0 down"):
