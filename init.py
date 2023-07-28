@@ -39,7 +39,7 @@ try:
 
     logger.info("Web server ready")
 
-    walleyeData.makePublisher(2767, "Walleye")
+    walleyeData.makePublisher(walleyeData.teamNumber, walleyeData.tableName)
 
     images = {}
     calibrators = {}

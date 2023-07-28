@@ -88,7 +88,7 @@ class Config:
             Config.logger.info("Existing publisher destroyed")
 
         self.robotPublisher = NetworkIO(
-            True, walleyeData.teamNumber, walleyeData.tableName
+            False, walleyeData.teamNumber, walleyeData.tableName
         )
 
         Config.logger.info(f"Robot publisher created: {teamNumber} - {tableName}")
