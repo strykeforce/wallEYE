@@ -61,6 +61,11 @@ class Processor:
                     c2 = Processor.translationToSolvePnP(pose + wpi.Transform3d(wpi.Translation3d(0, self.squareLength / 2, -self.squareLength / 2), wpi.Rotation3d()))
                     c3 = Processor.translationToSolvePnP(pose + wpi.Transform3d(wpi.Translation3d(0, self.squareLength / 2, self.squareLength / 2), wpi.Rotation3d()))
                     c4 = Processor.translationToSolvePnP(pose + wpi.Transform3d(wpi.Translation3d(0, -self.squareLength / 2, self.squareLength / 2), wpi.Rotation3d()))
+                    
+                    #FIXME - TEST THIS
+                    ret, rvec, tvec = cv2.solvePnP(np.asarray([[c1, c2, c3, c4]]), corners[tagCount][0], K[imgIndex], D[imgIndex], flags=cv2.SOLVEPNP_SQPNP)
+                    cv2.drawFrameAxes(img, K[imgIndex], D[imgIndex], rvec, tvec, 0.1)
+
                     if tagLoc is None:
                         cornerLoc = corners[tagCount][0]
                         tagLoc = np.array([c1, c2, c3, c4])
@@ -71,9 +76,6 @@ class Processor:
                 
                 if cornerLoc is not None: # Make sure that tag is valid (i >= 0 and i <= 8)
                     ret, rvecs, tvecs = cv2.solvePnP(tagLoc, cornerLoc, K[imgIndex], D[imgIndex], flags=cv2.SOLVEPNP_SQPNP)
-                    
-                    #FIXME - TEST THIS
-                    cv2.drawFrameAxes(img, K[imgIndex], D[imgIndex], rvecs, tvecs, 0.1)
 
                     rotMat, _ = cv2.Rodrigues(rvecs)
                     transVec = -np.dot(np.transpose(rotMat), tvecs)
