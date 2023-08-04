@@ -71,7 +71,10 @@ class Processor:
                 
                 if cornerLoc is not None: # Make sure that tag is valid (i >= 0 and i <= 8)
                     ret, rvecs, tvecs = cv2.solvePnP(tagLoc, cornerLoc, K[imgIndex], D[imgIndex], flags=cv2.SOLVEPNP_SQPNP)
-                
+                    
+                    #FIXME - TEST THIS
+                    cv2.drawFrameAxes(img, K[imgIndex], D[imgIndex], rvecs, tvecs, 0.1)
+
                     rotMat, _ = cv2.Rodrigues(rvecs)
                     transVec = -np.dot(np.transpose(rotMat), tvecs)
                     rot3D = wpi.Rotation3d(np.array([rvecs[2][0], -rvecs[0][0], +rvecs[1][0]]),
