@@ -10,6 +10,7 @@ import numpy as np
 
 logger = logging.getLogger(__name__)
 
+
 class Buffer:
     outputFrame = b""
 
@@ -40,6 +41,7 @@ def updateAfter(action):
         sendStateUpdate()
 
     return actionAndUpdate
+
 
 # @socketio.on_error_default
 # def default_error_handler(e):
@@ -85,7 +87,6 @@ def toggle_calibration(camID):
         walleyeData.reprojectionError = None
         walleyeData.currentState = States.BEGIN_CALIBRATION
         logger.info(f"Starting calibration capture for {camID}")
-        
 
     elif walleyeData.currentState == States.CALIBRATION_CAPTURE:
         walleyeData.currentState = States.IDLE
@@ -103,7 +104,9 @@ def generate_calibration(camID):
 @updateAfter
 def import_calibration(camID, file):
     with open(
-        Calibration.calibrationPathByCam(camID, walleyeData.cameras.info[camID].resolution),
+        Calibration.calibrationPathByCam(
+            camID, walleyeData.cameras.info[camID].resolution
+        ),
         "w",
     ) as outFile:
         # Save
@@ -131,6 +134,7 @@ def set_table_name(name):
 def set_team_number(number):
     walleyeData.makePublisher(int(number), walleyeData.tableName)
 
+
 @socketio.on("set_tag_size")
 @updateAfter
 def set_tag_size(size):
@@ -144,10 +148,12 @@ def set_board_dims(w, h):
     walleyeData.setBoardDim(walleyeData.boardDims)
     logger.info(f"Board dimensions set: {(w, h)}")
 
+
 @socketio.on("set_static_ip")
 @updateAfter
 def set_static_ip(ip):
     walleyeData.setIP(str(ip))
+
 
 @socketio.on("reset_networking")
 @updateAfter
@@ -171,11 +177,12 @@ def toggle_pnp():
         walleyeData.currentState = States.PROCESSING
         logger.info("PnP started")
 
+
 @socketio.on("pose_update")
 def pose_update():
     socketio.sleep(0)
     socketio.emit("pose_update", walleyeData.poses)
-    
+
 
 def sendStateUpdate():
     logger.debug(f"Sending state update : {walleyeData.getState()}")
@@ -193,7 +200,7 @@ def video_feed(camID):
     if camID not in camBuffers:
         logger.error(f"Bad cam id recieved: {camID}")
         return
-     
+
     return Response(
         camBuffers[camID].output(), mimetype="multipart/x-mixed-replace; boundary=frame"
     )

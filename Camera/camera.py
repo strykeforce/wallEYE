@@ -11,7 +11,9 @@ import logging
 # Holds information about the camera including the object itself
 # Not any existing VideoCapture properties like exposure
 class CameraInfo:
-    def __init__(self, cam, identifier, supportedResolutions, resolution=None, K=None, D=None):
+    def __init__(
+        self, cam, identifier, supportedResolutions, resolution=None, K=None, D=None
+    ):
         self.cam = cam
         self.identifier = identifier
         self.resolution = resolution
@@ -49,27 +51,25 @@ class Cameras:
                 if cam.isOpened():
                     Cameras.logger.info(f"Camera found: {camPath}")
 
-                    supportedResolutions = sorted(
-                        list(
-                            sorted(
-                                map(
-                                    lambda x: (
-                                        int(x.split("x")[0]),
-                                        int(x.split("x")[1]),
-                                    ),
-                                    re.findall(
-                                        "[0-9]+x[0-9]+",
-                                        subprocess.run(
-                                            [
-                                                "v4l2-ctl",
-                                                "-d",
-                                                path,
-                                                "--list-formats-ext",
-                                            ],
-                                            capture_output=True,
-                                        ).stdout.decode("utf-8"),
-                                    ),
-                                )
+                    supportedResolutions = list(
+                        set(
+                            map(
+                                lambda x: (
+                                    int(x.split("x")[0]),
+                                    int(x.split("x")[1]),
+                                ),
+                                re.findall(
+                                    "[0-9]+x[0-9]+",
+                                    subprocess.run(
+                                        [
+                                            "v4l2-ctl",
+                                            "-d",
+                                            path,
+                                            "--list-formats-ext",
+                                        ],
+                                        capture_output=True,
+                                    ).stdout.decode("utf-8"),
+                                ),
                             )
                         )
                     )
@@ -95,18 +95,14 @@ class Cameras:
                     try:
                         config = parseConfig(cleaned)
 
-                        Cameras.logger.info(
-                            f"Config found!"
-                        )
+                        Cameras.logger.info(f"Config found!")
                     except (FileNotFoundError, json.decoder.JSONDecodeError):
-                        Cameras.logger.warning(
-                            f"Config not found for camera {camPath}"
-                        )
-
-                    
+                        Cameras.logger.warning(f"Config not found for camera {camPath}")
 
                     if config is not None:
-                        self.setResolution(camPath, config["Resolution"]) # Calls self.importCalibration
+                        self.setResolution(
+                            camPath, config["Resolution"]
+                        )  # Calls self.importCalibration
                         self.setGain(camPath, config["Gain"])
                         self.setExposure(camPath, config["Exposure"])
                     else:
@@ -138,7 +134,6 @@ class Cameras:
     def listD(self):
         return [i.D for i in self.info.values()]
 
-    # These functions call existing cv2 setters/getters
     def getFrames(self):
         frames = {}
         for identifier, camInfo in self.info.items():
@@ -153,8 +148,8 @@ class Cameras:
         self.info[identifier].cam.set(cv2.CAP_PROP_FRAME_WIDTH, resolution[0])
         self.info[identifier].cam.set(cv2.CAP_PROP_FRAME_HEIGHT, resolution[1])
 
-        self.info[identifier].resolution = resolution            
-        self.importCalibration(identifier)    
+        self.info[identifier].resolution = resolution
+        self.importCalibration(identifier)
 
         writeConfig(
             self.cleanIdentifier(identifier),
@@ -170,7 +165,9 @@ class Cameras:
             Cameras.logger.info("Gain not set")
             return
 
-        if self.info[identifier].cam.set(cv2.CAP_PROP_GAIN, gain):
+        os.system("v4l2-ctl -d /dev/v4l/by-path/{identifier} --set-ctrl exposure_auto=1 -c gain={gain}")
+
+        if self.info[identifier].cam.get(cv2.CAP_PROP_GAIN) != gain:
             Cameras.logger.warning(f"Gain not set: {gain} not accepted")
         else:
             Cameras.logger.info(f"Gain set to {gain}")
@@ -185,8 +182,10 @@ class Cameras:
         if exposure is None:
             Cameras.logger.info("Exposure not set")
             return
+        
+        os.system("v4l2-ctl -d /dev/v4l/by-path/{identifier} --set-ctrl exposure_auto=1 -c exposure_absolute={exposure}")
 
-        if self.info[identifier].cam.set(cv2.CAP_PROP_EXPOSURE, exposure):
+        if self.info[identifier].cam.get(cv2.CAP_PROP_EXPOSURE) != exposure:
             Cameras.logger.warning(f"Exposure not set: {exposure} not accepted")
         else:
             Cameras.logger.info(f"Exposure set to {exposure}")
@@ -219,26 +218,30 @@ class Cameras:
             )
 
         return resolution
-    
+
     def importCalibration(self, identifier):
         resolution = tuple(self.info[identifier].resolution)
-        
+
         try:
-            calib = Calibration.parseCalibration(Calibration.calibrationPathByCam(identifier, resolution))
+            calib = Calibration.parseCalibration(
+                Calibration.calibrationPathByCam(identifier, resolution)
+            )
 
             self.setCalibration(identifier, calib["K"], calib["dist"])
 
-            self.info[identifier].calibrationPath = Calibration.calibrationPathByCam(identifier, resolution)
+            self.info[identifier].calibrationPath = Calibration.calibrationPathByCam(
+                identifier, resolution
+            )
 
             Cameras.logger.info(
                 f"Calibration found! Using\n{calib['K']}\n{calib['dist']}"
             )
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             self.info[identifier].calibrationPath = None
-            Cameras.logger.warning(
+            Cameras.logger.error(
                 f"Calibration not found for camera {identifier} at resolution {resolution}"
-            ) 
-    
+            )
+
     @staticmethod
     def cleanIdentifier(identifier):
         return identifier.replace(":", "-").replace(".", "-")

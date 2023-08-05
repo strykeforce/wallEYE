@@ -6,19 +6,20 @@ import os
 import shutil
 import logging
 
+
 class Calibration:
     logger = logging.getLogger(__name__)
-    
+
     def __init__(
         self,
         delay: float,
         cornerShape: tuple[int, int],
         camPath: str,
         imgPath: str,
-        resolution: tuple
+        resolution: tuple,
     ):
         self.delay = delay
-        self.cornerShape = cornerShape # (col, row) format
+        self.cornerShape = cornerShape  # (col, row) format
         self.imgPath = imgPath
         self.camPath = camPath
         self.resolution = resolution
@@ -85,9 +86,9 @@ class Calibration:
             pathSaved = os.path.join(self.imgPath, f"{currTime}.png")
 
             cv2.imwrite(pathSaved, gray)
-            
+
             Calibration.logger.info(f"Calibration image saved to {pathSaved}")
-   
+
         cv2.drawChessboardCorners(img, self.cornerShape, corners, found)
 
         if found:
@@ -172,7 +173,7 @@ class Calibration:
             flags=cv2.CALIB_RATIONAL_MODEL
             + cv2.CALIB_THIN_PRISM_MODEL
             + cv2.CALIB_TILTED_MODEL,
-        ) 
+        )
 
         self.calibrationData = {
             "K": camMtx,
@@ -199,12 +200,14 @@ class Calibration:
                 },
                 f,
             )
-        
-        Calibration.logger.info(f"Calibration successfully generated and saved to {calFile} with resolution {self.resolution}")
+
+        Calibration.logger.info(
+            f"Calibration successfully generated and saved to {calFile} with resolution {self.resolution}"
+        )
 
         return ret
 
-    def isStable(self, corners: np.ndarray, threshold: float = 1):
+    def isStable(self, corners: np.ndarray):
         corner1 = corners[0][0]
         corner2 = corners[self.cornerShape[0] * self.cornerShape[1] - 1][0]
 
@@ -216,11 +219,13 @@ class Calibration:
         self.prevCorner1 = corner1
         self.prevCorner2 = corner2
 
+        threshold = self.resolution[0] / 500  # Test
+
         self.lastImageStable = speed1 < threshold and speed2 < threshold
 
         return self.lastImageStable
 
-    def isSharp(self, img: np.ndarray, threshold: float = 13, cutoff: float = 80):
+    def isSharp(self, img: np.ndarray, threshold: float = 10, cutoff: float = 80):
         (h, w) = img.shape
 
         fft = np.fft.fft2(img)
@@ -298,4 +303,3 @@ class Calibration:
     @staticmethod
     def calibrationPathByCam(camIdentifier, resolution):
         return f"./Calibration/Cam_{camIdentifier.replace(':', '-').replace('.', '-')}_{resolution}CalData.json"
-

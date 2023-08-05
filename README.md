@@ -7,11 +7,11 @@
 
 ### Bugs/Known Limitations and Their Respective Workarounds
 - [ ] Static IP sometimes cannot be reached/pinged. Can be resolved temporarily by unplugging/replugging the ethernet cable and waiting a bit. Potentially fixable by downgrading to Ubuntu 20.x.
-- [ ] Exposure and gain settings do not work properly. Settings can result in illogical results (18 is very overexposed, 19 is fine). 20 seems to be the magic number for exposure. Fix: Look into calling `v4l2-ctl` to set these?
-- [ ] Camera resolutions are listed twice. Either works.
+- [x] Exposure and gain settings do not work properly. Settings can result in illogical results (18 is very overexposed, 19 is fine). 20 seems to be the magic number for exposure. Fix: Look into calling `v4l2-ctl` to set these?
+- [x] Camera resolutions are listed twice. Either works.
 - [ ] Importing a calibration overwrites the current one. Make sure a copy of the current cal is saved before importing a new one.
 - [ ] Pose estimation is far better ~1m away from tag (1-5cm of error per axis) than further away (20 cm of error) per axis. Tags are not stable when far away.
-- [ ] Fix: Calibration "stable" threshold should be changed to be proportional to image size, not fixed number of pixels.
+- [x] Fix: Calibration "stable" threshold should be changed to be proportional to image size, not fixed number of pixels.
 - [ ] Log file grew to 1.5+ gb. What is getting logged???
   
 ## Boot Up

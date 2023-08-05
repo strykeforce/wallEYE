@@ -10,7 +10,7 @@ export default function CameraSettings(props) {
                 <Card.Text>Gain: {props.state.gain[props.camID]}</Card.Text>
 
                 <FormRange id={"SliderForGain" + props.camID} step="0.01"
-                    min={-1} max={1} value={props.state.gain[props.camID]}
+                    min={-10} max={10} value={props.state.gain[props.camID]}
                     onChange={(e) => { socket.emit("set_gain", props.camID, e.target.value); }} />
             </Form.Group>
 
@@ -18,7 +18,7 @@ export default function CameraSettings(props) {
                 < Card.Text > Exposure: {props.state.exposure[props.camID]}</Card.Text >
 
                 <FormRange id={"SliderForExposure" + props.camID}
-                    min={0} max={100} value={props.state.exposure[props.camID]}
+                    min={0} max={5000} value={props.state.exposure[props.camID]}
                     onChange={(e) => { socket.emit("set_exposure", props.camID, e.target.value); }} />
             </Form.Group>
 
