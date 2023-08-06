@@ -15,7 +15,14 @@ export default function CameraStream(props) {
                     {props.showConfig && <Col><CameraSettings camID={props.camID} state={props.state} /></Col>}
 
                     <Col>
-                        <Image src={"video_feed/" + props.camID} alt="Camera stream failed" fluid />
+                        <Row>
+                            <Col>
+                                <Image src={"video_feed/" + props.camID} alt="Camera stream failed" fluid />
+                            </Col>
+                            <Col>
+                                <Image src={"pose_visualization/" + props.camID} alt="Pose stream failed" fluid />
+                            </Col>
+                        </Row>
 
                         <Card.Text> Estimated Pose: {props.poses ? props.poses[props.camID] : "Not available"} </Card.Text>
                         <br />
