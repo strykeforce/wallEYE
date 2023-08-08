@@ -51,7 +51,7 @@ class Cameras:
                 if cam.isOpened():
                     Cameras.logger.info(f"Camera found: {camPath}")
 
-                    supportedResolutions = list(
+                    supportedResolutions = sorted(list(
                         set(
                             map(
                                 lambda x: (
@@ -72,7 +72,7 @@ class Cameras:
                                 ),
                             )
                         )
-                    )
+                    ))
 
                     Cameras.logger.info(
                         f"Supported resolutions: {supportedResolutions}"
@@ -145,8 +145,12 @@ class Cameras:
         if resolution is None:
             Cameras.logger.info("Resolution not set")
             return
-        self.info[identifier].cam.set(cv2.CAP_PROP_FRAME_WIDTH, resolution[0])
+        self.info[identifier].cam.set(cv2.CAP_PROP_FRAME_WIDTH, resolution[0]) #TODO: Set with v4l2-ctl!
         self.info[identifier].cam.set(cv2.CAP_PROP_FRAME_HEIGHT, resolution[1])
+
+        if self.getResolutions()[identifier] != resolution:
+            Cameras.logger.error(f"Failed to set resolution to {resolution} for {identifier}")
+            return
 
         self.info[identifier].resolution = resolution
         self.importCalibration(identifier)
@@ -165,7 +169,7 @@ class Cameras:
             Cameras.logger.info("Gain not set")
             return
 
-        os.system("v4l2-ctl -d /dev/v4l/by-path/{identifier} --set-ctrl exposure_auto=1 -c gain={gain}")
+        os.system(f"v4l2-ctl -d /dev/v4l/by-path/{identifier} --set-ctrl gain={gain}")
 
         if self.info[identifier].cam.get(cv2.CAP_PROP_GAIN) != gain:
             Cameras.logger.warning(f"Gain not set: {gain} not accepted")
@@ -183,7 +187,8 @@ class Cameras:
             Cameras.logger.info("Exposure not set")
             return
         
-        os.system("v4l2-ctl -d /dev/v4l/by-path/{identifier} --set-ctrl exposure_auto=1 -c exposure_absolute={exposure}")
+        os.system(f"v4l2-ctl -d /dev/v4l/by-path/{identifier} --set-ctrl exposure_auto=1 --set-ctrl exposure_absolute={exposure}")
+
 
         if self.info[identifier].cam.get(cv2.CAP_PROP_EXPOSURE) != exposure:
             Cameras.logger.warning(f"Exposure not set: {exposure} not accepted")

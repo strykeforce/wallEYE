@@ -13,12 +13,16 @@ logger = logging.getLogger(__name__)
 
 class Buffer:
     outputFrame = b""
+    lastNone = False
 
     def update(self, img):
         if img is None:
-            logger.error("Updated image is None - Skipping")
+            if self.lastNone:
+                logger.error("Updated image is None - Skipping")
+            self.lastNone = True
             return
 
+        self.lastNone = False
         self.outputFrame = cv2.imencode(".jpg", img)[1].tobytes()
 
     def output(self):
