@@ -7,7 +7,7 @@ from Calibration.calibration import Calibration
 from state import walleyeData, States, Config
 import logging
 import numpy as np
-from ImageStreams import Buffer, LivePlotBuffer
+from WebInterface.ImageStreams import Buffer, LivePlotBuffer
 
 logger = logging.getLogger(__name__)
 

@@ -119,7 +119,7 @@ try:
                     break
                 camBuffers[identifier].update(img)
                 walleyeData.setPose(identifier, poses[i])
-                visualizationBuffers.update((poses[i].X(), poses[i].Y()), poses[i].Z())
+                visualizationBuffers[identifier].update((poses[i].X(), poses[i].Y(), poses[i].Z()))
 
         elif walleyeData.currentState == States.SHUTDOWN:
             logger.info("Shutting down")

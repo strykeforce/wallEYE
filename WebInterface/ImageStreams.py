@@ -48,7 +48,7 @@ class LivePlotBuffer(Buffer):
         self.fig.subplots_adjust(left=-0.26, right=1.21, bottom=-0.08, top=1.08)
 
 
-        fn = get_sample_data("C:\\Users\\David Shen\\Code\Strykeforce\\wallEYE\\WebInterface\\field.png", asfileobj=False)
+        fn = get_sample_data("/home/orangepi/Desktop/wallEYE-main/WebInterface/field.png", asfileobj=False)
         img = mpimg.imread(fn)
 
         x = np.linspace(0, LivePlotBuffer.FIELD_DIMS[0], img.shape[1])
@@ -84,26 +84,7 @@ class LivePlotBuffer(Buffer):
         self.fig.canvas.flush_events()
 
         plot = np.frombuffer(self.fig.canvas.tostring_rgb(), dtype=np.uint8)
-        img  = plot.reshape(self.fig.canvas.get_width_height()[::-1] + (3,))
+        img  = plot.reshape(self.fig.canvas.get_width_height()[::-1] + (3,))[:, :, ::-1]
         self.outputFrame = cv2.imencode(".jpg", img)[1].tobytes()
 
         
-
-
-if __name__ == "__main__":
-    b = LivePlotBuffer()
-
-    x = 10
-    y = 3
-    z = 1
-    b.update((x, y, z))
-    for i in range(3000):
-        x += random.randrange(-10, 10) / 10
-        y += random.randrange(-10, 10) / 10
-        b.update((x, y, z))
-
-        if x > 16 or x < 0 or y < 0 or y > 9:
-            x = 10
-            y = 3
-
-    plt.show()
