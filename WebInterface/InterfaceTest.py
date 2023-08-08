@@ -7,33 +7,17 @@ from Calibration.calibration import Calibration
 from state import walleyeData, States, Config
 import logging
 import numpy as np
+from ImageStreams import Buffer, LivePlotBuffer
 
 logger = logging.getLogger(__name__)
 
-
-class Buffer:
-    outputFrame = b""
-
-    def update(self, img):
-        if img is None:
-            logger.error("Updated image is None - Skipping")
-            return
-
-        self.outputFrame = cv2.imencode(".jpg", img)[1].tobytes()
-
-    def output(self):
-        while True:
-            yield (
-                b"--frame\r\n"
-                b"Content-Type: image/jpeg\r\n\r\n" + self.outputFrame + b"\r\n"
-            )
 
 
 app = Flask(__name__, static_folder="./walleye/build", static_url_path="/")
 socketio = SocketIO(app, logger=True, cors_allowed_origins="*")
 
 camBuffers = {identifier: Buffer() for identifier in walleyeData.cameras.info.keys()}
-
+visualizationBuffers = {identifier: LivePlotBuffer() for identifier in walleyeData.cameras.info.keys()}
 
 def updateAfter(action):
     def actionAndUpdate(*args, **kwargs):
@@ -204,6 +188,17 @@ def video_feed(camID):
     return Response(
         camBuffers[camID].output(), mimetype="multipart/x-mixed-replace; boundary=frame"
     )
+
+@app.route("/pose_visualization/<camID>")
+def pose_visualization(camID):
+    if camID not in camBuffers:
+        logger.error(f"Bad cam id recieved: {camID}")
+        return
+
+    return Response(
+        visualizationBuffers[camID].output(), mimetype="multipart/x-mixed-replace; boundary=frame"
+    )
+
 
 
 @app.route("/", methods=["GET", "POST"])
