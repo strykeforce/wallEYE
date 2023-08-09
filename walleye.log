@@ -271,3 +271,5 @@ ValueError: cannot reshape array of size 2764800 into shape (480,640,3)
 [08-Aug-23 19:50:46 - WARNING - InterfaceTest.py:44 - disconnect()]  Client disconnected
 [09-Aug-23 15:58:30 - INFO - init.py:13 - <module>()]  ----------- Starting Up -----------
 [09-Aug-23 15:58:32 - INFO - state.py:135 - setIP()]  Attempting to set static IP
+[09-Aug-23 16:35:57 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
+[09-Aug-23 16:35:57 - INFO - state.py:137 - setIP()]  Attempting to set static IP

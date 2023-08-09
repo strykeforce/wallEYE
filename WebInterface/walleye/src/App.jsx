@@ -18,10 +18,12 @@ function App() {
   const [timestamp, setTimestamp] = useState("Never updated");
   const [isDark, setIsDark] = useState(true);
   const [poses, setPoses] = useState(null);
+  const [loopTime, setLoopTime] = useState(2767);
 
   useEffect(() => {
     setInterval(function(){
       socket.emit('pose_update'); 
+      socket.emit('performance_update');
     }, 500);
   }, []);
 
@@ -48,11 +50,16 @@ function App() {
       setPoses(poses);
     }
 
+    function onPerformanceUpdate(time) {
+      setLoopTime(time);
+    }
+
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
     socket.on('state_update', onStateUpdate);
     socket.on('error', onError);
     socket.on('pose_update', onPoseUpdate);
+    socket.on('performance_update', onPerformanceUpdate);
 
     return () => {
       socket.off('connect', onConnect);
@@ -60,6 +67,7 @@ function App() {
       socket.off('state_update', onStateUpdate);
       socket.off('error', onError);
       socket.off('pose_update', onPoseUpdate);
+      socket.off('performance_update', onPerformanceUpdate);
     };
   }, []);
 
@@ -93,6 +101,7 @@ function App() {
               checked={isDark}
             />
           </Form>
+          <p>Loop Time: {loopTime} secs</p>
         </Stack>
       </center>
 

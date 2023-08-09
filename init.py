@@ -1,5 +1,6 @@
 import logging
 import sys
+import time
 
 LOG_FORMAT = "[%(asctime)s - %(levelname)s - %(filename)s:%(lineno)s - %(funcName)s()]  %(message)s"
 logging.basicConfig(
@@ -50,7 +51,12 @@ try:
 
     logger.info("Starting main loop")
 
+    lastLoopTime = time.time()
     while True:
+        currTime = time.time()
+        walleyeData.loopTime = currTime - lastLoopTime
+        lastLoopTime = currTime
+        
         # State changes
         if walleyeData.currentState == States.IDLE:
             pass

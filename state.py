@@ -3,7 +3,7 @@ import json
 from Publisher.NetworkTablePublisher import NetworkIO
 import logging
 import os
-
+import time
 
 class States(Enum):
     IDLE = "IDLE"
@@ -28,6 +28,8 @@ class Config:
         self.currentState = States.PROCESSING
 
         self.visualizingPoses = False
+
+        self.loopTime = 2767
 
         # Calibration
         self.cameraInCalibration = None
@@ -193,7 +195,7 @@ class Config:
             },
             "ip": self.ip,
             "tagSize": self.tagSize,
-            "visualizingPoses": self.visualizingPoses
+            "visualizingPoses": self.visualizingPoses,
         }
 
 

@@ -172,6 +172,11 @@ def pose_update():
     socketio.sleep(0)
     socketio.emit("pose_update", walleyeData.poses)
 
+@socketio.on("performance_update")
+def pose_update():
+    socketio.sleep(0)
+    socketio.emit("performance_update", walleyeData.loopTime)
+
 
 def sendStateUpdate():
     logger.debug(f"Sending state update : {walleyeData.getState()}")
