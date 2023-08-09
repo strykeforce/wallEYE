@@ -21,7 +21,7 @@ from state import walleyeData, States, CALIBRATION_STATES
 
 walleyeData.cameras = Cameras()
 
-from WebInterface.InterfaceTest import (
+from WebInterface.web_interface import (
     camBuffers,
     socketio,
     app,
@@ -119,7 +119,8 @@ try:
                     break
                 camBuffers[identifier].update(img)
                 walleyeData.setPose(identifier, poses[i])
-                visualizationBuffers[identifier].update((poses[i].X(), poses[i].Y(), poses[i].Z()))
+                if walleyeData.visualizingPoses:
+                    visualizationBuffers[identifier].update((poses[i].X(), poses[i].Y(), poses[i].Z()))
 
         elif walleyeData.currentState == States.SHUTDOWN:
             logger.info("Shutting down")

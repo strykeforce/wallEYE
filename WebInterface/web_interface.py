@@ -7,7 +7,7 @@ from Calibration.calibration import Calibration
 from state import walleyeData, States, Config
 import logging
 import numpy as np
-from WebInterface.ImageStreams import Buffer, LivePlotBuffer
+from WebInterface.image_streams import Buffer, LivePlotBuffer
 
 logger = logging.getLogger(__name__)
 
@@ -160,6 +160,11 @@ def toggle_pnp():
     else:
         walleyeData.currentState = States.PROCESSING
         logger.info("PnP started")
+
+@socketio.on("toggle_pose_visualization")
+@updateAfter
+def toggle_pose_visualization(isVisualizing):
+    walleyeData.visualizingPoses = isVisualizing
 
 
 @socketio.on("pose_update")

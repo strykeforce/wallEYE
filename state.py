@@ -27,6 +27,8 @@ class Config:
     def __init__(self) -> None:
         self.currentState = States.PROCESSING
 
+        self.visualizingPoses = False
+
         # Calibration
         self.cameraInCalibration = None
         self.boardDims = (7, 7)
@@ -191,6 +193,7 @@ class Config:
             },
             "ip": self.ip,
             "tagSize": self.tagSize,
+            "visualizingPoses": self.visualizingPoses
         }
 
 

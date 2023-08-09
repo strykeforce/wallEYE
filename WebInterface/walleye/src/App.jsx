@@ -9,6 +9,7 @@ import { socket } from './socket.js';
 import { Container, Form, Spinner, Stack } from 'react-bootstrap';
 import { Helmet } from "react-helmet";
 import './App.css';
+import PoseVisualizationList from './Components/PoseVisualizationList.jsx';
 
 function App() {
   const [page, setPage] = useState("dashboard");
@@ -104,6 +105,7 @@ function App() {
         {page === 'dashboard' && <Dashboard state={state} poses={poses}/>}
         {page === 'config' && <Config state={state} />}
         {page === 'camera_config' && <CameraConfig state={state} poses={poses}/>}
+        {page === 'pose_visualization' && <PoseVisualizationList state={state} poses={poses}/>}
       </Container>
     </div>
   );

@@ -7,7 +7,7 @@ export default function CameraStream(props) {
     return (
         <Card>
             <Card.Header>
-                Camera Stream {props.camID} 
+                Camera Stream {props.camID}
                 {props.state.calFilePaths[props.camID] ? <Badge bg="success"   >Calibration found</Badge> : props.state.calFilePaths[props.camID] == null && <Badge bg="danger">Calibration not found</Badge>}
             </Card.Header>
             <Card.Body>
@@ -15,14 +15,8 @@ export default function CameraStream(props) {
                     {props.showConfig && <Col><CameraSettings camID={props.camID} state={props.state} /></Col>}
 
                     <Col>
-                        <Row>
-                            <Col>
-                                <Image src={"video_feed/" + props.camID} alt="Camera stream failed" fluid />
-                            </Col>
-                            <Col>
-                                <Image src={"pose_visualization/" + props.camID} alt="Pose stream failed" fluid />
-                            </Col>
-                        </Row>
+
+                        <Image src={"video_feed/" + props.camID} alt="Camera stream failed" fluid />
 
                         <Card.Text> Estimated Pose: {props.poses ? props.poses[props.camID] : "Not available"} </Card.Text>
                         <br />
