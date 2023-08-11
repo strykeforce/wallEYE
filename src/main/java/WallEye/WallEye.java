@@ -14,7 +14,7 @@ import WallEye.WallEyeResult;
  * A robot side code interface to interact and pull data from an Orange Pi running WallEye
  */
 public class WallEye {
-    ArrayList<DoubleArraySubscriber> dsub;
+    private ArrayList<DoubleArraySubscriber> dsub = new ArrayList<DoubleArraySubscriber>();
     private int numCameras;
 
     /**
