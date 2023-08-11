@@ -3,7 +3,8 @@ import json
 from Publisher.NetworkTablePublisher import NetworkIO
 import logging
 import os
-import time
+import threading
+
 
 class States(Enum):
     IDLE = "IDLE"
@@ -19,7 +20,6 @@ CALIBRATION_STATES = (
     States.CALIBRATION_CAPTURE,
     States.GENERATE_CALIBRATION,
 )
-
 
 class Config:
     logger = logging.getLogger(__name__)

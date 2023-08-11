@@ -6,7 +6,7 @@ import re
 import os
 from sys import platform
 import logging
-
+from BufferlessVideoCapture import BufferlessVideoCapture
 
 # Holds information about the camera including the object itself
 # Not any existing VideoCapture properties like exposure
@@ -46,7 +46,7 @@ class Cameras:
 
             for camPath in cameraPaths:
                 path = f"/dev/v4l/by-path/{camPath}"
-                cam = cv2.VideoCapture(path, cv2.CAP_V4L2)
+                cam = BufferlessVideoCapture(path, cv2.CAP_V4L2)
 
                 if cam.isOpened():
                     Cameras.logger.info(f"Camera found: {camPath}")

@@ -41,12 +41,12 @@ try:
 
     logger.info("Web server ready")
 
-    walleyeData.makePublisher(walleyeData.teamNumber, walleyeData.tableName)
 
     images = {}
     calibrators = {}
 
     poseEstimator = Processor(walleyeData.tagSize)
+    walleyeData.makePublisher(walleyeData.teamNumber, walleyeData.tableName)
     walleyeData.currentState = States.PROCESSING
 
     logger.info("Starting main loop")
@@ -54,7 +54,7 @@ try:
     lastLoopTime = time.time()
     while True:
         currTime = time.time()
-        walleyeData.loopTime = currTime - lastLoopTime
+        walleyeData.loopTime = round(currTime - lastLoopTime, 3)
         lastLoopTime = currTime
         
         # State changes
@@ -62,7 +62,8 @@ try:
             pass
 
         elif walleyeData.currentState == States.BEGIN_CALIBRATION:
-            logger.info("Beginning cal")
+            logger.info("Beginning calibration")
+
             calibrators[walleyeData.cameraInCalibration] = Calibration(
                 walleyeData.calDelay,
                 walleyeData.boardDims,
