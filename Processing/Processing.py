@@ -56,8 +56,10 @@ class Processor:
 
     def imagePose(self, images, K, D, layout, arucoDetector):
         poses = []
-
+        tags = []
         for imgIndex, img in enumerate(images):
+            curTags = []
+            curTags[0] = 0
             if img is None or K[imgIndex] is None or D[imgIndex] is None:
                 poses.append(Processor.BAD_POSE)
                 continue
@@ -73,6 +75,8 @@ class Processor:
                     if i > 8 or i < 0:
                         Processor.logger.warning(f"BAD TAG ID: {i}")
                         continue
+                    curTags[0] += 1
+                    curTags.append(i)
                     pose = Processor.makePoseObject(layout[int(i - 1)]["pose"])
                     c1 = Processor.translationToSolvePnP(
                         pose
@@ -155,8 +159,10 @@ class Processor:
                             rot3D,
                         )
                     )
+                    tags.append(curTags)
                     num += 1
             else:
                 poses.append(Processor.BAD_POSE)
+                tags.append([-1])
 
-        return poses
+        return (poses, tags)

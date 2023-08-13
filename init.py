@@ -112,14 +112,14 @@ try:
             poseEstimator.setTagSize(walleyeData.tagSize)
             images = walleyeData.cameras.getFrames()
             imageTime = walleyeData.robotPublisher.getTime()
-            poses = poseEstimator.getPose(
+            poses, tags = poseEstimator.getPose(
                 images.values(), walleyeData.cameras.listK(), walleyeData.cameras.listD()
             )
             logger.debug(f"Poses at {imageTime}: {poses}")
 
             for i in range(len(poses)):
-                walleyeData.robotPublisher.publish(i, imageTime, poses[i])
-                
+                walleyeData.robotPublisher.publish(i, imageTime, poses[i], tags[i])
+            walleyeData.robotPublisher.increaseUpdateNum()
             for i, (identifier, img) in enumerate(images.items()):
                 if i >= len(poses):
                     break

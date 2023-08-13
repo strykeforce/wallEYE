@@ -6,12 +6,14 @@ class NetworkIO:
         self.inst = ntcore.NetworkTableInstance.getDefault()
         self.table = self.inst.getTable(tableName)
         self.inst.startClient4("WallEye_Client")
+        self.updateNum = 0
         if test:
             self.inst.setServer("127.0.0.1", 5810)
         else:
             self.inst.setServerTeam(team)
 
         self.publishers = []
+        self.publishUpdate = self.table.getIntegerTopic("Update").publish(ntcore.PubSubOptions(periodic=0.01, sendAll=True, keepDuplicates=True))
         for index in range(5):
             self.publishers.append(self.table.getDoubleArrayTopic("Result" + str(index)).publish(ntcore.PubSubOptions(periodic=0.01, sendAll=True, keepDuplicates=True)))
 
@@ -21,11 +23,17 @@ class NetworkIO:
     def setTable(self, name):
         self.table = self.inst.getTable(name)
 
-    def publish(self, index, time, pose):
+    def publish(self, index, time, pose, tags):
         t = pose.translation()
         r = pose.rotation()
         result = [t.X(), t.Y(), t.Z(), r.X(), r.Y(), r.Z(), time]
+        for i in len(tags):
+            result.append(tags[i])
         self.publishers[index].set(result)
+
+    def increaseUpdateNum(self):
+            self.updateNum += 1
+            self.publishUpdate(self.updateNum)
 
     def destroy(self):
         self.inst.stopClient()
