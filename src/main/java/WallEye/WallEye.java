@@ -61,10 +61,25 @@ public class WallEye {
         for(int i = 0; i < numCameras; ++i) {
             DoubleArraySubscriber sub = dsub.get(i);
             double[] temp = sub.get();
-            results.add(new WallEyeResult(new Pose3d(new Translation3d(temp[0], temp[1], temp[2]), new Rotation3d(temp[3], temp[4], temp[5])), temp[6], i));
+            int[] tags = new int[temp[8]];
+            for (int i = 0; i < temp[8]; ++i)
+                tags[i] = temp[i + 9];
+
+            results.add(new WallEyeResult(new Pose3d(new Translation3d(temp[0], temp[1], temp[2]), new Rotation3d(temp[3], temp[4], temp[5])), temp[6], i, temp[7], temp[8], tags));
+
         }
         WallEyeResult[] returnArray = new WallEyeResult[results.size()];
         returnArray = results.toArray(returnArray);
         return returnArray;
+    }
+
+    /**
+     * Getter for the current update number
+     *   
+     *
+     * @return Returns the current update number
+    */
+    public int getUpdateNumber() {
+        return dsub.get()[7];
     }
 }
