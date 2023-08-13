@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
+import edu.wpi.first.networktables.IntegerSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import WallEye.WallEyeResult;
@@ -16,6 +17,7 @@ import WallEye.WallEyeResult;
 public class WallEye {
     private ArrayList<DoubleArraySubscriber> dsub = new ArrayList<DoubleArraySubscriber>();
     private int numCameras;
+    private IntegerSubscriber updateSub;
 
     /**
      * Creates a WallEye object that can pull pose location and timestamp from Network Tables.
@@ -37,6 +39,7 @@ public class WallEye {
             }
             catch (Exception e) {}
         }
+        updateSub = table.getIntegerTopic("UpdateNum").subscribe(0);
     }
 
     /**
@@ -58,14 +61,16 @@ public class WallEye {
     */
     public WallEyeResult[] getResults() {
         ArrayList<WallEyeResult> results = new ArrayList<WallEyeResult>();
+        int curUpdate = (int) updateSub.get();
         for(int i = 0; i < numCameras; ++i) {
             DoubleArraySubscriber sub = dsub.get(i);
             double[] temp = sub.get();
-            int[] tags = new int[temp[8]];
-            for (int i = 0; i < temp[8]; ++i)
-                tags[i] = temp[i + 9];
+            int[] tags = new int[(int) temp[7]];
+            for (int j = 0; j < temp[7]; ++j)
+                tags[i] = (int) temp[j + 8];
 
-            results.add(new WallEyeResult(new Pose3d(new Translation3d(temp[0], temp[1], temp[2]), new Rotation3d(temp[3], temp[4], temp[5])), temp[6], i, temp[7], temp[8], tags));
+            results.add(new WallEyeResult(new Pose3d(new Translation3d(temp[0], temp[1], temp[2]), new Rotation3d(temp[3], temp[4], temp[5])), 
+                temp[6], i, curUpdate, (int) temp[7], tags));
 
         }
         WallEyeResult[] returnArray = new WallEyeResult[results.size()];
@@ -80,6 +85,6 @@ public class WallEye {
      * @return Returns the current update number
     */
     public int getUpdateNumber() {
-        return dsub.get()[7];
+        return (int) updateSub.get();
     }
 }
