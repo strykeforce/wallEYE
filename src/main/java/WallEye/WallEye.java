@@ -17,6 +17,7 @@ import WallEye.WallEyeResult;
 public class WallEye {
     private ArrayList<DoubleArraySubscriber> dsub = new ArrayList<DoubleArraySubscriber>();
     private int numCameras;
+    private int curUpdateNum = 0;
     private IntegerSubscriber updateSub;
 
     /**
@@ -61,7 +62,7 @@ public class WallEye {
     */
     public WallEyeResult[] getResults() {
         ArrayList<WallEyeResult> results = new ArrayList<WallEyeResult>();
-        int curUpdate = (int) updateSub.get();
+        curUpdateNum = (int) updateSub.get();
         for(int i = 0; i < numCameras; ++i) {
             DoubleArraySubscriber sub = dsub.get(i);
             double[] temp = sub.get();
@@ -70,7 +71,7 @@ public class WallEye {
                 tags[i] = (int) temp[j + 8];
 
             results.add(new WallEyeResult(new Pose3d(new Translation3d(temp[0], temp[1], temp[2]), new Rotation3d(temp[3], temp[4], temp[5])), 
-                temp[6], i, curUpdate, (int) temp[7], tags));
+                temp[6], i, curUpdateNum, (int) temp[7], tags));
 
         }
         WallEyeResult[] returnArray = new WallEyeResult[results.size()];
@@ -86,5 +87,15 @@ public class WallEye {
     */
     public int getUpdateNumber() {
         return (int) updateSub.get();
+    }
+
+    /**
+     * Check if there is a new update in Network Tables for WallEye
+     *   
+     *
+     * @return true if there is an update, false if not
+    */
+    public boolean hasNewUpdate() {
+        return curUpdateNum < (int) updateSub.get();
     }
 }
