@@ -12,12 +12,14 @@ from WebInterface.image_streams import Buffer, LivePlotBuffer
 logger = logging.getLogger(__name__)
 
 
-
 app = Flask(__name__, static_folder="./walleye/build", static_url_path="/")
 socketio = SocketIO(app, logger=True, cors_allowed_origins="*")
 
 camBuffers = {identifier: Buffer() for identifier in walleyeData.cameras.info.keys()}
-visualizationBuffers = {identifier: LivePlotBuffer() for identifier in walleyeData.cameras.info.keys()}
+visualizationBuffers = {
+    identifier: LivePlotBuffer() for identifier in walleyeData.cameras.info.keys()
+}
+
 
 def updateAfter(action):
     def actionAndUpdate(*args, **kwargs):
@@ -60,7 +62,10 @@ def set_exposure(camID, newValue):
 @updateAfter
 def set_resolution(camID, newValue):
     w, h = map(int, newValue[1:-1].split(","))
-    walleyeData.cameras.setResolution(camID, (w, h))
+    if walleyeData.cameras.setResolution(camID, (w, h)):
+        socketio.emit("info", f"Resolution set to {newValue}")
+    else:
+        socketio.emit("info", f"Could not set resolution: {newValue}")
 
 
 @socketio.on("toggle_calibration")
@@ -105,6 +110,7 @@ def import_calibration(camID, file):
         walleyeData.cameras.info[camID].calibrationPath = file
 
     logger.info(f"Calibration sucessfully imported for {camID}")
+    socketio.emit("info", "Calibration loaded")
 
 
 @socketio.on("set_table_name")
@@ -131,6 +137,7 @@ def set_board_dims(w, h):
     walleyeData.boardDims = (int(w), int(h))
     walleyeData.setBoardDim(walleyeData.boardDims)
     logger.info(f"Board dimensions set: {(w, h)}")
+    socketio.info(f"Board dimentions updated: {(w, h)}")
 
 
 @socketio.on("set_static_ip")
@@ -161,16 +168,19 @@ def toggle_pnp():
         walleyeData.currentState = States.PROCESSING
         logger.info("PnP started")
 
+
 @socketio.on("toggle_pose_visualization")
 @updateAfter
 def toggle_pose_visualization(isVisualizing):
     walleyeData.visualizingPoses = isVisualizing
+    socketio.emit("info", f"Pose visualizing: {isVisualizing}")
 
 
 @socketio.on("pose_update")
 def pose_update():
     socketio.sleep(0)
     socketio.emit("pose_update", walleyeData.poses)
+
 
 @socketio.on("performance_update")
 def pose_update():
@@ -199,6 +209,7 @@ def video_feed(camID):
         camBuffers[camID].output(), mimetype="multipart/x-mixed-replace; boundary=frame"
     )
 
+
 @app.route("/pose_visualization/<camID>")
 def pose_visualization(camID):
     if camID not in camBuffers:
@@ -206,9 +217,9 @@ def pose_visualization(camID):
         return
 
     return Response(
-        visualizationBuffers[camID].output(), mimetype="multipart/x-mixed-replace; boundary=frame"
+        visualizationBuffers[camID].output(),
+        mimetype="multipart/x-mixed-replace; boundary=frame",
     )
-
 
 
 @app.route("/", methods=["GET", "POST"])

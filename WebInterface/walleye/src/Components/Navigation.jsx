@@ -15,7 +15,7 @@ export default function Navigation(props) {
                             </Nav.Link>
                         </Nav.Item>)
                 })}
-            </Nav>  
+            </Nav>
         </Navbar>
     );
 }

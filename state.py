@@ -21,61 +21,233 @@ CALIBRATION_STATES = (
     States.GENERATE_CALIBRATION,
 )
 
+walleyeDataLock = threading.Lock()
+
+
+def threadsafe(function):
+    def newFunction(*args, **kwargs):
+        walleyeDataLock.acquire()
+        function(*args, **kwargs)
+        walleyeDataLock.release()
+
+    return newFunction
+
+
 class Config:
     logger = logging.getLogger(__name__)
 
     def __init__(self) -> None:
-        self.currentState = States.PROCESSING
+        self._currentState = States.PROCESSING
 
-        self.visualizingPoses = False
+        self._visualizingPoses = False
 
-        self.loopTime = 2767
+        self._loopTime = 2767
 
         # Calibration
-        self.cameraInCalibration = None
-        self.boardDims = (7, 7)
-        self.calDelay = 1
-        self.calImgPaths = []
-        self.reprojectionError = None
+        self._cameraInCalibration = None
+        self._boardDims = (7, 7)
+        self._calDelay = 1
+        self._calImgPaths = []
+        self._reprojectionError = None
 
         # Cams
-        self.cameras = None
+        self._cameras = None
 
-        self.robotPublisher = None
+        self._robotPublisher = None
 
-        self.poses = {}
+        self._poses = {}
 
         # SolvePNP
-        self.tagSize = 0.157
+        self._tagSize = 0.157
 
         try:
             with open("SystemData.json", "r") as data:
                 config = json.load(data)
-                self.teamNumber = config["TeamNumber"]
-                self.tableName = config["TableName"]
-                self.ip = config["ip"]
-                self.boardDims = config["BoardDim"]
-                self.tagSize = config["TagSize"]
+                self._teamNumber = config["TeamNumber"]
+                self._tableName = config["TableName"]
+                self._ip = config["ip"]
+                self._boardDims = config["BoardDim"]
+                self._tagSize = config["TagSize"]
 
                 self.setIP(self.ip)
 
         except (FileNotFoundError, json.decoder.JSONDecodeError, KeyError):
-            self.teamNumber = 2767
-            self.tableName = "WallEye"
+            self._teamNumber = 2767
+            self._tableName = "WallEye"
             try:
-                self.ip = Config.getCurrentIP()
+                self._ip = Config.getCurrentIP()
                 Config.logger.info(f"IP is {self.ip}")
             except IndexError:
                 Config.logger.error("Could not get current IP")
             dataDump = {
-                "TeamNumber": self.teamNumber,
-                "TableName": self.tableName,
-                "ip": self.ip,
-                "BoardDim": self.boardDims,
-                "TagSize": self.tagSize,
+                "TeamNumber": self._teamNumber,
+                "TableName": self._tableName,
+                "ip": self._ip,
+                "BoardDim": self._boardDims,
+                "TagSize": self._tagSize,
             }
             with open("SystemData.json", "w") as out:
                 json.dump(dataDump, out)
+
+    @threadsafe
+    @property
+    def currentState(self):
+        return self._currentState
+
+    @threadsafe
+    @currentState.setter
+    def currentState(self, newValue):
+        self._currentState = newValue
+
+    @threadsafe
+    @property
+    def visualizingPoses(self):
+        return self._visualizingPoses
+
+    @threadsafe
+    @visualizingPoses.setter
+    def visualizingPoses(self, newValue):
+        self._visualizingPoses = newValue
+
+    @threadsafe
+    @property
+    def loopTime(self):
+        return self._loopTime
+
+    @threadsafe
+    @loopTime.setter
+    def loopTime(self, newValue):
+        self._loopTime = newValue
+
+    @threadsafe
+    @property
+    def cameraInCalibration(self):
+        return self._cameraInCalibration
+
+    @threadsafe
+    @cameraInCalibration.setter
+    def cameraInCalibration(self, newValue):
+        self._cameraInCalibration = newValue
+
+    @threadsafe
+    @property
+    def boardDims(self):
+        return self._boardDims
+
+    @threadsafe
+    @boardDims.setter
+    def boardDims(self, newValue):
+        self._boardDims = newValue
+
+    @threadsafe
+    @property
+    def calDelay(self):
+        return self._calDelay
+
+    @threadsafe
+    @calDelay.setter
+    def calDelay(self, newValue):
+        self._calDelay = newValue
+
+    @threadsafe
+    @property
+    def calImgPaths(self):
+        return self.calImgPaths
+
+    @threadsafe
+    @calImgPaths.setter
+    def calImgPaths(self, newValue):
+        self._calImgPaths = newValue
+
+    @threadsafe
+    @property
+    def reprojectionError(self):
+        return self._reprojectionError
+
+    @threadsafe
+    @reprojectionError.setter
+    def reprojectionError(self, newValue):
+        self._reprojectionError = newValue
+
+    @threadsafe
+    @property
+    def cameras(self):
+        return self._cameras
+
+    @threadsafe
+    @cameras.setter
+    def cameras(self, newValue):
+        self._cameras = newValue
+
+    @threadsafe
+    @property
+    def robotPublisher(self):
+        return self._robotPublisher
+
+    @threadsafe
+    @robotPublisher.setter
+    def robotPublisher(self, newValue):
+        self._robotPublisher = newValue
+
+    @threadsafe
+    @property
+    def poses(self):
+        return self._poses
+
+    @threadsafe
+    @poses.setter
+    def poses(self, newValue):
+        self._poses = newValue
+
+    @threadsafe
+    @property
+    def tagSize(self):
+        return self._tagSize
+
+    @threadsafe
+    @tagSize.setter
+    def tagSize(self, newValue):
+        self._tagSize = newValue
+
+    @threadsafe
+    @property
+    def teamNumber(self):
+        return self._teamNumber
+
+    @threadsafe
+    @teamNumber.setter
+    def teamNumber(self, newValue):
+        self._teamNumber = newValue
+
+    @threadsafe
+    @property
+    def tableName(self):
+        return self._tableName
+
+    @threadsafe
+    @tableName.setter
+    def tableName(self, newValue):
+        self._tableName = newValue
+
+    @threadsafe
+    @property
+    def ip(self):
+        return self.ip
+
+    @threadsafe
+    @ip.setter
+    def ip(self, newValue):
+        self._ip = newValue
+
+    @threadsafe
+    @property
+    def boardDims(self):
+        return self._boardDims
+
+    @threadsafe
+    @boardDims.setter
+    def boardDims(self, newValue):
+        self._boardDims = newValue
 
     def makePublisher(self, teamNumber, tableName):
         try:
@@ -97,9 +269,7 @@ class Config:
             self.robotPublisher.destroy()
             Config.logger.info("Existing publisher destroyed")
 
-        self.robotPublisher = NetworkIO(
-            False, walleyeData.teamNumber, walleyeData.tableName
-        )
+        self.robotPublisher = NetworkIO(False, self.teamNumber, self.tableName)
 
         Config.logger.info(f"Robot publisher created: {teamNumber} - {tableName}")
 
