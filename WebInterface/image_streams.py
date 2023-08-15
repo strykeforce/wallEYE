@@ -13,12 +13,15 @@ logger = logging.getLogger(__name__)
 
 class Buffer:
     outputFrame = b""
+    lastNone = False
 
     def update(self, img):
         if img is None:
-            logger.error("Updated image is None - Skipping")
+            if not self.lastNone: 
+                logger.error("Updated image is None - Skipping")
+            self.lastNone = True
             return
-
+        self.lastNone = False
         self.outputFrame = cv2.imencode(".jpg", img)[1].tobytes()
 
     def output(self):
@@ -35,13 +38,13 @@ class LivePlotBuffer(Buffer):
     def __init__(self):
         super(LivePlotBuffer, self).__init__()
 
-        with open("../Processing/AprilTagLayout.json", "r") as f:
-            self.tagLayout = json.load(f)["tags"]
-
+        with open("./Processing/AprilTagLayout.json", "r") as f:
+            self.tagLayout = json.load(f)
+            logger.info("Tag layout loaded")
+        self.tagLayout = self.tagLayout["tags"]
         self.fig = plt.figure()
         self.ax = self.fig.add_subplot(111, projection="3d")
         self.ax.view_init(elev=35, azim=-80, roll=0)
-
         self.x, self.y, self.z = [], [], []
         (self.poses2D,) = self.ax.plot3D(
             self.x,
@@ -61,7 +64,6 @@ class LivePlotBuffer(Buffer):
             zorder=100,
             animated=True,
         )
-
         (self.tags,) = self.ax.plot3D(
             [],
             [],
@@ -70,7 +72,6 @@ class LivePlotBuffer(Buffer):
             zorder=200,
             animated=True,
         )
-
         self.ax.set_xlim(0, LivePlotBuffer.FIELD_DIMS[0])
         self.ax.set_ylim(0, LivePlotBuffer.FIELD_DIMS[1])
         self.ax.set_zlim(0, 2)
@@ -79,8 +80,7 @@ class LivePlotBuffer(Buffer):
         self.fig.tight_layout()
         self.fig.subplots_adjust(left=-0.26, right=1.21, bottom=-0.08, top=1.08)
 
-        img = mpimg.imread("./field.png")
-
+        img = mpimg.imread("./WebInterface/field.png")
         x = np.linspace(0, LivePlotBuffer.FIELD_DIMS[0], img.shape[1])
         y = np.linspace(0, LivePlotBuffer.FIELD_DIMS[1], img.shape[0])
         x, y = np.meshgrid(x, y)
@@ -95,6 +95,8 @@ class LivePlotBuffer(Buffer):
         self.ax.draw_artist(self.poses2D)
         self.ax.draw_artist(self.tags)
         self.fig.canvas.blit(self.fig.bbox)
+        
+
 
     def update(self, pose, tags):
         self.fig.canvas.restore_region(self.bg)

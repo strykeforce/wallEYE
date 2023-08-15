@@ -6,7 +6,7 @@ import re
 import os
 from sys import platform
 import logging
-from BufferlessVideoCapture import BufferlessVideoCapture
+from Camera.BufferlessVideoCapture import BufferlessVideoCapture
 
 # Holds information about the camera including the object itself
 # Not any existing VideoCapture properties like exposure
@@ -46,7 +46,8 @@ class Cameras:
 
             for camPath in cameraPaths:
                 path = f"/dev/v4l/by-path/{camPath}"
-                cam = BufferlessVideoCapture(path, cv2.CAP_V4L2)
+
+                cam = cv2.VideoCapture(path, cv2.CAP_V4L2)
 
                 if cam.isOpened():
                     Cameras.logger.info(f"Camera found: {camPath}")
@@ -119,6 +120,7 @@ class Cameras:
                         self.getExposures()[camPath],
                     )
 
+
         else:
             Cameras.logger.error("Unknown platform!")
 
@@ -145,9 +147,7 @@ class Cameras:
         if resolution is None:
             Cameras.logger.info("Resolution not set")
             return False
-
         os.system(f"v4l2-ctl -d /dev/v4l/by-path/{identifier} --set-fmt-video=width={resolution[0]},height={resolution[1]}")
-
         if self.getResolutions()[identifier] != resolution:
             Cameras.logger.error(f"Failed to set resolution to {resolution} for {identifier}")
             return False
