@@ -21,8 +21,8 @@ function App() {
   const [loopTime, setLoopTime] = useState(2767);
 
   useEffect(() => {
-    setInterval(function(){
-      socket.emit('pose_update'); 
+    setInterval(function () {
+      socket.emit('pose_update');
       socket.emit('performance_update');
     }, 500);
   }, []);
@@ -54,12 +54,17 @@ function App() {
       setLoopTime(time);
     }
 
+    function onInfo(info) {
+      alert(info);
+    }
+
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
     socket.on('state_update', onStateUpdate);
     socket.on('error', onError);
     socket.on('pose_update', onPoseUpdate);
     socket.on('performance_update', onPerformanceUpdate);
+    socket.on('info', onInfo);
 
     return () => {
       socket.off('connect', onConnect);
@@ -68,6 +73,7 @@ function App() {
       socket.off('error', onError);
       socket.off('pose_update', onPoseUpdate);
       socket.off('performance_update', onPerformanceUpdate);
+      socket.off('info', onInfo);
     };
   }, []);
 
@@ -111,10 +117,10 @@ function App() {
       <br />
 
       <Container>
-        {page === 'dashboard' && <Dashboard state={state} poses={poses}/>}
+        {page === 'dashboard' && <Dashboard state={state} poses={poses} />}
         {page === 'config' && <Config state={state} />}
-        {page === 'camera_config' && <CameraConfig state={state} poses={poses}/>}
-        {page === 'pose_visualization' && <PoseVisualizationList state={state} poses={poses}/>}
+        {page === 'camera_config' && <CameraConfig state={state} poses={poses} />}
+        {page === 'pose_visualization' && <PoseVisualizationList state={state} poses={poses} />}
       </Container>
     </div>
   );

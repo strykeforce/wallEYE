@@ -7,7 +7,7 @@ logging.basicConfig(
     format=LOG_FORMAT,
     handlers=[logging.FileHandler("walleye.log"), logging.StreamHandler(sys.stdout)],
     datefmt="%d-%b-%y %H:%M:%S",
-    level=logging.INFO, # Set to DEBUG for pose printouts
+    level=logging.INFO,  # Set to DEBUG for pose printouts
 )
 
 logger = logging.getLogger(__name__)
@@ -26,27 +26,28 @@ from WebInterface.web_interface import (
     camBuffers,
     socketio,
     app,
-    visualizationBuffers
+    visualizationBuffers,
 )  # After walleyeData.cameras is set
 
 try:
     webServer = threading.Thread(
-        target=lambda: socketio.run(app, host="0.0.0.0", debug=True, use_reloader=False, log_output=False),
+        target=lambda: socketio.run(
+            app, host="0.0.0.0", debug=True, use_reloader=False, log_output=False
+        ),
         daemon=True,
     ).start()
 
-    logging.getLogger('socketio').setLevel(logging.ERROR)
-    logging.getLogger('socketio.server').setLevel(logging.ERROR)
-    logging.getLogger('engineio').setLevel(logging.ERROR)
+    logging.getLogger("socketio").setLevel(logging.ERROR)
+    logging.getLogger("socketio.server").setLevel(logging.ERROR)
+    logging.getLogger("engineio").setLevel(logging.ERROR)
 
     logger.info("Web server ready")
-
-    walleyeData.makePublisher(walleyeData.teamNumber, walleyeData.tableName)
 
     images = {}
     calibrators = {}
 
     poseEstimator = Processor(walleyeData.tagSize)
+    walleyeData.makePublisher(walleyeData.teamNumber, walleyeData.tableName)
     walleyeData.currentState = States.PROCESSING
 
     logger.info("Starting main loop")
@@ -54,26 +55,29 @@ try:
     lastLoopTime = time.time()
     while True:
         currTime = time.time()
-        walleyeData.loopTime = currTime - lastLoopTime
+        walleyeData.loopTime = round(currTime - lastLoopTime, 3)
         lastLoopTime = currTime
-        
+
         # State changes
         if walleyeData.currentState == States.IDLE:
             pass
 
         elif walleyeData.currentState == States.BEGIN_CALIBRATION:
-            logger.info("Beginning cal")
+            logger.info("Beginning calibration")
+
             calibrators[walleyeData.cameraInCalibration] = Calibration(
                 walleyeData.calDelay,
                 walleyeData.boardDims,
                 walleyeData.cameraInCalibration,
                 f"Calibration/Cam_{Cameras.cleanIdentifier(walleyeData.cameraInCalibration)}CalImgs",
-                walleyeData.cameras.info[walleyeData.cameraInCalibration].resolution
+                walleyeData.cameras.info[walleyeData.cameraInCalibration].resolution,
             )
             walleyeData.currentState = States.CALIBRATION_CAPTURE
 
         elif walleyeData.currentState == States.CALIBRATION_CAPTURE:
-            _, img = walleyeData.cameras.info[walleyeData.cameraInCalibration].cam.read()
+            _, img = walleyeData.cameras.info[
+                walleyeData.cameraInCalibration
+            ].cam.read()
 
             returned, used, pathSaved = calibrators[
                 walleyeData.cameraInCalibration
@@ -89,11 +93,13 @@ try:
                 walleyeData.cameraInCalibration
             ].calibrationPath = Calibration.calibrationPathByCam(
                 walleyeData.cameraInCalibration,
-                walleyeData.cameras.info[walleyeData.cameraInCalibration].resolution
+                walleyeData.cameras.info[walleyeData.cameraInCalibration].resolution,
             )
 
             calibrators[walleyeData.cameraInCalibration].generateCalibration(
-                walleyeData.cameras.info[walleyeData.cameraInCalibration].calibrationPath
+                walleyeData.cameras.info[
+                    walleyeData.cameraInCalibration
+                ].calibrationPath
             )
 
             walleyeData.reprojectionError = calibrators[
@@ -118,15 +124,17 @@ try:
             logger.debug(f"Poses at {imageTime}: {poses}")
 
             for i in range(len(poses)):
-                walleyeData.robotPublisher.publish(i, imageTime, poses[i], tags[i])
-            walleyeData.robotPublisher.increaseUpdateNum()
+                walleyeData.robotPublisher.publish(i, imageTime, poses[i])
+                
             for i, (identifier, img) in enumerate(images.items()):
                 if i >= len(poses):
                     break
                 camBuffers[identifier].update(img)
                 walleyeData.setPose(identifier, poses[i])
                 if walleyeData.visualizingPoses:
-                    visualizationBuffers[identifier].update((poses[i].X(), poses[i].Y(), poses[i].Z()))
+                    visualizationBuffers[identifier].update(
+                        (poses[i].X(), poses[i].Y(), poses[i].Z())
+                    )
 
         elif walleyeData.currentState == States.SHUTDOWN:
             logger.info("Shutting down")

@@ -6,7 +6,7 @@ import re
 import os
 from sys import platform
 import logging
-
+from Camera.BufferlessVideoCapture import BufferlessVideoCapture
 
 # Holds information about the camera including the object itself
 # Not any existing VideoCapture properties like exposure
@@ -46,6 +46,7 @@ class Cameras:
 
             for camPath in cameraPaths:
                 path = f"/dev/v4l/by-path/{camPath}"
+
                 cam = cv2.VideoCapture(path, cv2.CAP_V4L2)
 
                 if cam.isOpened():
@@ -119,6 +120,7 @@ class Cameras:
                         self.getExposures()[camPath],
                     )
 
+
         else:
             Cameras.logger.error("Unknown platform!")
 
@@ -144,13 +146,11 @@ class Cameras:
     def setResolution(self, identifier, resolution):
         if resolution is None:
             Cameras.logger.info("Resolution not set")
-            return
-        self.info[identifier].cam.set(cv2.CAP_PROP_FRAME_WIDTH, resolution[0]) #TODO: Set with v4l2-ctl!
-        self.info[identifier].cam.set(cv2.CAP_PROP_FRAME_HEIGHT, resolution[1])
-
+            return False
+        os.system(f"v4l2-ctl -d /dev/v4l/by-path/{identifier} --set-fmt-video=width={resolution[0]},height={resolution[1]}")
         if self.getResolutions()[identifier] != resolution:
             Cameras.logger.error(f"Failed to set resolution to {resolution} for {identifier}")
-            return
+            return False
 
         self.info[identifier].resolution = resolution
         self.importCalibration(identifier)
@@ -163,16 +163,18 @@ class Cameras:
         )
 
         Cameras.logger.info(f"Resolution set to {resolution} for {identifier}")
+        return True
 
     def setGain(self, identifier, gain):
         if gain is None:
             Cameras.logger.info("Gain not set")
-            return
+            return False
 
         os.system(f"v4l2-ctl -d /dev/v4l/by-path/{identifier} --set-ctrl gain={gain}")
 
         if self.info[identifier].cam.get(cv2.CAP_PROP_GAIN) != gain:
             Cameras.logger.warning(f"Gain not set: {gain} not accepted")
+            return False
         else:
             Cameras.logger.info(f"Gain set to {gain}")
             writeConfig(
@@ -181,17 +183,19 @@ class Cameras:
                 gain,
                 self.getExposures()[identifier],
             )
+            return True
 
     def setExposure(self, identifier, exposure):
         if exposure is None:
             Cameras.logger.info("Exposure not set")
-            return
+            return False
         
         os.system(f"v4l2-ctl -d /dev/v4l/by-path/{identifier} --set-ctrl exposure_auto=1 --set-ctrl exposure_absolute={exposure}")
 
 
         if self.info[identifier].cam.get(cv2.CAP_PROP_EXPOSURE) != exposure:
             Cameras.logger.warning(f"Exposure not set: {exposure} not accepted")
+            return False
         else:
             Cameras.logger.info(f"Exposure set to {exposure}")
 
@@ -201,6 +205,7 @@ class Cameras:
                 self.getGains()[identifier],
                 exposure,
             )
+            return True
 
     def getExposures(self):
         exposure = {}
@@ -241,11 +246,13 @@ class Cameras:
             Cameras.logger.info(
                 f"Calibration found! Using\n{calib['K']}\n{calib['dist']}"
             )
+            return True
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             self.info[identifier].calibrationPath = None
             Cameras.logger.error(
                 f"Calibration not found for camera {identifier} at resolution {resolution}"
             )
+            return False
 
     @staticmethod
     def cleanIdentifier(identifier):

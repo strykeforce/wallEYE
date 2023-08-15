@@ -3,7 +3,7 @@ import json
 from Publisher.NetworkTablePublisher import NetworkIO
 import logging
 import os
-import time
+
 
 class States(Enum):
     IDLE = "IDLE"
@@ -77,6 +77,9 @@ class Config:
             with open("SystemData.json", "w") as out:
                 json.dump(dataDump, out)
 
+    def boardDims(self, newValue):
+        self.boardDims = newValue
+
     def makePublisher(self, teamNumber, tableName):
         try:
             with open("SystemData.json", "r") as file:
@@ -97,9 +100,7 @@ class Config:
             self.robotPublisher.destroy()
             Config.logger.info("Existing publisher destroyed")
 
-        self.robotPublisher = NetworkIO(
-            False, walleyeData.teamNumber, walleyeData.tableName
-        )
+        self.robotPublisher = NetworkIO(False, self.teamNumber, self.tableName)
 
         Config.logger.info(f"Robot publisher created: {teamNumber} - {tableName}")
 
@@ -135,14 +136,23 @@ class Config:
 
     def setIP(self, ip):
         Config.logger.info("Attempting to set static IP")
-        os.system("/usr/sbin/ifconfig eth0 down")
-        if not os.system(f"/usr/sbin/ifconfig eth0 {ip} netmask 255.255.255.0"):
+        # os.system("/usr/sbin/ifconfig eth0 down")
+        # if not os.system(f"/usr/sbin/ifconfig eth0 {ip} netmask 255.255.255.0"):
+        #     Config.logger.info(f"Static IP set: {ip}")
+        #     self.ip = ip
+        # else:
+        #     self.ip = Config.getCurrentIP()
+        #     Config.logger.error(f"Failed to set static ip: {ip}")
+        # os.system("/usr/sbin/ifconfig eth0 up")
+
+        if not os.system(f"nmcli connection modify eth0 ipv4.address {ip}/24"):
             Config.logger.info(f"Static IP set: {ip}")
             self.ip = ip
         else:
             self.ip = Config.getCurrentIP()
             Config.logger.error(f"Failed to set static ip: {ip}")
-        os.system("/usr/sbin/ifconfig eth0 up")
+        os.system("nmcli connection up eth0")
+
         try:
             with open("SystemData.json", "r") as file:
                 config = json.load(file)
