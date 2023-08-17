@@ -40,7 +40,7 @@ public class WallEye {
             }
             catch (Exception e) {}
         }
-        updateSub = table.getIntegerTopic("UpdateNum").subscribe(0);
+        updateSub = table.getIntegerTopic("Update").subscribe(0);
     }
 
     /**
