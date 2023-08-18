@@ -99,6 +99,6 @@ public class WallEye {
      * @return true if there is an update, false if not
     */
     public boolean hasNewUpdate() {
-        return curUpdateNum < (int) updateSub.get();
+        return curUpdateNum != (int) updateSub.get();
     }
 }
