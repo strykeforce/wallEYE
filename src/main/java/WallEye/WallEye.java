@@ -66,7 +66,10 @@ public class WallEye {
         for(int i = 0; i < numCameras; ++i) {
             DoubleArraySubscriber sub = dsub.get(i);
             double[] temp = sub.get();
-            int[] tags = new int[(int) temp[7]];
+            int[] tags = {-1};
+            if (temp[7] > 0)
+                tags = new int[(int) temp[7]];
+                
             for (int j = 0; j < temp[7]; ++j)
                 tags[i] = (int) temp[j + 8];
 
