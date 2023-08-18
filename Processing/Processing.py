@@ -151,7 +151,7 @@ class Processor:
                         ambig.append(-1)
                     else:
                         tagLoc = np.asarray([c2,c1,c4,c3])
-                        ret, rvecs, tvecs, reproj = cv2.solvePnPGeneric(tagLoc, cornerLoc, np.asarray(K[imgIndex]), np.asarray(D[imgIndex]), flags = cv2.SOLVEPNP_IPPE_SQUARE)
+                        ret, rvecs, tvecs, reproj = cv2.solvePnPGeneric(tagLoc, cornerLoc, K[imgIndex], D[imgIndex], flags = cv2.SOLVEPNP_IPPE_SQUARE)
                         print(rvecs)
                         rvecs = rvecs[0]
                         tvecs = tvecs[0]

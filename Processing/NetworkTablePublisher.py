@@ -26,7 +26,7 @@ class NetworkIO:
     def publish(self, index, time, pose, tags, ambig):
         t = pose.translation()
         r = pose.rotation()
-        result = [t.X(), t.Y(), t.Z(), r.X(), r.Y(), r.Z(), time]
+        result = [t.X(), t.Y(), t.Z(), r.X(), r.Y(), r.Z(), float(time)]
         for i in range(len(tags)):
             result.append(tags[i])
         result.append(ambig)
