@@ -27,6 +27,7 @@ from WebInterface.web_interface import (
     socketio,
     app,
     visualizationBuffers,
+    displayInfo,
 )  # After walleyeData.cameras is set
 
 try:
@@ -111,6 +112,7 @@ try:
                 calibrators[walleyeData.cameraInCalibration].calibrationData["K"],
                 calibrators[walleyeData.cameraInCalibration].calibrationData["dist"],
             )
+            displayInfo(f"Calibration generated - Reprojection error: {walleyeData.reprojectionError}")
 
             walleyeData.currentState = States.IDLE
 

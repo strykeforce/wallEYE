@@ -138,6 +138,7 @@ class Processor:
                 if (
                     cornerLoc is not None
                 ):  # Make sure that tag is valid (i >= 0 and i <= 8)
+                    
                     ret, rvecs, tvecs = cv2.solvePnP(
                         tagLoc,
                         cornerLoc,

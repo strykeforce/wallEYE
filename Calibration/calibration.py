@@ -92,15 +92,15 @@ class Calibration:
         cv2.drawChessboardCorners(img, self.cornerShape, corners, found)
 
         if found:
-            cv2.putText(
-                img,
-                "Sharp" if self.lastImageSharp else "Blurry",
-                (0, img.shape[0] - 10),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                1,
-                (255, 0, 0) if self.lastImageSharp else (0, 0, 255),
-                2,
-            )
+            # cv2.putText(
+            #     img,
+            #     "Sharp" if self.lastImageSharp else "Blurry",
+            #     (0, img.shape[0] - 10),
+            #     cv2.FONT_HERSHEY_SIMPLEX,
+            #     1,
+            #     (255, 0, 0) if self.lastImageSharp else (0, 0, 255),
+            #     2,
+            # )
 
             cv2.putText(
                 img,
@@ -160,7 +160,6 @@ class Calibration:
 
     def generateCalibration(self, calFile: str):
         if len(self.objPoints) == 0:
-            print("Calibration failed: No image data available")
             Calibration.logger.error("Calibration failed: No image data available")
             return False
 
@@ -225,6 +224,7 @@ class Calibration:
 
         return self.lastImageStable
 
+    # Not currently used
     def isSharp(self, img: np.ndarray, threshold: float = 10, cutoff: float = 80):
         (h, w) = img.shape
 
@@ -245,7 +245,7 @@ class Calibration:
     def isReady(
         self, img: np.ndarray, corners: np.ndarray, requiredReadyCounts: int = 10
     ) -> bool:
-        if self.isStable(corners) and self.isSharp(img):
+        if self.isStable(corners): # Not checking isSharp
             self.readyCounts += 1
         else:
             self.readyCounts = 0

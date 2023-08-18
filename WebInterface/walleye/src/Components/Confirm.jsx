@@ -11,10 +11,10 @@ export default function Confirm(props) {
                 </Modal.Header>
                 <Modal.Body>This action will overwrite the existing calibration.</Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={() => { props.action(); }}>
+                    <Button variant="secondary" onClick={() => { props.action(); props.setShow(false)}}>
                         Proceed WITHOUT saving
                     </Button>
-                    <Button variant="primary" onClick={() => { window.open("files/" + props.state.calFilePaths[props.camID], "_blank"); props.action(); }}>
+                    <Button variant="primary" onClick={() => { window.open("files/" + props.state.calFilePaths[props.camID], "_blank"); props.action(); props.setShow(false)}}>
                         Proceed WITH saving
                     </Button>
                 </Modal.Footer>

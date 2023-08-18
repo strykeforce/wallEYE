@@ -11,7 +11,7 @@ from WebInterface.image_streams import Buffer, LivePlotBuffer
 
 logger = logging.getLogger(__name__)
 
-
+    
 app = Flask(__name__, static_folder="./walleye/build", static_url_path="/")
 socketio = SocketIO(app, logger=True, cors_allowed_origins="*")
 
@@ -20,6 +20,8 @@ visualizationBuffers = {
     identifier: LivePlotBuffer() for identifier in walleyeData.cameras.info.keys()
 }
 
+def displayInfo(msg):
+    socketio.emit("info", msg)
 
 def updateAfter(action):
     def actionAndUpdate(*args, **kwargs):
