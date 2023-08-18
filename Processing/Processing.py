@@ -57,11 +57,13 @@ class Processor:
     def imagePose(self, images, K, D, layout, arucoDetector):
         poses = []
         tags = []
+        ambig = []
         for imgIndex, img in enumerate(images):
             curTags = [0]
  
             if img is None or K[imgIndex] is None or D[imgIndex] is None:
                 poses.append(Processor.BAD_POSE)
+                tags.append([-1])
                 continue
 
             corners, ids, rej = arucoDetector.detectMarkers(img)
@@ -138,14 +140,22 @@ class Processor:
                 if (
                     cornerLoc is not None
                 ):  # Make sure that tag is valid (i >= 0 and i <= 8)
-                    ret, rvecs, tvecs = cv2.solvePnP(
-                        tagLoc,
-                        cornerLoc,
-                        K[imgIndex],
-                        D[imgIndex],
-                        flags=cv2.SOLVEPNP_SQPNP,
-                    )
-
+                    if len(ids) > 1:
+                        ret, rvecs, tvecs = cv2.solvePnP(
+                            tagLoc,
+                            cornerLoc,
+                            K[imgIndex],
+                            D[imgIndex],
+                            flags=cv2.SOLVEPNP_SQPNP,
+                        )
+                        ambig.append(-1)
+                    else:
+                        tagLoc = np.asarray([c2,c1,c4,c3])
+                        ret, rvecs, tvecs, reproj = cv2.solvePnPGeneric(tagLoc, cornerLoc, np.asarray(K[imgIndex]), np.asarray(D[imgIndex]), flags = cv2.SOLVEPNP_IPPE_SQUARE)
+                        print(rvecs)
+                        rvecs = rvecs[0]
+                        tvecs = tvecs[0]
+                        ambig.append(reproj[0][0]/reproj[1][0])
                     rotMat, _ = cv2.Rodrigues(rvecs)
                     transVec = -np.dot(np.transpose(rotMat), tvecs)
                     rot3D = wpi.Rotation3d(
@@ -164,5 +174,6 @@ class Processor:
             else:
                 poses.append(Processor.BAD_POSE)
                 tags.append([-1])
+                ambig.append(-1)
 
-        return (poses, tags)
+        return (poses, tags, ambig)

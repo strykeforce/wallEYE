@@ -23,12 +23,13 @@ class NetworkIO:
     def setTable(self, name):
         self.table = self.inst.getTable(name)
 
-    def publish(self, index, time, pose, tags):
+    def publish(self, index, time, pose, tags, ambig):
         t = pose.translation()
         r = pose.rotation()
         result = [t.X(), t.Y(), t.Z(), r.X(), r.Y(), r.Z(), time]
         for i in range(len(tags)):
             result.append(tags[i])
+        result.append(ambig)
         self.publishers[index].set(result)
 
     def increaseUpdateNum(self):
