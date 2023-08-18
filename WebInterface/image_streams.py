@@ -21,6 +21,8 @@ class Buffer:
                 logger.error("Updated image is None - Skipping")
             self.lastNone = True
             return
+        if self.lastNone:
+            logger.info("Updated image is NOT none!")
         self.lastNone = False
         self.outputFrame = cv2.imencode(".jpg", img)[1].tobytes()
 
@@ -112,8 +114,8 @@ class LivePlotBuffer(Buffer):
         self.poses2D.set_data(self.x, self.y)
         self.poses2D.set_3d_properties(np.atleast_1d(0))
 
-        tagsX = [self.FIELD_DIMS[0] - self.tagLayout[tag]["pose"]["translation"]["x"] for tag in tags]
-        tagsY = [self.tagLayout[tag]["pose"]["translation"]["y"] for tag in tags]
+        tagsX = [self.FIELD_DIMS[0] - self.tagLayout[tag - 1]["pose"]["translation"]["x"] if tag < 9 and tag > 0 else 2767 for tag in tags]
+        tagsY = [self.tagLayout[tag - 1]["pose"]["translation"]["y"] if tag < 9 and tag > 0 else 2767 for tag in tags]
 
         self.tags.set_data(tagsX, tagsY)
         self.tags.set_3d_properties(np.atleast_1d(0))
@@ -127,10 +129,7 @@ class LivePlotBuffer(Buffer):
 
         plot = np.frombuffer(self.fig.canvas.tostring_rgb(), dtype=np.uint8)
         img = plot.reshape(self.fig.canvas.get_width_height()[::-1] + (3,))[:, :, ::-1]
-        self.outputFrame = cv2.imencode(".jpg", img)[1].tobytes()
+        self.outputFrame = cv2.imencode(".jpg", img)[1].tobytes() # Optimize?
 
 
-if __name__ == "__main__":
-    x = LivePlotBuffer()
-    x.update((0, 0, 0), [1, 2, 3, 4, 5, 6, 7, 0])
-    plt.show()
+

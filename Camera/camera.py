@@ -6,24 +6,7 @@ import re
 import os
 from sys import platform
 import logging
-from Camera.BufferlessVideoCapture import BufferlessVideoCapture
-
-# Holds information about the camera including the object itself
-# Not any existing VideoCapture properties like exposure
-class CameraInfo:
-    def __init__(
-        self, cam, identifier, supportedResolutions, resolution=None, K=None, D=None
-    ):
-        self.cam = cam
-        self.identifier = identifier
-        self.resolution = resolution
-        self.supportedResolutions = supportedResolutions
-
-        # Calibration
-        self.K = K
-        self.D = D
-
-        self.calibrationPath = None
+from Camera.CameraInfo import CameraInfo
 
 
 # Maintains camera info provided by cv2
@@ -147,7 +130,9 @@ class Cameras:
         if resolution is None:
             Cameras.logger.info("Resolution not set")
             return False
-        os.system(f"v4l2-ctl -d /dev/v4l/by-path/{identifier} --set-fmt-video=width={resolution[0]},height={resolution[1]}")
+        # os.system(f"v4l2-ctl -d /dev/v4l/by-path/{identifier} --set-fmt-video=width={resolution[0]},height={resolution[1]}")
+        self.info[identifier].cam.set(cv2.CAP_PROP_FRAME_HEIGHT, resolution[1])
+        self.info[identifier].cam.set(cv2.CAP_PROP_FRAME_WIDTH, resolution[0])
         if self.getResolutions()[identifier] != resolution:
             Cameras.logger.error(f"Failed to set resolution to {resolution} for {identifier}")
             return False
