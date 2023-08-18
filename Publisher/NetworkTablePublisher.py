@@ -32,8 +32,8 @@ class NetworkIO:
         self.publishers[index].set(result)
 
     def increaseUpdateNum(self):
-            self.updateNum += 1
-            self.publishUpdate(self.updateNum)
+        self.updateNum += 1
+        self.publishUpdate(self.updateNum)
 
     def destroy(self):
         self.inst.stopClient()
