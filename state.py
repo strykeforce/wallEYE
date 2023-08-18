@@ -27,7 +27,7 @@ class Config:
     def __init__(self) -> None:
         self.currentState = States.PROCESSING
 
-        self.visualizingPoses = False
+        self.visualizingPoses = True
 
         self.loopTime = 2767
 

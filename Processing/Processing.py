@@ -58,8 +58,8 @@ class Processor:
         poses = []
         tags = []
         for imgIndex, img in enumerate(images):
-            curTags = []
-            curTags[0] = 0
+            curTags = [0]
+ 
             if img is None or K[imgIndex] is None or D[imgIndex] is None:
                 poses.append(Processor.BAD_POSE)
                 continue

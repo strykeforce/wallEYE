@@ -124,7 +124,7 @@ try:
             logger.debug(f"Poses at {imageTime}: {poses}")
 
             for i in range(len(poses)):
-                walleyeData.robotPublisher.publish(i, imageTime, poses[i])
+                walleyeData.robotPublisher.publish(i, imageTime, poses[i], tags)
                 
             for i, (identifier, img) in enumerate(images.items()):
                 if i >= len(poses):
@@ -133,7 +133,8 @@ try:
                 walleyeData.setPose(identifier, poses[i])
                 if walleyeData.visualizingPoses:
                     visualizationBuffers[identifier].update(
-                        (poses[i].X(), poses[i].Y(), poses[i].Z())
+                        (poses[i].X(), poses[i].Y(), poses[i].Z()),
+                        tags
                     )
 
         elif walleyeData.currentState == States.SHUTDOWN:

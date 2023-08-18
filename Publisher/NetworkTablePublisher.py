@@ -27,7 +27,7 @@ class NetworkIO:
         t = pose.translation()
         r = pose.rotation()
         result = [t.X(), t.Y(), t.Z(), r.X(), r.Y(), r.Z(), time]
-        for i in len(tags):
+        for i in range(len(tags)):
             result.append(tags[i])
         self.publishers[index].set(result)
 

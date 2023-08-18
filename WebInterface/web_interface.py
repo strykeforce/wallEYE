@@ -62,10 +62,10 @@ def set_exposure(camID, newValue):
 @updateAfter
 def set_resolution(camID, newValue):
     w, h = map(int, newValue[1:-1].split(","))
-    walleyeData.cameras.setResolution(camID, (w, h))
-    #     socketio.emit("info", f"Resolution set to {newValue}")
-    # else:
-    #     socketio.emit("info", f"Could not set resolution: {newValue}")
+    if walleyeData.cameras.setResolution(camID, (w, h)):
+        socketio.emit("info", f"Resolution set to {newValue}")
+    else:
+        socketio.emit("info", f"Could not set resolution: {newValue}")
 
 
 @socketio.on("toggle_calibration")
