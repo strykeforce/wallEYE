@@ -59,11 +59,11 @@ class Processor:
         tags = []
         ambig = []
         for imgIndex, img in enumerate(images):
-            curTags = [0]
+            curTags = []
  
             if img is None or K[imgIndex] is None or D[imgIndex] is None:
                 poses.append(Processor.BAD_POSE)
-                tags.append([-1])
+                tags.append([])
                 continue
 
             corners, ids, rej = arucoDetector.detectMarkers(img)
@@ -77,7 +77,6 @@ class Processor:
                     if i > 8 or i < 0:
                         Processor.logger.warning(f"BAD TAG ID: {i}")
                         continue
-                    curTags[0] += 1
                     curTags.append(i)
                     pose = Processor.makePoseObject(layout[int(i - 1)]["pose"])
                     c1 = Processor.translationToSolvePnP(
@@ -116,10 +115,13 @@ class Processor:
                             wpi.Rotation3d(),
                         )
                     )
-
+                    tempc1 = np.asarray([self.squareLength/2, self.squareLength/2, 0])
+                    tempc2 = np.asarray([-self.squareLength/2, self.squareLength/2, 0])
+                    tempc3 = np.asarray([self.squareLength/2, -self.squareLength/2, 0])
+                    tempc4 = np.asarray([-self.squareLength/2, -self.squareLength/2, 0])
                     # FIXME - TEST THIS
                     ret, rvec, tvec = cv2.solvePnP(
-                        np.asarray([[c1, c2, c3, c4]]),
+                        np.asarray([[tempc1, tempc2, tempc3, tempc4]]),
                         corners[tagCount][0],
                         K[imgIndex],
                         D[imgIndex],
@@ -152,7 +154,6 @@ class Processor:
                     else:
                         tagLoc = np.asarray([c2,c1,c4,c3])
                         ret, rvecs, tvecs, reproj = cv2.solvePnPGeneric(tagLoc, cornerLoc, K[imgIndex], D[imgIndex], flags = cv2.SOLVEPNP_IPPE_SQUARE)
-                        print(rvecs)
                         rvecs = rvecs[0]
                         tvecs = tvecs[0]
                         ambig.append(reproj[0][0]/reproj[1][0])
@@ -173,7 +174,7 @@ class Processor:
                     num += 1
             else:
                 poses.append(Processor.BAD_POSE)
-                tags.append([-1])
+                tags.append([])
                 ambig.append(-1)
 
         return (poses, tags, ambig)
