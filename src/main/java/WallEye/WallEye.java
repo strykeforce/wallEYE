@@ -71,7 +71,7 @@ public class WallEye {
                 tags[i] = (int) temp[j + 8];
 
             results.add(new WallEyeResult(new Pose3d(new Translation3d(temp[0], temp[1], temp[2]), new Rotation3d(temp[3], temp[4], temp[5])), 
-                temp[6], i, curUpdateNum, (int) temp[7], tags));
+                temp[6], i, curUpdateNum, (int) temp[7], tags, temp[8 + (int) temp[7]] ));
 
         }
         WallEyeResult[] returnArray = new WallEyeResult[results.size()];

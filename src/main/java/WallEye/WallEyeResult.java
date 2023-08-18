@@ -15,6 +15,7 @@ public class WallEyeResult {
     int numTags;
     int originCam;
     int[] tags;
+    double ambiguity;
 
     /**
      * Creates a WallEyeResult object with an associated Pose, timestamp and what cam produced this pose
@@ -25,16 +26,26 @@ public class WallEyeResult {
      * @param updateNum the nth result from WallEye
      * @param numTags the number of tags in the pose
      * @param tags an array of tag ids that was used to calculate pose
+     * @param ambiguity a double that represents to confidence of the pose
     */
-    public WallEyeResult(Pose3d pose, double timeStamp, int originCam, int updateNum, int numTags, int[] tags) {
+    public WallEyeResult(Pose3d pose, double timeStamp, int originCam, int updateNum, int numTags, int[] tags, double ambiguity) {
         cameraPose = pose;
         this.timeStamp = timeStamp;
         this.updateNum = updateNum;
         this.numTags = numTags;
         this.originCam = originCam;
         this.tags = tags;
+        this.ambiguity = ambiguity;
     }
 
+    /**
+     * Getter for the ambiguity
+     *   
+     * @return double that represents pose confidence (higher is better [1.0 is the max])
+    */
+    public double getAmbiguity() {
+        return ambiguity;
+    }
     /**
      * Getter for the pose
      *   
