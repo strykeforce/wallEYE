@@ -1,5 +1,6 @@
 package WallEye;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.function.DoubleSupplier;
 
@@ -42,10 +43,13 @@ public class WallEye {
      *
      * @param  tableName  a string that specifies the table name of the WallEye instance (Look at web interface)
      * @param  numCameras a number that is equal to the number of cameras connected to the PI
+     * @param  gyro a DoubleSupplier that supplies the gyro yaw for the robot
+     * @param  dioPorts an array that holds all the Ids for the dio ports that the cameras are connected to (to not use DIO yaw reporting put in an empty array)
     */
     public WallEye(String tableName, int numCameras, DoubleSupplier gyro, int[] dioPorts)
     {
-        dioLoop.startPeriodic(periodicLoop);
+        if (dioPorts.length > 0)
+            dioLoop.startPeriodic(periodicLoop);
         this.gyro = gyro;
         for(int port: dioPorts)
             dios.add(new DigitalInput(port));
@@ -65,6 +69,9 @@ public class WallEye {
         updateSub = table.getIntegerTopic("Update").subscribe(0);
     }
 
+    /**
+     * A method that checks the DIO ports for a input and upon input will grab gyro and timestamp
+    */
     private void grabGyro() {
         for (DigitalInput dio: dios)
             if (dio.get()) {
@@ -120,7 +127,14 @@ public class WallEye {
         return returnArray;
     }
 
-
+    /**
+     * A method that will find the yaw that has been saved off from the DIO port loop. It uses 
+     *   a binary search on a circular buffer to find the yaw quickly
+     *
+     * @param timestamp a long that is the timestamp of the camera that is being searched for
+     * 
+     * @return Returns a Rotation3d with the yaw of the saved gyro
+    */
     public Rotation3d findGyro(long timestamp) {
         int max = currentGyroIndex - 1 >= 0 ? currentGyroIndex - 1 : maxGyroResultSize - 1;
 
