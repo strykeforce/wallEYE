@@ -84,9 +84,10 @@ class Cameras:
                         Cameras.logger.warning(f"Config not found for camera {camPath}")
 
                     if config is not None:
-                        self.setResolution(
+                        if not self.setResolution(
                             camPath, config["Resolution"]
-                        )  # Calls self.importCalibration
+                        ):  # Calls self.importCalibration
+                            self.importCalibration(camPath)
                         self.setGain(camPath, config["Gain"])
                         self.setExposure(camPath, config["Exposure"])
                     else:
@@ -133,8 +134,9 @@ class Cameras:
         # os.system(f"v4l2-ctl -d /dev/v4l/by-path/{identifier} --set-fmt-video=width={resolution[0]},height={resolution[1]}")
         self.info[identifier].cam.set(cv2.CAP_PROP_FRAME_HEIGHT, resolution[1])
         self.info[identifier].cam.set(cv2.CAP_PROP_FRAME_WIDTH, resolution[0])
+        resolution = tuple(resolution)
         if self.getResolutions()[identifier] != resolution:
-            Cameras.logger.error(f"Failed to set resolution to {resolution} for {identifier}")
+            Cameras.logger.error(f"Failed to set resolution to {resolution} for {identifier}, using {self.getResolutions()[identifier]}")
             return False
 
         self.info[identifier].resolution = resolution
@@ -226,10 +228,6 @@ class Cameras:
 
             self.info[identifier].calibrationPath = Calibration.calibrationPathByCam(
                 identifier, resolution
-            )
-
-            Cameras.logger.info(
-                f"Calibration found! Using\n{calib['K']}\n{calib['dist']}"
             )
             return True
         except (FileNotFoundError, json.decoder.JSONDecodeError):

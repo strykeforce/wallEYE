@@ -293,10 +293,13 @@ class Calibration:
         with open(file, "r") as f:
             calibrationData = json.load(f)
 
-        calibrationData["K"] = np.array(calibrationData["K"])
-        calibrationData["dist"] = np.array(calibrationData["dist"])
-        calibrationData["r"] = np.array(calibrationData["r"])
-        calibrationData["t"] = np.array(calibrationData["t"])
+        try:
+            calibrationData["K"] = np.array(calibrationData["K"])
+            calibrationData["dist"] = np.array(calibrationData["dist"])
+            calibrationData["r"] = np.array(calibrationData["r"])
+            calibrationData["t"] = np.array(calibrationData["t"])
+        except:
+            Calibration.logger.error(f"Invalid calibration format in {file}")
 
         return calibrationData
 

@@ -1,201 +1,59 @@
-[17-Aug-23 20:35:35 - INFO - init.py:44 - <module>()]  Web server ready
-[17-Aug-23 20:35:35 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
-[17-Aug-23 20:35:35 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - Walleye
-[17-Aug-23 20:35:35 - INFO - init.py:53 - <module>()]  Starting main loop
-[17-Aug-23 20:35:35 - INFO - NetworkClient.cpp:141 - None()]  starting network client
-[17-Aug-23 20:35:38 - INFO - web_interface.py:41 - connect()]  Client connected
-[17-Aug-23 20:35:49 - WARNING - web_interface.py:46 - disconnect()]  Client disconnected
-[17-Aug-23 20:35:49 - INFO - web_interface.py:41 - connect()]  Client connected
-[17-Aug-23 20:43:47 - INFO - init.py:141 - <module>()]  Shutting down
-[17-Aug-23 20:43:48 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[17-Aug-23 20:43:49 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[17-Aug-23 20:43:49 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[17-Aug-23 20:43:49 - INFO - camera.py:21 - __init__()]  Platform is linux
-[17-Aug-23 20:43:49 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
-[17-Aug-23 20:43:49 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (176, 144), (320, 240), (352, 288), (416, 240), (424, 240), (640, 360), (640, 480), (800, 448), (800, 600), (960, 544), (1280, 720), (1280, 800)]
-[17-Aug-23 20:43:49 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[17-Aug-23 20:43:49 - INFO - camera.py:82 - __init__()]  Config found!
-[17-Aug-23 20:43:49 - ERROR - camera.py:137 - setResolution()]  Failed to set resolution to [640, 480] for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[17-Aug-23 20:43:49 - INFO - camera.py:164 - setGain()]  Gain set to -1.0
-[17-Aug-23 20:43:49 - INFO - camera.py:185 - setExposure()]  Exposure set to 20000.0
-[17-Aug-23 20:43:50 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
-[17-Aug-23 20:43:53 - INFO - init.py:44 - <module>()]  Web server ready
-[17-Aug-23 20:43:53 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
-[17-Aug-23 20:43:53 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - Walleye
-[17-Aug-23 20:43:53 - INFO - init.py:53 - <module>()]  Starting main loop
-[17-Aug-23 20:43:53 - INFO - NetworkClient.cpp:141 - None()]  starting network client
-[17-Aug-23 20:43:53 - INFO - web_interface.py:41 - connect()]  Client connected
-[17-Aug-23 20:44:02 - WARNING - web_interface.py:46 - disconnect()]  Client disconnected
-[17-Aug-23 20:44:03 - INFO - web_interface.py:41 - connect()]  Client connected
-[17-Aug-23 20:46:28 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[17-Aug-23 20:46:28 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[17-Aug-23 20:46:28 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[17-Aug-23 20:46:29 - INFO - camera.py:21 - __init__()]  Platform is linux
-[17-Aug-23 20:46:29 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
-[17-Aug-23 20:46:29 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (176, 144), (320, 240), (352, 288), (416, 240), (424, 240), (640, 360), (640, 480), (800, 448), (800, 600), (960, 544), (1280, 720), (1280, 800)]
-[17-Aug-23 20:46:29 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[17-Aug-23 20:46:29 - INFO - camera.py:82 - __init__()]  Config found!
-[17-Aug-23 20:46:29 - ERROR - camera.py:137 - setResolution()]  Failed to set resolution to [640, 480] for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[17-Aug-23 20:46:29 - INFO - camera.py:164 - setGain()]  Gain set to -1.0
-[17-Aug-23 20:46:29 - INFO - camera.py:185 - setExposure()]  Exposure set to 20000.0
-[17-Aug-23 20:46:29 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
-[17-Aug-23 20:46:33 - INFO - init.py:44 - <module>()]  Web server ready
-[17-Aug-23 20:46:33 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
-[17-Aug-23 20:46:33 - INFO - NetworkClient.cpp:141 - None()]  starting network client
-[17-Aug-23 20:46:33 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - Walleye
-[17-Aug-23 20:46:33 - INFO - init.py:53 - <module>()]  Starting main loop
-[17-Aug-23 20:46:33 - INFO - web_interface.py:41 - connect()]  Client connected
-[17-Aug-23 20:46:36 - WARNING - web_interface.py:46 - disconnect()]  Client disconnected
-[17-Aug-23 20:46:36 - INFO - web_interface.py:41 - connect()]  Client connected
-[17-Aug-23 20:46:40 - INFO - web_interface.py:166 - toggle_pnp()]  PnP stopped
-[17-Aug-23 20:46:43 - INFO - web_interface.py:78 - toggle_calibration()]  Starting calibration capture for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[17-Aug-23 20:46:43 - INFO - init.py:66 - <module>()]  Beginning calibration
-[17-Aug-23 20:46:53 - INFO - calibration.py:90 - processFrame()]  Calibration image saved to Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0CalImgs/1692319613024601321.png
-[17-Aug-23 20:47:01 - INFO - web_interface.py:82 - toggle_calibration()]  Stopping calibration capture
-[17-Aug-23 20:47:03 - INFO - calibration.py:204 - generateCalibration()]  Calibration successfully generated and saved to ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(640, 480)CalData.json with resolution (640, 480)
-[17-Aug-23 20:47:03 - INFO - camera.py:114 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[676.06817264   0.         317.02938114]
- [  0.         645.93592233 237.19113225]
+[22-Aug-23 20:17:12 - INFO - web_interface.py:79 - toggle_calibration()]  Starting calibration capture for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[22-Aug-23 20:17:12 - INFO - init.py:66 - <module>()]  Beginning calibration
+[22-Aug-23 20:17:26 - INFO - calibration.py:90 - processFrame()]  Calibration image saved to Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0CalImgs/1692749846019400547.png
+[22-Aug-23 20:17:29 - INFO - calibration.py:90 - processFrame()]  Calibration image saved to Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0CalImgs/1692749849419322929.png
+[22-Aug-23 20:17:33 - INFO - calibration.py:90 - processFrame()]  Calibration image saved to Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0CalImgs/1692749853819617819.png
+[22-Aug-23 20:17:41 - INFO - calibration.py:90 - processFrame()]  Calibration image saved to Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0CalImgs/1692749861614097250.png
+[22-Aug-23 20:17:50 - INFO - web_interface.py:83 - toggle_calibration()]  Stopping calibration capture
+[22-Aug-23 20:17:56 - INFO - calibration.py:203 - generateCalibration()]  Calibration successfully generated and saved to ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(1280, 800)CalData.json with resolution (1280, 800)
+[22-Aug-23 20:17:56 - INFO - camera.py:115 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[948.01281265   0.         661.91827916]
+ [  0.         977.15966214 415.60070268]
  [  0.           0.           1.        ]]
-[[ 4.56269525e-02 -3.31602847e-01 -1.29382368e-03 -3.57671784e-02
-   1.41356892e+00 -5.73549445e-02  4.18486045e-01  9.70992642e-02
-   2.36108040e-02  5.90032236e-02  8.40499013e-03 -9.25424639e-02
-   7.77164807e-02 -1.57071663e-02]]
-[17-Aug-23 20:47:09 - INFO - calibration.py:204 - generateCalibration()]  Calibration successfully generated and saved to ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(640, 480)CalData.json with resolution (640, 480)
-[17-Aug-23 20:47:09 - INFO - camera.py:114 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[676.06817264   0.         317.02938114]
- [  0.         645.93592233 237.19113225]
+[[ 0.02142982  0.23721191 -0.02027148  0.06486291  3.40178333 -0.0561533
+   0.59251678  3.09135699 -0.06196457  0.00703724  0.02442619 -0.01828851
+  -0.04011762  0.13420393]]
+[22-Aug-23 20:21:47 - WARNING - web_interface.py:47 - disconnect()]  Client disconnected
+[22-Aug-23 20:21:47 - INFO - web_interface.py:42 - connect()]  Client connected
+[22-Aug-23 20:22:14 - ERROR - image_streams.py:21 - update()]  Updated image is None - Skipping
+[22-Aug-23 20:22:15 - INFO - calibration.py:291 - parseCalibration()]  Looking for calibration stored at ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(160, 120)CalData.json
+[22-Aug-23 20:22:15 - ERROR - camera.py:235 - importCalibration()]  Calibration not found for camera platform-fc800000.usb-usb-0:1:1.0-video-index0 at resolution (160, 120)
+[22-Aug-23 20:22:15 - INFO - camera.py:152 - setResolution()]  Resolution set to (160, 120) for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[22-Aug-23 20:22:44 - ERROR - camera.py:139 - setResolution()]  Failed to set resolution to (176, 144) for platform-fc800000.usb-usb-0:1:1.0-video-index0, using (160, 120)
+[22-Aug-23 20:22:51 - ERROR - camera.py:139 - setResolution()]  Failed to set resolution to (416, 240) for platform-fc800000.usb-usb-0:1:1.0-video-index0, using (160, 120)
+[22-Aug-23 20:22:55 - ERROR - camera.py:139 - setResolution()]  Failed to set resolution to (800, 448) for platform-fc800000.usb-usb-0:1:1.0-video-index0, using (160, 120)
+[22-Aug-23 20:23:01 - ERROR - camera.py:139 - setResolution()]  Failed to set resolution to (1280, 800) for platform-fc800000.usb-usb-0:1:1.0-video-index0, using (160, 120)
+[22-Aug-23 20:23:13 - ERROR - camera.py:139 - setResolution()]  Failed to set resolution to (1280, 800) for platform-fc800000.usb-usb-0:1:1.0-video-index0, using (160, 120)
+[22-Aug-23 20:23:28 - INFO - init.py:140 - <module>()]  Shutting down
+[22-Aug-23 20:23:30 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
+[22-Aug-23 20:23:30 - INFO - state.py:138 - setIP()]  Attempting to set static IP
+[22-Aug-23 20:23:30 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
+[22-Aug-23 20:23:30 - INFO - camera.py:21 - __init__()]  Platform is linux
+[22-Aug-23 20:23:30 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
+[22-Aug-23 20:23:30 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (176, 144), (320, 240), (352, 288), (416, 240), (424, 240), (640, 360), (640, 480), (800, 448), (800, 600), (960, 544), (1280, 720), (1280, 800)]
+[22-Aug-23 20:23:30 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[22-Aug-23 20:23:30 - INFO - camera.py:82 - __init__()]  Config found!
+[22-Aug-23 20:23:30 - INFO - calibration.py:291 - parseCalibration()]  Looking for calibration stored at ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(160, 120)CalData.json
+[22-Aug-23 20:23:30 - ERROR - camera.py:235 - importCalibration()]  Calibration not found for camera platform-fc800000.usb-usb-0:1:1.0-video-index0 at resolution (160, 120)
+[22-Aug-23 20:23:30 - INFO - camera.py:152 - setResolution()]  Resolution set to (160, 120) for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[22-Aug-23 20:23:30 - INFO - camera.py:166 - setGain()]  Gain set to -1.0
+[22-Aug-23 20:23:30 - WARNING - camera.py:184 - setExposure()]  Exposure not set: -1.0 not accepted
+[22-Aug-23 20:23:31 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
+[22-Aug-23 20:23:35 - INFO - init.py:44 - <module>()]  Web server ready
+[22-Aug-23 20:23:35 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
+[22-Aug-23 20:23:35 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[22-Aug-23 20:23:35 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[22-Aug-23 20:23:35 - INFO - init.py:53 - <module>()]  Starting main loop
+[22-Aug-23 20:23:37 - INFO - web_interface.py:42 - connect()]  Client connected
+[22-Aug-23 20:23:56 - INFO - camera.py:187 - setExposure()]  Exposure set to 51.0
+[22-Aug-23 20:23:58 - WARNING - camera.py:163 - setGain()]  Gain not set: 1.67 not accepted
+[22-Aug-23 20:23:59 - WARNING - camera.py:163 - setGain()]  Gain not set: 8.18 not accepted
+[22-Aug-23 20:24:04 - ERROR - image_streams.py:21 - update()]  Updated image is None - Skipping
+[22-Aug-23 20:24:04 - INFO - calibration.py:291 - parseCalibration()]  Looking for calibration stored at ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(1280, 800)CalData.json
+[22-Aug-23 20:24:04 - INFO - camera.py:115 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[948.01281265   0.         661.91827916]
+ [  0.         977.15966214 415.60070268]
  [  0.           0.           1.        ]]
-[[ 4.56269525e-02 -3.31602847e-01 -1.29382368e-03 -3.57671784e-02
-   1.41356892e+00 -5.73549445e-02  4.18486045e-01  9.70992642e-02
-   2.36108040e-02  5.90032236e-02  8.40499013e-03 -9.25424639e-02
-   7.77164807e-02 -1.57071663e-02]]
-[17-Aug-23 20:47:47 - INFO - web_interface.py:41 - connect()]  Client connected
-[17-Aug-23 20:47:47 - WARNING - web_interface.py:46 - disconnect()]  Client disconnected
-[17-Aug-23 20:50:18 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[17-Aug-23 20:50:18 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[17-Aug-23 20:50:19 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[17-Aug-23 20:50:19 - INFO - camera.py:21 - __init__()]  Platform is linux
-[17-Aug-23 20:50:19 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
-[17-Aug-23 20:50:19 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (176, 144), (320, 240), (352, 288), (416, 240), (424, 240), (640, 360), (640, 480), (800, 448), (800, 600), (960, 544), (1280, 720), (1280, 800)]
-[17-Aug-23 20:50:19 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[17-Aug-23 20:50:19 - INFO - camera.py:82 - __init__()]  Config found!
-[17-Aug-23 20:50:19 - ERROR - camera.py:137 - setResolution()]  Failed to set resolution to [640, 480] for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[17-Aug-23 20:50:19 - INFO - camera.py:164 - setGain()]  Gain set to -1.0
-[17-Aug-23 20:50:19 - INFO - camera.py:185 - setExposure()]  Exposure set to 20000.0
-[17-Aug-23 20:50:20 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
-[17-Aug-23 20:50:23 - INFO - init.py:45 - <module>()]  Web server ready
-[17-Aug-23 20:50:23 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
-[17-Aug-23 20:50:23 - INFO - NetworkClient.cpp:141 - None()]  starting network client
-[17-Aug-23 20:50:23 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - Walleye
-[17-Aug-23 20:50:23 - INFO - init.py:54 - <module>()]  Starting main loop
-[17-Aug-23 20:50:24 - INFO - web_interface.py:43 - connect()]  Client connected
-[17-Aug-23 20:50:27 - INFO - web_interface.py:80 - toggle_calibration()]  Starting calibration capture for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[17-Aug-23 20:50:27 - INFO - init.py:67 - <module>()]  Beginning calibration
-[17-Aug-23 20:50:36 - INFO - calibration.py:90 - processFrame()]  Calibration image saved to Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0CalImgs/1692319836415980371.png
-[17-Aug-23 20:50:41 - INFO - web_interface.py:84 - toggle_calibration()]  Stopping calibration capture
-[17-Aug-23 20:50:42 - INFO - calibration.py:203 - generateCalibration()]  Calibration successfully generated and saved to ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(640, 480)CalData.json with resolution (640, 480)
-[17-Aug-23 20:50:42 - INFO - camera.py:114 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[652.01426278   0.         325.35416656]
- [  0.         666.94068927 244.09644293]
- [  0.           0.           1.        ]]
-[[ 0.05876454 -0.30789104  0.03719216 -0.07768927  1.15743179 -0.06391091
-   0.42252676  0.46509218  0.07531723  0.05268054 -0.04064609  0.01633046
-  -0.08636027 -0.15687482]]
-[17-Aug-23 20:50:45 - INFO - calibration.py:203 - generateCalibration()]  Calibration successfully generated and saved to ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(640, 480)CalData.json with resolution (640, 480)
-[17-Aug-23 20:50:45 - INFO - camera.py:114 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[652.01426278   0.         325.35416656]
- [  0.         666.94068927 244.09644293]
- [  0.           0.           1.        ]]
-[[ 0.05876454 -0.30789104  0.03719216 -0.07768927  1.15743179 -0.06391091
-   0.42252676  0.46509218  0.07531723  0.05268054 -0.04064609  0.01633046
-  -0.08636027 -0.15687482]]
-[17-Aug-23 20:50:45 - INFO - calibration.py:203 - generateCalibration()]  Calibration successfully generated and saved to ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(640, 480)CalData.json with resolution (640, 480)
-[17-Aug-23 20:50:45 - INFO - camera.py:114 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[652.01426278   0.         325.35416656]
- [  0.         666.94068927 244.09644293]
- [  0.           0.           1.        ]]
-[[ 0.05876454 -0.30789104  0.03719216 -0.07768927  1.15743179 -0.06391091
-   0.42252676  0.46509218  0.07531723  0.05268054 -0.04064609  0.01633046
-  -0.08636027 -0.15687482]]
-[17-Aug-23 20:51:02 - INFO - web_interface.py:80 - toggle_calibration()]  Starting calibration capture for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[17-Aug-23 20:51:03 - INFO - init.py:67 - <module>()]  Beginning calibration
-[17-Aug-23 20:51:07 - INFO - calibration.py:90 - processFrame()]  Calibration image saved to Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0CalImgs/1692319867403790481.png
-[17-Aug-23 20:51:11 - INFO - web_interface.py:43 - connect()]  Client connected
-[17-Aug-23 20:51:11 - WARNING - web_interface.py:48 - disconnect()]  Client disconnected
-[17-Aug-23 20:51:15 - INFO - calibration.py:90 - processFrame()]  Calibration image saved to Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0CalImgs/1692319875348689412.png
-[17-Aug-23 20:51:55 - INFO - calibration.py:203 - generateCalibration()]  Calibration successfully generated and saved to ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(640, 480)CalData.json with resolution (640, 480)
-[17-Aug-23 20:51:55 - INFO - camera.py:114 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[9.31266915e+02 0.00000000e+00 3.22016337e+02]
- [0.00000000e+00 1.38083944e+03 2.47276874e+02]
- [0.00000000e+00 0.00000000e+00 1.00000000e+00]]
-[[-1.89013029e-03  2.90880432e+00 -2.97025337e-01  9.52149562e-02
-   3.13688823e-02 -1.01985428e-02 -2.55261271e+00  3.69293414e+01
-  -4.77611942e-02 -4.21290482e-01  2.91982117e-01  3.29528079e-02
-   3.75005397e-01  3.01517636e-01]]
-[17-Aug-23 20:52:02 - INFO - calibration.py:203 - generateCalibration()]  Calibration successfully generated and saved to ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(640, 480)CalData.json with resolution (640, 480)
-[17-Aug-23 20:52:02 - INFO - camera.py:114 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[9.31266915e+02 0.00000000e+00 3.22016337e+02]
- [0.00000000e+00 1.38083944e+03 2.47276874e+02]
- [0.00000000e+00 0.00000000e+00 1.00000000e+00]]
-[[-1.89013029e-03  2.90880432e+00 -2.97025337e-01  9.52149562e-02
-   3.13688823e-02 -1.01985428e-02 -2.55261271e+00  3.69293414e+01
-  -4.77611942e-02 -4.21290482e-01  2.91982117e-01  3.29528079e-02
-   3.75005397e-01  3.01517636e-01]]
-[17-Aug-23 20:52:05 - INFO - calibration.py:203 - generateCalibration()]  Calibration successfully generated and saved to ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(640, 480)CalData.json with resolution (640, 480)
-[17-Aug-23 20:52:05 - INFO - camera.py:114 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[9.31266915e+02 0.00000000e+00 3.22016337e+02]
- [0.00000000e+00 1.38083944e+03 2.47276874e+02]
- [0.00000000e+00 0.00000000e+00 1.00000000e+00]]
-[[-1.89013029e-03  2.90880432e+00 -2.97025337e-01  9.52149562e-02
-   3.13688823e-02 -1.01985428e-02 -2.55261271e+00  3.69293414e+01
-  -4.77611942e-02 -4.21290482e-01  2.91982117e-01  3.29528079e-02
-   3.75005397e-01  3.01517636e-01]]
-[17-Aug-23 20:52:22 - INFO - web_interface.py:43 - connect()]  Client connected
-[17-Aug-23 20:52:22 - WARNING - web_interface.py:48 - disconnect()]  Client disconnected
-[17-Aug-23 20:52:30 - INFO - calibration.py:203 - generateCalibration()]  Calibration successfully generated and saved to ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(640, 480)CalData.json with resolution (640, 480)
-[17-Aug-23 20:52:30 - INFO - camera.py:114 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[9.31266915e+02 0.00000000e+00 3.22016337e+02]
- [0.00000000e+00 1.38083944e+03 2.47276874e+02]
- [0.00000000e+00 0.00000000e+00 1.00000000e+00]]
-[[-1.89013029e-03  2.90880432e+00 -2.97025337e-01  9.52149562e-02
-   3.13688823e-02 -1.01985428e-02 -2.55261271e+00  3.69293414e+01
-  -4.77611942e-02 -4.21290482e-01  2.91982117e-01  3.29528079e-02
-   3.75005397e-01  3.01517636e-01]]
-[17-Aug-23 20:53:08 - INFO - web_interface.py:43 - connect()]  Client connected
-[17-Aug-23 20:53:08 - WARNING - web_interface.py:48 - disconnect()]  Client disconnected
-[17-Aug-23 20:55:03 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[17-Aug-23 20:55:03 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[17-Aug-23 20:55:03 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[17-Aug-23 20:55:03 - INFO - camera.py:21 - __init__()]  Platform is linux
-[17-Aug-23 20:55:04 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
-[17-Aug-23 20:55:04 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (176, 144), (320, 240), (352, 288), (416, 240), (424, 240), (640, 360), (640, 480), (800, 448), (800, 600), (960, 544), (1280, 720), (1280, 800)]
-[17-Aug-23 20:55:04 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[17-Aug-23 20:55:04 - INFO - camera.py:82 - __init__()]  Config found!
-[17-Aug-23 20:55:04 - ERROR - camera.py:137 - setResolution()]  Failed to set resolution to [640, 480] for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[17-Aug-23 20:55:04 - INFO - camera.py:164 - setGain()]  Gain set to -1.0
-[17-Aug-23 20:55:04 - INFO - camera.py:185 - setExposure()]  Exposure set to 20000.0
-[17-Aug-23 20:55:04 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
-[17-Aug-23 20:55:08 - INFO - server.py:317 - emit()]  emitting event "info" to all [/]
-[17-Aug-23 20:55:08 - INFO - init.py:45 - <module>()]  Web server ready
-[17-Aug-23 20:55:08 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
-[17-Aug-23 20:55:08 - INFO - NetworkClient.cpp:141 - None()]  starting network client
-[17-Aug-23 20:55:08 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - Walleye
-[17-Aug-23 20:55:08 - INFO - init.py:54 - <module>()]  Starting main loop
-[17-Aug-23 20:55:12 - INFO - web_interface.py:43 - connect()]  Client connected
-[17-Aug-23 20:55:39 - ERROR - image_streams.py:21 - update()]  Updated image is None - Skipping
-[17-Aug-23 20:55:39 - INFO - calibration.py:291 - parseCalibration()]  Looking for calibration stored at ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(800, 448)CalData.json
-[17-Aug-23 20:55:39 - ERROR - camera.py:237 - importCalibration()]  Calibration not found for camera platform-fc800000.usb-usb-0:1:1.0-video-index0 at resolution (800, 448)
-[17-Aug-23 20:55:39 - INFO - camera.py:150 - setResolution()]  Resolution set to (800, 448) for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[17-Aug-23 20:55:40 - INFO - image_streams.py:25 - update()]  Updated image is NOT none!
-[17-Aug-23 20:56:06 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[17-Aug-23 20:56:06 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[17-Aug-23 20:56:06 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[17-Aug-23 20:56:07 - INFO - camera.py:21 - __init__()]  Platform is linux
-[17-Aug-23 20:56:07 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
-[17-Aug-23 20:56:07 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (176, 144), (320, 240), (352, 288), (416, 240), (424, 240), (640, 360), (640, 480), (800, 448), (800, 600), (960, 544), (1280, 720), (1280, 800)]
-[17-Aug-23 20:56:07 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[17-Aug-23 20:56:07 - INFO - camera.py:82 - __init__()]  Config found!
-[17-Aug-23 20:56:07 - ERROR - camera.py:137 - setResolution()]  Failed to set resolution to [800, 448] for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[17-Aug-23 20:56:07 - INFO - camera.py:164 - setGain()]  Gain set to -1.0
-[17-Aug-23 20:56:07 - INFO - camera.py:185 - setExposure()]  Exposure set to 20000.0
-[17-Aug-23 20:56:07 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
-[17-Aug-23 20:56:11 - INFO - init.py:45 - <module>()]  Web server ready
-[17-Aug-23 20:56:11 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
-[17-Aug-23 20:56:11 - INFO - NetworkClient.cpp:141 - None()]  starting network client
-[17-Aug-23 20:56:11 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - Walleye
-[17-Aug-23 20:56:11 - INFO - init.py:54 - <module>()]  Starting main loop
-[17-Aug-23 20:56:11 - INFO - web_interface.py:44 - connect()]  Client connected
-[17-Aug-23 20:56:13 - INFO - web_interface.py:44 - connect()]  Client connected
-[17-Aug-23 20:56:56 - WARNING - web_interface.py:49 - disconnect()]  Client disconnected
+[[ 0.02142982  0.23721191 -0.02027148  0.06486291  3.40178333 -0.0561533
+   0.59251678  3.09135699 -0.06196457  0.00703724  0.02442619 -0.01828851
+  -0.04011762  0.13420393]]
+[22-Aug-23 20:24:04 - INFO - camera.py:152 - setResolution()]  Resolution set to (1280, 800) for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[22-Aug-23 20:24:05 - INFO - image_streams.py:25 - update()]  Updated image is NOT none!

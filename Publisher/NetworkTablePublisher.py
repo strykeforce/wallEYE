@@ -1,7 +1,10 @@
 import ntcore
 import wpimath.geometry as wpi
+import logging
 
 class NetworkIO:
+    logger = logging.getLogger(__name__)
+
     def __init__(self, test, team, tableName):
         self.inst = ntcore.NetworkTableInstance.getDefault()
         self.table = self.inst.getTable(tableName)
@@ -29,6 +32,7 @@ class NetworkIO:
         result = [t.X(), t.Y(), t.Z(), r.X(), r.Y(), r.Z(), time]
         for i in range(len(tags)):
             result.append(tags[i])
+                    
         self.publishers[index].set(result)
 
     def increaseUpdateNum(self):

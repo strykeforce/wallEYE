@@ -18,10 +18,12 @@ export default function Dashboard(props) {
 
             <hr />
 
+            {props.state.reprojectionError ? <p>Reprojection Error: {props.state.reprojectionError}</p> : <p> No recent calibration.</p>}
+
             {props.state.calImgPaths.length > 0 && <h2>Captured Calibration Images:</h2>}
-            <Row>
-                {props.state.calImgPaths.map((path) => <Col><a href={'files/' + path}><Image src={'files/' + path} /></a ></Col>)}
-            </Row >
+        
+            {props.state.calImgPaths.map((path) => <a href={'files/' + path}><Image src={'files/' + path} fluid/></a >)}
+         
         </>
     );
 }

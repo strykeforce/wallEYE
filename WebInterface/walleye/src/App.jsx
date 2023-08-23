@@ -15,7 +15,6 @@ function App() {
   const [page, setPage] = useState("dashboard");
   const [state, setState] = useState(null);
   const [isConnected, setIsConnected] = useState(socket.connected);
-  const [timestamp, setTimestamp] = useState("Never updated");
   const [isDark, setIsDark] = useState(true);
   const [poses, setPoses] = useState(null);
   const [loopTime, setLoopTime] = useState(2767);
@@ -38,7 +37,6 @@ function App() {
     }
 
     function onStateUpdate(newState) {
-      setTimestamp(new Date().toLocaleString());
       setState(newState);
     }
 
@@ -95,8 +93,7 @@ function App() {
       </Helmet>
 
       <center className="position-relative">
-        <h1 className="display-3">WallEYE Testing Interface</h1>
-        <p className="lead">{(isConnected) ? "Connected" : "Not connected"} - Last updated at {timestamp}</p>
+        <h1 className="display-3">WallEYE</h1>
 
         <Stack direction="vertical" gap={1}>
           <Form className="position-absolute top-50 end-0 translate-middle-y">

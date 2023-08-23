@@ -62,9 +62,10 @@ class Processor:
  
             if img is None or K[imgIndex] is None or D[imgIndex] is None:
                 poses.append(Processor.BAD_POSE)
+                tags.append([-1])
                 continue
 
-            corners, ids, rej = arucoDetector.detectMarkers(img)
+            corners, ids, rej = arucoDetector.detectMarkers(img) # BEWARE: ids is a 2D array!!!
             if len(corners) > 0:
                 num = 0
                 cv2.aruco.drawDetectedMarkers(img, corners, ids)
@@ -72,11 +73,11 @@ class Processor:
                 cornerLoc = None
                 tagCount = 0
                 for i in ids:
-                    if i > 8 or i < 0:
+                    if i > 8 or i <= 0:
                         Processor.logger.warning(f"BAD TAG ID: {i}")
                         continue
                     curTags[0] += 1
-                    curTags.append(i)
+                    curTags.append(i[0])
                     pose = Processor.makePoseObject(layout[int(i - 1)]["pose"])
                     c1 = Processor.translationToSolvePnP(
                         pose

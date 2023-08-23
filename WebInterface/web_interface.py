@@ -19,9 +19,8 @@ camBuffers = {identifier: Buffer() for identifier in walleyeData.cameras.info.ke
 visualizationBuffers = {
     identifier: LivePlotBuffer() for identifier in walleyeData.cameras.info.keys()
 }
-
-def displayInfo(msg):
-    socketio.emit("info", msg)
+# def displayInfo(msg):
+#     socketio.emit("info", msg)
 
 def updateAfter(action):
     def actionAndUpdate(*args, **kwargs):
@@ -173,9 +172,8 @@ def toggle_pnp():
 
 @socketio.on("toggle_pose_visualization")
 @updateAfter
-def toggle_pose_visualization(isVisualizing):
-    walleyeData.visualizingPoses = isVisualizing
-    socketio.emit("info", f"Pose visualizing: {isVisualizing}")
+def toggle_pose_visualization():
+    walleyeData.visualizingPoses = not walleyeData.visualizingPoses
 
 
 @socketio.on("pose_update")

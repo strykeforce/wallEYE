@@ -27,7 +27,6 @@ from WebInterface.web_interface import (
     socketio,
     app,
     visualizationBuffers,
-    displayInfo,
 )  # After walleyeData.cameras is set
 
 try:
@@ -112,8 +111,6 @@ try:
                 calibrators[walleyeData.cameraInCalibration].calibrationData["K"],
                 calibrators[walleyeData.cameraInCalibration].calibrationData["dist"],
             )
-            displayInfo(f"Calibration generated - Reprojection error: {walleyeData.reprojectionError}")
-
             walleyeData.currentState = States.IDLE
 
         elif walleyeData.currentState == States.PROCESSING:
@@ -126,8 +123,8 @@ try:
             logger.debug(f"Poses at {imageTime}: {poses}")
 
             for i in range(len(poses)):
-                walleyeData.robotPublisher.publish(i, imageTime, poses[i], tags)
-                
+                walleyeData.robotPublisher.publish(i, imageTime, poses[i], tags[i])
+
             for i, (identifier, img) in enumerate(images.items()):
                 if i >= len(poses):
                     break
@@ -136,7 +133,7 @@ try:
                 if walleyeData.visualizingPoses:
                     visualizationBuffers[identifier].update(
                         (poses[i].X(), poses[i].Y(), poses[i].Z()),
-                        tags
+                        tags[i][1:]
                     )
 
         elif walleyeData.currentState == States.SHUTDOWN:

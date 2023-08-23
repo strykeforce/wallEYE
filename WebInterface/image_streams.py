@@ -99,13 +99,14 @@ class LivePlotBuffer(Buffer):
         self.fig.canvas.blit(self.fig.bbox)
         
 
-
     def update(self, pose, tags):
         self.fig.canvas.restore_region(self.bg)
 
-        self.x.append(pose[0])
-        self.y.append(pose[1])
-        self.z.append(pose[2])
+        if pose != (2767, 2767, 2767):
+            self.x.append(pose[0])
+            self.y.append(pose[1])
+            self.z.append(pose[2])
+
         self.x = self.x[-50:]
         self.y = self.y[-50:]
         self.z = self.z[-50:]
@@ -114,8 +115,8 @@ class LivePlotBuffer(Buffer):
         self.poses2D.set_data(self.x, self.y)
         self.poses2D.set_3d_properties(np.atleast_1d(0))
 
-        tagsX = [self.FIELD_DIMS[0] - self.tagLayout[tag - 1]["pose"]["translation"]["x"] if tag < 9 and tag > 0 else 2767 for tag in tags]
-        tagsY = [self.tagLayout[tag - 1]["pose"]["translation"]["y"] if tag < 9 and tag > 0 else 2767 for tag in tags]
+        tagsX = [(self.FIELD_DIMS[0] - self.tagLayout[tag - 1]["pose"]["translation"]["x"] if (tag < 9 and tag > 0) else 2767) for tag in tags]
+        tagsY = [(self.tagLayout[tag - 1]["pose"]["translation"]["y"] if (tag < 9 and tag > 0) else 2767) for tag in tags]
 
         self.tags.set_data(tagsX, tagsY)
         self.tags.set_3d_properties(np.atleast_1d(0))
