@@ -1,8 +1,8 @@
 package WallEye;
 
 public class DIOGyroResult {
-    private double gyro;
-    private long timestamp;
+    private double gyro = 0;
+    private long timestamp = 0;
 
     protected DIOGyroResult(double gyro, long timestamp) {
         this.gyro = gyro;

@@ -28,7 +28,7 @@ public class WallEye {
     private int curUpdateNum = 0;
     private IntegerSubscriber updateSub;
     private Transform3d[] camToCenter;
-    DigitalInput dios[];
+    ArrayList<DigitalInput> dios = new ArrayList<DigitalInput>();
     DoubleSupplier gyro;
     int currentGyroIndex = 0;
     private final int maxGyroResultSize = 200;
@@ -43,11 +43,13 @@ public class WallEye {
      * @param  tableName  a string that specifies the table name of the WallEye instance (Look at web interface)
      * @param  numCameras a number that is equal to the number of cameras connected to the PI
     */
-    public WallEye(String tableName, int numCameras, DoubleSupplier gyro)
+    public WallEye(String tableName, int numCameras, DoubleSupplier gyro, int[] dioPorts)
     {
         dioLoop.startPeriodic(periodicLoop);
         this.gyro = gyro;
-        dios = new DigitalInput[numCameras];
+        for(int port: dioPorts)
+            dios.add(new DigitalInput(port));
+
         camToCenter = new Transform3d[numCameras];
         this.numCameras = numCameras;
         NetworkTableInstance nt = NetworkTableInstance.getDefault();
@@ -105,7 +107,7 @@ public class WallEye {
                 tags[i] = (int) temp[j + 8];
 
 
-            if(dios[i] == null)
+            if(dios.size() == 0 || gyroResults[maxGyroResultSize - 1] == null || temp[6] > gyroResults[currentGyroIndex - 1 >= 0 ? currentGyroIndex - 1 : maxGyroResultSize - 1].getTimestamp())
                 results.add(new WallEyeResult(new Pose3d(new Translation3d(temp[0], temp[1], temp[2]), new Rotation3d(temp[3], temp[4], temp[5])), 
                     temp[6], i, curUpdateNum, (int) temp[7], tags, temp[8 + (int) temp[7]] ));
             else
@@ -119,19 +121,27 @@ public class WallEye {
     }
 
 
-    private Rotation3d findGyro(long timestamp) {
-        int min = currentGyroIndex;
+    public Rotation3d findGyro(long timestamp) {
         int max = currentGyroIndex - 1 >= 0 ? currentGyroIndex - 1 : maxGyroResultSize - 1;
+
+        if (gyroResults[maxGyroResultSize - 1] == null || gyroResults[max].getTimestamp() < timestamp)
+            return new Rotation3d();
+
+        int min = currentGyroIndex;
+        int loops = 0;
         int mid = max > min ? (max - min) / 2 : (maxGyroResultSize - min + max) / 2 + min;
         mid %= maxGyroResultSize;
-        while (Math.abs(gyroResults[mid].getTimestamp() - timestamp) < periodicLoop * Math.pow(10, 9)) {
+        while (Math.abs(gyroResults[mid].getTimestamp() - timestamp) > periodicLoop * 1000000 && min != mid && loops < 10) {
+            System.out.println(min + " " + mid + " " + max);
+            loops++;
             if (gyroResults[mid].getTimestamp() > timestamp)
                 max = mid;
             else 
                 min = mid;    
-            mid = max > min ? (max - min) / 2 : (maxGyroResultSize - min + max) / 2 + min;
+            mid = max > min ? (max - min) / 2 + min: (maxGyroResultSize - min + max) / 2 + min;
             mid %= maxGyroResultSize;
         }
+        System.out.println(gyroResults[mid].getTimestamp() + " " + timestamp + " " + loops + " " + Math.abs(gyroResults[mid].getTimestamp() - timestamp) + " " + (min != mid));
         return new Rotation3d(0, 0, gyroResults[mid].getGyro());
     }
 
