@@ -4,11 +4,13 @@ import java.util.ArrayList;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.IntegerSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import WallEye.WallEyeResult;
 
 /**
@@ -19,6 +21,7 @@ public class WallEye {
     private int numCameras;
     private int curUpdateNum = 0;
     private IntegerSubscriber updateSub;
+    private Transform3d[] camToCenter;
 
     /**
      * Creates a WallEye object that can pull pose location and timestamp from Network Tables.
@@ -29,6 +32,7 @@ public class WallEye {
     */
     public WallEye(String tableName, int numCameras)
     {
+        camToCenter = new Transform3d[numCameras];
         this.numCameras = numCameras;
         NetworkTableInstance nt = NetworkTableInstance.getDefault();
         nt.startServer();
@@ -100,5 +104,29 @@ public class WallEye {
     */
     public boolean hasNewUpdate() {
         return curUpdateNum != (int) updateSub.get();
+    }
+
+    /**
+     * Sets the translation for the camera to the center of the robot
+     *   
+     *
+     * @param camNum The index number for the camera as shown in the web interface
+     * @param translation The Transform3d of camera to the center of the robot when the robot has not turned
+    */
+    public void setCamToCenter(int camNum, Transform3d translation) {
+        camToCenter[camNum] = translation;
+    }
+
+    /**
+     * Gets the pose for the center of the robot from a camera pose
+     *   
+     *
+     * @param camNum The index number for the camera as shown in the web interface
+     * @param camPose the pose as returned by the camera
+     * 
+     * @return returns the pose from the center of the robot
+    */
+    public Pose3d camPoseToCenter(int camNum, Pose3d camPose) {
+        return camToCenter[camNum] != null ? camPose.transformBy(camToCenter[camNum]) : new Pose3d(new Translation3d(2767.0, 2767.0, 2767.0), new Rotation3d());
     }
 }
