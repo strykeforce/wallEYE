@@ -136,22 +136,15 @@ class Config:
 
     def setIP(self, ip):
         Config.logger.info("Attempting to set static IP")
-        # os.system("/usr/sbin/ifconfig eth0 down")
-        # if not os.system(f"/usr/sbin/ifconfig eth0 {ip} netmask 255.255.255.0"):
-        #     Config.logger.info(f"Static IP set: {ip}")
-        #     self.ip = ip
-        # else:
-        #     self.ip = Config.getCurrentIP()
-        #     Config.logger.error(f"Failed to set static ip: {ip}")
-        # os.system("/usr/sbin/ifconfig eth0 up")
-
-        if not os.system(f"nmcli connection modify eth0 ipv4.address {ip}/24"):
+        os.system("/usr/sbin/ifconfig eth0 up")
+        if not os.system(f"/usr/sbin/ifconfig eth0 {ip} netmask 255.255.255.0"):
             Config.logger.info(f"Static IP set: {ip}")
             self.ip = ip
         else:
             self.ip = Config.getCurrentIP()
             Config.logger.error(f"Failed to set static ip: {ip}")
-        os.system("nmcli connection up eth0")
+        os.system("/usr/sbin/ifconfig eth0 up")
+
 
         try:
             with open("SystemData.json", "r") as file:

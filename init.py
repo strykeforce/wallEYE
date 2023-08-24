@@ -121,10 +121,10 @@ try:
                 images.values(), walleyeData.cameras.listK(), walleyeData.cameras.listD()
             )
             logger.debug(f"Poses at {imageTime}: {poses}")
-            logger.info(ambig)
             for i in range(len(poses)):
                 walleyeData.robotPublisher.publish(i, imageTime, poses[i], tags[i], ambig[i])
-                
+            walleyeData.robotPublisher.increaseUpdateNum()
+            
             for i, (identifier, img) in enumerate(images.items()):
                 if i >= len(poses):
                     break

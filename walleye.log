@@ -1,884 +1,266 @@
-<<<<<<< HEAD
-[24-Aug-23 18:23:50 - INFO - init.py:44 - <module>()]  Web server ready
-[24-Aug-23 18:23:50 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
-[24-Aug-23 18:23:50 - INFO - NetworkClient.cpp:141 - None()]  starting network client
-[24-Aug-23 18:23:50 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - Walleye
-[24-Aug-23 18:23:50 - INFO - init.py:53 - <module>()]  Starting main loop
-[24-Aug-23 18:23:52 - INFO - init.py:125 - <module>()]  []
-[24-Aug-23 18:23:52 - CRITICAL - init.py:158 - <module>()]  list index out of range
+[24-Aug-23 19:41:26 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
+[24-Aug-23 19:41:26 - INFO - state.py:138 - setIP()]  Attempting to set static IP
+[24-Aug-23 19:41:26 - INFO - state.py:141 - setIP()]  Static IP set: 10.27.67.10
+[24-Aug-23 19:41:26 - INFO - camera.py:21 - __init__()]  Platform is linux
+[24-Aug-23 19:41:27 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
+[24-Aug-23 19:41:27 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
+[24-Aug-23 19:41:27 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[24-Aug-23 19:41:27 - INFO - camera.py:82 - __init__()]  Config found!
+[24-Aug-23 19:41:27 - INFO - calibration.py:291 - parseCalibration()]  Looking for calibration stored at ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(1600, 1200)CalData.json
+[24-Aug-23 19:41:27 - INFO - camera.py:115 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[1.03592100e+03 0.00000000e+00 8.16027156e+02]
+ [0.00000000e+00 9.49446252e+02 6.16439233e+02]
+ [0.00000000e+00 0.00000000e+00 1.00000000e+00]]
+[[ 0.04960712 -0.11274606 -0.05482673 -0.01093117  0.08518365 -0.03518569
+   0.05428022 -0.05727628  0.02503255 -0.03094144  0.05682528  0.04272835
+   0.13798034 -0.04358925]]
+[24-Aug-23 19:41:27 - INFO - camera.py:152 - setResolution()]  Resolution set to (1600, 1200) for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[24-Aug-23 19:41:27 - INFO - camera.py:166 - setGain()]  Gain set to 37.0
+[24-Aug-23 19:41:27 - INFO - camera.py:187 - setExposure()]  Exposure set to 58.0
+[24-Aug-23 19:41:28 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
+[24-Aug-23 19:41:31 - INFO - init.py:44 - <module>()]  Web server ready
+[24-Aug-23 19:41:31 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
+[24-Aug-23 19:41:31 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[24-Aug-23 19:41:31 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[24-Aug-23 19:41:31 - INFO - init.py:53 - <module>()]  Starting main loop
+[24-Aug-23 19:41:33 - INFO - web_interface.py:42 - connect()]  Client connected
+[24-Aug-23 19:41:57 - WARNING - web_interface.py:47 - disconnect()]  Client disconnected
+[24-Aug-23 19:41:57 - INFO - web_interface.py:42 - connect()]  Client connected
+[24-Aug-23 19:41:58 - WARNING - web_interface.py:47 - disconnect()]  Client disconnected
+[24-Aug-23 19:41:58 - INFO - web_interface.py:42 - connect()]  Client connected
+[24-Aug-23 19:48:07 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
+[24-Aug-23 19:48:07 - INFO - state.py:138 - setIP()]  Attempting to set static IP
+[24-Aug-23 19:48:07 - INFO - state.py:141 - setIP()]  Static IP set: 10.27.67.10
+[24-Aug-23 19:48:07 - INFO - camera.py:21 - __init__()]  Platform is linux
+[24-Aug-23 19:48:08 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
+[24-Aug-23 19:48:08 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
+[24-Aug-23 19:48:08 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[24-Aug-23 19:48:08 - INFO - camera.py:82 - __init__()]  Config found!
+[24-Aug-23 19:48:08 - INFO - calibration.py:291 - parseCalibration()]  Looking for calibration stored at ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(1600, 1200)CalData.json
+[24-Aug-23 19:48:08 - INFO - camera.py:115 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[1.03592100e+03 0.00000000e+00 8.16027156e+02]
+ [0.00000000e+00 9.49446252e+02 6.16439233e+02]
+ [0.00000000e+00 0.00000000e+00 1.00000000e+00]]
+[[ 0.04960712 -0.11274606 -0.05482673 -0.01093117  0.08518365 -0.03518569
+   0.05428022 -0.05727628  0.02503255 -0.03094144  0.05682528  0.04272835
+   0.13798034 -0.04358925]]
+[24-Aug-23 19:48:08 - INFO - camera.py:152 - setResolution()]  Resolution set to (1600, 1200) for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[24-Aug-23 19:48:08 - INFO - camera.py:166 - setGain()]  Gain set to 37.0
+[24-Aug-23 19:48:08 - INFO - camera.py:187 - setExposure()]  Exposure set to 58.0
+[24-Aug-23 19:48:09 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
+[24-Aug-23 19:48:14 - INFO - init.py:44 - <module>()]  Web server ready
+[24-Aug-23 19:48:14 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
+[24-Aug-23 19:48:14 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[24-Aug-23 19:48:14 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[24-Aug-23 19:48:14 - INFO - init.py:53 - <module>()]  Starting main loop
+[24-Aug-23 19:48:17 - INFO - web_interface.py:42 - connect()]  Client connected
+[24-Aug-23 19:48:22 - WARNING - web_interface.py:47 - disconnect()]  Client disconnected
+[24-Aug-23 19:48:22 - INFO - web_interface.py:42 - connect()]  Client connected
+[24-Aug-23 19:48:25 - CRITICAL - init.py:157 - <module>()]  OpenCV(4.7.0) /io/opencv/modules/calib3d/src/solvepnp.cpp:838: error: (-215:Assertion failed) ( (npoints >= 4) || (npoints == 3 && flags == SOLVEPNP_ITERATIVE && useExtrinsicGuess) || (npoints >= 3 && flags == SOLVEPNP_SQPNP) ) && npoints == std::max(ipoints.checkVector(2, CV_32F), ipoints.checkVector(2, CV_64F)) in function 'solvePnPGeneric'
 Traceback (most recent call last):
-  File "/home/orangepi/Desktop/wallEYE-main/init.py", line 127, in <module>
-    walleyeData.robotPublisher.publish(i, imageTime, poses[i], tags[i], ambig[i])
-IndexError: list index out of range
-[24-Aug-23 18:23:52 - INFO - init.py:159 - <module>()]  Shutting down
-[24-Aug-23 18:23:54 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[24-Aug-23 18:23:54 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[24-Aug-23 18:23:54 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[24-Aug-23 18:23:55 - INFO - camera.py:21 - __init__()]  Platform is linux
-[24-Aug-23 18:23:55 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:23:55 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
-[24-Aug-23 18:23:55 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:23:55 - INFO - camera.py:82 - __init__()]  Config found!
-[24-Aug-23 18:23:55 - ERROR - camera.py:137 - setResolution()]  Failed to set resolution to [800, 600] for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:23:55 - INFO - camera.py:164 - setGain()]  Gain set to 100.0
-[24-Aug-23 18:23:55 - INFO - camera.py:185 - setExposure()]  Exposure set to 5000.0
-[24-Aug-23 18:23:56 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
-[24-Aug-23 18:23:59 - INFO - init.py:44 - <module>()]  Web server ready
-[24-Aug-23 18:23:59 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
-[24-Aug-23 18:23:59 - INFO - NetworkClient.cpp:141 - None()]  starting network client
-[24-Aug-23 18:23:59 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - Walleye
-[24-Aug-23 18:23:59 - INFO - init.py:53 - <module>()]  Starting main loop
-[24-Aug-23 18:24:01 - INFO - init.py:125 - <module>()]  []
-[24-Aug-23 18:24:01 - CRITICAL - init.py:158 - <module>()]  list index out of range
-Traceback (most recent call last):
-  File "/home/orangepi/Desktop/wallEYE-main/init.py", line 127, in <module>
-    walleyeData.robotPublisher.publish(i, imageTime, poses[i], tags[i], ambig[i])
-IndexError: list index out of range
-[24-Aug-23 18:24:01 - INFO - init.py:159 - <module>()]  Shutting down
-[24-Aug-23 18:24:03 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[24-Aug-23 18:24:03 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[24-Aug-23 18:24:03 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[24-Aug-23 18:24:03 - INFO - camera.py:21 - __init__()]  Platform is linux
-[24-Aug-23 18:24:04 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:24:04 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
-[24-Aug-23 18:24:04 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:24:04 - INFO - camera.py:82 - __init__()]  Config found!
-[24-Aug-23 18:24:04 - ERROR - camera.py:137 - setResolution()]  Failed to set resolution to [800, 600] for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:24:04 - INFO - camera.py:164 - setGain()]  Gain set to 100.0
-[24-Aug-23 18:24:04 - INFO - camera.py:185 - setExposure()]  Exposure set to 5000.0
-[24-Aug-23 18:24:04 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
-[24-Aug-23 18:24:08 - INFO - init.py:44 - <module>()]  Web server ready
-[24-Aug-23 18:24:08 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
-[24-Aug-23 18:24:08 - INFO - NetworkClient.cpp:141 - None()]  starting network client
-[24-Aug-23 18:24:08 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - Walleye
-[24-Aug-23 18:24:08 - INFO - init.py:53 - <module>()]  Starting main loop
-[24-Aug-23 18:24:10 - INFO - init.py:125 - <module>()]  []
-[24-Aug-23 18:24:10 - CRITICAL - init.py:158 - <module>()]  list index out of range
-Traceback (most recent call last):
-  File "/home/orangepi/Desktop/wallEYE-main/init.py", line 127, in <module>
-    walleyeData.robotPublisher.publish(i, imageTime, poses[i], tags[i], ambig[i])
-IndexError: list index out of range
-[24-Aug-23 18:24:10 - INFO - init.py:159 - <module>()]  Shutting down
-[24-Aug-23 18:24:12 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[24-Aug-23 18:24:12 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[24-Aug-23 18:24:12 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[24-Aug-23 18:24:12 - INFO - camera.py:21 - __init__()]  Platform is linux
-[24-Aug-23 18:24:13 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:24:13 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
-[24-Aug-23 18:24:13 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:24:13 - INFO - camera.py:82 - __init__()]  Config found!
-[24-Aug-23 18:24:13 - ERROR - camera.py:137 - setResolution()]  Failed to set resolution to [800, 600] for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:24:13 - INFO - camera.py:164 - setGain()]  Gain set to 100.0
-[24-Aug-23 18:24:13 - INFO - camera.py:185 - setExposure()]  Exposure set to 5000.0
-[24-Aug-23 18:24:13 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
-[24-Aug-23 18:24:17 - INFO - init.py:44 - <module>()]  Web server ready
-[24-Aug-23 18:24:17 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
-[24-Aug-23 18:24:17 - INFO - NetworkClient.cpp:141 - None()]  starting network client
-[24-Aug-23 18:24:17 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - Walleye
-[24-Aug-23 18:24:17 - INFO - init.py:53 - <module>()]  Starting main loop
-[24-Aug-23 18:24:19 - INFO - init.py:125 - <module>()]  []
-[24-Aug-23 18:24:19 - CRITICAL - init.py:158 - <module>()]  list index out of range
-Traceback (most recent call last):
-  File "/home/orangepi/Desktop/wallEYE-main/init.py", line 127, in <module>
-    walleyeData.robotPublisher.publish(i, imageTime, poses[i], tags[i], ambig[i])
-IndexError: list index out of range
-[24-Aug-23 18:24:19 - INFO - init.py:159 - <module>()]  Shutting down
-[24-Aug-23 18:24:20 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[24-Aug-23 18:24:20 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[24-Aug-23 18:24:20 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[24-Aug-23 18:24:21 - INFO - camera.py:21 - __init__()]  Platform is linux
-[24-Aug-23 18:24:21 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:24:21 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
-[24-Aug-23 18:24:21 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:24:21 - INFO - camera.py:82 - __init__()]  Config found!
-[24-Aug-23 18:24:21 - ERROR - camera.py:137 - setResolution()]  Failed to set resolution to [800, 600] for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:24:21 - INFO - camera.py:164 - setGain()]  Gain set to 100.0
-[24-Aug-23 18:24:21 - INFO - camera.py:185 - setExposure()]  Exposure set to 5000.0
-[24-Aug-23 18:24:22 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
-[24-Aug-23 18:24:25 - INFO - init.py:44 - <module>()]  Web server ready
-[24-Aug-23 18:24:25 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
-[24-Aug-23 18:24:25 - INFO - NetworkClient.cpp:141 - None()]  starting network client
-[24-Aug-23 18:24:25 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - Walleye
-[24-Aug-23 18:24:25 - INFO - init.py:53 - <module>()]  Starting main loop
-[24-Aug-23 18:24:27 - INFO - init.py:125 - <module>()]  []
-[24-Aug-23 18:24:27 - CRITICAL - init.py:158 - <module>()]  list index out of range
-Traceback (most recent call last):
-  File "/home/orangepi/Desktop/wallEYE-main/init.py", line 127, in <module>
-    walleyeData.robotPublisher.publish(i, imageTime, poses[i], tags[i], ambig[i])
-IndexError: list index out of range
-[24-Aug-23 18:24:27 - INFO - init.py:159 - <module>()]  Shutting down
-[24-Aug-23 18:24:29 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[24-Aug-23 18:24:29 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[24-Aug-23 18:24:29 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[24-Aug-23 18:24:30 - INFO - camera.py:21 - __init__()]  Platform is linux
-[24-Aug-23 18:24:30 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:24:30 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
-[24-Aug-23 18:24:30 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:24:30 - INFO - camera.py:82 - __init__()]  Config found!
-[24-Aug-23 18:24:30 - ERROR - camera.py:137 - setResolution()]  Failed to set resolution to [800, 600] for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:24:30 - INFO - camera.py:164 - setGain()]  Gain set to 100.0
-[24-Aug-23 18:24:30 - INFO - camera.py:185 - setExposure()]  Exposure set to 5000.0
-[24-Aug-23 18:24:30 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
-[24-Aug-23 18:24:34 - INFO - init.py:44 - <module>()]  Web server ready
-[24-Aug-23 18:24:34 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
-[24-Aug-23 18:24:34 - INFO - NetworkClient.cpp:141 - None()]  starting network client
-[24-Aug-23 18:24:34 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - Walleye
-[24-Aug-23 18:24:34 - INFO - init.py:53 - <module>()]  Starting main loop
-[24-Aug-23 18:24:36 - INFO - init.py:125 - <module>()]  []
-[24-Aug-23 18:24:36 - CRITICAL - init.py:158 - <module>()]  list index out of range
-Traceback (most recent call last):
-  File "/home/orangepi/Desktop/wallEYE-main/init.py", line 127, in <module>
-    walleyeData.robotPublisher.publish(i, imageTime, poses[i], tags[i], ambig[i])
-IndexError: list index out of range
-[24-Aug-23 18:24:36 - INFO - init.py:159 - <module>()]  Shutting down
-[24-Aug-23 18:24:38 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[24-Aug-23 18:24:38 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[24-Aug-23 18:24:38 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[24-Aug-23 18:24:38 - INFO - camera.py:21 - __init__()]  Platform is linux
-[24-Aug-23 18:24:38 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:24:38 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
-[24-Aug-23 18:24:39 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:24:39 - INFO - camera.py:82 - __init__()]  Config found!
-[24-Aug-23 18:24:39 - ERROR - camera.py:137 - setResolution()]  Failed to set resolution to [800, 600] for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:24:39 - INFO - camera.py:164 - setGain()]  Gain set to 100.0
-[24-Aug-23 18:24:39 - INFO - camera.py:185 - setExposure()]  Exposure set to 5000.0
-[24-Aug-23 18:24:39 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
-[24-Aug-23 18:24:43 - INFO - init.py:44 - <module>()]  Web server ready
-[24-Aug-23 18:24:43 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
-[24-Aug-23 18:24:43 - INFO - NetworkClient.cpp:141 - None()]  starting network client
-[24-Aug-23 18:24:43 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - Walleye
-[24-Aug-23 18:24:43 - INFO - init.py:53 - <module>()]  Starting main loop
-[24-Aug-23 18:24:45 - INFO - init.py:125 - <module>()]  []
-[24-Aug-23 18:24:45 - CRITICAL - init.py:158 - <module>()]  list index out of range
-Traceback (most recent call last):
-  File "/home/orangepi/Desktop/wallEYE-main/init.py", line 127, in <module>
-    walleyeData.robotPublisher.publish(i, imageTime, poses[i], tags[i], ambig[i])
-IndexError: list index out of range
-[24-Aug-23 18:24:45 - INFO - init.py:159 - <module>()]  Shutting down
-[24-Aug-23 18:24:47 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[24-Aug-23 18:24:47 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[24-Aug-23 18:24:47 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[24-Aug-23 18:24:47 - INFO - camera.py:21 - __init__()]  Platform is linux
-[24-Aug-23 18:24:47 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:24:47 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
-[24-Aug-23 18:24:47 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:24:47 - INFO - camera.py:82 - __init__()]  Config found!
-[24-Aug-23 18:24:47 - ERROR - camera.py:137 - setResolution()]  Failed to set resolution to [800, 600] for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:24:47 - INFO - camera.py:164 - setGain()]  Gain set to 100.0
-[24-Aug-23 18:24:48 - INFO - camera.py:185 - setExposure()]  Exposure set to 5000.0
-[24-Aug-23 18:24:48 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
-[24-Aug-23 18:24:52 - INFO - init.py:44 - <module>()]  Web server ready
-[24-Aug-23 18:24:52 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
-[24-Aug-23 18:24:52 - INFO - NetworkClient.cpp:141 - None()]  starting network client
-[24-Aug-23 18:24:52 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - Walleye
-[24-Aug-23 18:24:52 - INFO - init.py:53 - <module>()]  Starting main loop
-[24-Aug-23 18:24:54 - INFO - init.py:125 - <module>()]  []
-[24-Aug-23 18:24:54 - CRITICAL - init.py:158 - <module>()]  list index out of range
-Traceback (most recent call last):
-  File "/home/orangepi/Desktop/wallEYE-main/init.py", line 127, in <module>
-    walleyeData.robotPublisher.publish(i, imageTime, poses[i], tags[i], ambig[i])
-IndexError: list index out of range
-[24-Aug-23 18:24:54 - INFO - init.py:159 - <module>()]  Shutting down
-[24-Aug-23 18:24:55 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[24-Aug-23 18:24:55 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[24-Aug-23 18:24:55 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[24-Aug-23 18:24:56 - INFO - camera.py:21 - __init__()]  Platform is linux
-[24-Aug-23 18:24:56 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:24:56 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
-[24-Aug-23 18:24:56 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:24:56 - INFO - camera.py:82 - __init__()]  Config found!
-[24-Aug-23 18:24:56 - ERROR - camera.py:137 - setResolution()]  Failed to set resolution to [800, 600] for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:24:56 - INFO - camera.py:164 - setGain()]  Gain set to 100.0
-[24-Aug-23 18:24:56 - INFO - camera.py:185 - setExposure()]  Exposure set to 5000.0
-[24-Aug-23 18:24:57 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
-[24-Aug-23 18:25:00 - INFO - init.py:44 - <module>()]  Web server ready
-[24-Aug-23 18:25:00 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
-[24-Aug-23 18:25:00 - INFO - NetworkClient.cpp:141 - None()]  starting network client
-[24-Aug-23 18:25:00 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - Walleye
-[24-Aug-23 18:25:00 - INFO - init.py:53 - <module>()]  Starting main loop
-[24-Aug-23 18:25:02 - INFO - init.py:125 - <module>()]  []
-[24-Aug-23 18:25:02 - CRITICAL - init.py:158 - <module>()]  list index out of range
-Traceback (most recent call last):
-  File "/home/orangepi/Desktop/wallEYE-main/init.py", line 127, in <module>
-    walleyeData.robotPublisher.publish(i, imageTime, poses[i], tags[i], ambig[i])
-IndexError: list index out of range
-[24-Aug-23 18:25:02 - INFO - init.py:159 - <module>()]  Shutting down
-[24-Aug-23 18:25:04 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[24-Aug-23 18:25:04 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[24-Aug-23 18:25:04 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[24-Aug-23 18:25:05 - INFO - camera.py:21 - __init__()]  Platform is linux
-[24-Aug-23 18:25:05 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:25:05 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
-[24-Aug-23 18:25:05 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:25:05 - INFO - camera.py:82 - __init__()]  Config found!
-[24-Aug-23 18:25:05 - ERROR - camera.py:137 - setResolution()]  Failed to set resolution to [800, 600] for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:25:05 - INFO - camera.py:164 - setGain()]  Gain set to 100.0
-[24-Aug-23 18:25:05 - INFO - camera.py:185 - setExposure()]  Exposure set to 5000.0
-[24-Aug-23 18:25:05 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
-[24-Aug-23 18:25:09 - INFO - init.py:44 - <module>()]  Web server ready
-[24-Aug-23 18:25:09 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
-[24-Aug-23 18:25:09 - INFO - NetworkClient.cpp:141 - None()]  starting network client
-[24-Aug-23 18:25:09 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - Walleye
-[24-Aug-23 18:25:09 - INFO - init.py:53 - <module>()]  Starting main loop
-[24-Aug-23 18:25:11 - INFO - init.py:125 - <module>()]  []
-[24-Aug-23 18:25:11 - CRITICAL - init.py:158 - <module>()]  list index out of range
-Traceback (most recent call last):
-  File "/home/orangepi/Desktop/wallEYE-main/init.py", line 127, in <module>
-    walleyeData.robotPublisher.publish(i, imageTime, poses[i], tags[i], ambig[i])
-IndexError: list index out of range
-[24-Aug-23 18:25:11 - INFO - init.py:159 - <module>()]  Shutting down
-[24-Aug-23 18:25:12 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[24-Aug-23 18:25:14 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[24-Aug-23 18:25:15 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[24-Aug-23 18:25:17 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[24-Aug-23 18:25:18 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[24-Aug-23 18:25:18 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[24-Aug-23 18:25:19 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[24-Aug-23 18:25:19 - INFO - camera.py:21 - __init__()]  Platform is linux
-[24-Aug-23 18:25:19 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:25:19 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
-[24-Aug-23 18:25:19 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:25:19 - INFO - camera.py:82 - __init__()]  Config found!
-[24-Aug-23 18:25:19 - ERROR - camera.py:137 - setResolution()]  Failed to set resolution to [800, 600] for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:25:19 - INFO - camera.py:164 - setGain()]  Gain set to 100.0
-[24-Aug-23 18:25:19 - INFO - camera.py:185 - setExposure()]  Exposure set to 5000.0
-[24-Aug-23 18:25:20 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
-[24-Aug-23 18:25:23 - INFO - init.py:44 - <module>()]  Web server ready
-[24-Aug-23 18:25:23 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
-[24-Aug-23 18:25:23 - INFO - NetworkClient.cpp:141 - None()]  starting network client
-[24-Aug-23 18:25:23 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - Walleye
-[24-Aug-23 18:25:23 - INFO - init.py:53 - <module>()]  Starting main loop
-[24-Aug-23 18:25:25 - CRITICAL - init.py:158 - <module>()]  list.append() takes exactly one argument (0 given)
-Traceback (most recent call last):
-  File "/home/orangepi/Desktop/wallEYE-main/init.py", line 121, in <module>
+  File "/home/orangepi/Desktop/wallEYE-main/init.py", line 120, in <module>
     poses, tags, ambig = poseEstimator.getPose(
   File "/home/orangepi/Desktop/wallEYE-main/Processing/Processing.py", line 24, in getPose
     return self.imagePose(images, K, D, self.tagLayout, self.arucoDetector)
-  File "/home/orangepi/Desktop/wallEYE-main/Processing/Processing.py", line 67, in imagePose
-    ambig.append(0)
-TypeError: list.append() takes exactly one argument (0 given)
-[24-Aug-23 18:25:25 - INFO - init.py:159 - <module>()]  Shutting down
-[24-Aug-23 18:25:27 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[24-Aug-23 18:25:27 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[24-Aug-23 18:25:27 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[24-Aug-23 18:25:28 - INFO - camera.py:21 - __init__()]  Platform is linux
-[24-Aug-23 18:25:28 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:25:28 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
-[24-Aug-23 18:25:28 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:25:28 - INFO - camera.py:82 - __init__()]  Config found!
-[24-Aug-23 18:25:28 - ERROR - camera.py:137 - setResolution()]  Failed to set resolution to [800, 600] for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:25:28 - INFO - camera.py:164 - setGain()]  Gain set to 100.0
-[24-Aug-23 18:25:28 - INFO - camera.py:185 - setExposure()]  Exposure set to 5000.0
-[24-Aug-23 18:25:29 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
-[24-Aug-23 18:25:32 - INFO - init.py:44 - <module>()]  Web server ready
-[24-Aug-23 18:25:32 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
-[24-Aug-23 18:25:32 - INFO - NetworkClient.cpp:141 - None()]  starting network client
-[24-Aug-23 18:25:32 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - Walleye
-[24-Aug-23 18:25:32 - INFO - init.py:53 - <module>()]  Starting main loop
-[24-Aug-23 18:25:34 - INFO - init.py:125 - <module>()]  [0]
-[24-Aug-23 18:25:34 - CRITICAL - init.py:158 - <module>()]  '<' not supported between instances of 'list' and 'int'
-Traceback (most recent call last):
-  File "/home/orangepi/Desktop/wallEYE-main/init.py", line 135, in <module>
-    visualizationBuffers[identifier].update(
-  File "/home/orangepi/Desktop/wallEYE-main/WebInterface/image_streams.py", line 117, in update
-    tagsX = [self.FIELD_DIMS[0] - self.tagLayout[tag - 1]["pose"]["translation"]["x"] if tag < 9 and tag > 0 else 2767 for tag in tags]
-  File "/home/orangepi/Desktop/wallEYE-main/WebInterface/image_streams.py", line 117, in <listcomp>
-    tagsX = [self.FIELD_DIMS[0] - self.tagLayout[tag - 1]["pose"]["translation"]["x"] if tag < 9 and tag > 0 else 2767 for tag in tags]
-TypeError: '<' not supported between instances of 'list' and 'int'
-[24-Aug-23 18:25:34 - INFO - init.py:159 - <module>()]  Shutting down
-[24-Aug-23 18:25:36 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[24-Aug-23 18:25:36 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[24-Aug-23 18:25:36 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[24-Aug-23 18:25:36 - INFO - camera.py:21 - __init__()]  Platform is linux
-[24-Aug-23 18:25:36 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:25:36 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
-[24-Aug-23 18:25:36 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:25:36 - INFO - camera.py:82 - __init__()]  Config found!
-[24-Aug-23 18:25:36 - ERROR - camera.py:137 - setResolution()]  Failed to set resolution to [800, 600] for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:25:36 - INFO - camera.py:164 - setGain()]  Gain set to 100.0
-[24-Aug-23 18:25:36 - INFO - camera.py:185 - setExposure()]  Exposure set to 5000.0
-[24-Aug-23 18:25:37 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
-[24-Aug-23 18:25:41 - INFO - init.py:44 - <module>()]  Web server ready
-[24-Aug-23 18:25:41 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
-[24-Aug-23 18:25:41 - INFO - NetworkClient.cpp:141 - None()]  starting network client
-[24-Aug-23 18:25:41 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - Walleye
-[24-Aug-23 18:25:41 - INFO - init.py:53 - <module>()]  Starting main loop
-[24-Aug-23 18:25:42 - INFO - init.py:125 - <module>()]  [0]
-[24-Aug-23 18:25:43 - CRITICAL - init.py:158 - <module>()]  '<' not supported between instances of 'list' and 'int'
-Traceback (most recent call last):
-  File "/home/orangepi/Desktop/wallEYE-main/init.py", line 135, in <module>
-    visualizationBuffers[identifier].update(
-  File "/home/orangepi/Desktop/wallEYE-main/WebInterface/image_streams.py", line 117, in update
-    tagsX = [self.FIELD_DIMS[0] - self.tagLayout[tag - 1]["pose"]["translation"]["x"] if tag < 9 and tag > 0 else 2767 for tag in tags]
-  File "/home/orangepi/Desktop/wallEYE-main/WebInterface/image_streams.py", line 117, in <listcomp>
-    tagsX = [self.FIELD_DIMS[0] - self.tagLayout[tag - 1]["pose"]["translation"]["x"] if tag < 9 and tag > 0 else 2767 for tag in tags]
-TypeError: '<' not supported between instances of 'list' and 'int'
-[24-Aug-23 18:25:43 - INFO - init.py:159 - <module>()]  Shutting down
-[24-Aug-23 18:25:44 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[24-Aug-23 18:25:44 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[24-Aug-23 18:25:44 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[24-Aug-23 18:25:45 - INFO - camera.py:21 - __init__()]  Platform is linux
-[24-Aug-23 18:25:45 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:25:45 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
-[24-Aug-23 18:25:45 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:25:45 - INFO - camera.py:82 - __init__()]  Config found!
-[24-Aug-23 18:25:45 - ERROR - camera.py:137 - setResolution()]  Failed to set resolution to [800, 600] for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:25:45 - INFO - camera.py:164 - setGain()]  Gain set to 100.0
-[24-Aug-23 18:25:45 - INFO - camera.py:185 - setExposure()]  Exposure set to 5000.0
-[24-Aug-23 18:25:46 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
-[24-Aug-23 18:25:49 - INFO - init.py:44 - <module>()]  Web server ready
-[24-Aug-23 18:25:49 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
-[24-Aug-23 18:25:49 - INFO - NetworkClient.cpp:141 - None()]  starting network client
-[24-Aug-23 18:25:49 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - Walleye
-[24-Aug-23 18:25:49 - INFO - init.py:53 - <module>()]  Starting main loop
-[24-Aug-23 18:25:51 - INFO - init.py:125 - <module>()]  [2767]
-[24-Aug-23 18:25:51 - CRITICAL - init.py:158 - <module>()]  '<' not supported between instances of 'list' and 'int'
-Traceback (most recent call last):
-  File "/home/orangepi/Desktop/wallEYE-main/init.py", line 135, in <module>
-    visualizationBuffers[identifier].update(
-  File "/home/orangepi/Desktop/wallEYE-main/WebInterface/image_streams.py", line 117, in update
-    tagsX = [self.FIELD_DIMS[0] - self.tagLayout[tag - 1]["pose"]["translation"]["x"] if tag < 9 and tag > 0 else 2767 for tag in tags]
-  File "/home/orangepi/Desktop/wallEYE-main/WebInterface/image_streams.py", line 117, in <listcomp>
-    tagsX = [self.FIELD_DIMS[0] - self.tagLayout[tag - 1]["pose"]["translation"]["x"] if tag < 9 and tag > 0 else 2767 for tag in tags]
-TypeError: '<' not supported between instances of 'list' and 'int'
-[24-Aug-23 18:25:51 - INFO - init.py:159 - <module>()]  Shutting down
-[24-Aug-23 18:25:53 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[24-Aug-23 18:25:53 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[24-Aug-23 18:25:53 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[24-Aug-23 18:25:53 - INFO - camera.py:21 - __init__()]  Platform is linux
-[24-Aug-23 18:25:53 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:25:53 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
-[24-Aug-23 18:25:53 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:25:53 - INFO - camera.py:82 - __init__()]  Config found!
-[24-Aug-23 18:25:53 - ERROR - camera.py:137 - setResolution()]  Failed to set resolution to [800, 600] for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:25:53 - INFO - camera.py:164 - setGain()]  Gain set to 100.0
-[24-Aug-23 18:25:53 - INFO - camera.py:185 - setExposure()]  Exposure set to 5000.0
-[24-Aug-23 18:25:54 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
-[24-Aug-23 18:25:58 - INFO - init.py:44 - <module>()]  Web server ready
-[24-Aug-23 18:25:58 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
-[24-Aug-23 18:25:58 - INFO - NetworkClient.cpp:141 - None()]  starting network client
-[24-Aug-23 18:25:58 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - Walleye
-[24-Aug-23 18:25:58 - INFO - init.py:53 - <module>()]  Starting main loop
-[24-Aug-23 18:25:59 - INFO - init.py:125 - <module>()]  [2767]
-[24-Aug-23 18:25:59 - CRITICAL - init.py:158 - <module>()]  '<' not supported between instances of 'list' and 'int'
-Traceback (most recent call last):
-  File "/home/orangepi/Desktop/wallEYE-main/init.py", line 135, in <module>
-    visualizationBuffers[identifier].update(
-  File "/home/orangepi/Desktop/wallEYE-main/WebInterface/image_streams.py", line 117, in update
-    tagsX = [self.FIELD_DIMS[0] - self.tagLayout[tag - 1]["pose"]["translation"]["x"] if tag < 9 and tag > 0 else 2767 for tag in tags]
-  File "/home/orangepi/Desktop/wallEYE-main/WebInterface/image_streams.py", line 117, in <listcomp>
-    tagsX = [self.FIELD_DIMS[0] - self.tagLayout[tag - 1]["pose"]["translation"]["x"] if tag < 9 and tag > 0 else 2767 for tag in tags]
-TypeError: '<' not supported between instances of 'list' and 'int'
-[24-Aug-23 18:25:59 - INFO - init.py:159 - <module>()]  Shutting down
-[24-Aug-23 18:26:01 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[24-Aug-23 18:26:01 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[24-Aug-23 18:26:01 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[24-Aug-23 18:26:02 - INFO - camera.py:21 - __init__()]  Platform is linux
-[24-Aug-23 18:26:02 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:26:02 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
-[24-Aug-23 18:26:02 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:26:02 - INFO - camera.py:82 - __init__()]  Config found!
-[24-Aug-23 18:26:02 - ERROR - camera.py:137 - setResolution()]  Failed to set resolution to [800, 600] for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:26:02 - INFO - camera.py:164 - setGain()]  Gain set to 100.0
-[24-Aug-23 18:26:02 - INFO - camera.py:185 - setExposure()]  Exposure set to 5000.0
-[24-Aug-23 18:26:03 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
-[24-Aug-23 18:26:06 - INFO - init.py:44 - <module>()]  Web server ready
-[24-Aug-23 18:26:06 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
-[24-Aug-23 18:26:06 - INFO - NetworkClient.cpp:141 - None()]  starting network client
-[24-Aug-23 18:26:06 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - Walleye
-[24-Aug-23 18:26:06 - INFO - init.py:53 - <module>()]  Starting main loop
-[24-Aug-23 18:26:08 - INFO - init.py:125 - <module>()]  [2767]
-[24-Aug-23 18:26:08 - CRITICAL - init.py:158 - <module>()]  '<' not supported between instances of 'list' and 'int'
-Traceback (most recent call last):
-  File "/home/orangepi/Desktop/wallEYE-main/init.py", line 135, in <module>
-    visualizationBuffers[identifier].update(
-  File "/home/orangepi/Desktop/wallEYE-main/WebInterface/image_streams.py", line 117, in update
-    tagsX = [self.FIELD_DIMS[0] - self.tagLayout[tag - 1]["pose"]["translation"]["x"] if tag < 9 and tag > 0 else 2767 for tag in tags]
-  File "/home/orangepi/Desktop/wallEYE-main/WebInterface/image_streams.py", line 117, in <listcomp>
-    tagsX = [self.FIELD_DIMS[0] - self.tagLayout[tag - 1]["pose"]["translation"]["x"] if tag < 9 and tag > 0 else 2767 for tag in tags]
-TypeError: '<' not supported between instances of 'list' and 'int'
-[24-Aug-23 18:26:08 - INFO - init.py:159 - <module>()]  Shutting down
-[24-Aug-23 18:26:10 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[24-Aug-23 18:26:10 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[24-Aug-23 18:26:10 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[24-Aug-23 18:26:10 - INFO - camera.py:21 - __init__()]  Platform is linux
-[24-Aug-23 18:26:10 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:26:10 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
-[24-Aug-23 18:26:10 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:26:10 - INFO - camera.py:82 - __init__()]  Config found!
-[24-Aug-23 18:26:10 - ERROR - camera.py:137 - setResolution()]  Failed to set resolution to [800, 600] for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:26:10 - INFO - camera.py:164 - setGain()]  Gain set to 100.0
-[24-Aug-23 18:26:10 - INFO - camera.py:185 - setExposure()]  Exposure set to 5000.0
-[24-Aug-23 18:26:11 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
-[24-Aug-23 18:26:13 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[24-Aug-23 18:26:14 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[24-Aug-23 18:26:14 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[24-Aug-23 18:26:14 - INFO - camera.py:21 - __init__()]  Platform is linux
-[24-Aug-23 18:26:14 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:26:14 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
-[24-Aug-23 18:26:14 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:26:14 - INFO - camera.py:82 - __init__()]  Config found!
-[24-Aug-23 18:26:14 - ERROR - camera.py:137 - setResolution()]  Failed to set resolution to [800, 600] for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:26:14 - INFO - camera.py:164 - setGain()]  Gain set to 100.0
-[24-Aug-23 18:26:14 - INFO - camera.py:185 - setExposure()]  Exposure set to 5000.0
-[24-Aug-23 18:26:15 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
-[24-Aug-23 18:26:19 - INFO - init.py:44 - <module>()]  Web server ready
-[24-Aug-23 18:26:19 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
-[24-Aug-23 18:26:19 - INFO - NetworkClient.cpp:141 - None()]  starting network client
-[24-Aug-23 18:26:19 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - Walleye
-[24-Aug-23 18:26:19 - INFO - init.py:53 - <module>()]  Starting main loop
-[24-Aug-23 18:26:20 - INFO - init.py:125 - <module>()]  [2767]
-[24-Aug-23 18:26:20 - CRITICAL - init.py:158 - <module>()]  '<' not supported between instances of 'list' and 'int'
-Traceback (most recent call last):
-  File "/home/orangepi/Desktop/wallEYE-main/init.py", line 135, in <module>
-    visualizationBuffers[identifier].update(
-  File "/home/orangepi/Desktop/wallEYE-main/WebInterface/image_streams.py", line 117, in update
-    tagsX = [self.FIELD_DIMS[0] - self.tagLayout[tag - 1]["pose"]["translation"]["x"] if tag < 9 and tag > 0 else 2767 for tag in tags]
-  File "/home/orangepi/Desktop/wallEYE-main/WebInterface/image_streams.py", line 117, in <listcomp>
-    tagsX = [self.FIELD_DIMS[0] - self.tagLayout[tag - 1]["pose"]["translation"]["x"] if tag < 9 and tag > 0 else 2767 for tag in tags]
-TypeError: '<' not supported between instances of 'list' and 'int'
-[24-Aug-23 18:26:20 - INFO - init.py:159 - <module>()]  Shutting down
-[24-Aug-23 18:26:22 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[24-Aug-23 18:26:22 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[24-Aug-23 18:26:22 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[24-Aug-23 18:26:23 - INFO - camera.py:21 - __init__()]  Platform is linux
-[24-Aug-23 18:26:23 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:26:23 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
-[24-Aug-23 18:26:23 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:26:23 - INFO - camera.py:82 - __init__()]  Config found!
-[24-Aug-23 18:26:23 - ERROR - camera.py:137 - setResolution()]  Failed to set resolution to [800, 600] for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:26:23 - INFO - camera.py:164 - setGain()]  Gain set to 100.0
-[24-Aug-23 18:26:23 - INFO - camera.py:185 - setExposure()]  Exposure set to 5000.0
-[24-Aug-23 18:26:24 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
-[24-Aug-23 18:26:27 - INFO - init.py:44 - <module>()]  Web server ready
-[24-Aug-23 18:26:27 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
-[24-Aug-23 18:26:27 - INFO - NetworkClient.cpp:141 - None()]  starting network client
-[24-Aug-23 18:26:27 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - Walleye
-[24-Aug-23 18:26:27 - INFO - init.py:53 - <module>()]  Starting main loop
-[24-Aug-23 18:26:29 - INFO - init.py:125 - <module>()]  [2767]
-[24-Aug-23 18:26:29 - CRITICAL - init.py:158 - <module>()]  '<' not supported between instances of 'list' and 'int'
-Traceback (most recent call last):
-  File "/home/orangepi/Desktop/wallEYE-main/init.py", line 135, in <module>
-    visualizationBuffers[identifier].update(
-  File "/home/orangepi/Desktop/wallEYE-main/WebInterface/image_streams.py", line 117, in update
-    tagsX = [self.FIELD_DIMS[0] - self.tagLayout[tag - 1]["pose"]["translation"]["x"] if tag < 9 and tag > 0 else 2767 for tag in tags]
-  File "/home/orangepi/Desktop/wallEYE-main/WebInterface/image_streams.py", line 117, in <listcomp>
-    tagsX = [self.FIELD_DIMS[0] - self.tagLayout[tag - 1]["pose"]["translation"]["x"] if tag < 9 and tag > 0 else 2767 for tag in tags]
-TypeError: '<' not supported between instances of 'list' and 'int'
-[24-Aug-23 18:26:29 - INFO - init.py:159 - <module>()]  Shutting down
-[24-Aug-23 18:26:31 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[24-Aug-23 18:26:31 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[24-Aug-23 18:26:31 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[24-Aug-23 18:26:32 - INFO - camera.py:21 - __init__()]  Platform is linux
-[24-Aug-23 18:26:32 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:26:32 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
-[24-Aug-23 18:26:32 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:26:32 - INFO - camera.py:82 - __init__()]  Config found!
-[24-Aug-23 18:26:32 - ERROR - camera.py:137 - setResolution()]  Failed to set resolution to [800, 600] for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:26:32 - INFO - camera.py:164 - setGain()]  Gain set to 100.0
-[24-Aug-23 18:26:32 - INFO - camera.py:185 - setExposure()]  Exposure set to 5000.0
-[24-Aug-23 18:26:33 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
-[24-Aug-23 18:26:36 - INFO - init.py:44 - <module>()]  Web server ready
-[24-Aug-23 18:26:36 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
-[24-Aug-23 18:26:36 - INFO - NetworkClient.cpp:141 - None()]  starting network client
-[24-Aug-23 18:26:36 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - Walleye
-[24-Aug-23 18:26:36 - INFO - init.py:53 - <module>()]  Starting main loop
-[24-Aug-23 18:26:38 - INFO - init.py:125 - <module>()]  [2767]
-[24-Aug-23 18:26:38 - CRITICAL - init.py:158 - <module>()]  '<' not supported between instances of 'list' and 'int'
-Traceback (most recent call last):
-  File "/home/orangepi/Desktop/wallEYE-main/init.py", line 135, in <module>
-    visualizationBuffers[identifier].update(
-  File "/home/orangepi/Desktop/wallEYE-main/WebInterface/image_streams.py", line 117, in update
-    tagsX = [self.FIELD_DIMS[0] - self.tagLayout[tag - 1]["pose"]["translation"]["x"] if tag < 9 and tag > 0 else 2767 for tag in tags]
-  File "/home/orangepi/Desktop/wallEYE-main/WebInterface/image_streams.py", line 117, in <listcomp>
-    tagsX = [self.FIELD_DIMS[0] - self.tagLayout[tag - 1]["pose"]["translation"]["x"] if tag < 9 and tag > 0 else 2767 for tag in tags]
-TypeError: '<' not supported between instances of 'list' and 'int'
-[24-Aug-23 18:26:38 - INFO - init.py:159 - <module>()]  Shutting down
-[24-Aug-23 18:26:40 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[24-Aug-23 18:26:40 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[24-Aug-23 18:26:40 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[24-Aug-23 18:26:40 - INFO - camera.py:21 - __init__()]  Platform is linux
-[24-Aug-23 18:26:41 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:26:41 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
-[24-Aug-23 18:26:41 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:26:41 - INFO - camera.py:82 - __init__()]  Config found!
-[24-Aug-23 18:26:41 - ERROR - camera.py:137 - setResolution()]  Failed to set resolution to [800, 600] for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:26:41 - INFO - camera.py:164 - setGain()]  Gain set to 100.0
-[24-Aug-23 18:26:41 - INFO - camera.py:185 - setExposure()]  Exposure set to 5000.0
-[24-Aug-23 18:26:41 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
-[24-Aug-23 18:26:45 - INFO - init.py:44 - <module>()]  Web server ready
-[24-Aug-23 18:26:45 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
-[24-Aug-23 18:26:45 - INFO - NetworkClient.cpp:141 - None()]  starting network client
-[24-Aug-23 18:26:45 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - Walleye
-[24-Aug-23 18:26:45 - INFO - init.py:53 - <module>()]  Starting main loop
-[24-Aug-23 18:26:47 - INFO - init.py:125 - <module>()]  [2767]
-[24-Aug-23 18:26:47 - CRITICAL - init.py:158 - <module>()]  '<' not supported between instances of 'list' and 'int'
-Traceback (most recent call last):
-  File "/home/orangepi/Desktop/wallEYE-main/init.py", line 135, in <module>
-    visualizationBuffers[identifier].update(
-  File "/home/orangepi/Desktop/wallEYE-main/WebInterface/image_streams.py", line 117, in update
-    tagsX = [self.FIELD_DIMS[0] - self.tagLayout[tag - 1]["pose"]["translation"]["x"] if tag < 9 and tag > 0 else 2767 for tag in tags]
-  File "/home/orangepi/Desktop/wallEYE-main/WebInterface/image_streams.py", line 117, in <listcomp>
-    tagsX = [self.FIELD_DIMS[0] - self.tagLayout[tag - 1]["pose"]["translation"]["x"] if tag < 9 and tag > 0 else 2767 for tag in tags]
-TypeError: '<' not supported between instances of 'list' and 'int'
-[24-Aug-23 18:26:47 - INFO - init.py:159 - <module>()]  Shutting down
-[24-Aug-23 18:26:48 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[24-Aug-23 18:26:48 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[24-Aug-23 18:26:48 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[24-Aug-23 18:26:49 - INFO - camera.py:21 - __init__()]  Platform is linux
-[24-Aug-23 18:26:49 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:26:49 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
-[24-Aug-23 18:26:49 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:26:49 - INFO - camera.py:82 - __init__()]  Config found!
-[24-Aug-23 18:26:49 - ERROR - camera.py:137 - setResolution()]  Failed to set resolution to [800, 600] for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:26:49 - INFO - camera.py:164 - setGain()]  Gain set to 100.0
-[24-Aug-23 18:26:49 - INFO - camera.py:185 - setExposure()]  Exposure set to 5000.0
-[24-Aug-23 18:26:50 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
-[24-Aug-23 18:26:53 - INFO - init.py:44 - <module>()]  Web server ready
-[24-Aug-23 18:26:53 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
-[24-Aug-23 18:26:53 - INFO - NetworkClient.cpp:141 - None()]  starting network client
-[24-Aug-23 18:26:53 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - Walleye
-[24-Aug-23 18:26:53 - INFO - init.py:53 - <module>()]  Starting main loop
-[24-Aug-23 18:26:55 - INFO - init.py:125 - <module>()]  [2767]
-[24-Aug-23 18:26:55 - CRITICAL - init.py:158 - <module>()]  '<' not supported between instances of 'list' and 'int'
-Traceback (most recent call last):
-  File "/home/orangepi/Desktop/wallEYE-main/init.py", line 135, in <module>
-    visualizationBuffers[identifier].update(
-  File "/home/orangepi/Desktop/wallEYE-main/WebInterface/image_streams.py", line 117, in update
-    tagsX = [self.FIELD_DIMS[0] - self.tagLayout[tag - 1]["pose"]["translation"]["x"] if tag < 9 and tag > 0 else 2767 for tag in tags]
-  File "/home/orangepi/Desktop/wallEYE-main/WebInterface/image_streams.py", line 117, in <listcomp>
-    tagsX = [self.FIELD_DIMS[0] - self.tagLayout[tag - 1]["pose"]["translation"]["x"] if tag < 9 and tag > 0 else 2767 for tag in tags]
-TypeError: '<' not supported between instances of 'list' and 'int'
-[24-Aug-23 18:26:55 - INFO - init.py:159 - <module>()]  Shutting down
-[24-Aug-23 18:26:57 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[24-Aug-23 18:26:57 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[24-Aug-23 18:26:57 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[24-Aug-23 18:26:58 - INFO - camera.py:21 - __init__()]  Platform is linux
-[24-Aug-23 18:26:58 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:26:58 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
-[24-Aug-23 18:26:58 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:26:58 - INFO - camera.py:82 - __init__()]  Config found!
-[24-Aug-23 18:26:58 - ERROR - camera.py:137 - setResolution()]  Failed to set resolution to [800, 600] for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[24-Aug-23 18:26:58 - INFO - camera.py:164 - setGain()]  Gain set to 100.0
-[24-Aug-23 18:26:58 - INFO - camera.py:185 - setExposure()]  Exposure set to 5000.0
-[24-Aug-23 18:26:59 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
-[24-Aug-23 18:27:02 - INFO - init.py:44 - <module>()]  Web server ready
-[24-Aug-23 18:27:02 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
-[24-Aug-23 18:27:02 - INFO - NetworkClient.cpp:141 - None()]  starting network client
-[24-Aug-23 18:27:02 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - Walleye
-[24-Aug-23 18:27:02 - INFO - init.py:53 - <module>()]  Starting main loop
-=======
-[22-Aug-23 20:17:12 - INFO - web_interface.py:79 - toggle_calibration()]  Starting calibration capture for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[22-Aug-23 20:17:12 - INFO - init.py:66 - <module>()]  Beginning calibration
-[22-Aug-23 20:17:26 - INFO - calibration.py:90 - processFrame()]  Calibration image saved to Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0CalImgs/1692749846019400547.png
-[22-Aug-23 20:17:29 - INFO - calibration.py:90 - processFrame()]  Calibration image saved to Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0CalImgs/1692749849419322929.png
-[22-Aug-23 20:17:33 - INFO - calibration.py:90 - processFrame()]  Calibration image saved to Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0CalImgs/1692749853819617819.png
-[22-Aug-23 20:17:41 - INFO - calibration.py:90 - processFrame()]  Calibration image saved to Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0CalImgs/1692749861614097250.png
-[22-Aug-23 20:17:50 - INFO - web_interface.py:83 - toggle_calibration()]  Stopping calibration capture
-[22-Aug-23 20:17:56 - INFO - calibration.py:203 - generateCalibration()]  Calibration successfully generated and saved to ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(1280, 800)CalData.json with resolution (1280, 800)
-[22-Aug-23 20:17:56 - INFO - camera.py:115 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[948.01281265   0.         661.91827916]
- [  0.         977.15966214 415.60070268]
- [  0.           0.           1.        ]]
-[[ 0.02142982  0.23721191 -0.02027148  0.06486291  3.40178333 -0.0561533
-   0.59251678  3.09135699 -0.06196457  0.00703724  0.02442619 -0.01828851
-  -0.04011762  0.13420393]]
-[22-Aug-23 20:21:47 - WARNING - web_interface.py:47 - disconnect()]  Client disconnected
-[22-Aug-23 20:21:47 - INFO - web_interface.py:42 - connect()]  Client connected
-[22-Aug-23 20:22:14 - ERROR - image_streams.py:21 - update()]  Updated image is None - Skipping
-[22-Aug-23 20:22:15 - INFO - calibration.py:291 - parseCalibration()]  Looking for calibration stored at ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(160, 120)CalData.json
-[22-Aug-23 20:22:15 - ERROR - camera.py:235 - importCalibration()]  Calibration not found for camera platform-fc800000.usb-usb-0:1:1.0-video-index0 at resolution (160, 120)
-[22-Aug-23 20:22:15 - INFO - camera.py:152 - setResolution()]  Resolution set to (160, 120) for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[22-Aug-23 20:22:44 - ERROR - camera.py:139 - setResolution()]  Failed to set resolution to (176, 144) for platform-fc800000.usb-usb-0:1:1.0-video-index0, using (160, 120)
-[22-Aug-23 20:22:51 - ERROR - camera.py:139 - setResolution()]  Failed to set resolution to (416, 240) for platform-fc800000.usb-usb-0:1:1.0-video-index0, using (160, 120)
-[22-Aug-23 20:22:55 - ERROR - camera.py:139 - setResolution()]  Failed to set resolution to (800, 448) for platform-fc800000.usb-usb-0:1:1.0-video-index0, using (160, 120)
-[22-Aug-23 20:23:01 - ERROR - camera.py:139 - setResolution()]  Failed to set resolution to (1280, 800) for platform-fc800000.usb-usb-0:1:1.0-video-index0, using (160, 120)
-[22-Aug-23 20:23:13 - ERROR - camera.py:139 - setResolution()]  Failed to set resolution to (1280, 800) for platform-fc800000.usb-usb-0:1:1.0-video-index0, using (160, 120)
-[22-Aug-23 20:23:28 - INFO - init.py:140 - <module>()]  Shutting down
-[22-Aug-23 20:23:30 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[22-Aug-23 20:23:30 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[22-Aug-23 20:23:30 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[22-Aug-23 20:23:30 - INFO - camera.py:21 - __init__()]  Platform is linux
-[22-Aug-23 20:23:30 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
-[22-Aug-23 20:23:30 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (176, 144), (320, 240), (352, 288), (416, 240), (424, 240), (640, 360), (640, 480), (800, 448), (800, 600), (960, 544), (1280, 720), (1280, 800)]
-[22-Aug-23 20:23:30 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[22-Aug-23 20:23:30 - INFO - camera.py:82 - __init__()]  Config found!
-[22-Aug-23 20:23:30 - INFO - calibration.py:291 - parseCalibration()]  Looking for calibration stored at ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(160, 120)CalData.json
-[22-Aug-23 20:23:30 - ERROR - camera.py:235 - importCalibration()]  Calibration not found for camera platform-fc800000.usb-usb-0:1:1.0-video-index0 at resolution (160, 120)
-[22-Aug-23 20:23:30 - INFO - camera.py:152 - setResolution()]  Resolution set to (160, 120) for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[22-Aug-23 20:23:30 - INFO - camera.py:166 - setGain()]  Gain set to -1.0
-[22-Aug-23 20:23:30 - WARNING - camera.py:184 - setExposure()]  Exposure not set: -1.0 not accepted
-[22-Aug-23 20:23:31 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
-[22-Aug-23 20:23:35 - INFO - init.py:44 - <module>()]  Web server ready
-[22-Aug-23 20:23:35 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
-[22-Aug-23 20:23:35 - INFO - NetworkClient.cpp:141 - None()]  starting network client
-[22-Aug-23 20:23:35 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
-[22-Aug-23 20:23:35 - INFO - init.py:53 - <module>()]  Starting main loop
-[22-Aug-23 20:23:37 - INFO - web_interface.py:42 - connect()]  Client connected
-[22-Aug-23 20:23:56 - INFO - camera.py:187 - setExposure()]  Exposure set to 51.0
-[22-Aug-23 20:23:58 - WARNING - camera.py:163 - setGain()]  Gain not set: 1.67 not accepted
-[22-Aug-23 20:23:59 - WARNING - camera.py:163 - setGain()]  Gain not set: 8.18 not accepted
-[22-Aug-23 20:24:04 - ERROR - image_streams.py:21 - update()]  Updated image is None - Skipping
-[22-Aug-23 20:24:04 - INFO - calibration.py:291 - parseCalibration()]  Looking for calibration stored at ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(1280, 800)CalData.json
-[22-Aug-23 20:24:04 - INFO - camera.py:115 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[948.01281265   0.         661.91827916]
- [  0.         977.15966214 415.60070268]
- [  0.           0.           1.        ]]
-[[ 0.02142982  0.23721191 -0.02027148  0.06486291  3.40178333 -0.0561533
-   0.59251678  3.09135699 -0.06196457  0.00703724  0.02442619 -0.01828851
-  -0.04011762  0.13420393]]
-[22-Aug-23 20:24:04 - INFO - camera.py:152 - setResolution()]  Resolution set to (1280, 800) for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[22-Aug-23 20:24:05 - INFO - image_streams.py:25 - update()]  Updated image is NOT none!
-[22-Aug-23 20:37:03 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[22-Aug-23 20:37:03 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[22-Aug-23 20:37:03 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[22-Aug-23 20:37:04 - INFO - camera.py:21 - __init__()]  Platform is linux
-[22-Aug-23 20:37:04 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
-[22-Aug-23 20:37:04 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
-[22-Aug-23 20:37:04 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[22-Aug-23 20:37:04 - INFO - camera.py:82 - __init__()]  Config found!
-[22-Aug-23 20:37:04 - ERROR - camera.py:139 - setResolution()]  Failed to set resolution to (1280, 800) for platform-fc800000.usb-usb-0:1:1.0-video-index0, using (1280, 720)
-[22-Aug-23 20:37:04 - INFO - calibration.py:291 - parseCalibration()]  Looking for calibration stored at ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(800, 600)CalData.json
-[22-Aug-23 20:37:04 - ERROR - camera.py:235 - importCalibration()]  Calibration not found for camera platform-fc800000.usb-usb-0:1:1.0-video-index0 at resolution (800, 600)
-[22-Aug-23 20:37:04 - WARNING - camera.py:163 - setGain()]  Gain not set: -1.0 not accepted
-[22-Aug-23 20:37:04 - INFO - camera.py:187 - setExposure()]  Exposure set to 51.0
-[22-Aug-23 20:37:05 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
-[22-Aug-23 20:37:08 - INFO - init.py:44 - <module>()]  Web server ready
-[22-Aug-23 20:37:08 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
-[22-Aug-23 20:37:08 - INFO - NetworkClient.cpp:141 - None()]  starting network client
-[22-Aug-23 20:37:08 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
-[22-Aug-23 20:37:08 - INFO - init.py:53 - <module>()]  Starting main loop
-[22-Aug-23 20:37:10 - INFO - web_interface.py:42 - connect()]  Client connected
-[22-Aug-23 20:37:13 - WARNING - web_interface.py:47 - disconnect()]  Client disconnected
-[22-Aug-23 20:37:13 - INFO - web_interface.py:42 - connect()]  Client connected
-[22-Aug-23 20:37:33 - WARNING - camera.py:163 - setGain()]  Gain not set: 0.08 not accepted
-[22-Aug-23 20:37:36 - WARNING - camera.py:163 - setGain()]  Gain not set: -3.6 not accepted
-[22-Aug-23 20:37:38 - WARNING - camera.py:163 - setGain()]  Gain not set: -0.05 not accepted
-[22-Aug-23 20:37:39 - WARNING - camera.py:163 - setGain()]  Gain not set: 2.5 not accepted
-[22-Aug-23 20:37:40 - WARNING - camera.py:163 - setGain()]  Gain not set: 4.63 not accepted
-[22-Aug-23 20:37:41 - WARNING - camera.py:163 - setGain()]  Gain not set: 6.25 not accepted
-[22-Aug-23 20:37:43 - WARNING - camera.py:163 - setGain()]  Gain not set: 9.37 not accepted
-[22-Aug-23 20:39:25 - WARNING - web_interface.py:47 - disconnect()]  Client disconnected
-[22-Aug-23 20:39:48 - INFO - web_interface.py:42 - connect()]  Client connected
-[22-Aug-23 20:39:58 - ERROR - image_streams.py:21 - update()]  Updated image is None - Skipping
-[22-Aug-23 20:39:58 - INFO - calibration.py:291 - parseCalibration()]  Looking for calibration stored at ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(1600, 1200)CalData.json
-[22-Aug-23 20:39:58 - ERROR - camera.py:235 - importCalibration()]  Calibration not found for camera platform-fc800000.usb-usb-0:1:1.0-video-index0 at resolution (1600, 1200)
-[22-Aug-23 20:39:58 - INFO - camera.py:152 - setResolution()]  Resolution set to (1600, 1200) for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[22-Aug-23 20:40:34 - WARNING - web_interface.py:47 - disconnect()]  Client disconnected
-[22-Aug-23 20:40:34 - INFO - web_interface.py:42 - connect()]  Client connected
-[22-Aug-23 20:40:41 - INFO - init.py:140 - <module>()]  Shutting down
-[22-Aug-23 20:40:42 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[22-Aug-23 20:40:42 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[22-Aug-23 20:40:42 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[22-Aug-23 20:40:43 - INFO - camera.py:21 - __init__()]  Platform is linux
-[22-Aug-23 20:40:43 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
-[22-Aug-23 20:40:43 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
-[22-Aug-23 20:40:43 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[22-Aug-23 20:40:43 - INFO - camera.py:82 - __init__()]  Config found!
-[22-Aug-23 20:40:43 - INFO - calibration.py:291 - parseCalibration()]  Looking for calibration stored at ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(1600, 1200)CalData.json
-[22-Aug-23 20:40:43 - ERROR - camera.py:235 - importCalibration()]  Calibration not found for camera platform-fc800000.usb-usb-0:1:1.0-video-index0 at resolution (1600, 1200)
-[22-Aug-23 20:40:43 - INFO - camera.py:152 - setResolution()]  Resolution set to (1600, 1200) for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[22-Aug-23 20:40:43 - INFO - camera.py:166 - setGain()]  Gain set to 9.0
-[22-Aug-23 20:40:43 - INFO - camera.py:187 - setExposure()]  Exposure set to 51.0
-[22-Aug-23 20:40:44 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
-[22-Aug-23 20:40:47 - INFO - init.py:44 - <module>()]  Web server ready
-[22-Aug-23 20:40:47 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
-[22-Aug-23 20:40:47 - INFO - NetworkClient.cpp:141 - None()]  starting network client
-[22-Aug-23 20:40:47 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
-[22-Aug-23 20:40:47 - INFO - init.py:53 - <module>()]  Starting main loop
-[22-Aug-23 20:40:48 - INFO - web_interface.py:42 - connect()]  Client connected
-[22-Aug-23 20:40:51 - WARNING - web_interface.py:47 - disconnect()]  Client disconnected
-[22-Aug-23 20:40:51 - INFO - web_interface.py:42 - connect()]  Client connected
-[22-Aug-23 20:41:01 - INFO - web_interface.py:79 - toggle_calibration()]  Starting calibration capture for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[22-Aug-23 20:41:01 - INFO - init.py:66 - <module>()]  Beginning calibration
-[22-Aug-23 20:41:12 - INFO - calibration.py:90 - processFrame()]  Calibration image saved to Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0CalImgs/1692751272088488493.png
-[22-Aug-23 20:41:19 - INFO - web_interface.py:83 - toggle_calibration()]  Stopping calibration capture
-[22-Aug-23 20:41:21 - INFO - calibration.py:203 - generateCalibration()]  Calibration successfully generated and saved to ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(1600, 1200)CalData.json with resolution (1600, 1200)
-[22-Aug-23 20:41:21 - INFO - camera.py:115 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[1.03592100e+03 0.00000000e+00 8.16027156e+02]
+  File "/home/orangepi/Desktop/wallEYE-main/Processing/Processing.py", line 125, in imagePose
+    ret, rvec, tvec, reproj = cv2.solvePnPGeneric(np.asarray([tempc2, tempc1, tempc3, tempc4]), cornerLoc, K[imgIndex], D[imgIndex], flags = cv2.SOLVEPNP_IPPE_SQUARE)
+cv2.error: OpenCV(4.7.0) /io/opencv/modules/calib3d/src/solvepnp.cpp:838: error: (-215:Assertion failed) ( (npoints >= 4) || (npoints == 3 && flags == SOLVEPNP_ITERATIVE && useExtrinsicGuess) || (npoints >= 3 && flags == SOLVEPNP_SQPNP) ) && npoints == std::max(ipoints.checkVector(2, CV_32F), ipoints.checkVector(2, CV_64F)) in function 'solvePnPGeneric'
+
+[24-Aug-23 19:48:25 - INFO - init.py:158 - <module>()]  Shutting down
+[24-Aug-23 19:48:27 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
+[24-Aug-23 19:48:27 - INFO - state.py:138 - setIP()]  Attempting to set static IP
+[24-Aug-23 19:48:27 - INFO - state.py:141 - setIP()]  Static IP set: 10.27.67.10
+[24-Aug-23 19:48:27 - INFO - camera.py:21 - __init__()]  Platform is linux
+[24-Aug-23 19:48:27 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
+[24-Aug-23 19:48:27 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
+[24-Aug-23 19:48:27 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[24-Aug-23 19:48:27 - INFO - camera.py:82 - __init__()]  Config found!
+[24-Aug-23 19:48:27 - INFO - calibration.py:291 - parseCalibration()]  Looking for calibration stored at ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(1600, 1200)CalData.json
+[24-Aug-23 19:48:27 - INFO - camera.py:115 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[1.03592100e+03 0.00000000e+00 8.16027156e+02]
  [0.00000000e+00 9.49446252e+02 6.16439233e+02]
  [0.00000000e+00 0.00000000e+00 1.00000000e+00]]
 [[ 0.04960712 -0.11274606 -0.05482673 -0.01093117  0.08518365 -0.03518569
    0.05428022 -0.05727628  0.02503255 -0.03094144  0.05682528  0.04272835
    0.13798034 -0.04358925]]
-[22-Aug-23 20:41:29 - INFO - calibration.py:203 - generateCalibration()]  Calibration successfully generated and saved to ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(1600, 1200)CalData.json with resolution (1600, 1200)
-[22-Aug-23 20:41:29 - INFO - camera.py:115 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[1.03592100e+03 0.00000000e+00 8.16027156e+02]
+[24-Aug-23 19:48:27 - INFO - camera.py:152 - setResolution()]  Resolution set to (1600, 1200) for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[24-Aug-23 19:48:27 - INFO - camera.py:166 - setGain()]  Gain set to 37.0
+[24-Aug-23 19:48:27 - INFO - camera.py:187 - setExposure()]  Exposure set to 58.0
+[24-Aug-23 19:48:28 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
+[24-Aug-23 19:48:31 - INFO - init.py:44 - <module>()]  Web server ready
+[24-Aug-23 19:48:31 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
+[24-Aug-23 19:48:31 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[24-Aug-23 19:48:31 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[24-Aug-23 19:48:31 - INFO - init.py:53 - <module>()]  Starting main loop
+[24-Aug-23 19:48:36 - INFO - web_interface.py:42 - connect()]  Client connected
+[24-Aug-23 19:50:29 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
+[24-Aug-23 19:50:29 - INFO - state.py:138 - setIP()]  Attempting to set static IP
+[24-Aug-23 19:50:29 - INFO - state.py:141 - setIP()]  Static IP set: 10.27.67.10
+[24-Aug-23 19:50:29 - INFO - camera.py:21 - __init__()]  Platform is linux
+[24-Aug-23 19:50:30 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
+[24-Aug-23 19:50:30 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
+[24-Aug-23 19:50:30 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[24-Aug-23 19:50:30 - INFO - camera.py:82 - __init__()]  Config found!
+[24-Aug-23 19:50:30 - INFO - calibration.py:291 - parseCalibration()]  Looking for calibration stored at ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(1600, 1200)CalData.json
+[24-Aug-23 19:50:30 - INFO - camera.py:115 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[1.03592100e+03 0.00000000e+00 8.16027156e+02]
  [0.00000000e+00 9.49446252e+02 6.16439233e+02]
  [0.00000000e+00 0.00000000e+00 1.00000000e+00]]
 [[ 0.04960712 -0.11274606 -0.05482673 -0.01093117  0.08518365 -0.03518569
    0.05428022 -0.05727628  0.02503255 -0.03094144  0.05682528  0.04272835
    0.13798034 -0.04358925]]
-[22-Aug-23 20:41:56 - INFO - web_interface.py:170 - toggle_pnp()]  PnP started
-[22-Aug-23 20:42:06 - WARNING - web_interface.py:47 - disconnect()]  Client disconnected
-[22-Aug-23 20:42:06 - INFO - web_interface.py:42 - connect()]  Client connected
-[22-Aug-23 20:42:20 - INFO - camera.py:187 - setExposure()]  Exposure set to 1542.0
-[22-Aug-23 20:42:23 - INFO - camera.py:187 - setExposure()]  Exposure set to 116.0
-[22-Aug-23 20:42:25 - WARNING - camera.py:184 - setExposure()]  Exposure not set: 0.0 not accepted
-[22-Aug-23 20:42:30 - INFO - camera.py:166 - setGain()]  Gain set to 35.0
-[22-Aug-23 20:44:33 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[22-Aug-23 20:44:33 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[22-Aug-23 20:44:33 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[22-Aug-23 20:44:33 - INFO - camera.py:21 - __init__()]  Platform is linux
-[22-Aug-23 20:44:34 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
-[22-Aug-23 20:44:34 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
-[22-Aug-23 20:44:34 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[22-Aug-23 20:44:34 - INFO - camera.py:82 - __init__()]  Config found!
-[22-Aug-23 20:44:34 - INFO - calibration.py:291 - parseCalibration()]  Looking for calibration stored at ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(1600, 1200)CalData.json
-[22-Aug-23 20:44:34 - INFO - camera.py:115 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[1.03592100e+03 0.00000000e+00 8.16027156e+02]
+[24-Aug-23 19:50:30 - INFO - camera.py:152 - setResolution()]  Resolution set to (1600, 1200) for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[24-Aug-23 19:50:30 - INFO - camera.py:166 - setGain()]  Gain set to 37.0
+[24-Aug-23 19:50:30 - INFO - camera.py:187 - setExposure()]  Exposure set to 58.0
+[24-Aug-23 19:50:31 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
+[24-Aug-23 19:50:35 - INFO - init.py:44 - <module>()]  Web server ready
+[24-Aug-23 19:50:35 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
+[24-Aug-23 19:50:35 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[24-Aug-23 19:50:35 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[24-Aug-23 19:50:35 - INFO - init.py:53 - <module>()]  Starting main loop
+[24-Aug-23 19:50:36 - INFO - web_interface.py:42 - connect()]  Client connected
+[24-Aug-23 19:50:36 - ERROR - server.py:439 - handle_request()]  post request handler error
+Traceback (most recent call last):
+  File "/home/orangepi/.local/lib/python3.10/site-packages/engineio/server.py", line 430, in handle_request
+    socket.handle_post_request(environ)
+  File "/home/orangepi/.local/lib/python3.10/site-packages/engineio/socket.py", line 124, in handle_post_request
+    p = payload.Payload(encoded_payload=body)
+  File "/home/orangepi/.local/lib/python3.10/site-packages/engineio/payload.py", line 13, in __init__
+    self.decode(encoded_payload)
+  File "/home/orangepi/.local/lib/python3.10/site-packages/engineio/payload.py", line 44, in decode
+    raise ValueError('Too many packets in payload')
+ValueError: Too many packets in payload
+[24-Aug-23 19:50:37 - CRITICAL - init.py:157 - <module>()]  OpenCV(4.7.0) :-1: error: (-5:Bad argument) in function 'Rodrigues'
+> Overload resolution failed:
+>  - src is not a numerical tuple
+>  - Expected Ptr<cv::UMat> for argument 'src'
+Traceback (most recent call last):
+  File "/home/orangepi/Desktop/wallEYE-main/init.py", line 120, in <module>
+    poses, tags, ambig = poseEstimator.getPose(
+  File "/home/orangepi/Desktop/wallEYE-main/Processing/Processing.py", line 24, in getPose
+    return self.imagePose(images, K, D, self.tagLayout, self.arucoDetector)
+  File "/home/orangepi/Desktop/wallEYE-main/Processing/Processing.py", line 157, in imagePose
+    rotMat, _ = cv2.Rodrigues(rvecs)
+cv2.error: OpenCV(4.7.0) :-1: error: (-5:Bad argument) in function 'Rodrigues'
+> Overload resolution failed:
+>  - src is not a numerical tuple
+>  - Expected Ptr<cv::UMat> for argument 'src'
+
+[24-Aug-23 19:50:37 - INFO - init.py:158 - <module>()]  Shutting down
+[24-Aug-23 19:50:38 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
+[24-Aug-23 19:50:38 - INFO - state.py:138 - setIP()]  Attempting to set static IP
+[24-Aug-23 19:50:38 - INFO - state.py:141 - setIP()]  Static IP set: 10.27.67.10
+[24-Aug-23 19:50:38 - INFO - camera.py:21 - __init__()]  Platform is linux
+[24-Aug-23 19:50:39 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
+[24-Aug-23 19:50:39 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
+[24-Aug-23 19:50:39 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[24-Aug-23 19:50:39 - INFO - camera.py:82 - __init__()]  Config found!
+[24-Aug-23 19:50:39 - INFO - calibration.py:291 - parseCalibration()]  Looking for calibration stored at ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(1600, 1200)CalData.json
+[24-Aug-23 19:50:39 - INFO - camera.py:115 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[1.03592100e+03 0.00000000e+00 8.16027156e+02]
  [0.00000000e+00 9.49446252e+02 6.16439233e+02]
  [0.00000000e+00 0.00000000e+00 1.00000000e+00]]
 [[ 0.04960712 -0.11274606 -0.05482673 -0.01093117  0.08518365 -0.03518569
    0.05428022 -0.05727628  0.02503255 -0.03094144  0.05682528  0.04272835
    0.13798034 -0.04358925]]
-[22-Aug-23 20:44:34 - INFO - camera.py:152 - setResolution()]  Resolution set to (1600, 1200) for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[22-Aug-23 20:44:34 - INFO - camera.py:166 - setGain()]  Gain set to 35.0
-[22-Aug-23 20:44:34 - INFO - camera.py:187 - setExposure()]  Exposure set to 1.0
-[22-Aug-23 20:44:34 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
-[22-Aug-23 20:44:38 - INFO - init.py:44 - <module>()]  Web server ready
-[22-Aug-23 20:44:38 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
-[22-Aug-23 20:44:38 - INFO - NetworkClient.cpp:141 - None()]  starting network client
-[22-Aug-23 20:44:38 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
-[22-Aug-23 20:44:38 - INFO - init.py:53 - <module>()]  Starting main loop
-[22-Aug-23 20:44:41 - INFO - web_interface.py:42 - connect()]  Client connected
-[22-Aug-23 20:44:49 - WARNING - web_interface.py:47 - disconnect()]  Client disconnected
-[22-Aug-23 20:44:49 - INFO - web_interface.py:42 - connect()]  Client connected
-[22-Aug-23 20:49:18 - INFO - camera.py:187 - setExposure()]  Exposure set to 282.0
-[22-Aug-23 20:49:21 - INFO - camera.py:187 - setExposure()]  Exposure set to 158.0
-[22-Aug-23 20:49:26 - INFO - camera.py:187 - setExposure()]  Exposure set to 41.0
-[22-Aug-23 20:49:29 - INFO - camera.py:166 - setGain()]  Gain set to 26.0
-[22-Aug-23 20:49:29 - INFO - camera.py:166 - setGain()]  Gain set to 25.0
-[22-Aug-23 20:49:32 - INFO - camera.py:166 - setGain()]  Gain set to 11.0
-[22-Aug-23 20:51:36 - WARNING - web_interface.py:47 - disconnect()]  Client disconnected
-[22-Aug-23 20:51:38 - INFO - web_interface.py:42 - connect()]  Client connected
-[22-Aug-23 20:52:27 - WARNING - web_interface.py:47 - disconnect()]  Client disconnected
-[22-Aug-23 20:53:25 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[22-Aug-23 20:53:26 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[22-Aug-23 20:53:26 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[22-Aug-23 20:53:54 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[22-Aug-23 20:53:54 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[22-Aug-23 20:53:54 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[22-Aug-23 20:54:21 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[22-Aug-23 20:54:21 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[22-Aug-23 20:54:21 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[22-Aug-23 20:54:21 - INFO - camera.py:21 - __init__()]  Platform is linux
-[22-Aug-23 20:54:21 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
-[22-Aug-23 20:54:21 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
-[22-Aug-23 20:54:21 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[22-Aug-23 20:54:21 - INFO - camera.py:82 - __init__()]  Config found!
-[22-Aug-23 20:54:22 - INFO - calibration.py:291 - parseCalibration()]  Looking for calibration stored at ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(1600, 1200)CalData.json
-[22-Aug-23 20:54:22 - INFO - camera.py:115 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[1.03592100e+03 0.00000000e+00 8.16027156e+02]
+[24-Aug-23 19:50:39 - INFO - camera.py:152 - setResolution()]  Resolution set to (1600, 1200) for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[24-Aug-23 19:50:39 - INFO - camera.py:166 - setGain()]  Gain set to 37.0
+[24-Aug-23 19:50:39 - INFO - camera.py:187 - setExposure()]  Exposure set to 58.0
+[24-Aug-23 19:50:39 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
+[24-Aug-23 19:50:43 - INFO - init.py:44 - <module>()]  Web server ready
+[24-Aug-23 19:50:43 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
+[24-Aug-23 19:50:43 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[24-Aug-23 19:50:43 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[24-Aug-23 19:50:43 - INFO - init.py:53 - <module>()]  Starting main loop
+[24-Aug-23 19:50:46 - INFO - web_interface.py:42 - connect()]  Client connected
+[24-Aug-23 19:51:04 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
+[24-Aug-23 19:51:04 - INFO - state.py:138 - setIP()]  Attempting to set static IP
+[24-Aug-23 19:51:04 - INFO - state.py:141 - setIP()]  Static IP set: 10.27.67.10
+[24-Aug-23 19:51:04 - INFO - camera.py:21 - __init__()]  Platform is linux
+[24-Aug-23 19:51:05 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
+[24-Aug-23 19:51:05 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
+[24-Aug-23 19:51:05 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[24-Aug-23 19:51:05 - INFO - camera.py:82 - __init__()]  Config found!
+[24-Aug-23 19:51:05 - INFO - calibration.py:291 - parseCalibration()]  Looking for calibration stored at ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(1600, 1200)CalData.json
+[24-Aug-23 19:51:05 - INFO - camera.py:115 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[1.03592100e+03 0.00000000e+00 8.16027156e+02]
  [0.00000000e+00 9.49446252e+02 6.16439233e+02]
  [0.00000000e+00 0.00000000e+00 1.00000000e+00]]
 [[ 0.04960712 -0.11274606 -0.05482673 -0.01093117  0.08518365 -0.03518569
    0.05428022 -0.05727628  0.02503255 -0.03094144  0.05682528  0.04272835
    0.13798034 -0.04358925]]
-[22-Aug-23 20:54:22 - INFO - camera.py:152 - setResolution()]  Resolution set to (1600, 1200) for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[22-Aug-23 20:54:22 - INFO - camera.py:166 - setGain()]  Gain set to 11.0
-[22-Aug-23 20:54:22 - INFO - camera.py:187 - setExposure()]  Exposure set to 41.0
-[22-Aug-23 20:54:22 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
-[22-Aug-23 20:54:26 - INFO - init.py:44 - <module>()]  Web server ready
-[22-Aug-23 20:54:26 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
-[22-Aug-23 20:54:26 - INFO - NetworkClient.cpp:141 - None()]  starting network client
-[22-Aug-23 20:54:26 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
-[22-Aug-23 20:54:26 - INFO - init.py:53 - <module>()]  Starting main loop
-[22-Aug-23 20:55:22 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[22-Aug-23 20:55:22 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[22-Aug-23 20:55:22 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[22-Aug-23 20:55:23 - INFO - camera.py:21 - __init__()]  Platform is linux
-[22-Aug-23 20:55:23 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
-[22-Aug-23 20:55:23 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
-[22-Aug-23 20:55:23 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[22-Aug-23 20:55:23 - INFO - camera.py:82 - __init__()]  Config found!
-[22-Aug-23 20:55:23 - INFO - calibration.py:291 - parseCalibration()]  Looking for calibration stored at ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(1600, 1200)CalData.json
-[22-Aug-23 20:55:23 - INFO - camera.py:115 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[1.03592100e+03 0.00000000e+00 8.16027156e+02]
+[24-Aug-23 19:51:05 - INFO - camera.py:152 - setResolution()]  Resolution set to (1600, 1200) for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[24-Aug-23 19:51:05 - INFO - camera.py:166 - setGain()]  Gain set to 37.0
+[24-Aug-23 19:51:05 - INFO - camera.py:187 - setExposure()]  Exposure set to 58.0
+[24-Aug-23 19:51:05 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
+[24-Aug-23 19:51:09 - INFO - init.py:44 - <module>()]  Web server ready
+[24-Aug-23 19:51:09 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
+[24-Aug-23 19:51:09 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[24-Aug-23 19:51:09 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[24-Aug-23 19:51:09 - INFO - init.py:53 - <module>()]  Starting main loop
+[24-Aug-23 19:51:14 - INFO - web_interface.py:42 - connect()]  Client connected
+[24-Aug-23 19:51:17 - CRITICAL - init.py:157 - <module>()]  OpenCV(4.7.0) :-1: error: (-5:Bad argument) in function 'Rodrigues'
+> Overload resolution failed:
+>  - src is not a numerical tuple
+>  - Expected Ptr<cv::UMat> for argument 'src'
+Traceback (most recent call last):
+  File "/home/orangepi/Desktop/wallEYE-main/init.py", line 120, in <module>
+    poses, tags, ambig = poseEstimator.getPose(
+  File "/home/orangepi/Desktop/wallEYE-main/Processing/Processing.py", line 24, in getPose
+    return self.imagePose(images, K, D, self.tagLayout, self.arucoDetector)
+  File "/home/orangepi/Desktop/wallEYE-main/Processing/Processing.py", line 157, in imagePose
+    rotMat, _ = cv2.Rodrigues(rvecs)
+cv2.error: OpenCV(4.7.0) :-1: error: (-5:Bad argument) in function 'Rodrigues'
+> Overload resolution failed:
+>  - src is not a numerical tuple
+>  - Expected Ptr<cv::UMat> for argument 'src'
+
+[24-Aug-23 19:51:17 - INFO - init.py:158 - <module>()]  Shutting down
+[24-Aug-23 19:51:18 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
+[24-Aug-23 19:51:18 - INFO - state.py:138 - setIP()]  Attempting to set static IP
+[24-Aug-23 19:51:18 - INFO - state.py:141 - setIP()]  Static IP set: 10.27.67.10
+[24-Aug-23 19:51:18 - INFO - camera.py:21 - __init__()]  Platform is linux
+[24-Aug-23 19:51:19 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
+[24-Aug-23 19:51:19 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
+[24-Aug-23 19:51:19 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[24-Aug-23 19:51:19 - INFO - camera.py:82 - __init__()]  Config found!
+[24-Aug-23 19:51:19 - INFO - calibration.py:291 - parseCalibration()]  Looking for calibration stored at ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(1600, 1200)CalData.json
+[24-Aug-23 19:51:19 - INFO - camera.py:115 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[1.03592100e+03 0.00000000e+00 8.16027156e+02]
  [0.00000000e+00 9.49446252e+02 6.16439233e+02]
  [0.00000000e+00 0.00000000e+00 1.00000000e+00]]
 [[ 0.04960712 -0.11274606 -0.05482673 -0.01093117  0.08518365 -0.03518569
    0.05428022 -0.05727628  0.02503255 -0.03094144  0.05682528  0.04272835
    0.13798034 -0.04358925]]
-[22-Aug-23 20:55:23 - INFO - camera.py:152 - setResolution()]  Resolution set to (1600, 1200) for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[22-Aug-23 20:55:23 - INFO - camera.py:166 - setGain()]  Gain set to 11.0
-[22-Aug-23 20:55:23 - INFO - camera.py:187 - setExposure()]  Exposure set to 41.0
-[22-Aug-23 20:55:24 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
-[22-Aug-23 20:55:27 - INFO - init.py:44 - <module>()]  Web server ready
-[22-Aug-23 20:55:27 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
-[22-Aug-23 20:55:27 - INFO - NetworkClient.cpp:141 - None()]  starting network client
-[22-Aug-23 20:55:27 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
-[22-Aug-23 20:55:27 - INFO - init.py:53 - <module>()]  Starting main loop
-[22-Aug-23 20:56:27 - INFO - web_interface.py:42 - connect()]  Client connected
-[22-Aug-23 20:56:33 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[22-Aug-23 20:56:33 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[22-Aug-23 20:56:34 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[22-Aug-23 20:56:34 - INFO - camera.py:21 - __init__()]  Platform is linux
-[22-Aug-23 20:56:34 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
-[22-Aug-23 20:56:34 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
-[22-Aug-23 20:56:34 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[22-Aug-23 20:56:34 - INFO - camera.py:82 - __init__()]  Config found!
-[22-Aug-23 20:56:34 - INFO - calibration.py:291 - parseCalibration()]  Looking for calibration stored at ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(1600, 1200)CalData.json
-[22-Aug-23 20:56:34 - INFO - camera.py:115 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[1.03592100e+03 0.00000000e+00 8.16027156e+02]
+[24-Aug-23 19:51:19 - INFO - camera.py:152 - setResolution()]  Resolution set to (1600, 1200) for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[24-Aug-23 19:51:19 - INFO - camera.py:166 - setGain()]  Gain set to 37.0
+[24-Aug-23 19:51:19 - INFO - camera.py:187 - setExposure()]  Exposure set to 58.0
+[24-Aug-23 19:51:19 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
+[24-Aug-23 19:51:23 - INFO - init.py:44 - <module>()]  Web server ready
+[24-Aug-23 19:51:23 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
+[24-Aug-23 19:51:23 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[24-Aug-23 19:51:23 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[24-Aug-23 19:51:23 - INFO - init.py:53 - <module>()]  Starting main loop
+[24-Aug-23 19:51:23 - INFO - web_interface.py:42 - connect()]  Client connected
+[24-Aug-23 19:52:09 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
+[24-Aug-23 19:52:09 - INFO - state.py:138 - setIP()]  Attempting to set static IP
+[24-Aug-23 19:52:09 - INFO - state.py:141 - setIP()]  Static IP set: 10.27.67.10
+[24-Aug-23 19:52:09 - INFO - camera.py:21 - __init__()]  Platform is linux
+[24-Aug-23 19:52:10 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
+[24-Aug-23 19:52:10 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
+[24-Aug-23 19:52:10 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[24-Aug-23 19:52:10 - INFO - camera.py:82 - __init__()]  Config found!
+[24-Aug-23 19:52:10 - INFO - calibration.py:291 - parseCalibration()]  Looking for calibration stored at ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(1600, 1200)CalData.json
+[24-Aug-23 19:52:10 - INFO - camera.py:115 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[1.03592100e+03 0.00000000e+00 8.16027156e+02]
  [0.00000000e+00 9.49446252e+02 6.16439233e+02]
  [0.00000000e+00 0.00000000e+00 1.00000000e+00]]
 [[ 0.04960712 -0.11274606 -0.05482673 -0.01093117  0.08518365 -0.03518569
    0.05428022 -0.05727628  0.02503255 -0.03094144  0.05682528  0.04272835
    0.13798034 -0.04358925]]
-[22-Aug-23 20:56:34 - INFO - camera.py:152 - setResolution()]  Resolution set to (1600, 1200) for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[22-Aug-23 20:56:34 - INFO - camera.py:166 - setGain()]  Gain set to 11.0
-[22-Aug-23 20:56:34 - INFO - camera.py:187 - setExposure()]  Exposure set to 41.0
-[22-Aug-23 20:56:35 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
-[22-Aug-23 20:56:39 - INFO - init.py:44 - <module>()]  Web server ready
-[22-Aug-23 20:56:39 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
-[22-Aug-23 20:56:39 - INFO - NetworkClient.cpp:141 - None()]  starting network client
-[22-Aug-23 20:56:39 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
-[22-Aug-23 20:56:39 - INFO - init.py:53 - <module>()]  Starting main loop
-[22-Aug-23 20:56:40 - INFO - web_interface.py:42 - connect()]  Client connected
-[22-Aug-23 20:56:43 - WARNING - web_interface.py:47 - disconnect()]  Client disconnected
-[22-Aug-23 20:56:43 - INFO - web_interface.py:42 - connect()]  Client connected
-[22-Aug-23 20:56:49 - WARNING - web_interface.py:47 - disconnect()]  Client disconnected
-[22-Aug-23 20:56:50 - INFO - web_interface.py:42 - connect()]  Client connected
-[22-Aug-23 20:57:17 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[22-Aug-23 20:57:17 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[22-Aug-23 20:57:17 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[22-Aug-23 20:57:36 - INFO - camera.py:21 - __init__()]  Platform is linux
-[22-Aug-23 20:57:36 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
-[22-Aug-23 20:57:36 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
-[22-Aug-23 20:57:36 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[22-Aug-23 20:57:36 - INFO - camera.py:82 - __init__()]  Config found!
-[22-Aug-23 20:57:36 - INFO - calibration.py:291 - parseCalibration()]  Looking for calibration stored at ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(1600, 1200)CalData.json
-[22-Aug-23 20:57:36 - INFO - camera.py:115 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[1.03592100e+03 0.00000000e+00 8.16027156e+02]
- [0.00000000e+00 9.49446252e+02 6.16439233e+02]
- [0.00000000e+00 0.00000000e+00 1.00000000e+00]]
-[[ 0.04960712 -0.11274606 -0.05482673 -0.01093117  0.08518365 -0.03518569
-   0.05428022 -0.05727628  0.02503255 -0.03094144  0.05682528  0.04272835
-   0.13798034 -0.04358925]]
-[22-Aug-23 20:57:36 - INFO - camera.py:152 - setResolution()]  Resolution set to (1600, 1200) for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[22-Aug-23 20:57:36 - INFO - camera.py:166 - setGain()]  Gain set to 11.0
-[22-Aug-23 20:57:36 - INFO - camera.py:187 - setExposure()]  Exposure set to 41.0
-[22-Aug-23 20:57:37 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
-[22-Aug-23 20:57:41 - INFO - init.py:44 - <module>()]  Web server ready
-[22-Aug-23 20:57:41 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
-[22-Aug-23 20:57:41 - INFO - NetworkClient.cpp:141 - None()]  starting network client
-[22-Aug-23 20:57:41 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
-[22-Aug-23 20:57:41 - INFO - init.py:53 - <module>()]  Starting main loop
-[22-Aug-23 20:57:52 - INFO - init.py:14 - <module>()]  ----------- Starting Up -----------
-[22-Aug-23 20:57:53 - INFO - state.py:138 - setIP()]  Attempting to set static IP
-[22-Aug-23 20:57:53 - INFO - state.py:149 - setIP()]  Static IP set: 10.27.67.10
-[22-Aug-23 20:57:53 - INFO - camera.py:21 - __init__()]  Platform is linux
-[22-Aug-23 20:57:53 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
-[22-Aug-23 20:57:53 - INFO - camera.py:61 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
-[22-Aug-23 20:57:53 - INFO - camera.py:67 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[22-Aug-23 20:57:53 - INFO - camera.py:82 - __init__()]  Config found!
-[22-Aug-23 20:57:53 - INFO - calibration.py:291 - parseCalibration()]  Looking for calibration stored at ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(1600, 1200)CalData.json
-[22-Aug-23 20:57:53 - INFO - camera.py:115 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[1.03592100e+03 0.00000000e+00 8.16027156e+02]
- [0.00000000e+00 9.49446252e+02 6.16439233e+02]
- [0.00000000e+00 0.00000000e+00 1.00000000e+00]]
-[[ 0.04960712 -0.11274606 -0.05482673 -0.01093117  0.08518365 -0.03518569
-   0.05428022 -0.05727628  0.02503255 -0.03094144  0.05682528  0.04272835
-   0.13798034 -0.04358925]]
-[22-Aug-23 20:57:53 - INFO - camera.py:152 - setResolution()]  Resolution set to (1600, 1200) for platform-fc800000.usb-usb-0:1:1.0-video-index0
-[22-Aug-23 20:57:53 - INFO - camera.py:166 - setGain()]  Gain set to 11.0
-[22-Aug-23 20:57:53 - INFO - camera.py:187 - setExposure()]  Exposure set to 41.0
-[22-Aug-23 20:57:54 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
-[22-Aug-23 20:57:58 - INFO - init.py:44 - <module>()]  Web server ready
-[22-Aug-23 20:57:58 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
-[22-Aug-23 20:57:58 - INFO - NetworkClient.cpp:141 - None()]  starting network client
-[22-Aug-23 20:57:58 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
-[22-Aug-23 20:57:58 - INFO - init.py:53 - <module>()]  Starting main loop
-[22-Aug-23 20:58:20 - INFO - web_interface.py:42 - connect()]  Client connected
->>>>>>> main
+[24-Aug-23 19:52:10 - INFO - camera.py:152 - setResolution()]  Resolution set to (1600, 1200) for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[24-Aug-23 19:52:10 - INFO - camera.py:166 - setGain()]  Gain set to 37.0
+[24-Aug-23 19:52:10 - INFO - camera.py:187 - setExposure()]  Exposure set to 58.0
+[24-Aug-23 19:52:11 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
+[24-Aug-23 19:52:14 - INFO - init.py:44 - <module>()]  Web server ready
+[24-Aug-23 19:52:14 - INFO - Processing.py:15 - __init__()]  Tag layout loaded
+[24-Aug-23 19:52:14 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[24-Aug-23 19:52:14 - INFO - init.py:53 - <module>()]  Starting main loop
+[24-Aug-23 19:52:14 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[24-Aug-23 19:52:18 - INFO - web_interface.py:42 - connect()]  Client connected
+[24-Aug-23 19:52:31 - WARNING - web_interface.py:47 - disconnect()]  Client disconnected
+[24-Aug-23 19:52:32 - INFO - web_interface.py:42 - connect()]  Client connected
+[24-Aug-23 19:52:45 - WARNING - web_interface.py:47 - disconnect()]  Client disconnected
+[24-Aug-23 19:52:45 - INFO - web_interface.py:42 - connect()]  Client connected

@@ -59,7 +59,7 @@ class Processor:
         tags = []
         ambig = []
         for imgIndex, img in enumerate(images):
-            curTags = []
+            curTags = [0]
  
             if img is None or K[imgIndex] is None or D[imgIndex] is None:
                 poses.append(Processor.BAD_POSE)
@@ -122,14 +122,12 @@ class Processor:
                     tempc3 = np.asarray([self.squareLength/2, -self.squareLength/2, 0])
                     tempc4 = np.asarray([-self.squareLength/2, -self.squareLength/2, 0])
                     # FIXME - TEST THIS
-                    ret, rvec, tvec = cv2.solvePnP(
-                        np.asarray([[tempc1, tempc2, tempc3, tempc4]]),
-                        corners[tagCount][0],
-                        K[imgIndex],
-                        D[imgIndex],
-                        flags=cv2.SOLVEPNP_SQPNP,
-                    )
-                    cv2.drawFrameAxes(img, K[imgIndex], D[imgIndex], rvec, tvec, 0.1)
+                    ret, rvec, tvec, reproj = cv2.solvePnPGeneric(np.asarray([tempc2, tempc1, tempc3, tempc4]), corners[tagCount][0], K[imgIndex], D[imgIndex], flags = cv2.SOLVEPNP_IPPE_SQUARE)
+                    
+                    if len(ids) == 1:
+                        ambig.append(reproj[0][0]/reproj[1][0])
+
+                    cv2.drawFrameAxes(img, K[imgIndex], D[imgIndex], rvec[0], tvec[0], 0.1)
 
                     if tagLoc is None:
                         cornerLoc = corners[tagCount][0]
@@ -144,21 +142,15 @@ class Processor:
                 if (
                     cornerLoc is not None
                 ):  # Make sure that tag is valid (i >= 0 and i <= 8)
-                    if len(ids) > 1:
-                        ret, rvecs, tvecs = cv2.solvePnP(
-                            tagLoc,
-                            cornerLoc,
-                            K[imgIndex],
-                            D[imgIndex],
-                            flags=cv2.SOLVEPNP_SQPNP,
-                        )
-                        ambig.append(-1)
-                    else:
-                        tagLoc = np.asarray([c2,c1,c4,c3])
-                        ret, rvecs, tvecs, reproj = cv2.solvePnPGeneric(tagLoc, cornerLoc, K[imgIndex], D[imgIndex], flags = cv2.SOLVEPNP_IPPE_SQUARE)
-                        rvecs = rvecs[0]
-                        tvecs = tvecs[0]
-                        ambig.append(reproj[0][0]/reproj[1][0])
+                    
+                    ret, rvecs, tvecs = cv2.solvePnP(
+                        tagLoc,
+                        cornerLoc,
+                        K[imgIndex],
+                        D[imgIndex],
+                        flags=cv2.SOLVEPNP_SQPNP,
+                    )
+                    
                     rotMat, _ = cv2.Rodrigues(rvecs)
                     transVec = -np.dot(np.transpose(rotMat), tvecs)
                     rot3D = wpi.Rotation3d(
