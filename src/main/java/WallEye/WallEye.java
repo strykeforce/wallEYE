@@ -2,6 +2,7 @@ package WallEye;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.Pair;
@@ -32,10 +33,12 @@ public class WallEye {
     ArrayList<DigitalInput> dios = new ArrayList<DigitalInput>();
     DoubleSupplier gyro;
     int currentGyroIndex = 0;
-    private final int maxGyroResultSize = 200;
+    private final int maxGyroResultSize = 50;
+    private final int camFPS = 50;
     private final double periodicLoop = 0.005; 
-    DIOGyroResult[] gyroResults = new DIOGyroResult[maxGyroResultSize];
+    DIOGyroResult[][] gyroResults;
     Notifier dioLoop = new Notifier(this::grabGyro);
+    HashMap<Integer, Integer> dioHashMap = new HashMap<>();
 
     /**
      * Creates a WallEye object that can pull pose location and timestamp from Network Tables.
@@ -44,15 +47,19 @@ public class WallEye {
      * @param  tableName  a string that specifies the table name of the WallEye instance (Look at web interface)
      * @param  numCameras a number that is equal to the number of cameras connected to the PI
      * @param  gyro a DoubleSupplier that supplies the gyro yaw for the robot
-     * @param  dioPorts an array that holds all the Ids for the dio ports that the cameras are connected to (to not use DIO yaw reporting put in an empty array)
+     * @param  dioPorts an array that holds all the Ids for the dio ports that the cameras are connected to *EACH CAMERA MUST HAVE A DIO PORT* (to not use DIO yaw reporting put in an empty array)
     */
     public WallEye(String tableName, int numCameras, DoubleSupplier gyro, int[] dioPorts)
     {
+        gyroResults = new DIOGyroResult[numCameras][maxGyroResultSize];
         if (dioPorts.length > 0)
             dioLoop.startPeriodic(periodicLoop);
         this.gyro = gyro;
-        for(int port: dioPorts)
-            dios.add(new DigitalInput(port));
+
+        for(int i = 0; i < dioPorts.length; ++i) {
+            dios.add(new DigitalInput(dioPorts[i]));
+            dioHashMap.put(dioPorts[i], i);
+        }
 
         camToCenter = new Transform3d[numCameras];
         this.numCameras = numCameras;
@@ -75,10 +82,9 @@ public class WallEye {
     private void grabGyro() {
         for (DigitalInput dio: dios)
             if (dio.get()) {
-                gyroResults[currentGyroIndex] = new DIOGyroResult(gyro.getAsDouble(), RobotController.getFPGATime());
+                gyroResults[dioHashMap.get(dio.getChannel())][currentGyroIndex] = new DIOGyroResult(gyro.getAsDouble(), RobotController.getFPGATime());
                 currentGyroIndex++;
                 currentGyroIndex %= maxGyroResultSize;
-                return;
             }
 
     }
@@ -114,11 +120,11 @@ public class WallEye {
                 tags[i] = (int) temp[j + 8];
 
 
-            if(dios.size() == 0 || gyroResults[maxGyroResultSize - 1] == null || temp[6] > gyroResults[currentGyroIndex - 1 >= 0 ? currentGyroIndex - 1 : maxGyroResultSize - 1].getTimestamp())
+            if(dios.size() == 0 || gyroResults[i][maxGyroResultSize - 1] == null || temp[6] > gyroResults[i][currentGyroIndex - 1 >= 0 ? currentGyroIndex - 1 : maxGyroResultSize - 1].getTimestamp())
                 results.add(new WallEyeResult(new Pose3d(new Translation3d(temp[0], temp[1], temp[2]), new Rotation3d(temp[3], temp[4], temp[5])), 
                     temp[6], i, curUpdateNum, (int) temp[7], tags, temp[8 + (int) temp[7]] ));
             else
-                results.add(new WallEyeResult(new Pose3d(new Translation3d(temp[0], temp[1], temp[2]), findGyro((long)temp[6])), 
+                results.add(new WallEyeResult(new Pose3d(new Translation3d(temp[0], temp[1], temp[2]), findGyro((long)temp[6], i)), 
                     temp[6], i, curUpdateNum, (int) temp[7], tags, temp[8 + (int) temp[7]] ));
 
         }
@@ -132,31 +138,32 @@ public class WallEye {
      *   a binary search on a circular buffer to find the yaw quickly
      *
      * @param timestamp a long that is the timestamp of the camera that is being searched for
+     * @param camIndex an index that corresponds to the camera index
      * 
      * @return Returns a Rotation3d with the yaw of the saved gyro
     */
-    public Rotation3d findGyro(long timestamp) {
+    public Rotation3d findGyro(long timestamp, int camIndex) {
         int max = currentGyroIndex - 1 >= 0 ? currentGyroIndex - 1 : maxGyroResultSize - 1;
-
-        if (gyroResults[maxGyroResultSize - 1] == null || gyroResults[max].getTimestamp() < timestamp)
-            return new Rotation3d();
-
         int min = currentGyroIndex;
         int loops = 0;
         int mid = max > min ? (max - min) / 2 : (maxGyroResultSize - min + max) / 2 + min;
         mid %= maxGyroResultSize;
-        while (Math.abs(gyroResults[mid].getTimestamp() - timestamp) > periodicLoop * 1000000 && min != mid && loops < 10) {
+        
+        if (gyroResults[camIndex][maxGyroResultSize-1] == null)
+            return new Rotation3d();
+
+        while ((timestamp - gyroResults[camIndex][mid].getTimestamp() > 1.0/camFPS * 1000000 || timestamp - gyroResults[camIndex][mid].getTimestamp() < 0)&& min != mid && loops < 10) {
             System.out.println(min + " " + mid + " " + max);
             loops++;
-            if (gyroResults[mid].getTimestamp() > timestamp)
+            if (gyroResults[camIndex][mid].getTimestamp() > timestamp)
                 max = mid;
             else 
                 min = mid;    
             mid = max > min ? (max - min) / 2 + min: (maxGyroResultSize - min + max) / 2 + min;
             mid %= maxGyroResultSize;
         }
-        System.out.println(gyroResults[mid].getTimestamp() + " " + timestamp + " " + loops + " " + Math.abs(gyroResults[mid].getTimestamp() - timestamp) + " " + (min != mid));
-        return new Rotation3d(0, 0, gyroResults[mid].getGyro());
+        System.out.println(gyroResults[camIndex][mid].getTimestamp() + " " + timestamp + " " + loops + " " + Math.abs(gyroResults[camIndex][mid].getTimestamp() - timestamp) + " " + (min != mid));
+        return new Rotation3d(0, 0, gyroResults[camIndex][mid].getGyro());
     }
 
     /**
