@@ -122,7 +122,7 @@ try:
                 images.values(), walleyeData.cameras.listK(), walleyeData.cameras.listD()
             )
             logger.debug(f"Poses at {imageTime}: {poses}")
-
+            logger.info(ambig)
             for i in range(len(poses)):
                 walleyeData.robotPublisher.publish(i, imageTime, poses[i], tags[i], ambig[i])
                 

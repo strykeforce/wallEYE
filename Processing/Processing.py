@@ -64,6 +64,7 @@ class Processor:
             if img is None or K[imgIndex] is None or D[imgIndex] is None:
                 poses.append(Processor.BAD_POSE)
                 tags.append([])
+                ambig.append(2767)
                 continue
 
             corners, ids, rej = arucoDetector.detectMarkers(img)
@@ -175,6 +176,6 @@ class Processor:
             else:
                 poses.append(Processor.BAD_POSE)
                 tags.append([])
-                ambig.append(-1)
+                ambig.append(2767)
 
         return (poses, tags, ambig)
