@@ -1,3 +1,4 @@
 WebInterface/walleye/node_modules/
 walleye.log
 *.pyc
+Calibration/Cam_*CalImgs/*

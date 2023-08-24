@@ -11,7 +11,7 @@ from WebInterface.image_streams import Buffer, LivePlotBuffer
 
 logger = logging.getLogger(__name__)
 
-
+    
 app = Flask(__name__, static_folder="./walleye/build", static_url_path="/")
 socketio = SocketIO(app, logger=True, cors_allowed_origins="*")
 
@@ -19,7 +19,8 @@ camBuffers = {identifier: Buffer() for identifier in walleyeData.cameras.info.ke
 visualizationBuffers = {
     identifier: LivePlotBuffer() for identifier in walleyeData.cameras.info.keys()
 }
-
+# def displayInfo(msg):
+#     socketio.emit("info", msg)
 
 def updateAfter(action):
     def actionAndUpdate(*args, **kwargs):
@@ -171,9 +172,8 @@ def toggle_pnp():
 
 @socketio.on("toggle_pose_visualization")
 @updateAfter
-def toggle_pose_visualization(isVisualizing):
-    walleyeData.visualizingPoses = isVisualizing
-    socketio.emit("info", f"Pose visualizing: {isVisualizing}")
+def toggle_pose_visualization():
+    walleyeData.visualizingPoses = not walleyeData.visualizingPoses
 
 
 @socketio.on("pose_update")

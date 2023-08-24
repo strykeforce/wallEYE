@@ -1,7 +1,10 @@
 import ntcore
 import wpimath.geometry as wpi
+import logging
 
 class NetworkIO:
+    logger = logging.getLogger(__name__)
+
     def __init__(self, test, team, tableName):
         self.inst = ntcore.NetworkTableInstance.getDefault()
         self.table = self.inst.getTable(tableName)

@@ -111,7 +111,6 @@ try:
                 calibrators[walleyeData.cameraInCalibration].calibrationData["K"],
                 calibrators[walleyeData.cameraInCalibration].calibrationData["dist"],
             )
-
             walleyeData.currentState = States.IDLE
 
         elif walleyeData.currentState == States.PROCESSING:
@@ -134,7 +133,7 @@ try:
                 if walleyeData.visualizingPoses:
                     visualizationBuffers[identifier].update(
                         (poses[i].X(), poses[i].Y(), poses[i].Z()),
-                        tags
+                        tags[i][1:]
                     )
 
         elif walleyeData.currentState == States.SHUTDOWN:

@@ -7,7 +7,7 @@
 
 ### Bugs/Known Limitations and Their Respective Workarounds
 - [ ] Static IP sometimes cannot be reached/pinged. 
-- [ ] Importing a calibration overwrites the currently used one. Make sure a copy of the current cal is saved before importing a new one.
+- [ ] Camera stream can be VERY laggy on web interface. Reload to fix. Does not reflect actual performance!
 
   
 ## Boot Up
