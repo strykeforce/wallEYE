@@ -1,6 +1,6 @@
-WebInterface/walleye/node_modules/
+WebInterface/walleye/node_modules/*
 walleye.log*
-*.pyc
+**/__pycache__/*.pyc
 Calibration/Cam_*CalImgs/*
 profile.html
 profile.json
