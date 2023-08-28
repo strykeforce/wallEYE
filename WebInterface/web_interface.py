@@ -1,13 +1,13 @@
-import cv2
 from flask import Response, Flask, send_from_directory
 import os
 from flask_socketio import SocketIO
 import json
 from Calibration.calibration import Calibration
-from state import walleyeData, States, Config
+from state import walleyeData, States
 import logging
 import numpy as np
 from WebInterface.image_streams import Buffer, LivePlotBuffer
+from timing import timer
 
 logger = logging.getLogger(__name__)
 

@@ -3,6 +3,7 @@ import json
 from Publisher.NetworkTablePublisher import NetworkIO
 import logging
 import os
+from timing import timer
 
 
 class States(Enum):
@@ -80,6 +81,7 @@ class Config:
     def boardDims(self, newValue):
         self.boardDims = newValue
 
+    @timer
     def makePublisher(self, teamNumber, tableName):
         try:
             with open("SystemData.json", "r") as file:
@@ -104,14 +106,17 @@ class Config:
 
         Config.logger.info(f"Robot publisher created: {teamNumber} - {tableName}")
 
+    @timer
     def setPose(self, identifier, pose):
         self.poses[
             identifier
         ] = f"Translation: {round(pose.X(), 2)}, {round(pose.Y(), 2)}, {round(pose.Z(), 2)} - Rotation: {round(pose.rotation().X(), 2)}, {round(pose.rotation().Y(), 2)}, {round(pose.rotation().Z(), 2)}"
 
+    @timer
     def getCalFilePaths(self):
         return {i.identifier: i.calibrationPath for i in self.cameras.info.values()}
 
+    @timer
     def setBoardDim(self, dim):
         try:
             with open("SystemData.json", "r") as file:
@@ -123,6 +128,7 @@ class Config:
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             Config.logger.error(f"Failed to write Dimensions {dim}")
 
+    @timer
     def setTagSize(self, size):
         try:
             with open("SystemData.json", "r") as file:
@@ -134,6 +140,7 @@ class Config:
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             Config.logger.error(f"Failed to write tag size {size}")
 
+    @timer
     def setIP(self, ip):
         Config.logger.info("Attempting to set static IP")
         os.system("/usr/sbin/ifconfig eth0 up")
@@ -145,7 +152,6 @@ class Config:
             Config.logger.error(f"Failed to set static ip: {ip}")
         os.system("/usr/sbin/ifconfig eth0 up")
 
-
         try:
             with open("SystemData.json", "r") as file:
                 config = json.load(file)
@@ -156,6 +162,7 @@ class Config:
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             Config.logger.error(f"Failed to write static ip: {ip}")
 
+    @timer
     def resetNetworking(self):
         if not os.system("/usr/sbin/ifconfig eth0 down"):
             if not os.system("/usr/sbin/ifconfig eth0 up"):
@@ -169,6 +176,7 @@ class Config:
             Config.logger.error("Networking failed to stop")
 
     @staticmethod
+    @timer
     def getCurrentIP():
         return (
             os.popen('ip addr show eth0 | grep "\<inet\>"')
@@ -178,6 +186,7 @@ class Config:
             .strip()
         )
 
+    @timer
     def getState(self):
         return {
             "teamNumber": self.teamNumber,

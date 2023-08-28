@@ -7,7 +7,7 @@ import os
 from sys import platform
 import logging
 from Camera.CameraInfo import CameraInfo
-
+from timing import timer
 
 # Maintains camera info provided by cv2
 class Cameras:
@@ -107,19 +107,22 @@ class Cameras:
 
         else:
             Cameras.logger.error("Unknown platform!")
-
+    @timer
     def setCalibration(self, identifier, K, D):
         self.info[identifier].K = K
         self.info[identifier].D = D
 
         Cameras.logger.info(f"Calibration set for {identifier}, using {K}\n{D}")
 
+    @timer
     def listK(self):
         return [i.K for i in self.info.values()]
 
+    @timer
     def listD(self):
         return [i.D for i in self.info.values()]
 
+    @timer
     def getFrames(self):
         frames = {}
         for identifier, camInfo in self.info.items():
@@ -127,6 +130,7 @@ class Cameras:
             frames[identifier] = img
         return frames
 
+    @timer
     def setResolution(self, identifier, resolution):
         if resolution is None:
             Cameras.logger.info("Resolution not set")
@@ -152,6 +156,7 @@ class Cameras:
         Cameras.logger.info(f"Resolution set to {resolution} for {identifier}")
         return True
 
+    @timer
     def setGain(self, identifier, gain):
         if gain is None:
             Cameras.logger.info("Gain not set")
@@ -172,6 +177,7 @@ class Cameras:
             )
             return True
 
+    @timer
     def setExposure(self, identifier, exposure):
         if exposure is None:
             Cameras.logger.info("Exposure not set")
@@ -194,18 +200,21 @@ class Cameras:
             )
             return True
 
+    @timer
     def getExposures(self):
         exposure = {}
         for identifier, camInfo in self.info.items():
             exposure[identifier] = camInfo.cam.get(cv2.CAP_PROP_EXPOSURE)
         return exposure
 
+    @timer
     def getGains(self):
         gain = {}
         for identifier, camInfo in self.info.items():
             gain[identifier] = camInfo.cam.get(cv2.CAP_PROP_GAIN)
         return gain
 
+    @timer
     def getResolutions(self):
         resolution = {}
         for identifier, camInfo in self.info.items():
@@ -216,6 +225,7 @@ class Cameras:
 
         return resolution
 
+    @timer
     def importCalibration(self, identifier):
         resolution = tuple(self.info[identifier].resolution)
 
@@ -238,5 +248,6 @@ class Cameras:
             return False
 
     @staticmethod
+    @timer
     def cleanIdentifier(identifier):
         return identifier.replace(":", "-").replace(".", "-")

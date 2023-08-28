@@ -1,9 +1,12 @@
 import threading
-import logging
+from timing import timer
+
 
 # Inspired by https://stackoverflow.com/questions/54460797/how-to-disable-buffer-in-opencv-camera
 class CameraInfo:
-    def __init__(self, cam, identifier, supportedResolutions, resolution=None, K=None, D=None):
+    def __init__(
+        self, cam, identifier, supportedResolutions, resolution=None, K=None, D=None
+    ):
         self.lastImage = None
         # self.lock = threading.Lock()
         t = threading.Thread(target=self._reader, daemon=True)
@@ -20,6 +23,7 @@ class CameraInfo:
 
         self.calibrationPath = None
 
+    # @timer
     def _reader(self):
         while True:
             ret, frame = self.cam.read()

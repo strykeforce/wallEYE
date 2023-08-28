@@ -3,6 +3,7 @@ import json
 import logging
 import wpimath.geometry as wpi
 import numpy as np
+from timing import timer
 
 
 class Processor:
@@ -20,6 +21,7 @@ class Processor:
         )
         self.squareLength = tagLength
 
+    @timer
     def getPose(self, images, K, D):
         return self.imagePose(images, K, D, self.tagLayout, self.arucoDetector)
 
@@ -60,14 +62,16 @@ class Processor:
         ambig = []
         for imgIndex, img in enumerate(images):
             curTags = [0]
- 
+
             if img is None or K[imgIndex] is None or D[imgIndex] is None:
                 poses.append(Processor.BAD_POSE)
                 tags.append([])
                 ambig.append(2767)
                 continue
 
-            corners, ids, rej = arucoDetector.detectMarkers(img) # BEWARE: ids is a 2D array!!!
+            corners, ids, rej = arucoDetector.detectMarkers(
+                img
+            )  # BEWARE: ids is a 2D array!!!
             if len(corners) > 0:
                 num = 0
                 cv2.aruco.drawDetectedMarkers(img, corners, ids)
@@ -117,17 +121,33 @@ class Processor:
                             wpi.Rotation3d(),
                         )
                     )
-                    tempc1 = np.asarray([self.squareLength/2, self.squareLength/2, 0])
-                    tempc2 = np.asarray([-self.squareLength/2, self.squareLength/2, 0])
-                    tempc3 = np.asarray([self.squareLength/2, -self.squareLength/2, 0])
-                    tempc4 = np.asarray([-self.squareLength/2, -self.squareLength/2, 0])
+                    tempc1 = np.asarray(
+                        [self.squareLength / 2, self.squareLength / 2, 0]
+                    )
+                    tempc2 = np.asarray(
+                        [-self.squareLength / 2, self.squareLength / 2, 0]
+                    )
+                    tempc3 = np.asarray(
+                        [self.squareLength / 2, -self.squareLength / 2, 0]
+                    )
+                    tempc4 = np.asarray(
+                        [-self.squareLength / 2, -self.squareLength / 2, 0]
+                    )
                     # FIXME - TEST THIS
-                    ret, rvec, tvec, reproj = cv2.solvePnPGeneric(np.asarray([tempc2, tempc1, tempc3, tempc4]), corners[tagCount][0], K[imgIndex], D[imgIndex], flags = cv2.SOLVEPNP_IPPE_SQUARE)
-                    
-                    if len(ids) == 1:
-                        ambig.append(reproj[0][0]/reproj[1][0])
+                    ret, rvec, tvec, reproj = cv2.solvePnPGeneric(
+                        np.asarray([tempc2, tempc1, tempc3, tempc4]),
+                        corners[tagCount][0],
+                        K[imgIndex],
+                        D[imgIndex],
+                        flags=cv2.SOLVEPNP_IPPE_SQUARE,
+                    )
 
-                    cv2.drawFrameAxes(img, K[imgIndex], D[imgIndex], rvec[0], tvec[0], 0.1)
+                    if len(ids) == 1:
+                        ambig.append(reproj[0][0] / reproj[1][0])
+
+                    cv2.drawFrameAxes(
+                        img, K[imgIndex], D[imgIndex], rvec[0], tvec[0], 0.1
+                    )
 
                     if tagLoc is None:
                         cornerLoc = corners[tagCount][0]
@@ -143,7 +163,7 @@ class Processor:
                     cornerLoc is not None
                 ):  # Make sure that tag is valid (i >= 0 and i <= 8)
                     if len(ids) > 1:
-                        ambig.append(2767)                    
+                        ambig.append(2767)
                     ret, rvecs, tvecs = cv2.solvePnP(
                         tagLoc,
                         cornerLoc,
@@ -151,7 +171,7 @@ class Processor:
                         D[imgIndex],
                         flags=cv2.SOLVEPNP_SQPNP,
                     )
-                    
+
                     rotMat, _ = cv2.Rodrigues(rvecs)
                     transVec = -np.dot(np.transpose(rotMat), tvecs)
                     rot3D = wpi.Rotation3d(

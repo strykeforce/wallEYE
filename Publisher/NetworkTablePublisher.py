@@ -1,6 +1,6 @@
 import ntcore
-import wpimath.geometry as wpi
 import logging
+from timing import timer
 
 class NetworkIO:
     logger = logging.getLogger(__name__)
@@ -16,16 +16,24 @@ class NetworkIO:
             self.inst.setServerTeam(team)
 
         self.publishers = []
-        self.publishUpdate = self.table.getIntegerTopic("Update").publish(ntcore.PubSubOptions(periodic=0.01, sendAll=True, keepDuplicates=True))
+        self.publishUpdate = self.table.getIntegerTopic("Update").publish(
+            ntcore.PubSubOptions(periodic=0.01, sendAll=True, keepDuplicates=True)
+        )
         for index in range(5):
-            self.publishers.append(self.table.getDoubleArrayTopic("Result" + str(index)).publish(ntcore.PubSubOptions(periodic=0.01, sendAll=True, keepDuplicates=True)))
+            self.publishers.append(
+                self.table.getDoubleArrayTopic("Result" + str(index)).publish(
+                    ntcore.PubSubOptions(
+                        periodic=0.01, sendAll=True, keepDuplicates=True
+                    )
+                )
+            )
 
     def getTime(self):
         return ntcore._now()
 
     def setTable(self, name):
         self.table = self.inst.getTable(name)
-
+    @timer
     def publish(self, index, time, pose, tags, ambig):
         t = pose.translation()
         r = pose.rotation()

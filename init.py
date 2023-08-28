@@ -5,7 +5,12 @@ import time
 LOG_FORMAT = "[%(asctime)s - %(levelname)s - %(filename)s:%(lineno)s - %(funcName)s()]  %(message)s"
 logging.basicConfig(
     format=LOG_FORMAT,
-    handlers=[logging.FileHandler("walleye.log"), logging.StreamHandler(sys.stdout)],
+    handlers=[
+        logging.StreamHandler(sys.stdout),
+        logging.handlers.RotatingFileHandler(
+            "walleye.log", maxBytes=5 * 1024 * 1024, backupCount=5
+        ),
+    ],
     datefmt="%d-%b-%y %H:%M:%S",
     level=logging.INFO,  # Set to DEBUG for pose printouts
 )
@@ -118,13 +123,17 @@ try:
             images = walleyeData.cameras.getFrames()
             imageTime = walleyeData.robotPublisher.getTime()
             poses, tags, ambig = poseEstimator.getPose(
-                images.values(), walleyeData.cameras.listK(), walleyeData.cameras.listD()
+                images.values(),
+                walleyeData.cameras.listK(),
+                walleyeData.cameras.listD(),
             )
             logger.debug(f"Poses at {imageTime}: {poses}")
             for i in range(len(poses)):
-                walleyeData.robotPublisher.publish(i, imageTime, poses[i], tags[i], ambig[i])
+                walleyeData.robotPublisher.publish(
+                    i, imageTime, poses[i], tags[i], ambig[i]
+                )
             walleyeData.robotPublisher.increaseUpdateNum()
-            
+
             for i, (identifier, img) in enumerate(images.items()):
                 if i >= len(poses):
                     break
@@ -132,8 +141,7 @@ try:
                 walleyeData.setPose(identifier, poses[i])
                 if walleyeData.visualizingPoses:
                     visualizationBuffers[identifier].update(
-                        (poses[i].X(), poses[i].Y(), poses[i].Z()),
-                        tags[i][1:]
+                        (poses[i].X(), poses[i].Y(), poses[i].Z()), tags[i][1:]
                     )
 
         elif walleyeData.currentState == States.SHUTDOWN:
