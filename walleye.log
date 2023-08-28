@@ -1026,3 +1026,6 @@ IndexError: list index out of range
 [24-Aug-23 20:48:46 - INFO - NetworkClient.cpp:141 - None()]  starting network client
 [24-Aug-23 20:48:46 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
 [24-Aug-23 20:48:46 - INFO - init.py:53 - <module>()]  Starting main loop
+[28-Aug-23 19:42:15 - INFO - init.py:21 - <module>()]  ----------- Starting Up -----------
+[28-Aug-23 19:42:15 - INFO - state.py:145 - setIP()]  Attempting to set static IP
+[28-Aug-23 19:42:17 - INFO - state.py:145 - setIP()]  Attempting to set static IP

@@ -1,13 +1,15 @@
 import logging
 import sys
 import time
+from logging.handlers import RotatingFileHandler
+
 
 LOG_FORMAT = "[%(asctime)s - %(levelname)s - %(filename)s:%(lineno)s - %(funcName)s()]  %(message)s"
 logging.basicConfig(
     format=LOG_FORMAT,
     handlers=[
         logging.StreamHandler(sys.stdout),
-        logging.handlers.RotatingFileHandler(
+        RotatingFileHandler(
             "walleye.log", maxBytes=5 * 1024 * 1024, backupCount=5
         ),
     ],
