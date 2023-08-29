@@ -9,9 +9,7 @@ logging.basicConfig(
     format=LOG_FORMAT,
     handlers=[
         logging.StreamHandler(sys.stdout),
-        RotatingFileHandler(
-            "walleye.log", maxBytes=5 * 1024 * 1024, backupCount=5
-        ),
+        RotatingFileHandler("walleye.log", maxBytes=5 * 1024 * 1024, backupCount=5),
     ],
     datefmt="%d-%b-%y %H:%M:%S",
     level=logging.INFO,  # Set to DEBUG for pose printouts

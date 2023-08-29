@@ -5,7 +5,6 @@ import json
 import os
 import shutil
 import logging
-from timing import timer
 
 
 class Calibration:
@@ -45,7 +44,6 @@ class Calibration:
             shutil.rmtree(self.imgPath)
         os.mkdir(self.imgPath)
 
-    @timer
     def processFrame(
         self,
         img,
@@ -160,7 +158,6 @@ class Calibration:
                 self.objPoints.append(self.reference)
                 self.imgPoints.append(refined)
 
-    @timer
     def generateCalibration(self, calFile: str):
         if len(self.objPoints) == 0:
             Calibration.logger.error("Calibration failed: No image data available")
@@ -209,7 +206,6 @@ class Calibration:
 
         return ret
 
-    @timer
     def isStable(self, corners: np.ndarray):
         corner1 = corners[0][0]
         corner2 = corners[self.cornerShape[0] * self.cornerShape[1] - 1][0]
@@ -246,7 +242,6 @@ class Calibration:
 
         return self.lastImageSharp
 
-    @timer
     def isReady(
         self, img: np.ndarray, corners: np.ndarray, requiredReadyCounts: int = 10
     ) -> bool:
@@ -257,7 +252,6 @@ class Calibration:
 
         return requiredReadyCounts <= self.readyCounts
 
-    @timer
     def getReprojectionError(self) -> float:
         if len(self.objPoints) == 0:
             print("Cannot compute reprojection error: No image data")
@@ -293,7 +287,6 @@ class Calibration:
         Calibration.logger.info(f"Calibration loaded from {file}")
 
     @staticmethod
-    @timer
     def parseCalibration(file: str):
         Calibration.logger.info(f"Looking for calibration stored at {file}")
 
@@ -311,6 +304,5 @@ class Calibration:
         return calibrationData
 
     @staticmethod
-    @timer
     def calibrationPathByCam(camIdentifier, resolution):
         return f"./Calibration/Cam_{camIdentifier.replace(':', '-').replace('.', '-')}_{resolution}CalData.json"

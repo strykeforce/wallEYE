@@ -1,6 +1,6 @@
 import ntcore
 import logging
-from timing import timer
+
 
 class NetworkIO:
     logger = logging.getLogger(__name__)
@@ -33,7 +33,7 @@ class NetworkIO:
 
     def setTable(self, name):
         self.table = self.inst.getTable(name)
-    @timer
+
     def publish(self, index, time, pose, tags, ambig):
         t = pose.translation()
         r = pose.rotation()

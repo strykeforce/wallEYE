@@ -7,7 +7,7 @@ import os
 from sys import platform
 import logging
 from Camera.CameraInfo import CameraInfo
-from timing import timer
+
 
 # Maintains camera info provided by cv2
 class Cameras:
@@ -35,28 +35,30 @@ class Cameras:
                 if cam.isOpened():
                     Cameras.logger.info(f"Camera found: {camPath}")
 
-                    supportedResolutions = sorted(list(
-                        set(
-                            map(
-                                lambda x: (
-                                    int(x.split("x")[0]),
-                                    int(x.split("x")[1]),
-                                ),
-                                re.findall(
-                                    "[0-9]+x[0-9]+",
-                                    subprocess.run(
-                                        [
-                                            "v4l2-ctl",
-                                            "-d",
-                                            path,
-                                            "--list-formats-ext",
-                                        ],
-                                        capture_output=True,
-                                    ).stdout.decode("utf-8"),
-                                ),
+                    supportedResolutions = sorted(
+                        list(
+                            set(
+                                map(
+                                    lambda x: (
+                                        int(x.split("x")[0]),
+                                        int(x.split("x")[1]),
+                                    ),
+                                    re.findall(
+                                        "[0-9]+x[0-9]+",
+                                        subprocess.run(
+                                            [
+                                                "v4l2-ctl",
+                                                "-d",
+                                                path,
+                                                "--list-formats-ext",
+                                            ],
+                                            capture_output=True,
+                                        ).stdout.decode("utf-8"),
+                                    ),
+                                )
                             )
                         )
-                    ))
+                    )
 
                     Cameras.logger.info(
                         f"Supported resolutions: {supportedResolutions}"
@@ -104,25 +106,21 @@ class Cameras:
                         self.getExposures()[camPath],
                     )
 
-
         else:
             Cameras.logger.error("Unknown platform!")
-    @timer
+
     def setCalibration(self, identifier, K, D):
         self.info[identifier].K = K
         self.info[identifier].D = D
 
         Cameras.logger.info(f"Calibration set for {identifier}, using {K}\n{D}")
 
-    @timer
     def listK(self):
         return [i.K for i in self.info.values()]
 
-    @timer
     def listD(self):
         return [i.D for i in self.info.values()]
 
-    @timer
     def getFrames(self):
         frames = {}
         for identifier, camInfo in self.info.items():
@@ -130,7 +128,6 @@ class Cameras:
             frames[identifier] = img
         return frames
 
-    @timer
     def setResolution(self, identifier, resolution):
         if resolution is None:
             Cameras.logger.info("Resolution not set")
@@ -140,7 +137,9 @@ class Cameras:
         self.info[identifier].cam.set(cv2.CAP_PROP_FRAME_WIDTH, resolution[0])
         resolution = tuple(resolution)
         if self.getResolutions()[identifier] != resolution:
-            Cameras.logger.error(f"Failed to set resolution to {resolution} for {identifier}, using {self.getResolutions()[identifier]}")
+            Cameras.logger.error(
+                f"Failed to set resolution to {resolution} for {identifier}, using {self.getResolutions()[identifier]}"
+            )
             return False
 
         self.info[identifier].resolution = resolution
@@ -156,7 +155,6 @@ class Cameras:
         Cameras.logger.info(f"Resolution set to {resolution} for {identifier}")
         return True
 
-    @timer
     def setGain(self, identifier, gain):
         if gain is None:
             Cameras.logger.info("Gain not set")
@@ -177,14 +175,14 @@ class Cameras:
             )
             return True
 
-    @timer
     def setExposure(self, identifier, exposure):
         if exposure is None:
             Cameras.logger.info("Exposure not set")
             return False
-        
-        os.system(f"v4l2-ctl -d /dev/v4l/by-path/{identifier} --set-ctrl exposure_auto=1 --set-ctrl exposure_absolute={exposure}")
 
+        os.system(
+            f"v4l2-ctl -d /dev/v4l/by-path/{identifier} --set-ctrl exposure_auto=1 --set-ctrl exposure_absolute={exposure}"
+        )
 
         if self.info[identifier].cam.get(cv2.CAP_PROP_EXPOSURE) != exposure:
             Cameras.logger.warning(f"Exposure not set: {exposure} not accepted")
@@ -200,21 +198,18 @@ class Cameras:
             )
             return True
 
-    @timer
     def getExposures(self):
         exposure = {}
         for identifier, camInfo in self.info.items():
             exposure[identifier] = camInfo.cam.get(cv2.CAP_PROP_EXPOSURE)
         return exposure
 
-    @timer
     def getGains(self):
         gain = {}
         for identifier, camInfo in self.info.items():
             gain[identifier] = camInfo.cam.get(cv2.CAP_PROP_GAIN)
         return gain
 
-    @timer
     def getResolutions(self):
         resolution = {}
         for identifier, camInfo in self.info.items():
@@ -225,7 +220,6 @@ class Cameras:
 
         return resolution
 
-    @timer
     def importCalibration(self, identifier):
         resolution = tuple(self.info[identifier].resolution)
 
@@ -248,6 +242,5 @@ class Cameras:
             return False
 
     @staticmethod
-    @timer
     def cleanIdentifier(identifier):
         return identifier.replace(":", "-").replace(".", "-")

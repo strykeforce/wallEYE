@@ -1,8 +1,6 @@
 import json
-from timing import timer
 
 
-@timer
 def parseConfig(camPath):
     try:
         print(f"Looking for ./Camera/CameraConfigs/ConfigSettings_{camPath}.json")
@@ -25,7 +23,6 @@ def parseConfig(camPath):
         return fileDump
 
 
-@timer
 def writeConfig(camPath, resolution, gain, exposure):
     with open(f"./Camera/CameraConfigs/ConfigSettings_{camPath}.json", "w") as data:
         fileDump = {"Resolution": resolution, "Gain": gain, "Exposure": exposure}

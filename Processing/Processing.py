@@ -3,7 +3,6 @@ import json
 import logging
 import wpimath.geometry as wpi
 import numpy as np
-from timing import timer
 
 
 class Processor:
@@ -21,7 +20,6 @@ class Processor:
         )
         self.squareLength = tagLength
 
-    @timer
     def getPose(self, images, K, D):
         return self.imagePose(images, K, D, self.tagLayout, self.arucoDetector)
 

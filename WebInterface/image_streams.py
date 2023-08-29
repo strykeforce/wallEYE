@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.image as mpimg
 import json
-from timing import timer
+
 
 logger = logging.getLogger(__name__)
 
@@ -13,7 +13,7 @@ class Buffer:
     outputFrame = b""
     lastNone = False
 
-    @timer
+    
     def update(self, img):
         if img is None:
             if not self.lastNone: 
@@ -97,7 +97,7 @@ class LivePlotBuffer(Buffer):
         self.ax.draw_artist(self.tags)
         self.fig.canvas.blit(self.fig.bbox)
         
-    @timer
+    
     def update(self, pose, tags):
         self.fig.canvas.restore_region(self.bg)
 

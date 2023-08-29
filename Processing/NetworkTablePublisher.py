@@ -1,5 +1,5 @@
 import ntcore
-from timing import timer
+
 
 class NetworkIO:
     def __init__(self, test, team, tableName):
@@ -23,7 +23,7 @@ class NetworkIO:
     def setTable(self, name):
         self.table = self.inst.getTable(name)
 
-    @timer
+    
     def publish(self, index, time, pose, tags, ambig):
         t = pose.translation()
         r = pose.rotation()

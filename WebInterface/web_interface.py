@@ -7,7 +7,7 @@ from state import walleyeData, States
 import logging
 import numpy as np
 from WebInterface.image_streams import Buffer, LivePlotBuffer
-from timing import timer
+
 
 logger = logging.getLogger(__name__)
 
