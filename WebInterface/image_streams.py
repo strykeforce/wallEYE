@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.image as mpimg
 import json
-
+import simplejpeg
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +23,8 @@ class Buffer:
         if self.lastNone:
             logger.info("Updated image is NOT none!")
         self.lastNone = False
-        self.outputFrame = cv2.imencode(".jpg", img)[1].tobytes()
+        # self.outputFrame = cv2.imencode(".jpg", img)[1].tobytes()
+        self.outputFrame = simplejpeg.encode_jpeg(img)
 
     def output(self):
         while True:
@@ -129,7 +130,7 @@ class LivePlotBuffer(Buffer):
 
         plot = np.frombuffer(self.fig.canvas.tostring_rgb(), dtype=np.uint8)
         img = plot.reshape(self.fig.canvas.get_width_height()[::-1] + (3,))[:, :, ::-1]
-        self.outputFrame = cv2.imencode(".jpg", img)[1].tobytes() # Optimize?
+        self.outputFrame = simplejpeg.encode_jpeg(img)
 
 
 
