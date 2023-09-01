@@ -35,6 +35,7 @@ class Cameras:
                 if cam.isOpened():
                     Cameras.logger.info(f"Camera found: {camPath}")
 
+
                     supportedResolutions = sorted(
                         list(
                             set(
@@ -64,7 +65,7 @@ class Cameras:
                         f"Supported resolutions: {supportedResolutions}"
                     )
 
-                    cam.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+                    cam.set(cv2.CAP_PROP_BUFFERSIZE, 3)
                     if cam.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1):
                         Cameras.logger.info(f"Auto exposure disabled for {camPath}")
                     else:
@@ -97,6 +98,7 @@ class Cameras:
                         Cameras.logger.warning(
                             f"Camera config not found for camera {camPath}"
                         )
+
 
                     # Save configs
                     writeConfig(
@@ -135,6 +137,8 @@ class Cameras:
         # os.system(f"v4l2-ctl -d /dev/v4l/by-path/{identifier} --set-fmt-video=width={resolution[0]},height={resolution[1]}")
         self.info[identifier].cam.set(cv2.CAP_PROP_FRAME_HEIGHT, resolution[1])
         self.info[identifier].cam.set(cv2.CAP_PROP_FRAME_WIDTH, resolution[0])
+        self.info[identifier].cam.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*"MJPG"))
+        self.info[identifier].cam.set(cv2.CAP_PROP_FPS, 30)
         resolution = tuple(resolution)
         if self.getResolutions()[identifier] != resolution:
             Cameras.logger.error(

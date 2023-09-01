@@ -64,10 +64,7 @@ try:
         lastLoopTime = currTime
 
         # State changes
-        if walleyeData.currentState == States.IDLE:
-            pass
-
-        elif walleyeData.currentState == States.BEGIN_CALIBRATION:
+        if walleyeData.currentState == States.BEGIN_CALIBRATION:
             logger.info("Beginning calibration")
 
             calibrators[walleyeData.cameraInCalibration] = Calibration(

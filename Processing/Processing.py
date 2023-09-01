@@ -3,6 +3,7 @@ import json
 import logging
 import wpimath.geometry as wpi
 import numpy as np
+import time
 
 
 class Processor:
@@ -18,6 +19,12 @@ class Processor:
         self.arucoDetector.setDictionary(
             cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_APRILTAG_16H5)
         )
+        arucoParams = cv2.aruco.DetectorParameters()
+        arucoParams.cornerRefinementMethod = cv2.aruco.CORNER_REFINE_SUBPIX
+        arucoParams.cornerRefinementMinAccuracy = 0.1
+        arucoParams.cornerRefinementMaxIterations = 30
+        self.arucoDetector.setDetectorParameters(arucoParams)
+
         self.squareLength = tagLength
 
     def getPose(self, images, K, D):
@@ -66,13 +73,16 @@ class Processor:
                 tags.append([])
                 ambig.append(2767)
                 continue
-
             corners, ids, rej = arucoDetector.detectMarkers(
                 img
             )  # BEWARE: ids is a 2D array!!!
+            
             if len(corners) > 0:
+                # Processor.logger.info(corners)
                 num = 0
+                
                 cv2.aruco.drawDetectedMarkers(img, corners, ids)
+                
                 tagLoc = None
                 cornerLoc = None
                 tagCount = 0
@@ -131,7 +141,7 @@ class Processor:
                     tempc4 = np.asarray(
                         [-self.squareLength / 2, -self.squareLength / 2, 0]
                     )
-                    # FIXME - TEST THIS
+
                     ret, rvec, tvec, reproj = cv2.solvePnPGeneric(
                         np.asarray([tempc2, tempc1, tempc3, tempc4]),
                         corners[tagCount][0],
@@ -139,7 +149,8 @@ class Processor:
                         D[imgIndex],
                         flags=cv2.SOLVEPNP_IPPE_SQUARE,
                     )
-
+                  
+                    
                     if len(ids) == 1:
                         ambig.append(reproj[0][0] / reproj[1][0])
 
@@ -189,5 +200,6 @@ class Processor:
                 poses.append(Processor.BAD_POSE)
                 tags.append([])
                 ambig.append(2767)
+            
 
         return (poses, tags, ambig)
