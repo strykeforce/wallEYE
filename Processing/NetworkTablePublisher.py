@@ -1,5 +1,5 @@
 import ntcore
-import wpimath.geometry as wpi
+
 
 class NetworkIO:
     def __init__(self, test, team, tableName):
@@ -23,12 +23,13 @@ class NetworkIO:
     def setTable(self, name):
         self.table = self.inst.getTable(name)
 
+    
     def publish(self, index, time, pose, tags, ambig):
         t = pose.translation()
         r = pose.rotation()
         result = [t.X(), t.Y(), t.Z(), r.X(), r.Y(), r.Z(), float(time), len(tags)]
         for i in range(len(tags)):
-            result.append(tags[i])
+            result.append(tags[i]) # Optimize with extend?
         result.append(ambig)
         self.publishers[index].set(result)
 

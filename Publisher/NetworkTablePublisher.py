@@ -1,6 +1,6 @@
 import ntcore
-import wpimath.geometry as wpi
 import logging
+
 
 class NetworkIO:
     logger = logging.getLogger(__name__)
@@ -16,9 +16,17 @@ class NetworkIO:
             self.inst.setServerTeam(team)
 
         self.publishers = []
-        self.publishUpdate = self.table.getIntegerTopic("Update").publish(ntcore.PubSubOptions(periodic=0.01, sendAll=True, keepDuplicates=True))
+        self.publishUpdate = self.table.getIntegerTopic("Update").publish(
+            ntcore.PubSubOptions(periodic=0.01, sendAll=True, keepDuplicates=True)
+        )
         for index in range(5):
-            self.publishers.append(self.table.getDoubleArrayTopic("Result" + str(index)).publish(ntcore.PubSubOptions(periodic=0.01, sendAll=True, keepDuplicates=True)))
+            self.publishers.append(
+                self.table.getDoubleArrayTopic("Result" + str(index)).publish(
+                    ntcore.PubSubOptions(
+                        periodic=0.01, sendAll=True, keepDuplicates=True
+                    )
+                )
+            )
 
     def getTime(self):
         return ntcore._now()
@@ -29,7 +37,7 @@ class NetworkIO:
     def publish(self, index, time, pose, tags, ambig):
         t = pose.translation()
         r = pose.rotation()
-        result = [t.X(), t.Y(), t.Z(), r.X(), r.Y(), r.Z(), float(time), len(tags)]
+        result = [t.X(), t.Y(), t.Z(), r.X(), r.Y(), r.Z(), ntcore._now() - float(time), len(tags)]
         for i in range(len(tags)):
             result.append(tags[i])
         result.append(ambig)

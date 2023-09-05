@@ -35,28 +35,31 @@ class Cameras:
                 if cam.isOpened():
                     Cameras.logger.info(f"Camera found: {camPath}")
 
-                    supportedResolutions = sorted(list(
-                        set(
-                            map(
-                                lambda x: (
-                                    int(x.split("x")[0]),
-                                    int(x.split("x")[1]),
-                                ),
-                                re.findall(
-                                    "[0-9]+x[0-9]+",
-                                    subprocess.run(
-                                        [
-                                            "v4l2-ctl",
-                                            "-d",
-                                            path,
-                                            "--list-formats-ext",
-                                        ],
-                                        capture_output=True,
-                                    ).stdout.decode("utf-8"),
-                                ),
+
+                    supportedResolutions = sorted(
+                        list(
+                            set(
+                                map(
+                                    lambda x: (
+                                        int(x.split("x")[0]),
+                                        int(x.split("x")[1]),
+                                    ),
+                                    re.findall(
+                                        "[0-9]+x[0-9]+",
+                                        subprocess.run(
+                                            [
+                                                "v4l2-ctl",
+                                                "-d",
+                                                path,
+                                                "--list-formats-ext",
+                                            ],
+                                            capture_output=True,
+                                        ).stdout.decode("utf-8"),
+                                    ),
+                                )
                             )
                         )
-                    ))
+                    )
 
                     Cameras.logger.info(
                         f"Supported resolutions: {supportedResolutions}"
@@ -96,6 +99,7 @@ class Cameras:
                             f"Camera config not found for camera {camPath}"
                         )
 
+
                     # Save configs
                     writeConfig(
                         self.cleanIdentifier(camPath),
@@ -103,7 +107,6 @@ class Cameras:
                         self.getGains()[camPath],
                         self.getExposures()[camPath],
                     )
-
 
         else:
             Cameras.logger.error("Unknown platform!")
@@ -127,6 +130,7 @@ class Cameras:
             frames[identifier] = img
         return frames
 
+    # Sets resolution, video format, and FPS
     def setResolution(self, identifier, resolution):
         if resolution is None:
             Cameras.logger.info("Resolution not set")
@@ -134,9 +138,13 @@ class Cameras:
         # os.system(f"v4l2-ctl -d /dev/v4l/by-path/{identifier} --set-fmt-video=width={resolution[0]},height={resolution[1]}")
         self.info[identifier].cam.set(cv2.CAP_PROP_FRAME_HEIGHT, resolution[1])
         self.info[identifier].cam.set(cv2.CAP_PROP_FRAME_WIDTH, resolution[0])
+        self.info[identifier].cam.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*"MJPG"))
+        self.info[identifier].cam.set(cv2.CAP_PROP_FPS, 30)
         resolution = tuple(resolution)
         if self.getResolutions()[identifier] != resolution:
-            Cameras.logger.error(f"Failed to set resolution to {resolution} for {identifier}, using {self.getResolutions()[identifier]}")
+            Cameras.logger.error(
+                f"Failed to set resolution to {resolution} for {identifier}, using {self.getResolutions()[identifier]}"
+            )
             return False
 
         self.info[identifier].resolution = resolution
@@ -176,9 +184,10 @@ class Cameras:
         if exposure is None:
             Cameras.logger.info("Exposure not set")
             return False
-        
-        os.system(f"v4l2-ctl -d /dev/v4l/by-path/{identifier} --set-ctrl exposure_auto=1 --set-ctrl exposure_absolute={exposure}")
 
+        os.system(
+            f"v4l2-ctl -d /dev/v4l/by-path/{identifier} --set-ctrl exposure_auto=1 --set-ctrl exposure_absolute={exposure}"
+        )
 
         if self.info[identifier].cam.get(cv2.CAP_PROP_EXPOSURE) != exposure:
             Cameras.logger.warning(f"Exposure not set: {exposure} not accepted")

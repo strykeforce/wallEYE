@@ -245,7 +245,7 @@ class Calibration:
     def isReady(
         self, img: np.ndarray, corners: np.ndarray, requiredReadyCounts: int = 10
     ) -> bool:
-        if self.isStable(corners): # Not checking isSharp
+        if self.isStable(corners):  # Not checking isSharp
             self.readyCounts += 1
         else:
             self.readyCounts = 0

@@ -2,11 +2,9 @@ import cv2
 import logging
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.cbook import get_sample_data
 import matplotlib.image as mpimg
-from matplotlib import cm
 import json
-import time
+import simplejpeg
 
 logger = logging.getLogger(__name__)
 
@@ -15,6 +13,7 @@ class Buffer:
     outputFrame = b""
     lastNone = False
 
+    
     def update(self, img):
         if img is None:
             if not self.lastNone: 
@@ -24,7 +23,8 @@ class Buffer:
         if self.lastNone:
             logger.info("Updated image is NOT none!")
         self.lastNone = False
-        self.outputFrame = cv2.imencode(".jpg", img)[1].tobytes()
+        # self.outputFrame = cv2.imencode(".jpg", img)[1].tobytes()
+        self.outputFrame = simplejpeg.encode_jpeg(img)
 
     def output(self):
         while True:
@@ -98,7 +98,7 @@ class LivePlotBuffer(Buffer):
         self.ax.draw_artist(self.tags)
         self.fig.canvas.blit(self.fig.bbox)
         
-
+    
     def update(self, pose, tags):
         self.fig.canvas.restore_region(self.bg)
 
@@ -130,7 +130,7 @@ class LivePlotBuffer(Buffer):
 
         plot = np.frombuffer(self.fig.canvas.tostring_rgb(), dtype=np.uint8)
         img = plot.reshape(self.fig.canvas.get_width_height()[::-1] + (3,))[:, :, ::-1]
-        self.outputFrame = cv2.imencode(".jpg", img)[1].tobytes() # Optimize?
+        self.outputFrame = simplejpeg.encode_jpeg(img)
 
 
 
