@@ -119,13 +119,13 @@ public class WallEye {
             for (int j = 0; j < temp[7]; ++j)
                 tags[i] = (int) temp[j + 8];
 
-
+            //(long)temp[6]
             if(dios.size() == 0 || gyroResults[i][maxGyroResultSize - 1] == null || temp[6] > gyroResults[i][currentGyroIndex - 1 >= 0 ? currentGyroIndex - 1 : maxGyroResultSize - 1].getTimestamp())
                 results.add(new WallEyeResult(new Pose3d(new Translation3d(temp[0], temp[1], temp[2]), new Rotation3d(temp[3], temp[4], temp[5])), 
-                    temp[6], i, curUpdateNum, (int) temp[7], tags, temp[8 + (int) temp[7]] ));
+                    (long)temp[6] + sub.getAtomic().timestamp, i, curUpdateNum, (int) temp[7], tags, temp[8 + (int) temp[7]] ));
             else
                 results.add(new WallEyeResult(new Pose3d(new Translation3d(temp[0], temp[1], temp[2]), findGyro((long)temp[6], i)), 
-                    temp[6], i, curUpdateNum, (int) temp[7], tags, temp[8 + (int) temp[7]] ));
+                    (long)temp[6] + sub.getAtomic().timestamp, i, curUpdateNum, (int) temp[7], tags, temp[8 + (int) temp[7]] ));
 
         }
         WallEyeResult[] returnArray = new WallEyeResult[results.size()];
@@ -153,7 +153,6 @@ public class WallEye {
             return new Rotation3d();
 
         while ((timestamp - gyroResults[camIndex][mid].getTimestamp() > 1.0/camFPS * 1000000 || timestamp - gyroResults[camIndex][mid].getTimestamp() < 0)&& min != mid && loops < 10) {
-            System.out.println(min + " " + mid + " " + max);
             loops++;
             if (gyroResults[camIndex][mid].getTimestamp() > timestamp)
                 max = mid;
@@ -162,7 +161,6 @@ public class WallEye {
             mid = max > min ? (max - min) / 2 + min: (maxGyroResultSize - min + max) / 2 + min;
             mid %= maxGyroResultSize;
         }
-        System.out.println(gyroResults[camIndex][mid].getTimestamp() + " " + timestamp + " " + loops + " " + Math.abs(gyroResults[camIndex][mid].getTimestamp() - timestamp) + " " + (min != mid));
         return new Rotation3d(0, 0, gyroResults[camIndex][mid].getGyro());
     }
 
