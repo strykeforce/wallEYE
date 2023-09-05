@@ -7,7 +7,7 @@ import Confirm from "./Confirm";
 
 export default function CameraSettings(props) {
     const [showCalWarning, setShowCalWarning] = useState(false);
-    var e = "";
+    const [calE, setCalE] = useState(null);
 
     function action(e) {
         socket.emit("import_calibration", props.camID, e.target.files[0]);
@@ -15,7 +15,7 @@ export default function CameraSettings(props) {
 
     return (
         <>
-            <Confirm show={showCalWarning} setShow={setShowCalWarning} state={props.state} camID={props.camID} action={() => action(e)} />
+            <Confirm show={showCalWarning} setShow={setShowCalWarning} state={props.state} camID={props.camID} action={() => action(calE)} />
 
             <Form.Group>
                 <Card.Text>Gain: {props.state.gain[props.camID]}</Card.Text>
@@ -49,7 +49,7 @@ export default function CameraSettings(props) {
             <Form.Label> Import Calibration</Form.Label>
             <Form.Control type="file" accept=".json" onChange={
                 (e) => {
-                    if (props.state.calFilePaths[props.camID]) setShowCalWarning(true);
+                    if (props.state.calFilePaths[props.camID]) {setCalE(e); setShowCalWarning(true);}
                     else action(e);
                 }
             } />

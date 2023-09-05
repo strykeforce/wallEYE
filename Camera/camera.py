@@ -65,7 +65,7 @@ class Cameras:
                         f"Supported resolutions: {supportedResolutions}"
                     )
 
-                    cam.set(cv2.CAP_PROP_BUFFERSIZE, 3)
+                    cam.set(cv2.CAP_PROP_BUFFERSIZE, 1)
                     if cam.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1):
                         Cameras.logger.info(f"Auto exposure disabled for {camPath}")
                     else:
@@ -130,6 +130,7 @@ class Cameras:
             frames[identifier] = img
         return frames
 
+    # Sets resolution, video format, and FPS
     def setResolution(self, identifier, resolution):
         if resolution is None:
             Cameras.logger.info("Resolution not set")

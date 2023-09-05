@@ -155,6 +155,10 @@ class Config:
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             Config.logger.error(f"Failed to write static ip: {ip}")
 
+        if self.robotPublisher:
+            self.robotPublisher.destroy()
+        self.makePublisher(self.teamNumber, self.tableName)
+
     def resetNetworking(self):
         if not os.system("/usr/sbin/ifconfig eth0 down"):
             if not os.system("/usr/sbin/ifconfig eth0 up"):
