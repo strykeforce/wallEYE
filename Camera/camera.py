@@ -35,10 +35,10 @@ class Cameras:
                 if cam.isOpened():
                     Cameras.logger.info(f"Camera found: {camPath}")
 
-
-                    supportedResolutions = sorted(
+                    # Get supported resolutions using v4l2-ctl and a little regex
+                    supportedResolutions = sorted( # Sort values
                         list(
-                            set(
+                            set( # Unique values
                                 map(
                                     lambda x: (
                                         int(x.split("x")[0]),
@@ -65,7 +65,10 @@ class Cameras:
                         f"Supported resolutions: {supportedResolutions}"
                     )
 
+                    # Disable buffer so we always pull the latest image
                     cam.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+
+                    # Try to disable auto exposure
                     if cam.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1):
                         Cameras.logger.info(f"Auto exposure disabled for {camPath}")
                     else:
@@ -73,26 +76,30 @@ class Cameras:
                             f"Failed to disable auto exposure for {camPath}"
                         )
 
+                    # Initialize CameraInfo object
                     self.info[camPath] = CameraInfo(cam, camPath, supportedResolutions)
                     self.info[camPath].resolution = self.getResolutions()[camPath]
 
+                    # Attempt to import config from file
                     cleaned = self.cleanIdentifier(camPath)
-
                     config = None
+
                     try:
                         config = parseConfig(cleaned)
-
                         Cameras.logger.info(f"Config found!")
+
                     except (FileNotFoundError, json.decoder.JSONDecodeError):
                         Cameras.logger.warning(f"Config not found for camera {camPath}")
 
                     if config is not None:
+                        # Config was found
                         if not self.setResolution(
                             camPath, config["Resolution"]
-                        ):  # Calls self.importCalibration
+                        ):  # Calls self.importCalibration iff resolution was set
                             self.importCalibration(camPath)
                         self.setGain(camPath, config["Gain"])
                         self.setExposure(camPath, config["Exposure"])
+
                     else:
                         self.importCalibration(camPath)
                         Cameras.logger.warning(
@@ -110,7 +117,7 @@ class Cameras:
 
         else:
             Cameras.logger.error("Unknown platform!")
-
+    
     def setCalibration(self, identifier, K, D):
         self.info[identifier].K = K
         self.info[identifier].D = D

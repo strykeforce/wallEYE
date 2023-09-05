@@ -4,14 +4,9 @@
   Use `python3 init.py` to run. If changes are made to the web interface (frontend portion), `cd WebInterface/walleye` and `npm run build` are required to update the site.  
 
   If using from source, `sudo chmod 4755 /sbin/ifconfig` is required prior to running the first time.
-
-### Bugs/Known Limitations and Their Respective Workarounds
-- [ ] Static IP sometimes cannot be reached/pinged. 
-- [ ] Camera stream can be VERY laggy on web interface. Reload to fix. Does not reflect actual performance!
-
   
 ## Boot Up
-  Before connecting a WallEYE installation to a robot network switch, connect the Orange Pi via ethernet directly and turn on the Pi. Upon turning on the Pi connect to the local website at the ip ---.---.--- FIX ME. Upon connecting it is recommended to set a static ip to the format `10.27.67.#` or one that conforms to a team number. Also set a unique name that identifies the WallEYE installation. Although Calibration may be done on the first bootup it is not required. 
+  Before connecting a WallEYE installation to a robot network switch, connect the Orange Pi via ethernet directly and turn on the Pi. Upon turning on the Pi connect to the local website at the ip  `10.27.67.#`. Upon connecting it is recommended to set a static ip to the format `10.27.67.#` or one that conforms to a team number. Also set a unique name that identifies the WallEYE installation. Although Calibration may be done on the first bootup it is not required. 
   
 ## Web Interface
   The WallEYE website has each camera ordered in a specificed manner that is used in other places such as the order of poses returned by the robot side code. This order will only change if cameras and their usb ports are changed. If usb ports are changed it is recommended to download the data from the usb port (calibrations and configuration file) and upload it to the new port number. 

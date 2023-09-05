@@ -218,29 +218,29 @@ class Calibration:
         self.prevCorner1 = corner1
         self.prevCorner2 = corner2
 
-        threshold = self.resolution[0] / 500  # Test
+        threshold = self.resolution[0] / 200
 
         self.lastImageStable = speed1 < threshold and speed2 < threshold
 
         return self.lastImageStable
 
     # Not currently used
-    def isSharp(self, img: np.ndarray, threshold: float = 10, cutoff: float = 80):
-        (h, w) = img.shape
+    # def isSharp(self, img: np.ndarray, threshold: float = 10, cutoff: float = 80):
+    #     (h, w) = img.shape
 
-        fft = np.fft.fft2(img)
-        fftShift = np.fft.fftshift(fft)
+    #     fft = np.fft.fft2(img)
+    #     fftShift = np.fft.fftshift(fft)
 
-        fftShift[
-            h // 2 - cutoff : h // 2 + cutoff, w // 2 - cutoff : w // 2 + cutoff
-        ] = 0
+    #     fftShift[
+    #         h // 2 - cutoff : h // 2 + cutoff, w // 2 - cutoff : w // 2 + cutoff
+    #     ] = 0
 
-        fftShift = np.fft.ifftshift(fftShift)
-        recon = np.fft.ifft2(fftShift)
+    #     fftShift = np.fft.ifftshift(fftShift)
+    #     recon = np.fft.ifft2(fftShift)
 
-        self.lastImageSharp = threshold < np.mean(20 * np.log(np.abs(recon)))
+    #     self.lastImageSharp = threshold < np.mean(20 * np.log(np.abs(recon)))
 
-        return self.lastImageSharp
+    #     return self.lastImageSharp
 
     def isReady(
         self, img: np.ndarray, corners: np.ndarray, requiredReadyCounts: int = 10

@@ -108,7 +108,7 @@ def import_calibration(camID, file):
         calData["K"] = np.asarray(calData["K"])
         calData["dist"] = np.asarray(calData["dist"])
         walleyeData.cameras.setCalibration(camID, calData["K"], calData["dist"])
-        walleyeData.cameras.info[camID].calibrationPath = Calibration.calibrationPathByCam(camID)
+        walleyeData.cameras.info[camID].calibrationPath = Calibration.calibrationPathByCam(camID, walleyeData.cameras.info[camID].resolution)
 
     logger.info(f"Calibration sucessfully imported for {camID}")
     socketio.emit("info", "Calibration loaded")
