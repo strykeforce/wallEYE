@@ -6,3 +6,4 @@ flask-socketio
 eventlet
 matplotlib
 numpy >= 1.25
+simplejpeg

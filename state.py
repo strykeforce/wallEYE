@@ -136,6 +136,8 @@ class Config:
 
     def setIP(self, ip):
         Config.logger.info("Attempting to set static IP")
+        if self.robotPublisher:
+            self.robotPublisher.destroy()
         os.system("/usr/sbin/ifconfig eth0 up")
         if not os.system(f"/usr/sbin/ifconfig eth0 {ip} netmask 255.255.255.0"):
             Config.logger.info(f"Static IP set: {ip}")
@@ -155,8 +157,6 @@ class Config:
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             Config.logger.error(f"Failed to write static ip: {ip}")
 
-        if self.robotPublisher:
-            self.robotPublisher.destroy()
         self.makePublisher(self.teamNumber, self.tableName)
 
     def resetNetworking(self):

@@ -180,7 +180,6 @@ class Processor:
                         D[imgIndex],
                         flags=cv2.SOLVEPNP_SQPNP,
                     )
-
                     rotMat, _ = cv2.Rodrigues(rvecs)
                     transVec = -np.dot(np.transpose(rotMat), tvecs)
                     rot3D = wpi.Rotation3d(

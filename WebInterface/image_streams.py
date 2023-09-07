@@ -129,7 +129,7 @@ class LivePlotBuffer(Buffer):
         self.fig.canvas.flush_events()
 
         plot = np.frombuffer(self.fig.canvas.tostring_rgb(), dtype=np.uint8)
-        img = plot.reshape(self.fig.canvas.get_width_height()[::-1] + (3,))[:, :, ::-1]
+        img = plot.reshape(self.fig.canvas.get_width_height()[::-1] + (3,))
         self.outputFrame = simplejpeg.encode_jpeg(img)
 
 
