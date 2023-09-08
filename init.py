@@ -31,7 +31,8 @@ from WebInterface.web_interface import (
     camBuffers,
     socketio,
     app,
-    visualizationBuffers,
+    visualizationBuffers, 
+    sendStateUpdate
 )  # After walleyeData.cameras is set
 
 try:
@@ -114,6 +115,7 @@ try:
                 calibrators[walleyeData.cameraInCalibration].calibrationData["dist"],
             )
             walleyeData.currentState = States.IDLE
+            sendStateUpdate()
 
         elif walleyeData.currentState == States.PROCESSING:
             poseEstimator.setTagSize(walleyeData.tagSize)

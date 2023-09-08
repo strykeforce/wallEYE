@@ -189,7 +189,7 @@ def pose_update():
 
 
 def sendStateUpdate():
-    logger.debug(f"Sending state update : {walleyeData.getState()}")
+    # logger.info(f"Sending state update : {walleyeData.getState()}")
     socketio.sleep(0)
     socketio.emit("state_update", walleyeData.getState())
 

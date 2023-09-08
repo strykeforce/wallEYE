@@ -18041,3 +18041,317 @@ ValueError: image must be C contiguous
 [07-Sep-23 19:01:20 - INFO - camera.py:181 - setGain()]  Gain set to 3.0
 [07-Sep-23 19:01:20 - INFO - camera.py:181 - setGain()]  Gain set to 0.0
 [07-Sep-23 19:01:20 - INFO - camera.py:181 - setGain()]  Gain set to 0.0
+[07-Sep-23 19:29:46 - INFO - init.py:19 - <module>()]  ----------- Starting Up -----------
+[07-Sep-23 19:29:46 - INFO - state.py:138 - setIP()]  Attempting to set static IP
+[07-Sep-23 19:29:46 - INFO - state.py:143 - setIP()]  Static IP set: 10.27.67.10
+[07-Sep-23 19:29:46 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[07-Sep-23 19:29:46 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[07-Sep-23 19:29:47 - INFO - init.py:19 - <module>()]  ----------- Starting Up -----------
+[07-Sep-23 19:29:47 - INFO - state.py:138 - setIP()]  Attempting to set static IP
+[07-Sep-23 19:29:47 - INFO - state.py:143 - setIP()]  Static IP set: 10.27.67.10
+[07-Sep-23 19:29:47 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[07-Sep-23 19:29:47 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[07-Sep-23 19:29:49 - INFO - init.py:19 - <module>()]  ----------- Starting Up -----------
+[07-Sep-23 19:29:49 - INFO - state.py:138 - setIP()]  Attempting to set static IP
+[07-Sep-23 19:29:49 - INFO - state.py:143 - setIP()]  Static IP set: 10.27.67.10
+[07-Sep-23 19:29:49 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[07-Sep-23 19:29:49 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[07-Sep-23 19:29:50 - INFO - init.py:19 - <module>()]  ----------- Starting Up -----------
+[07-Sep-23 19:29:50 - INFO - state.py:138 - setIP()]  Attempting to set static IP
+[07-Sep-23 19:29:50 - INFO - state.py:143 - setIP()]  Static IP set: 10.27.67.10
+[07-Sep-23 19:29:50 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[07-Sep-23 19:29:50 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[07-Sep-23 19:29:52 - INFO - init.py:19 - <module>()]  ----------- Starting Up -----------
+[07-Sep-23 19:29:52 - INFO - state.py:138 - setIP()]  Attempting to set static IP
+[07-Sep-23 19:29:52 - INFO - state.py:143 - setIP()]  Static IP set: 10.27.67.10
+[07-Sep-23 19:29:52 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[07-Sep-23 19:29:52 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[07-Sep-23 19:29:53 - INFO - init.py:19 - <module>()]  ----------- Starting Up -----------
+[07-Sep-23 19:29:53 - INFO - state.py:138 - setIP()]  Attempting to set static IP
+[07-Sep-23 19:29:53 - INFO - state.py:143 - setIP()]  Static IP set: 10.27.67.10
+[07-Sep-23 19:29:53 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[07-Sep-23 19:29:53 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[07-Sep-23 19:29:55 - INFO - init.py:19 - <module>()]  ----------- Starting Up -----------
+[07-Sep-23 19:29:55 - INFO - state.py:138 - setIP()]  Attempting to set static IP
+[07-Sep-23 19:29:55 - INFO - state.py:143 - setIP()]  Static IP set: 10.27.67.10
+[07-Sep-23 19:29:55 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[07-Sep-23 19:29:55 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[07-Sep-23 19:29:56 - INFO - init.py:19 - <module>()]  ----------- Starting Up -----------
+[07-Sep-23 19:29:56 - INFO - state.py:138 - setIP()]  Attempting to set static IP
+[07-Sep-23 19:29:56 - INFO - state.py:143 - setIP()]  Static IP set: 10.27.67.10
+[07-Sep-23 19:29:56 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[07-Sep-23 19:29:56 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[07-Sep-23 19:29:58 - INFO - init.py:19 - <module>()]  ----------- Starting Up -----------
+[07-Sep-23 19:29:58 - INFO - state.py:138 - setIP()]  Attempting to set static IP
+[07-Sep-23 19:29:58 - INFO - state.py:143 - setIP()]  Static IP set: 10.27.67.10
+[07-Sep-23 19:29:58 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[07-Sep-23 19:29:58 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[07-Sep-23 19:29:59 - INFO - init.py:19 - <module>()]  ----------- Starting Up -----------
+[07-Sep-23 19:29:59 - INFO - state.py:138 - setIP()]  Attempting to set static IP
+[07-Sep-23 19:29:59 - INFO - state.py:143 - setIP()]  Static IP set: 10.27.67.10
+[07-Sep-23 19:29:59 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[07-Sep-23 19:29:59 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[07-Sep-23 19:30:01 - INFO - init.py:19 - <module>()]  ----------- Starting Up -----------
+[07-Sep-23 19:30:01 - INFO - state.py:138 - setIP()]  Attempting to set static IP
+[07-Sep-23 19:30:01 - INFO - state.py:143 - setIP()]  Static IP set: 10.27.67.10
+[07-Sep-23 19:30:01 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[07-Sep-23 19:30:01 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[07-Sep-23 19:30:02 - INFO - init.py:19 - <module>()]  ----------- Starting Up -----------
+[07-Sep-23 19:30:02 - INFO - state.py:138 - setIP()]  Attempting to set static IP
+[07-Sep-23 19:30:02 - INFO - state.py:143 - setIP()]  Static IP set: 10.27.67.10
+[07-Sep-23 19:30:02 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[07-Sep-23 19:30:02 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[07-Sep-23 19:30:04 - INFO - init.py:19 - <module>()]  ----------- Starting Up -----------
+[07-Sep-23 19:30:04 - INFO - state.py:138 - setIP()]  Attempting to set static IP
+[07-Sep-23 19:30:04 - INFO - state.py:143 - setIP()]  Static IP set: 10.27.67.10
+[07-Sep-23 19:30:04 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[07-Sep-23 19:30:04 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[07-Sep-23 19:30:05 - INFO - init.py:19 - <module>()]  ----------- Starting Up -----------
+[07-Sep-23 19:30:05 - INFO - state.py:138 - setIP()]  Attempting to set static IP
+[07-Sep-23 19:30:05 - INFO - state.py:143 - setIP()]  Static IP set: 10.27.67.10
+[07-Sep-23 19:30:05 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[07-Sep-23 19:30:05 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[07-Sep-23 19:30:07 - INFO - init.py:19 - <module>()]  ----------- Starting Up -----------
+[07-Sep-23 19:30:07 - INFO - state.py:138 - setIP()]  Attempting to set static IP
+[07-Sep-23 19:30:07 - INFO - state.py:143 - setIP()]  Static IP set: 10.27.67.10
+[07-Sep-23 19:30:07 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[07-Sep-23 19:30:07 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[07-Sep-23 19:30:08 - INFO - init.py:19 - <module>()]  ----------- Starting Up -----------
+[07-Sep-23 19:30:08 - INFO - state.py:138 - setIP()]  Attempting to set static IP
+[07-Sep-23 19:30:08 - INFO - state.py:143 - setIP()]  Static IP set: 10.27.67.10
+[07-Sep-23 19:30:08 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[07-Sep-23 19:30:08 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[07-Sep-23 19:30:10 - INFO - init.py:19 - <module>()]  ----------- Starting Up -----------
+[07-Sep-23 19:30:10 - INFO - state.py:138 - setIP()]  Attempting to set static IP
+[07-Sep-23 19:30:10 - INFO - state.py:143 - setIP()]  Static IP set: 10.27.67.10
+[07-Sep-23 19:30:10 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[07-Sep-23 19:30:10 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[07-Sep-23 19:30:11 - INFO - init.py:19 - <module>()]  ----------- Starting Up -----------
+[07-Sep-23 19:30:11 - INFO - state.py:138 - setIP()]  Attempting to set static IP
+[07-Sep-23 19:30:11 - INFO - state.py:143 - setIP()]  Static IP set: 10.27.67.10
+[07-Sep-23 19:30:11 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[07-Sep-23 19:30:11 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[07-Sep-23 19:30:13 - INFO - init.py:19 - <module>()]  ----------- Starting Up -----------
+[07-Sep-23 19:30:13 - INFO - state.py:138 - setIP()]  Attempting to set static IP
+[07-Sep-23 19:30:13 - INFO - state.py:143 - setIP()]  Static IP set: 10.27.67.10
+[07-Sep-23 19:30:13 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[07-Sep-23 19:30:13 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[07-Sep-23 19:30:14 - INFO - init.py:19 - <module>()]  ----------- Starting Up -----------
+[07-Sep-23 19:30:14 - INFO - state.py:138 - setIP()]  Attempting to set static IP
+[07-Sep-23 19:30:14 - INFO - state.py:143 - setIP()]  Static IP set: 10.27.67.10
+[07-Sep-23 19:30:15 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[07-Sep-23 19:30:15 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[07-Sep-23 19:30:15 - INFO - camera.py:21 - __init__()]  Platform is linux
+[07-Sep-23 19:30:15 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
+[07-Sep-23 19:30:15 - INFO - camera.py:64 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
+[07-Sep-23 19:30:15 - INFO - camera.py:73 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[07-Sep-23 19:30:15 - INFO - camera.py:89 - __init__()]  Config found!
+[07-Sep-23 19:30:15 - INFO - calibration.py:291 - parseCalibration()]  Looking for calibration stored at ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(1600, 1200)CalData.json
+[07-Sep-23 19:30:15 - INFO - camera.py:125 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[909.38232041   0.         798.41064395]
+ [  0.         910.21413706 632.20774086]
+ [  0.           0.           1.        ]]
+[[ 5.54363747e+00  5.05060963e-01 -6.66246035e-03 -2.63639572e-02
+   3.42958422e+00  5.49252327e+00  2.99856578e-01  3.75861939e+00
+   2.60727964e-02 -3.63852349e-04  6.39657013e-03  2.04366605e-03
+  -6.36718780e-04 -5.89721188e-02]]
+[07-Sep-23 19:30:15 - INFO - camera.py:167 - setResolution()]  Resolution set to (1600, 1200) for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[07-Sep-23 19:30:15 - INFO - camera.py:181 - setGain()]  Gain set to 0.0
+[07-Sep-23 19:30:15 - INFO - camera.py:203 - setExposure()]  Exposure set to 41.0
+[07-Sep-23 19:30:16 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
+[07-Sep-23 19:30:20 - INFO - init.py:49 - <module>()]  Web server ready
+[07-Sep-23 19:30:23 - INFO - Processing.py:16 - __init__()]  Tag layout loaded
+[07-Sep-23 19:30:24 - INFO - state.py:101 - makePublisher()]  Existing publisher destroyed
+[07-Sep-23 19:30:25 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[07-Sep-23 19:30:25 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[07-Sep-23 19:30:25 - INFO - init.py:58 - <module>()]  Starting main loop
+[07-Sep-23 19:30:26 - INFO - init.py:19 - <module>()]  ----------- Starting Up -----------
+[07-Sep-23 19:30:26 - INFO - state.py:138 - setIP()]  Attempting to set static IP
+[07-Sep-23 19:30:26 - INFO - state.py:143 - setIP()]  Static IP set: 10.27.67.10
+[07-Sep-23 19:30:26 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[07-Sep-23 19:30:26 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[07-Sep-23 19:30:26 - INFO - camera.py:21 - __init__()]  Platform is linux
+[07-Sep-23 19:30:27 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
+[07-Sep-23 19:30:27 - INFO - camera.py:64 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
+[07-Sep-23 19:30:27 - INFO - camera.py:73 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[07-Sep-23 19:30:27 - INFO - camera.py:89 - __init__()]  Config found!
+[07-Sep-23 19:30:27 - INFO - calibration.py:291 - parseCalibration()]  Looking for calibration stored at ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(1600, 1200)CalData.json
+[07-Sep-23 19:30:27 - INFO - camera.py:125 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[909.38232041   0.         798.41064395]
+ [  0.         910.21413706 632.20774086]
+ [  0.           0.           1.        ]]
+[[ 5.54363747e+00  5.05060963e-01 -6.66246035e-03 -2.63639572e-02
+   3.42958422e+00  5.49252327e+00  2.99856578e-01  3.75861939e+00
+   2.60727964e-02 -3.63852349e-04  6.39657013e-03  2.04366605e-03
+  -6.36718780e-04 -5.89721188e-02]]
+[07-Sep-23 19:30:27 - INFO - camera.py:167 - setResolution()]  Resolution set to (1600, 1200) for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[07-Sep-23 19:30:27 - INFO - camera.py:181 - setGain()]  Gain set to 0.0
+[07-Sep-23 19:30:27 - INFO - camera.py:203 - setExposure()]  Exposure set to 41.0
+[07-Sep-23 19:30:28 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
+[07-Sep-23 19:30:31 - INFO - init.py:50 - <module>()]  Web server ready
+[07-Sep-23 19:30:31 - INFO - Processing.py:16 - __init__()]  Tag layout loaded
+[07-Sep-23 19:30:31 - INFO - state.py:101 - makePublisher()]  Existing publisher destroyed
+[07-Sep-23 19:30:31 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[07-Sep-23 19:30:31 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[07-Sep-23 19:30:31 - INFO - init.py:59 - <module>()]  Starting main loop
+[07-Sep-23 19:30:32 - INFO - web_interface.py:42 - connect()]  Client connected
+[07-Sep-23 19:30:33 - WARNING - web_interface.py:47 - disconnect()]  Client disconnected
+[07-Sep-23 19:30:33 - INFO - web_interface.py:42 - connect()]  Client connected
+[07-Sep-23 19:31:06 - INFO - camera.py:203 - setExposure()]  Exposure set to 58.0
+[07-Sep-23 19:31:06 - INFO - camera.py:203 - setExposure()]  Exposure set to 75.0
+[07-Sep-23 19:31:07 - INFO - camera.py:203 - setExposure()]  Exposure set to 83.0
+[07-Sep-23 19:31:07 - INFO - camera.py:203 - setExposure()]  Exposure set to 83.0
+[07-Sep-23 19:31:07 - INFO - camera.py:203 - setExposure()]  Exposure set to 91.0
+[07-Sep-23 19:31:08 - INFO - camera.py:203 - setExposure()]  Exposure set to 83.0
+[07-Sep-23 19:31:08 - INFO - camera.py:203 - setExposure()]  Exposure set to 66.0
+[07-Sep-23 19:31:10 - INFO - camera.py:203 - setExposure()]  Exposure set to 66.0
+[07-Sep-23 19:31:10 - INFO - camera.py:203 - setExposure()]  Exposure set to 58.0
+[07-Sep-23 19:31:10 - INFO - camera.py:203 - setExposure()]  Exposure set to 50.0
+[07-Sep-23 19:31:10 - INFO - camera.py:203 - setExposure()]  Exposure set to 41.0
+[07-Sep-23 19:31:11 - INFO - camera.py:203 - setExposure()]  Exposure set to 33.0
+[07-Sep-23 19:31:13 - INFO - camera.py:203 - setExposure()]  Exposure set to 41.0
+[07-Sep-23 19:31:13 - INFO - camera.py:203 - setExposure()]  Exposure set to 50.0
+[07-Sep-23 19:31:14 - INFO - camera.py:203 - setExposure()]  Exposure set to 58.0
+[07-Sep-23 19:31:14 - INFO - camera.py:203 - setExposure()]  Exposure set to 66.0
+[07-Sep-23 19:34:58 - INFO - web_interface.py:79 - toggle_calibration()]  Starting calibration capture for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[07-Sep-23 19:34:58 - INFO - init.py:69 - <module>()]  Beginning calibration
+[07-Sep-23 19:35:12 - INFO - calibration.py:90 - processFrame()]  Calibration image saved to Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0CalImgs/1694129712021907289.png
+[07-Sep-23 19:35:18 - INFO - web_interface.py:83 - toggle_calibration()]  Stopping calibration capture
+[07-Sep-23 19:36:28 - INFO - init.py:19 - <module>()]  ----------- Starting Up -----------
+[07-Sep-23 19:36:29 - INFO - state.py:138 - setIP()]  Attempting to set static IP
+[07-Sep-23 19:36:29 - INFO - state.py:143 - setIP()]  Static IP set: 10.27.67.10
+[07-Sep-23 19:36:29 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[07-Sep-23 19:36:29 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[07-Sep-23 19:36:29 - INFO - camera.py:21 - __init__()]  Platform is linux
+[07-Sep-23 19:36:29 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
+[07-Sep-23 19:36:29 - INFO - camera.py:64 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
+[07-Sep-23 19:36:29 - INFO - camera.py:73 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[07-Sep-23 19:36:29 - INFO - camera.py:89 - __init__()]  Config found!
+[07-Sep-23 19:36:29 - INFO - calibration.py:291 - parseCalibration()]  Looking for calibration stored at ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(1600, 1200)CalData.json
+[07-Sep-23 19:36:29 - INFO - camera.py:125 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[909.38232041   0.         798.41064395]
+ [  0.         910.21413706 632.20774086]
+ [  0.           0.           1.        ]]
+[[ 5.54363747e+00  5.05060963e-01 -6.66246035e-03 -2.63639572e-02
+   3.42958422e+00  5.49252327e+00  2.99856578e-01  3.75861939e+00
+   2.60727964e-02 -3.63852349e-04  6.39657013e-03  2.04366605e-03
+  -6.36718780e-04 -5.89721188e-02]]
+[07-Sep-23 19:36:29 - INFO - camera.py:167 - setResolution()]  Resolution set to (1600, 1200) for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[07-Sep-23 19:36:29 - INFO - camera.py:181 - setGain()]  Gain set to 0.0
+[07-Sep-23 19:36:29 - INFO - camera.py:203 - setExposure()]  Exposure set to 66.0
+[07-Sep-23 19:36:30 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
+[07-Sep-23 19:36:33 - INFO - init.py:50 - <module>()]  Web server ready
+[07-Sep-23 19:36:33 - INFO - Processing.py:16 - __init__()]  Tag layout loaded
+[07-Sep-23 19:36:33 - INFO - state.py:101 - makePublisher()]  Existing publisher destroyed
+[07-Sep-23 19:36:33 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[07-Sep-23 19:36:33 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[07-Sep-23 19:36:33 - INFO - init.py:59 - <module>()]  Starting main loop
+[07-Sep-23 19:36:33 - INFO - web_interface.py:42 - connect()]  Client connected
+[07-Sep-23 19:36:34 - INFO - web_interface.py:42 - connect()]  Client connected
+[07-Sep-23 19:36:37 - WARNING - web_interface.py:47 - disconnect()]  Client disconnected
+[07-Sep-23 19:36:37 - INFO - web_interface.py:42 - connect()]  Client connected
+[07-Sep-23 19:36:40 - INFO - web_interface.py:79 - toggle_calibration()]  Starting calibration capture for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[07-Sep-23 19:36:40 - INFO - init.py:69 - <module>()]  Beginning calibration
+[07-Sep-23 19:36:47 - INFO - calibration.py:90 - processFrame()]  Calibration image saved to Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0CalImgs/1694129807150109824.png
+[07-Sep-23 19:36:48 - INFO - calibration.py:90 - processFrame()]  Calibration image saved to Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0CalImgs/1694129808301139702.png
+[07-Sep-23 19:36:53 - INFO - web_interface.py:83 - toggle_calibration()]  Stopping calibration capture
+[07-Sep-23 19:36:56 - INFO - web_interface.py:79 - toggle_calibration()]  Starting calibration capture for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[07-Sep-23 19:36:56 - INFO - init.py:69 - <module>()]  Beginning calibration
+[07-Sep-23 19:37:03 - INFO - calibration.py:90 - processFrame()]  Calibration image saved to Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0CalImgs/1694129823804692519.png
+[07-Sep-23 19:37:04 - INFO - calibration.py:90 - processFrame()]  Calibration image saved to Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0CalImgs/1694129824951223538.png
+[07-Sep-23 19:37:14 - INFO - web_interface.py:83 - toggle_calibration()]  Stopping calibration capture
+[07-Sep-23 19:37:19 - WARNING - web_interface.py:47 - disconnect()]  Client disconnected
+[07-Sep-23 19:37:38 - WARNING - web_interface.py:47 - disconnect()]  Client disconnected
+[07-Sep-23 19:38:17 - INFO - init.py:19 - <module>()]  ----------- Starting Up -----------
+[07-Sep-23 19:38:17 - INFO - state.py:138 - setIP()]  Attempting to set static IP
+[07-Sep-23 19:38:17 - INFO - state.py:143 - setIP()]  Static IP set: 10.27.67.10
+[07-Sep-23 19:38:18 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[07-Sep-23 19:38:18 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[07-Sep-23 19:38:18 - INFO - camera.py:21 - __init__()]  Platform is linux
+[07-Sep-23 19:38:18 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
+[07-Sep-23 19:38:18 - INFO - camera.py:64 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
+[07-Sep-23 19:38:18 - INFO - camera.py:73 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[07-Sep-23 19:38:18 - INFO - camera.py:89 - __init__()]  Config found!
+[07-Sep-23 19:38:18 - INFO - calibration.py:291 - parseCalibration()]  Looking for calibration stored at ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(1600, 1200)CalData.json
+[07-Sep-23 19:38:18 - INFO - camera.py:125 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[909.38232041   0.         798.41064395]
+ [  0.         910.21413706 632.20774086]
+ [  0.           0.           1.        ]]
+[[ 5.54363747e+00  5.05060963e-01 -6.66246035e-03 -2.63639572e-02
+   3.42958422e+00  5.49252327e+00  2.99856578e-01  3.75861939e+00
+   2.60727964e-02 -3.63852349e-04  6.39657013e-03  2.04366605e-03
+  -6.36718780e-04 -5.89721188e-02]]
+[07-Sep-23 19:38:18 - INFO - camera.py:167 - setResolution()]  Resolution set to (1600, 1200) for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[07-Sep-23 19:38:18 - INFO - camera.py:181 - setGain()]  Gain set to 0.0
+[07-Sep-23 19:38:18 - INFO - camera.py:203 - setExposure()]  Exposure set to 66.0
+[07-Sep-23 19:38:19 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
+[07-Sep-23 19:38:22 - INFO - init.py:50 - <module>()]  Web server ready
+[07-Sep-23 19:38:22 - INFO - Processing.py:16 - __init__()]  Tag layout loaded
+[07-Sep-23 19:38:22 - INFO - state.py:101 - makePublisher()]  Existing publisher destroyed
+[07-Sep-23 19:38:22 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[07-Sep-23 19:38:22 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[07-Sep-23 19:38:23 - INFO - init.py:59 - <module>()]  Starting main loop
+[07-Sep-23 19:38:27 - INFO - web_interface.py:42 - connect()]  Client connected
+[07-Sep-23 19:38:38 - INFO - web_interface.py:79 - toggle_calibration()]  Starting calibration capture for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[07-Sep-23 19:38:38 - INFO - init.py:69 - <module>()]  Beginning calibration
+[07-Sep-23 19:38:45 - INFO - calibration.py:90 - processFrame()]  Calibration image saved to Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0CalImgs/1694129925334165391.png
+[07-Sep-23 19:38:50 - INFO - web_interface.py:83 - toggle_calibration()]  Stopping calibration capture
+[07-Sep-23 19:39:03 - INFO - calibration.py:203 - generateCalibration()]  Calibration successfully generated and saved to ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(1600, 1200)CalData.json with resolution (1600, 1200)
+[07-Sep-23 19:39:03 - INFO - camera.py:125 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[1.06769704e+03 0.00000000e+00 8.04220662e+02]
+ [0.00000000e+00 8.96983715e+02 5.92484661e+02]
+ [0.00000000e+00 0.00000000e+00 1.00000000e+00]]
+[[ 0.01466421  0.01450622  0.06566926 -0.02990376 -0.42469466 -0.01610924
+  -0.02673987 -0.3507339   0.01945083 -0.00092178 -0.07634982  0.01230412
+  -0.07601492 -0.1604656 ]]
+[07-Sep-23 19:39:12 - INFO - calibration.py:203 - generateCalibration()]  Calibration successfully generated and saved to ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(1600, 1200)CalData.json with resolution (1600, 1200)
+[07-Sep-23 19:39:12 - INFO - camera.py:125 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[1.06769704e+03 0.00000000e+00 8.04220662e+02]
+ [0.00000000e+00 8.96983715e+02 5.92484661e+02]
+ [0.00000000e+00 0.00000000e+00 1.00000000e+00]]
+[[ 0.01466421  0.01450622  0.06566926 -0.02990376 -0.42469466 -0.01610924
+  -0.02673987 -0.3507339   0.01945083 -0.00092178 -0.07634982  0.01230412
+  -0.07601492 -0.1604656 ]]
+[07-Sep-23 19:39:38 - INFO - web_interface.py:42 - connect()]  Client connected
+[07-Sep-23 19:39:38 - WARNING - web_interface.py:47 - disconnect()]  Client disconnected
+[07-Sep-23 19:42:03 - INFO - init.py:19 - <module>()]  ----------- Starting Up -----------
+[07-Sep-23 19:42:03 - INFO - state.py:138 - setIP()]  Attempting to set static IP
+[07-Sep-23 19:42:03 - INFO - state.py:143 - setIP()]  Static IP set: 10.27.67.10
+[07-Sep-23 19:42:03 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[07-Sep-23 19:42:03 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[07-Sep-23 19:42:03 - INFO - camera.py:21 - __init__()]  Platform is linux
+[07-Sep-23 19:42:04 - INFO - camera.py:36 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
+[07-Sep-23 19:42:04 - INFO - camera.py:64 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
+[07-Sep-23 19:42:04 - INFO - camera.py:73 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[07-Sep-23 19:42:04 - INFO - camera.py:89 - __init__()]  Config found!
+[07-Sep-23 19:42:04 - INFO - calibration.py:291 - parseCalibration()]  Looking for calibration stored at ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(1600, 1200)CalData.json
+[07-Sep-23 19:42:04 - INFO - camera.py:125 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[1.06769704e+03 0.00000000e+00 8.04220662e+02]
+ [0.00000000e+00 8.96983715e+02 5.92484661e+02]
+ [0.00000000e+00 0.00000000e+00 1.00000000e+00]]
+[[ 0.01466421  0.01450622  0.06566926 -0.02990376 -0.42469466 -0.01610924
+  -0.02673987 -0.3507339   0.01945083 -0.00092178 -0.07634982  0.01230412
+  -0.07601492 -0.1604656 ]]
+[07-Sep-23 19:42:04 - INFO - camera.py:167 - setResolution()]  Resolution set to (1600, 1200) for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[07-Sep-23 19:42:04 - INFO - camera.py:181 - setGain()]  Gain set to 0.0
+[07-Sep-23 19:42:04 - INFO - camera.py:203 - setExposure()]  Exposure set to 66.0
+[07-Sep-23 19:42:05 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
+[07-Sep-23 19:42:08 - INFO - init.py:50 - <module>()]  Web server ready
+[07-Sep-23 19:42:08 - INFO - Processing.py:16 - __init__()]  Tag layout loaded
+[07-Sep-23 19:42:08 - INFO - state.py:101 - makePublisher()]  Existing publisher destroyed
+[07-Sep-23 19:42:08 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[07-Sep-23 19:42:08 - INFO - state.py:105 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[07-Sep-23 19:42:08 - INFO - init.py:59 - <module>()]  Starting main loop
+[07-Sep-23 19:42:08 - INFO - web_interface.py:42 - connect()]  Client connected
+[07-Sep-23 19:42:12 - WARNING - web_interface.py:47 - disconnect()]  Client disconnected
+[07-Sep-23 19:42:12 - INFO - web_interface.py:42 - connect()]  Client connected
+[07-Sep-23 19:42:17 - INFO - web_interface.py:79 - toggle_calibration()]  Starting calibration capture for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[07-Sep-23 19:42:17 - INFO - init.py:69 - <module>()]  Beginning calibration
+[07-Sep-23 19:42:25 - INFO - calibration.py:90 - processFrame()]  Calibration image saved to Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0CalImgs/1694130145669214505.png
+[07-Sep-23 19:42:26 - INFO - calibration.py:90 - processFrame()]  Calibration image saved to Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0CalImgs/1694130146734547286.png
+[07-Sep-23 19:42:29 - INFO - web_interface.py:83 - toggle_calibration()]  Stopping calibration capture
+[07-Sep-23 19:42:32 - INFO - calibration.py:203 - generateCalibration()]  Calibration successfully generated and saved to ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(1600, 1200)CalData.json with resolution (1600, 1200)
+[07-Sep-23 19:42:32 - INFO - camera.py:125 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[938.2761424    0.         799.71974253]
+ [  0.         937.74246431 598.22425217]
+ [  0.           0.           1.        ]]
+[[ 0.02807     0.08425945  0.05209482 -0.03366448 -0.11607721 -0.0161188
+  -0.00459138  0.09785017  0.03803141 -0.01316574 -0.04712645 -0.02113634
+  -0.15634498 -0.06049651]]
+[07-Sep-23 19:42:57 - WARNING - web_interface.py:47 - disconnect()]  Client disconnected
+[07-Sep-23 19:42:58 - INFO - web_interface.py:42 - connect()]  Client connected
+[07-Sep-23 19:43:18 - INFO - web_interface.py:170 - toggle_pnp()]  PnP started
+[07-Sep-23 19:43:28 - INFO - web_interface.py:167 - toggle_pnp()]  PnP stopped
+[07-Sep-23 19:43:33 - WARNING - web_interface.py:47 - disconnect()]  Client disconnected
