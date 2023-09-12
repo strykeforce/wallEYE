@@ -19,8 +19,9 @@ camBuffers = {identifier: Buffer() for identifier in walleyeData.cameras.info.ke
 visualizationBuffers = {
     identifier: LivePlotBuffer() for identifier in walleyeData.cameras.info.keys()
 }
-# def displayInfo(msg):
-#     socketio.emit("info", msg)
+def displayInfo(msg):
+    logger.info(f"Sending message to web interface: {msg}")
+    socketio.emit("info", msg)
 
 def updateAfter(action):
     def actionAndUpdate(*args, **kwargs):
@@ -88,6 +89,7 @@ def toggle_calibration(camID):
 def generate_calibration(camID):
     walleyeData.currentState = States.GENERATE_CALIBRATION
     walleyeData.cameraInCalibration = camID
+    walleyeData.cameras.info[camID].calibrationPath = None
 
 
 @socketio.on("import_calibration")
@@ -177,12 +179,14 @@ def toggle_pose_visualization():
 
 
 @socketio.on("pose_update")
+@updateAfter
 def pose_update():
     socketio.sleep(0)
     socketio.emit("pose_update", walleyeData.poses)
 
 
 @socketio.on("performance_update")
+@updateAfter
 def pose_update():
     socketio.sleep(0)
     socketio.emit("performance_update", walleyeData.loopTime)

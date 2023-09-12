@@ -32,6 +32,7 @@ from WebInterface.web_interface import (
     socketio,
     app,
     visualizationBuffers, 
+    displayInfo,
     sendStateUpdate
 )  # After walleyeData.cameras is set
 
@@ -63,7 +64,7 @@ try:
         currTime = time.time()
         walleyeData.loopTime = round(currTime - lastLoopTime, 3)
         lastLoopTime = currTime
-
+        
         # State changes
         if walleyeData.currentState == States.BEGIN_CALIBRATION:
             logger.info("Beginning calibration")
@@ -114,8 +115,9 @@ try:
                 calibrators[walleyeData.cameraInCalibration].calibrationData["K"],
                 calibrators[walleyeData.cameraInCalibration].calibrationData["dist"],
             )
+            walleyeData.cameras.info[walleyeData.cameraInCalibration].calibrationPath = Calibration.calibrationPathByCam(walleyeData.cameraInCalibration, walleyeData.cameras.info[walleyeData.cameraInCalibration].resolution)
             walleyeData.currentState = States.IDLE
-            sendStateUpdate()
+            
 
         elif walleyeData.currentState == States.PROCESSING:
             poseEstimator.setTagSize(walleyeData.tagSize)
