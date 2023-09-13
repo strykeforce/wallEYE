@@ -10,7 +10,7 @@ import edu.wpi.first.math.geometry.Pose3d;
  */
 public class WallEyeResult {
     Pose3d cameraPose;
-    long timeStamp;
+    double timeStamp;
     int updateNum;
     int numTags;
     int originCam;
@@ -28,7 +28,7 @@ public class WallEyeResult {
      * @param tags an array of tag ids that was used to calculate pose
      * @param ambiguity a double that represents to confidence of the pose
     */
-    public WallEyeResult(Pose3d pose, long timeStamp, int originCam, int updateNum, int numTags, int[] tags, double ambiguity) {
+    public WallEyeResult(Pose3d pose, double timeStamp, int originCam, int updateNum, int numTags, int[] tags, double ambiguity) {
         cameraPose = pose;
         this.timeStamp = timeStamp;
         this.updateNum = updateNum;
@@ -60,7 +60,7 @@ public class WallEyeResult {
      *   
      * @return timestamp of the result
     */
-    public long getTimeStamp() {
+    public double getTimeStamp() {
         return timeStamp;
     }
 
