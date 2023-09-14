@@ -1,11 +1,9 @@
 package WallEye;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -14,12 +12,9 @@ import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.IntegerSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.util.CircularBuffer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import WallEye.WallEyeResult;
 
 /**
  * A robot side code interface to interact and pull data from an Orange Pi running WallEye
@@ -134,8 +129,6 @@ public class WallEye {
             else {
                 DIOGyroResult savedStrobe = findGyro((sub.getAtomic().timestamp + (long)temp[6]), i, temp[5]);
 
-                //System.out.println(savedStrobe.getTimestamp() - ((double)sub.getAtomic().timestamp) + temp[6]);
-
                 results.add(new WallEyeResult(new Pose3d(new Translation3d(temp[0], temp[1], temp[2]), new Rotation3d(0, 0, savedStrobe.getGyro())), 
                     savedStrobe.getTimestamp(), i, curUpdateNum, (int) temp[7], tags, temp[8 + (int) temp[7]] ));
             }
@@ -161,7 +154,6 @@ public class WallEye {
         if (index < 0)
             index += maxGyroResultSize;
         while((long)gyroResults[camIndex][index].getTimestamp() > timestamp) {
-            //System.out.println(index);
             index--;
             if (index < 0)
                 index += maxGyroResultSize;
@@ -170,27 +162,6 @@ public class WallEye {
         }
         return gyroResults[camIndex][index];
     }
-    // public DIOGyroResult findGyro(long timestamp, int camIndex) {
-    //     int max = currentGyroIndex - 1 >= 0 ? currentGyroIndex - 1 : maxGyroResultSize - 1;
-    //     int min = currentGyroIndex;
-    //     int loops = 0;
-    //     int mid = max > min ? (max - min) / 2 : (maxGyroResultSize - min + max) / 2 + min;
-    //     mid %= maxGyroResultSize;
-        
-    //     if (gyroResults[camIndex][maxGyroResultSize-1] == null)
-    //         return new DIOGyroResult(0.0, 0);
-
-    //     while ((timestamp - gyroResults[camIndex][mid].getTimestamp() > 1.0/camFPS * 1000000 || timestamp - gyroResults[camIndex][mid].getTimestamp() < 0)&& min != mid && loops < 10) {
-    //         loops++;
-    //         if (gyroResults[camIndex][mid].getTimestamp() > timestamp)
-    //             max = mid;
-    //         else 
-    //             min = mid;    
-    //         mid = max > min ? (max - min) / 2 + min: (maxGyroResultSize - min + max) / 2 + min;
-    //         mid %= maxGyroResultSize;
-    //     }
-    //     return gyroResults[camIndex][mid];
-    // }
 
     /**
      * Getter for the current update number
