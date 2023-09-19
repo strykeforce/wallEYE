@@ -49,6 +49,7 @@ class Config:
         self.tagSize = 0.157
 
         try:
+            # Open and load system settings
             with open("SystemData.json", "r") as data:
                 config = json.load(data)
                 self.teamNumber = config["TeamNumber"]
@@ -59,6 +60,7 @@ class Config:
 
                 self.setIP(self.ip)
 
+        # If no system file is found boot with base settings and create system settings 
         except (FileNotFoundError, json.decoder.JSONDecodeError, KeyError):
             self.teamNumber = 2767
             self.tableName = "WallEye"
@@ -80,8 +82,10 @@ class Config:
     def boardDims(self, newValue):
         self.boardDims = newValue
 
+    # Create a new robot publisher and create an output file for the data
     def makePublisher(self, teamNumber, tableName):
         try:
+            # Create and write output file
             with open("SystemData.json", "r") as file:
                 config = json.load(file)
                 config["TeamNumber"] = teamNumber
@@ -96,10 +100,12 @@ class Config:
         self.teamNumber = teamNumber
         self.tableName = tableName
 
+        # Destroy any existing publisher 
         if self.robotPublisher is not None:
             self.robotPublisher.destroy()
             Config.logger.info("Existing publisher destroyed")
 
+        # Create the robot publisher
         self.robotPublisher = NetworkIO(False, self.teamNumber, self.tableName)
 
         Config.logger.info(f"Robot publisher created: {teamNumber} - {tableName}")
@@ -109,11 +115,14 @@ class Config:
             identifier
         ] = f"Translation: {round(pose.X(), 2)}, {round(pose.Y(), 2)}, {round(pose.Z(), 2)} - Rotation: {round(pose.rotation().X(), 2)}, {round(pose.rotation().Y(), 2)}, {round(pose.rotation().Z(), 2)}"
 
+    # Return the file path names for each camera
     def getCalFilePaths(self):
         return {i.identifier: i.calibrationPath for i in self.cameras.info.values()}
 
+    # Set the calibration board dimensions and set it in system settings
     def setBoardDim(self, dim):
         try:
+            # Write it in system settings file
             with open("SystemData.json", "r") as file:
                 config = json.load(file)
                 config["BoardDim"] = dim
@@ -123,8 +132,10 @@ class Config:
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             Config.logger.error(f"Failed to write Dimensions {dim}")
 
+    # Set Tag Size (meters) and set it in system settings 
     def setTagSize(self, size):
         try:
+            # Write it in system settings file
             with open("SystemData.json", "r") as file:
                 config = json.load(file)
                 config["TagSize"] = size
@@ -134,10 +145,15 @@ class Config:
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             Config.logger.error(f"Failed to write tag size {size}")
 
+    # Set static IP and write it into system files
     def setIP(self, ip):
         Config.logger.info("Attempting to set static IP")
+        
+        # Destroy because changing IP breaks network tables
         if self.robotPublisher:
             self.robotPublisher.destroy()
+        
+        # Set IP
         os.system("/usr/sbin/ifconfig eth0 up")
         if not os.system(f"/usr/sbin/ifconfig eth0 {ip} netmask 255.255.255.0"):
             Config.logger.info(f"Static IP set: {ip}")
@@ -148,6 +164,7 @@ class Config:
         os.system("/usr/sbin/ifconfig eth0 up")
 
         try:
+            # Write IP to a system file
             with open("SystemData.json", "r") as file:
                 config = json.load(file)
                 config["ip"] = self.ip
@@ -159,6 +176,7 @@ class Config:
 
         self.makePublisher(self.teamNumber, self.tableName)
 
+    # Obsolete 
     def resetNetworking(self):
         if not os.system("/usr/sbin/ifconfig eth0 down"):
             if not os.system("/usr/sbin/ifconfig eth0 up"):

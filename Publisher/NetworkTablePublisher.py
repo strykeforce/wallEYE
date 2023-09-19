@@ -5,9 +5,14 @@ import logging
 class NetworkIO:
     logger = logging.getLogger(__name__)
 
+    # Create a Network Tables Client with given info
     def __init__(self, test, team, tableName):
+
+        # Grab the default network table instance and grab the table name
         self.inst = ntcore.NetworkTableInstance.getDefault()
         self.table = self.inst.getTable(tableName)
+
+        # Start the WallEye_Client and set server depending on testing
         self.inst.startClient4("WallEye_Client")
         self.updateNum = 0
         if test:
@@ -15,10 +20,15 @@ class NetworkIO:
         else:
             self.inst.setServerTeam(team)
 
+        # Set all the publishers and update publishers 
         self.publishers = []
+
+        # Update publisher
         self.publishUpdate = self.table.getIntegerTopic("Update").publish(
             ntcore.PubSubOptions(periodic=0.01, sendAll=True, keepDuplicates=True)
         )
+
+        # Pose publisher
         for index in range(5):
             self.publishers.append(
                 self.table.getDoubleArrayTopic("Result" + str(index)).publish(
@@ -34,6 +44,7 @@ class NetworkIO:
     def setTable(self, name):
         self.table = self.inst.getTable(name)
 
+    # Publishes the supplied pose information in the corresponding publisher
     def publish(self, index, time, pose, tags, ambig):
         t = pose.translation()
         r = pose.rotation()
@@ -43,6 +54,7 @@ class NetworkIO:
         result.append(ambig)
         self.publishers[index].set(result)
 
+    # Publish a new update number
     def increaseUpdateNum(self):
         self.updateNum += 1
         self.publishUpdate.set(self.updateNum)
