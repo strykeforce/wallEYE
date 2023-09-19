@@ -37,13 +37,14 @@ public class WallEye {
     HashMap<Integer, Integer> dioHashMap = new HashMap<>();
 
     /**
-     * Creates a WallEye object that can pull pose location and timestamp from Network Tables.
+     * Creates a WallEye object that can pull pose location and timestamp data from Network Tables.
      *   
      *
-     * @param  tableName  a string that specifies the table name of the WallEye instance (Look at web interface)
+     * @param  tableName  a string that specifies the table name of the WallEye instance (is set in the web interface)
      * @param  numCameras a number that is equal to the number of cameras connected to the PI
-     * @param  gyro a DoubleSupplier that supplies the gyro yaw for the robot
-     * @param  dioPorts an array that holds all the Ids for the dio ports that the cameras are connected to *EACH CAMERA MUST HAVE A DIO PORT* (to not use DIO yaw reporting put in an empty array)
+     * @param  gyro a DoubleSupplier that supplies the gyro yaw for the robot (WILL CHANGE)
+     * @param  dioPorts an array that holds all the IDs for the dio ports that the cameras are connected to *EACH CAMERA MUST HAVE A DIO PORT* (to not use DIO yaw reporting put in an empty array)
+     *  
     */
     public WallEye(String tableName, int numCameras, DoubleSupplier gyro, DigitalInput[] dioPorts)
     {
@@ -74,7 +75,7 @@ public class WallEye {
     }
 
     /**
-     * A method that checks the DIO ports for a input and upon input will grab gyro and timestamp
+     * A method that checks the DIO ports for an input and upon input will grab gyro and timestamp
     */
     private void grabGyro() {
         for (DigitalInput dio: dios)
@@ -104,8 +105,7 @@ public class WallEye {
 
     /**
      * Pulls most recent poses from Network Tables.
-     *   Array is structed as index 0, 1, 2 are position; 3, 4, 5 are rotation; 6 is a timestamp; 7 is n number of tags; 7 + n are tag ids; 7+n+1 is ambiguity
-     *
+     * 
      * @return Returns an array of WallEyeResult, with each nth result being the nth camera as shown on the web interface 
      * @see WallEyeResult
     */
@@ -123,6 +123,7 @@ public class WallEye {
                 tags[i] = (int) temp[j + 8];
 
             //(long)temp[6]
+            // Array is structed as index 0, 1, 2 are position; 3, 4, 5 are rotation; 6 is a timestamp; 7 is n number of tags; 7 + n are tag ids; 7+n+1 is ambiguity
             if(dios.size() == 0 || gyroResults[i][maxGyroResultSize - 1] == null || temp[6] > gyroResults[i][currentGyroIndex - 1 >= 0 ? currentGyroIndex - 1 : maxGyroResultSize - 1].getTimestamp())
                 results.add(new WallEyeResult(new Pose3d(new Translation3d(temp[0], temp[1], temp[2]), new Rotation3d(temp[3], temp[4], temp[5])), 
                     (double)sub.getAtomic().timestamp + temp[6], i, curUpdateNum, (int) temp[7], tags, temp[8 + (int) temp[7]] ));
@@ -140,8 +141,8 @@ public class WallEye {
 
 
     /**
-     * A method that will go back until it gets a timestamp from before the network tables reports 
-     *  the time
+     * A method that will go back until it gets a timestamp from before the time reported 
+     *  by network tables *should return more accurate timestamp measurements*
      * 
      * @param timestamp a long that is the timestamp of the camera that is being searched for
      * @param camIndex an index that corresponds to the camera index
