@@ -3,7 +3,7 @@ import sys
 import time
 from logging.handlers import RotatingFileHandler
 
-
+# Create logger and set settings
 LOG_FORMAT = "[%(asctime)s - %(levelname)s - %(filename)s:%(lineno)s - %(funcName)s()]  %(message)s"
 logging.basicConfig(
     format=LOG_FORMAT,
@@ -25,6 +25,7 @@ from Processing.Processing import Processor
 from Camera.camera import Cameras
 from state import walleyeData, States, CALIBRATION_STATES
 
+# Create and intialize cameras
 walleyeData.cameras = Cameras()
 
 from WebInterface.web_interface import (
@@ -37,6 +38,7 @@ from WebInterface.web_interface import (
 )  # After walleyeData.cameras is set
 
 try:
+    # Start the web server
     webServer = threading.Thread(
         target=lambda: socketio.run(
             app, host="0.0.0.0", debug=True, use_reloader=False, log_output=False
@@ -53,6 +55,7 @@ try:
     images = {}
     calibrators = {}
 
+    # Create network tables publisher and AprilTag Processor
     poseEstimator = Processor(walleyeData.tagSize)
     walleyeData.makePublisher(walleyeData.teamNumber, walleyeData.tableName)
     walleyeData.currentState = States.PROCESSING
@@ -60,15 +63,21 @@ try:
     logger.info("Starting main loop")
 
     lastLoopTime = time.time()
+
+    # Main loop (Runs everything)
     while True:
+
+        # Calculate loop time
         currTime = time.time()
         walleyeData.loopTime = round(currTime - lastLoopTime, 3)
         lastLoopTime = currTime
         
         # State changes
+        # Pre-Calibration
         if walleyeData.currentState == States.BEGIN_CALIBRATION:
             logger.info("Beginning calibration")
 
+            # Prepare a calibration object for the camera that is being calibrated with pre-set data
             calibrators[walleyeData.cameraInCalibration] = Calibration(
                 walleyeData.calDelay,
                 walleyeData.boardDims,
@@ -78,21 +87,30 @@ try:
             )
             walleyeData.currentState = States.CALIBRATION_CAPTURE
 
+        # Take calibration images
         elif walleyeData.currentState == States.CALIBRATION_CAPTURE:
+
+            # Read in frames
             _, img = walleyeData.cameras.info[
                 walleyeData.cameraInCalibration
             ].cam.read()
 
+            # Process frames with the calibration object created prior
             returned, used, pathSaved = calibrators[
                 walleyeData.cameraInCalibration
             ].processFrame(img)
 
+            # If the image is a part of the accepted images save it
             if used:
                 walleyeData.calImgPaths.append(pathSaved)
 
+            # Keep a buffer with the images
             camBuffers[walleyeData.cameraInCalibration].update(returned)
 
+        # Finished Calibration, generate calibration
         elif walleyeData.currentState == States.GENERATE_CALIBRATION:
+
+            # Get file path for the calibration to be saved
             walleyeData.cameras.info[
                 walleyeData.cameraInCalibration
             ].calibrationPath = Calibration.calibrationPathByCam(
@@ -100,16 +118,19 @@ try:
                 walleyeData.cameras.info[walleyeData.cameraInCalibration].resolution,
             )
 
+            # Generate a calibration file to the file path
             calibrators[walleyeData.cameraInCalibration].generateCalibration(
                 walleyeData.cameras.info[
                     walleyeData.cameraInCalibration
                 ].calibrationPath
             )
 
+            # Get reproj error
             walleyeData.reprojectionError = calibrators[
                 walleyeData.cameraInCalibration
             ].getReprojectionError()
 
+            # Set the cameras calibration, save off the file path, and go to idle
             walleyeData.cameras.setCalibration(
                 walleyeData.cameraInCalibration,
                 calibrators[walleyeData.cameraInCalibration].calibrationData["K"],
@@ -118,16 +139,22 @@ try:
             walleyeData.cameras.info[walleyeData.cameraInCalibration].calibrationPath = Calibration.calibrationPathByCam(walleyeData.cameraInCalibration, walleyeData.cameras.info[walleyeData.cameraInCalibration].resolution)
             walleyeData.currentState = States.IDLE
             
-
+        # AprilTag processing state
         elif walleyeData.currentState == States.PROCESSING:
+
+            # Set tag size, grab camera frames, and grab image timestamp
             poseEstimator.setTagSize(walleyeData.tagSize)
             images = walleyeData.cameras.getFrames()
             imageTime = walleyeData.robotPublisher.getTime()
+
+            # Use the poseEstimator class to find the pose, tags, and ambiguity
             poses, tags, ambig = poseEstimator.getPose(
                 images.values(),
                 walleyeData.cameras.listK(),
                 walleyeData.cameras.listD(),
             )
+
+            # Publish camera number, timestamp, poses, tags, ambiguity and increase the update number
             # logger.info(f"Poses at {imageTime}: {poses}")
             for i in range(len(poses)):
                 walleyeData.robotPublisher.publish(
@@ -135,6 +162,7 @@ try:
                 )
             walleyeData.robotPublisher.increaseUpdateNum()
 
+            # Update the pose visualization
             for i, (identifier, img) in enumerate(images.items()):
                 if i >= len(poses):
                     break
@@ -145,12 +173,14 @@ try:
                         (poses[i].X(), poses[i].Y(), poses[i].Z()), tags[i][1:]
                     )
 
+        # Ends the WallEye program through the web interface
         elif walleyeData.currentState == States.SHUTDOWN:
             logger.info("Shutting down")
             logging.shutdown()
             socketio.stop()
             break
 
+        # Update cameras no matter what state
         if walleyeData.currentState != States.PROCESSING:
             for cameraInfo in walleyeData.cameras.info.values():
                 if (
@@ -162,7 +192,10 @@ try:
                 _, img = cameraInfo.cam.read()
 
                 camBuffers[cameraInfo.identifier].update(img)
+                
 except Exception as e:
+
+    # Something bad happened
     logging.critical(e, exc_info=True)
     logger.info("Shutting down")
     logging.shutdown()

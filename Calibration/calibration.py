@@ -10,6 +10,7 @@ import logging
 class Calibration:
     logger = logging.getLogger(__name__)
 
+    # Create a calibration object for the specified camera
     def __init__(
         self,
         delay: float,
@@ -24,11 +25,13 @@ class Calibration:
         self.camPath = camPath
         self.resolution = resolution
 
+        # Create a list for the corner locations for the calibration tag
         self.reference = np.zeros((cornerShape[0] * cornerShape[1], 3), np.float32)
         self.reference[:, :2] = np.mgrid[
             0 : cornerShape[0], 0 : cornerShape[1]
         ].T.reshape(-1, 2)
 
+        # Set values
         self.objPoints = []
         self.imgPoints = []
         self.lastImageUsed = 0
@@ -44,6 +47,7 @@ class Calibration:
             shutil.rmtree(self.imgPath)
         os.mkdir(self.imgPath)
 
+    # Take a frame and process it for calibration
     def processFrame(
         self,
         img,
@@ -54,6 +58,7 @@ class Calibration:
             0.001,
         ),
     ):
+        # Convert it to gray and look for calibration board corners
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         self.imgShape = gray.shape[::-1]
         found, corners = cv2.findChessboardCorners(
@@ -67,6 +72,7 @@ class Calibration:
         used = False
         pathSaved = None
 
+        # If there is a board and it has been long enough
         if (
             found
             and time.time() - self.lastImageUsed > self.delay
@@ -75,13 +81,16 @@ class Calibration:
             used = True
             self.lastImageUsed = time.time()
 
+            # Refine corner locations (Better calibrations)
             refined = cv2.cornerSubPix(
                 gray, corners, refinementWindow, (-1, -1), refinementCriteria
             )
 
+            # Set 3d locations and 2d location for image
             self.objPoints.append(self.reference)
             self.imgPoints.append(refined)
 
+            # Save off time and image
             currTime = time.time_ns()
             pathSaved = os.path.join(self.imgPath, f"{currTime}.png")
 
@@ -89,6 +98,7 @@ class Calibration:
 
             Calibration.logger.info(f"Calibration image saved to {pathSaved}")
 
+        # Draw lines for the calibration board
         cv2.drawChessboardCorners(img, self.cornerShape, corners, found)
 
         if found:
@@ -101,7 +111,7 @@ class Calibration:
             #     (255, 0, 0) if self.lastImageSharp else (0, 0, 255),
             #     2,
             # )
-
+            # Text for calibrating the camera
             cv2.putText(
                 img,
                 "Stable" if self.lastImageStable else "Not stable",
@@ -112,6 +122,7 @@ class Calibration:
                 2,
             )
 
+        # Keep track of the amount of images taken on the image
         cv2.putText(
             img,
             f"Imgs taken: {len(self.imgPoints)}",
@@ -124,6 +135,7 @@ class Calibration:
 
         return (img, used, pathSaved)
 
+    # Return all saved calibration images
     def loadSavedImages(
         self,
         imgs: list[str],
@@ -134,6 +146,7 @@ class Calibration:
             0.001,
         ),
     ):
+        # Go through each image, grayscale it, find corner loc, refine, and save off 2d and 3d locations
         for img in imgs:
             saved = cv2.imread(img)
             gray = cv2.cvtColor(saved, cv2.COLOR_BGR2GRAY)
@@ -158,11 +171,13 @@ class Calibration:
                 self.objPoints.append(self.reference)
                 self.imgPoints.append(refined)
 
+    # Generate an openCV calibration and write to a file
     def generateCalibration(self, calFile: str):
         if len(self.objPoints) == 0:
             Calibration.logger.error("Calibration failed: No image data available")
             return False
 
+        # Using the saved off 2d and 3d points, it will return a camera matrix and distortion coeff
         ret, camMtx, distortion, rot, trans = cv2.calibrateCamera(
             self.objPoints,
             self.imgPoints,
@@ -174,6 +189,7 @@ class Calibration:
             + cv2.CALIB_TILTED_MODEL,
         )
 
+        # Write to a dictionary
         self.calibrationData = {
             "K": camMtx,
             "dist": distortion,
@@ -182,10 +198,12 @@ class Calibration:
             "resolution": self.resolution,
         }
 
+        # Get calibration error and set it
         reprojError = self.getReprojectionError()
 
         self.calibrationData["reprojError"] = reprojError
 
+        # Write to a calibration file
         with open(calFile, "w") as f:
             json.dump(
                 {
@@ -206,6 +224,7 @@ class Calibration:
 
         return ret
 
+    # Check if the current image has a stable board
     def isStable(self, corners: np.ndarray):
         corner1 = corners[0][0]
         corner2 = corners[self.cornerShape[0] * self.cornerShape[1] - 1][0]
@@ -242,6 +261,7 @@ class Calibration:
 
     #     return self.lastImageSharp
 
+    # Check if the current image can be use for calibration
     def isReady(
         self, img: np.ndarray, corners: np.ndarray, requiredReadyCounts: int = 10
     ) -> bool:
@@ -252,6 +272,7 @@ class Calibration:
 
         return requiredReadyCounts <= self.readyCounts
 
+    # calculate error of the calibration
     def getReprojectionError(self) -> float:
         if len(self.objPoints) == 0:
             print("Cannot compute reprojection error: No image data")
@@ -275,6 +296,7 @@ class Calibration:
 
         return totalError / len(self.objPoints)
 
+    # Load a calibration file 
     def loadCalibration(self, file: str):
         with open(file, "r") as f:
             self.calibrationData = json.load(f)
@@ -286,6 +308,7 @@ class Calibration:
 
         Calibration.logger.info(f"Calibration loaded from {file}")
 
+    # Get calibration data from a calibration file
     @staticmethod
     def parseCalibration(file: str):
         Calibration.logger.info(f"Looking for calibration stored at {file}")

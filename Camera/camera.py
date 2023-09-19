@@ -27,9 +27,11 @@ class Cameras:
                 cameraPaths = []
                 Cameras.logger.error("No cameras detected!!")
 
+            # Try all cameras found by the PI
             for camPath in cameraPaths:
                 path = f"/dev/v4l/by-path/{camPath}"
 
+                # Open camera and check if it is opened
                 cam = cv2.VideoCapture(path, cv2.CAP_V4L2)
 
                 if cam.isOpened():
@@ -85,6 +87,7 @@ class Cameras:
                     config = None
 
                     try:
+                        # Parse config from config file
                         config = parseConfig(cleaned)
                         Cameras.logger.info(f"Config found!")
 
@@ -92,7 +95,7 @@ class Cameras:
                         Cameras.logger.warning(f"Config not found for camera {camPath}")
 
                     if config is not None:
-                        # Config was found
+                        # Config was found, set config data
                         if not self.setResolution(
                             camPath, config["Resolution"]
                         ):  # Calls self.importCalibration iff resolution was set
@@ -124,12 +127,15 @@ class Cameras:
 
         Cameras.logger.info(f"Calibration set for {identifier}, using {K}\n{D}")
 
+    # Return a list of camera matrixs
     def listK(self):
         return [i.K for i in self.info.values()]
 
+    # Return a list of camera distortion coefficients
     def listD(self):
         return [i.D for i in self.info.values()]
 
+    # Grab frames from each camera
     def getFrames(self):
         frames = {}
         for identifier, camInfo in self.info.items():
@@ -142,18 +148,22 @@ class Cameras:
         if resolution is None:
             Cameras.logger.info("Resolution not set")
             return False
+        # set resolution, fps, and video format
         # os.system(f"v4l2-ctl -d /dev/v4l/by-path/{identifier} --set-fmt-video=width={resolution[0]},height={resolution[1]}")
         self.info[identifier].cam.set(cv2.CAP_PROP_FRAME_HEIGHT, resolution[1])
         self.info[identifier].cam.set(cv2.CAP_PROP_FRAME_WIDTH, resolution[0])
         self.info[identifier].cam.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*"MJPG"))
         self.info[identifier].cam.set(cv2.CAP_PROP_FPS, 30)
         resolution = tuple(resolution)
+
+        # Test if resolution got set
         if self.getResolutions()[identifier] != resolution:
             Cameras.logger.error(
                 f"Failed to set resolution to {resolution} for {identifier}, using {self.getResolutions()[identifier]}"
             )
             return False
 
+        # Write a new config file with the new resolution
         self.info[identifier].resolution = resolution
         self.importCalibration(identifier)
 
@@ -172,8 +182,10 @@ class Cameras:
             Cameras.logger.info("Gain not set")
             return False
 
+        # Set gain through command line
         os.system(f"v4l2-ctl -d /dev/v4l/by-path/{identifier} --set-ctrl gain={gain}")
 
+        # Check if it set, if so write it to a file
         if self.info[identifier].cam.get(cv2.CAP_PROP_GAIN) != gain:
             Cameras.logger.warning(f"Gain not set: {gain} not accepted")
             return False
@@ -192,10 +204,12 @@ class Cameras:
             Cameras.logger.info("Exposure not set")
             return False
 
+        # Set exposure with a command
         os.system(
             f"v4l2-ctl -d /dev/v4l/by-path/{identifier} --set-ctrl exposure_auto=1 --set-ctrl exposure_absolute={exposure}"
         )
 
+        # Check if it set, if so write it to a file
         if self.info[identifier].cam.get(cv2.CAP_PROP_EXPOSURE) != exposure:
             Cameras.logger.warning(f"Exposure not set: {exposure} not accepted")
             return False
@@ -210,18 +224,21 @@ class Cameras:
             )
             return True
 
+    # Return a dictionary of all camera exposures
     def getExposures(self):
         exposure = {}
         for identifier, camInfo in self.info.items():
             exposure[identifier] = camInfo.cam.get(cv2.CAP_PROP_EXPOSURE)
         return exposure
 
+    # Return a dictionary of all camera gains
     def getGains(self):
         gain = {}
         for identifier, camInfo in self.info.items():
             gain[identifier] = camInfo.cam.get(cv2.CAP_PROP_GAIN)
         return gain
 
+    # Return a dictionary of all camera resolutions
     def getResolutions(self):
         resolution = {}
         for identifier, camInfo in self.info.items():
@@ -232,16 +249,18 @@ class Cameras:
 
         return resolution
 
+    # Find a calibration for the camera
     def importCalibration(self, identifier):
         resolution = tuple(self.info[identifier].resolution)
 
+        # Look for the calibration file
         try:
             calib = Calibration.parseCalibration(
                 Calibration.calibrationPathByCam(identifier, resolution)
             )
 
+            # grab the camera matrix and distortion coefficent and set it
             self.setCalibration(identifier, calib["K"], calib["dist"])
-
             self.info[identifier].calibrationPath = Calibration.calibrationPathByCam(
                 identifier, resolution
             )
