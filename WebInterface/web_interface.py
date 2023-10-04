@@ -7,7 +7,7 @@ from state import walleyeData, States
 import logging
 import numpy as np
 from WebInterface.image_streams import Buffer, LivePlotBuffer
-
+import zipfile
 
 logger = logging.getLogger(__name__)
 
@@ -105,6 +105,23 @@ def import_calibration(camID, file):
         calData = json.loads(file.decode())
         calData["camPath"] = camID
         json.dump(calData, outFile)
+
+        # Load
+        calData["K"] = np.asarray(calData["K"])
+        calData["dist"] = np.asarray(calData["dist"])
+        walleyeData.cameras.setCalibration(camID, calData["K"], calData["dist"])
+        walleyeData.cameras.info[camID].calibrationPath = Calibration.calibrationPathByCam(camID, walleyeData.cameras.info[camID].resolution)
+
+    logger.info(f"Calibration sucessfully imported for {camID}")
+    socketio.emit("info", "Calibration loaded")
+
+@socketio.on("import_config")
+@updateAfter
+def import_config(file):
+    with open(zipfile.ZipFile(file), "r") as config:
+
+        for name in config.namelist():
+            config.extract(name)
 
         # Load
         calData["K"] = np.asarray(calData["K"])

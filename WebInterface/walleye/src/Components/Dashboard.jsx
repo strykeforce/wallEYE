@@ -1,4 +1,4 @@
-import { Button, Row, Col, Image } from "react-bootstrap"
+import { Button, Row, Col, Image, Form } from "react-bootstrap"
 import CameraStreamList from "./CameraSteamList.jsx";
 import { socket } from "../socket.js";
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -9,7 +9,14 @@ export default function Dashboard(props) {
             <h2>Controls</h2>
             <Button variant="outline-danger" className="m-2" onClick={() => { socket.emit("shutdown"); }}><i class="bi bi-power"></i>SHUTDOWN</Button>
             <Button variant="success" className="m-2" onClick={() => { socket.emit("toggle_pnp") }}><i class="bi bi-motherboard"></i>{props.state.currentState === "PROCESSING" ? "Stop PnP" : "Start PnP"}</Button>
-            <a href="files/walleye.log" class="btn btn-info" role="button"> <i class="bi bi-file-earmark-arrow-down"></i> Export Log</a>
+            <a href="files/walleye.log" className="btn btn-info" role="button"> <i class="bi bi-file-earmark-arrow-down"></i> Export Log</a>
+            <a href="files/config.zip" className="btn btn-warning" role="button"> <i class="bi bi-file-earmark-arrow-down"></i> Export Config</a>
+            <Form.Label> Import Config</Form.Label>
+            <Form.Control type="file" accept=".zip" onChange={
+                (e) => {
+                    socket.emit("import_config", e.target.files[0]);
+                }
+            } />
 
             <br />
 

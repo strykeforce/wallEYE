@@ -41,7 +41,7 @@ try:
     # Start the web server
     webServer = threading.Thread(
         target=lambda: socketio.run(
-            app, host="0.0.0.0", debug=True, use_reloader=False, log_output=False
+            app, host="0.0.0.0", port=5800, debug=True, use_reloader=False, log_output=False
         ),
         daemon=True,
     ).start()
@@ -194,7 +194,6 @@ try:
                 camBuffers[cameraInfo.identifier].update(img)
                 
 except Exception as e:
-
     # Something bad happened
     logging.critical(e, exc_info=True)
     logger.info("Shutting down")

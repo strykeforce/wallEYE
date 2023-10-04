@@ -23397,3 +23397,33 @@ TypeError: Calibration.calibrationPathByCam() missing 1 required positional argu
    2.87468476e-02 -1.22588256e-01]]
 [12-Sep-23 18:55:41 - INFO - web_interface.py:172 - toggle_pnp()]  PnP started
 [12-Sep-23 19:02:41 - WARNING - web_interface.py:48 - disconnect()]  Client disconnected
+[03-Oct-23 18:10:03 - INFO - init.py:19 - <module>()]  ----------- Starting Up -----------
+[03-Oct-23 18:10:04 - INFO - state.py:150 - setIP()]  Attempting to set static IP
+[03-Oct-23 18:10:04 - INFO - state.py:159 - setIP()]  Static IP set: 10.27.67.10
+[03-Oct-23 18:10:04 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[03-Oct-23 18:10:04 - INFO - state.py:111 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[03-Oct-23 18:10:04 - INFO - camera.py:21 - __init__()]  Platform is linux
+[03-Oct-23 18:10:04 - INFO - camera.py:38 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
+[03-Oct-23 18:10:04 - INFO - camera.py:66 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
+[03-Oct-23 18:10:04 - INFO - camera.py:75 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[03-Oct-23 18:10:04 - INFO - camera.py:92 - __init__()]  Config found!
+[03-Oct-23 18:10:04 - INFO - calibration.py:314 - parseCalibration()]  Looking for calibration stored at ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(1600, 1200)CalData.json
+[03-Oct-23 18:10:04 - INFO - camera.py:128 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[880.84671198   0.         800.00690453]
+ [  0.         888.78616351 598.72053361]
+ [  0.           0.           1.        ]]
+[[ 2.22094881e-02 -4.52088393e-02 -3.61060250e-02 -5.89176696e-02
+   4.61055278e-01 -2.14313044e-02  6.27695258e-02 -1.05457858e-01
+   6.34443705e-02 -1.61291367e-02  2.82513810e-02  1.07874125e-05
+   2.87468476e-02 -1.22588256e-01]]
+[03-Oct-23 18:10:04 - INFO - camera.py:177 - setResolution()]  Resolution set to (1600, 1200) for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[03-Oct-23 18:10:04 - INFO - camera.py:193 - setGain()]  Gain set to 0.0
+[03-Oct-23 18:10:04 - INFO - camera.py:217 - setExposure()]  Exposure set to 66.0
+[03-Oct-23 18:10:05 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
+[03-Oct-23 18:10:09 - INFO - init.py:53 - <module>()]  Web server ready
+[03-Oct-23 18:10:09 - INFO - Processing.py:19 - __init__()]  Tag layout loaded
+[03-Oct-23 18:10:09 - INFO - state.py:106 - makePublisher()]  Existing publisher destroyed
+[03-Oct-23 18:10:09 - INFO - state.py:111 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[03-Oct-23 18:10:09 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[03-Oct-23 18:10:09 - INFO - init.py:63 - <module>()]  Starting main loop
+[03-Oct-23 18:10:20 - INFO - web_interface.py:43 - connect()]  Client connected
+[03-Oct-23 20:12:31 - WARNING - web_interface.py:48 - disconnect()]  Client disconnected
