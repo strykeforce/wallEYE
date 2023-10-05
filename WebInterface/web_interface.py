@@ -81,10 +81,12 @@ def toggle_calibration(camID):
         walleyeData.reprojectionError = None
         walleyeData.currentState = States.BEGIN_CALIBRATION
         logger.info(f"Starting calibration capture for {camID}")
+        walleyeData.status = "Starting calibration capture for {camID}"
 
     elif walleyeData.currentState == States.CALIBRATION_CAPTURE:
         walleyeData.currentState = States.IDLE
         logger.info(f"Stopping calibration capture")
+        walleyeData.status = "Stopping calibration capture"
 
 
 @socketio.on("generate_calibration")
@@ -93,6 +95,7 @@ def generate_calibration(camID):
     walleyeData.currentState = States.GENERATE_CALIBRATION
     walleyeData.cameraInCalibration = camID
     walleyeData.cameras.info[camID].calibrationPath = None
+    walleyeData.status = "Calibration generation"
 
 
 @socketio.on("import_calibration")
@@ -122,9 +125,8 @@ def import_calibration(camID, file):
 @updateAfter
 def import_config(file):
     logger.info("Importing config")
-    logger.info(file)
+    walleyeData.status = "Importing config"
     with zipfile.ZipFile(io.BytesIO(file), "r") as config:
-        logger.info(f"Files: {config.namelist()}")
         for name in config.namelist():
             config.extract(name)
             logger.info(f"Extracted {name}")
@@ -143,6 +145,7 @@ def import_config(file):
 @updateAfter
 def export_config():
     logger.info("Attempting to prepare config.zip")
+    walleyeData.status = "Attempting to prepare config.zip"
     directory = pathlib.Path(".")
 
 
@@ -163,8 +166,6 @@ def export_config():
     logger.info(f"Config sucessfully zipped")
     walleyeData.status = "Config.zip ready"
     socketio.emit("config_ready")
-
-
 
 
 @socketio.on("set_table_name")
@@ -227,6 +228,7 @@ def toggle_pnp():
 @updateAfter
 def toggle_pose_visualization():
     walleyeData.visualizingPoses = not walleyeData.visualizingPoses
+    walleyeData.status = "Visualizing poses" if walleyeData.visualizingPoses else "Not visualizating poses"
 
 
 @socketio.on("pose_update")
