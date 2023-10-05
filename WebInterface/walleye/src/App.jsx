@@ -18,11 +18,13 @@ function App() {
   const [isDark, setIsDark] = useState(true);
   const [poses, setPoses] = useState(null);
   const [loopTime, setLoopTime] = useState(2767);
+  const [msg, setMsg] = useState("Unknown!!!");
 
   useEffect(() => {
     setInterval(function () {
       socket.emit('pose_update');
       socket.emit('performance_update');
+      socket.emit('msg_update');
     }, 500);
   }, []);
 
@@ -34,6 +36,10 @@ function App() {
 
     function onDisconnect() {
       setIsConnected(false);
+    }
+
+    function onConfigReady() {
+      window.open('./files/config.zip', '_blank');
     }
 
     function onStateUpdate(newState) {
@@ -52,6 +58,10 @@ function App() {
       setLoopTime(time);
     }
 
+    function onMsgUpdate(msg) {
+      setMsg(msg);
+    }
+
     function onInfo(info) {
       alert(info);
     }
@@ -63,6 +73,8 @@ function App() {
     socket.on('pose_update', onPoseUpdate);
     socket.on('performance_update', onPerformanceUpdate);
     socket.on('info', onInfo);
+    socket.on('config_ready', onConfigReady);
+    socket.on('msg_update', onMsgUpdate);
 
     return () => {
       socket.off('connect', onConnect);
@@ -72,6 +84,8 @@ function App() {
       socket.off('pose_update', onPoseUpdate);
       socket.off('performance_update', onPerformanceUpdate);
       socket.off('info', onInfo);
+      socket.off('config_ready', onConfigReady);
+      socket.off('msg_update', onMsgUpdate);
     };
   }, []);
 
@@ -105,6 +119,7 @@ function App() {
             />
           </Form>
           <p>Loop Time: {loopTime} secs</p>
+          <p> {msg} </p>
         </Stack>
       </center>
 

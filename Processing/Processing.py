@@ -83,7 +83,7 @@ class Processor:
 
         # Loop through images
         for imgIndex, img in enumerate(images):
-            curTags = [0]
+            curTags = []
 
             # If an invalid image is given or no calibration return an error pose
             if img is None or K[imgIndex] is None or D[imgIndex] is None:
@@ -118,7 +118,6 @@ class Processor:
                         continue
 
                     # Add id information to tagID array
-                    curTags[0] += 1
                     curTags.append(i[0])
 
                     # Grab tag pose and calcualte each corner location

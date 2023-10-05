@@ -10,7 +10,8 @@ export default function Dashboard(props) {
             <Button variant="outline-danger" className="m-2" onClick={() => { socket.emit("shutdown"); }}><i class="bi bi-power"></i>SHUTDOWN</Button>
             <Button variant="success" className="m-2" onClick={() => { socket.emit("toggle_pnp") }}><i class="bi bi-motherboard"></i>{props.state.currentState === "PROCESSING" ? "Stop PnP" : "Start PnP"}</Button>
             <a href="files/walleye.log" className="btn btn-info" role="button"> <i class="bi bi-file-earmark-arrow-down"></i> Export Log</a>
-            <a href="files/config.zip" className="btn btn-warning" role="button"> <i class="bi bi-file-earmark-arrow-down"></i> Export Config</a>
+            <Button variant="warning" className="m-2" onClick={() => { socket.emit("export_config") }}><i className="bi bi-file-earmark-arrow-down"></i>Export Config</Button>
+            <br/>
             <Form.Label> Import Config</Form.Label>
             <Form.Control type="file" accept=".zip" onChange={
                 (e) => {

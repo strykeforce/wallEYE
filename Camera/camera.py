@@ -83,32 +83,7 @@ class Cameras:
                     self.info[camPath].resolution = self.getResolutions()[camPath]
 
                     # Attempt to import config from file
-                    cleaned = self.cleanIdentifier(camPath)
-                    config = None
-
-                    try:
-                        # Parse config from config file
-                        config = parseConfig(cleaned)
-                        Cameras.logger.info(f"Config found!")
-
-                    except (FileNotFoundError, json.decoder.JSONDecodeError):
-                        Cameras.logger.warning(f"Config not found for camera {camPath}")
-
-                    if config is not None:
-                        # Config was found, set config data
-                        if not self.setResolution(
-                            camPath, config["Resolution"]
-                        ):  # Calls self.importCalibration iff resolution was set
-                            self.importCalibration(camPath)
-                        self.setGain(camPath, config["Gain"])
-                        self.setExposure(camPath, config["Exposure"])
-
-                    else:
-                        self.importCalibration(camPath)
-                        Cameras.logger.warning(
-                            f"Camera config not found for camera {camPath}"
-                        )
-
+                    self.importConfig(camPath)
 
                     # Save configs
                     writeConfig(
@@ -271,6 +246,37 @@ class Cameras:
                 f"Calibration not found for camera {identifier} at resolution {resolution}"
             )
             return False
+    
+    def importConfig(self, camPath):
+        # Attempt to import config from file
+        Cameras.logger.info(f"Attempting to import config for {camPath}")
+        cleaned = self.cleanIdentifier(camPath)
+        config = None
+
+        try:
+            # Parse config from config file
+            config = parseConfig(cleaned)
+            Cameras.logger.info(f"Config found!")
+
+        except (FileNotFoundError, json.decoder.JSONDecodeError):
+            Cameras.logger.warning(f"Config not found for camera {camPath}")
+
+        if config is not None:
+            # Config was found, set config data
+            if not self.setResolution(
+                camPath, config["Resolution"]
+            ):  # Calls self.importCalibration iff resolution was set
+                self.importCalibration(camPath)
+            self.setGain(camPath, config["Gain"])
+            self.setExposure(camPath, config["Exposure"])
+
+        else:
+            self.importCalibration(camPath)
+            Cameras.logger.warning(
+                f"Camera config not found for camera {camPath}"
+            )
+        
+        return config
 
     @staticmethod
     def cleanIdentifier(identifier):

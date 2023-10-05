@@ -8,6 +8,8 @@ import logging
 import numpy as np
 from WebInterface.image_streams import Buffer, LivePlotBuffer
 import zipfile
+import pathlib
+import io
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +23,8 @@ visualizationBuffers = {
 }
 def displayInfo(msg):
     logger.info(f"Sending message to web interface: {msg}")
-    socketio.emit("info", msg)
+    walleyeData.status = msg
+
 
 def updateAfter(action):
     def actionAndUpdate(*args, **kwargs):
@@ -65,9 +68,9 @@ def set_exposure(camID, newValue):
 def set_resolution(camID, newValue):
     w, h = map(int, newValue[1:-1].split(","))
     if walleyeData.cameras.setResolution(camID, (w, h)):
-        socketio.emit("info", f"Resolution set to {newValue}")
+        walleyeData.status = f"Resolution set to {newValue}"
     else:
-        socketio.emit("info", f"Could not set resolution: {newValue}")
+        walleyeData.status = f"Could not set resolution: {newValue}"
 
 
 @socketio.on("toggle_calibration")
@@ -113,24 +116,55 @@ def import_calibration(camID, file):
         walleyeData.cameras.info[camID].calibrationPath = Calibration.calibrationPathByCam(camID, walleyeData.cameras.info[camID].resolution)
 
     logger.info(f"Calibration sucessfully imported for {camID}")
-    socketio.emit("info", "Calibration loaded")
+    walleyeData.status = "Calibration loaded"
 
 @socketio.on("import_config")
 @updateAfter
 def import_config(file):
-    with open(zipfile.ZipFile(file), "r") as config:
-
+    logger.info("Importing config")
+    logger.info(file)
+    with zipfile.ZipFile(io.BytesIO(file), "r") as config:
+        logger.info(f"Files: {config.namelist()}")
         for name in config.namelist():
             config.extract(name)
+            logger.info(f"Extracted {name}")
 
-        # Load
-        calData["K"] = np.asarray(calData["K"])
-        calData["dist"] = np.asarray(calData["dist"])
-        walleyeData.cameras.setCalibration(camID, calData["K"], calData["dist"])
-        walleyeData.cameras.info[camID].calibrationPath = Calibration.calibrationPathByCam(camID, walleyeData.cameras.info[camID].resolution)
+        logger.info(walleyeData.cameras)
+        logger.info(walleyeData.cameras.info.keys())
 
-    logger.info(f"Calibration sucessfully imported for {camID}")
-    socketio.emit("info", "Calibration loaded")
+        for camID in walleyeData.cameras.info.keys():
+            walleyeData.cameras.importConfig(camID)
+            logger.info(f"Camera config imported for {camID}")
+       
+    logger.info(f"Configs sucessfully imported for {camID}")
+    walleyeData.status = "Configs/Cals loaded"
+
+@socketio.on("export_config")
+@updateAfter
+def export_config():
+    logger.info("Attempting to prepare config.zip")
+    directory = pathlib.Path(".")
+
+
+    with zipfile.ZipFile("config.zip", "w") as config:
+        logger.info("Opening config.zip for writing")
+
+        for f in directory.rglob("Calibration/*CalData.json"):
+            config.write(f)
+            logger.info(f"Zipping {f}")
+
+        for f in directory.rglob("Camera/CameraConfigs/ConfigSettings_*.json"):
+            config.write(f)
+            logger.info(f"Zipping {f}")
+
+        config.write("SystemData.json")
+        logger.info(f"Zipping SystemData.json")
+       
+    logger.info(f"Config sucessfully zipped")
+    walleyeData.status = "Config.zip ready"
+    socketio.emit("config_ready")
+
+
 
 
 @socketio.on("set_table_name")
@@ -208,6 +242,12 @@ def pose_update():
     socketio.sleep(0)
     socketio.emit("performance_update", walleyeData.loopTime)
 
+@socketio.on("msg_update")
+@updateAfter
+def pose_update():
+    socketio.sleep(0)
+    socketio.emit("msg_update", walleyeData.status)
+
 
 def sendStateUpdate():
     # logger.info(f"Sending state update : {walleyeData.getState()}")
@@ -218,7 +258,6 @@ def sendStateUpdate():
 @app.route("/files/<path:path>")
 def files(path):
     return send_from_directory(os.getcwd(), path, as_attachment=True)
-
 
 @app.route("/video_feed/<camID>")
 def video_feed(camID):

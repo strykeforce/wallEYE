@@ -26,6 +26,7 @@ class Config:
 
     def __init__(self) -> None:
         self.currentState = States.PROCESSING
+        self.status = "Running"
 
         self.visualizingPoses = False
 
@@ -177,17 +178,17 @@ class Config:
         self.makePublisher(self.teamNumber, self.tableName)
 
     # Obsolete 
-    def resetNetworking(self):
-        if not os.system("/usr/sbin/ifconfig eth0 down"):
-            if not os.system("/usr/sbin/ifconfig eth0 up"):
-                self.ip = Config.getCurrentIP()
-                Config.logger.info(
-                    f"Networking reset successful - IP might not be static: {self.ip}"
-                )
-            else:
-                Config.logger.error("Networking failed to restart")
-        else:
-            Config.logger.error("Networking failed to stop")
+    # def resetNetworking(self):
+    #     if not os.system("/usr/sbin/ifconfig eth0 down"):
+    #         if not os.system("/usr/sbin/ifconfig eth0 up"):
+    #             self.ip = Config.getCurrentIP()
+    #             Config.logger.info(
+    #                 f"Networking reset successful - IP might not be static: {self.ip}"
+    #             )
+    #         else:
+    #             Config.logger.error("Networking failed to restart")
+    #     else:
+    #         Config.logger.error("Networking failed to stop")
 
     @staticmethod
     def getCurrentIP():
@@ -220,6 +221,7 @@ class Config:
             "ip": self.ip,
             "tagSize": self.tagSize,
             "visualizingPoses": self.visualizingPoses,
+            "status": self.status
         }
 
 
