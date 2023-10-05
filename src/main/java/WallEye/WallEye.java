@@ -42,18 +42,18 @@ public class WallEye {
      *
      * @param  tableName  a string that specifies the table name of the WallEye instance (is set in the web interface)
      * @param  numCameras a number that is equal to the number of cameras connected to the PI
-     * @param  gyro a DoubleSupplier that supplies the gyro yaw for the robot (WILL CHANGE)
      * @param  dioPorts an array that holds all the IDs for the dio ports that the cameras are connected to *EACH CAMERA MUST HAVE A DIO PORT* (to not use DIO yaw reporting put in an empty array)
      *  
     */
-    public WallEye(String tableName, int numCameras, DoubleSupplier gyro, DigitalInput[] dioPorts)
+    public WallEye(String tableName, int numCameras, DigitalInput[] dioPorts)
     {
         gyroResults = new DIOGyroResult[numCameras][maxGyroResultSize];
         hasTurnedOff = new boolean[numCameras];
         if (dioPorts.length > 0)
             dioLoop.startPeriodic(periodicLoop);
-        this.gyro = gyro;
-
+            
+        // this.gyro = gyro;
+    
         for(int i = 0; i < dioPorts.length; ++i) {
             dios.add(dioPorts[i]);
             dioHashMap.put(dioPorts[i].getChannel(), i);
@@ -81,7 +81,7 @@ public class WallEye {
         for (DigitalInput dio: dios)
             if (dio.get()) {
                 if (!hasTurnedOff[dioHashMap.get(dio.getChannel())]) {
-                    gyroResults[dioHashMap.get(dio.getChannel())][currentGyroIndex] = new DIOGyroResult(gyro.getAsDouble(), RobotController.getFPGATime());
+                    gyroResults[dioHashMap.get(dio.getChannel())][currentGyroIndex] = new DIOGyroResult(0.0 /*gyro.getAsDouble()*/, RobotController.getFPGATime());
                     currentGyroIndex++;
                     currentGyroIndex %= maxGyroResultSize;
                     hasTurnedOff[dioHashMap.get(dio.getChannel())] = true;
