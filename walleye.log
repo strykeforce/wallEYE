@@ -1,0 +1,178 @@
+[05-Oct-23 20:08:44 - INFO - init.py:19 - <module>()]  ----------- Starting Up -----------
+[05-Oct-23 20:08:45 - INFO - state.py:151 - setIP()]  Attempting to set static IP
+[05-Oct-23 20:08:45 - INFO - state.py:160 - setIP()]  Static IP set: 10.27.67.10
+[05-Oct-23 20:08:45 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[05-Oct-23 20:08:45 - INFO - state.py:112 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[05-Oct-23 20:08:45 - INFO - camera.py:21 - __init__()]  Platform is linux
+[05-Oct-23 20:08:45 - INFO - camera.py:38 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
+[05-Oct-23 20:08:45 - INFO - camera.py:66 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
+[05-Oct-23 20:08:45 - INFO - camera.py:75 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[05-Oct-23 20:08:45 - INFO - camera.py:252 - importConfig()]  Attempting to import config for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[05-Oct-23 20:08:45 - INFO - camera.py:259 - importConfig()]  Config found!
+[05-Oct-23 20:08:45 - INFO - calibration.py:314 - parseCalibration()]  Looking for calibration stored at ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(1600, 1200)CalData.json
+[05-Oct-23 20:08:45 - INFO - camera.py:103 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[880.84671198   0.         800.00690453]
+ [  0.         888.78616351 598.72053361]
+ [  0.           0.           1.        ]]
+[[ 2.22094881e-02 -4.52088393e-02 -3.61060250e-02 -5.89176696e-02
+   4.61055278e-01 -2.14313044e-02  6.27695258e-02 -1.05457858e-01
+   6.34443705e-02 -1.61291367e-02  2.82513810e-02  1.07874125e-05
+   2.87468476e-02 -1.22588256e-01]]
+[05-Oct-23 20:08:45 - INFO - camera.py:152 - setResolution()]  Resolution set to (1600, 1200) for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[05-Oct-23 20:08:45 - INFO - camera.py:168 - setGain()]  Gain set to 0.0
+[05-Oct-23 20:08:45 - INFO - camera.py:192 - setExposure()]  Exposure set to 54.0
+[05-Oct-23 20:08:46 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
+[05-Oct-23 20:08:49 - INFO - init.py:53 - <module>()]  Web server ready
+[05-Oct-23 20:08:49 - INFO - Processing.py:19 - __init__()]  Tag layout loaded
+[05-Oct-23 20:08:49 - INFO - state.py:107 - makePublisher()]  Existing publisher destroyed
+[05-Oct-23 20:08:49 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[05-Oct-23 20:08:49 - INFO - state.py:112 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[05-Oct-23 20:08:49 - INFO - init.py:63 - <module>()]  Starting main loop
+[05-Oct-23 20:08:52 - INFO - web_interface.py:46 - connect()]  Client connected
+[05-Oct-23 20:09:06 - WARNING - web_interface.py:51 - disconnect()]  Client disconnected
+[05-Oct-23 20:09:06 - INFO - web_interface.py:46 - connect()]  Client connected
+[05-Oct-23 20:10:36 - WARNING - web_interface.py:51 - disconnect()]  Client disconnected
+[05-Oct-23 20:10:37 - INFO - web_interface.py:46 - connect()]  Client connected
+[05-Oct-23 20:59:23 - INFO - init.py:19 - <module>()]  ----------- Starting Up -----------
+[05-Oct-23 20:59:26 - INFO - state.py:151 - setIP()]  Attempting to set static IP
+[05-Oct-23 20:59:26 - INFO - state.py:160 - setIP()]  Static IP set: 10.27.67.10
+[05-Oct-23 20:59:26 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[05-Oct-23 20:59:26 - INFO - state.py:112 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[05-Oct-23 20:59:26 - INFO - camera.py:21 - __init__()]  Platform is linux
+[05-Oct-23 20:59:26 - INFO - NetworkClient.cpp:427 - None()]  CONNECTED NT4 to 10.27.67.2 port 5810
+[05-Oct-23 20:59:26 - INFO - camera.py:38 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
+[05-Oct-23 20:59:26 - INFO - camera.py:66 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
+[05-Oct-23 20:59:26 - INFO - camera.py:75 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[05-Oct-23 20:59:26 - INFO - camera.py:252 - importConfig()]  Attempting to import config for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[05-Oct-23 20:59:26 - INFO - camera.py:259 - importConfig()]  Config found!
+[05-Oct-23 20:59:26 - INFO - calibration.py:314 - parseCalibration()]  Looking for calibration stored at ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(1600, 1200)CalData.json
+[05-Oct-23 20:59:26 - INFO - camera.py:103 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[880.84671198   0.         800.00690453]
+ [  0.         888.78616351 598.72053361]
+ [  0.           0.           1.        ]]
+[[ 2.22094881e-02 -4.52088393e-02 -3.61060250e-02 -5.89176696e-02
+   4.61055278e-01 -2.14313044e-02  6.27695258e-02 -1.05457858e-01
+   6.34443705e-02 -1.61291367e-02  2.82513810e-02  1.07874125e-05
+   2.87468476e-02 -1.22588256e-01]]
+[05-Oct-23 20:59:26 - INFO - camera.py:152 - setResolution()]  Resolution set to (1600, 1200) for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[05-Oct-23 20:59:26 - INFO - camera.py:168 - setGain()]  Gain set to 0.0
+[05-Oct-23 20:59:26 - INFO - camera.py:192 - setExposure()]  Exposure set to 54.0
+[05-Oct-23 20:59:28 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
+[05-Oct-23 20:59:32 - INFO - init.py:53 - <module>()]  Web server ready
+[05-Oct-23 20:59:32 - INFO - Processing.py:19 - __init__()]  Tag layout loaded
+[05-Oct-23 20:59:32 - INFO - state.py:107 - makePublisher()]  Existing publisher destroyed
+[05-Oct-23 20:59:32 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[05-Oct-23 20:59:32 - INFO - state.py:112 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[05-Oct-23 20:59:32 - INFO - init.py:63 - <module>()]  Starting main loop
+[05-Oct-23 20:59:32 - INFO - NetworkClient.cpp:427 - None()]  CONNECTED NT4 to 10.27.67.2 port 5810
+[05-Oct-23 20:59:24 - INFO - init.py:19 - <module>()]  ----------- Starting Up -----------
+[05-Oct-23 20:59:26 - INFO - state.py:151 - setIP()]  Attempting to set static IP
+[05-Oct-23 20:59:26 - INFO - state.py:160 - setIP()]  Static IP set: 10.27.67.10
+[05-Oct-23 20:59:27 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[05-Oct-23 20:59:27 - INFO - state.py:112 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[05-Oct-23 20:59:27 - INFO - camera.py:21 - __init__()]  Platform is linux
+[05-Oct-23 20:59:27 - ERROR - camera.py:28 - __init__()]  No cameras detected!!
+[05-Oct-23 20:59:29 - INFO - init.py:53 - <module>()]  Web server ready
+[05-Oct-23 20:59:29 - INFO - Processing.py:19 - __init__()]  Tag layout loaded
+[05-Oct-23 20:59:29 - INFO - state.py:107 - makePublisher()]  Existing publisher destroyed
+[05-Oct-23 20:59:29 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[05-Oct-23 20:59:29 - INFO - state.py:112 - makePublisher()]  Robot publisher created: 2767 - WallEye
+[05-Oct-23 20:59:29 - INFO - init.py:63 - <module>()]  Starting main loop
+[05-Oct-23 21:00:35 - INFO - web_interface.py:46 - connect()]  Client connected
+[05-Oct-23 21:00:49 - INFO - state.py:107 - makePublisher()]  Existing publisher destroyed
+[05-Oct-23 21:00:49 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[05-Oct-23 21:00:49 - INFO - state.py:112 - makePublisher()]  Robot publisher created: 2767 - High
+[05-Oct-23 21:00:50 - INFO - state.py:151 - setIP()]  Attempting to set static IP
+[05-Oct-23 21:00:50 - INFO - state.py:160 - setIP()]  Static IP set: 10.27.67.12
+[05-Oct-23 21:00:50 - INFO - state.py:107 - makePublisher()]  Existing publisher destroyed
+[05-Oct-23 21:00:50 - INFO - state.py:112 - makePublisher()]  Robot publisher created: 2767 - High
+[05-Oct-23 21:00:50 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[05-Oct-23 21:01:17 - INFO - init.py:19 - <module>()]  ----------- Starting Up -----------
+[05-Oct-23 21:01:19 - INFO - state.py:151 - setIP()]  Attempting to set static IP
+[05-Oct-23 21:01:19 - INFO - state.py:160 - setIP()]  Static IP set: 10.27.67.12
+[05-Oct-23 21:01:19 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[05-Oct-23 21:01:19 - INFO - state.py:112 - makePublisher()]  Robot publisher created: 2767 - High
+[05-Oct-23 21:01:19 - INFO - camera.py:21 - __init__()]  Platform is linux
+[05-Oct-23 21:01:19 - ERROR - camera.py:28 - __init__()]  No cameras detected!!
+[05-Oct-23 21:01:22 - INFO - init.py:53 - <module>()]  Web server ready
+[05-Oct-23 21:01:22 - INFO - Processing.py:19 - __init__()]  Tag layout loaded
+[05-Oct-23 21:01:22 - INFO - state.py:107 - makePublisher()]  Existing publisher destroyed
+[05-Oct-23 21:01:22 - INFO - state.py:112 - makePublisher()]  Robot publisher created: 2767 - High
+[05-Oct-23 21:01:22 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[05-Oct-23 21:01:22 - INFO - init.py:63 - <module>()]  Starting main loop
+[05-Oct-23 21:02:11 - INFO - web_interface.py:46 - connect()]  Client connected
+[05-Oct-23 21:02:48 - INFO - init.py:19 - <module>()]  ----------- Starting Up -----------
+[05-Oct-23 21:02:51 - INFO - state.py:151 - setIP()]  Attempting to set static IP
+[05-Oct-23 21:02:51 - INFO - state.py:160 - setIP()]  Static IP set: 10.27.67.12
+[05-Oct-23 21:02:51 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[05-Oct-23 21:02:51 - INFO - state.py:112 - makePublisher()]  Robot publisher created: 2767 - High
+[05-Oct-23 21:02:51 - INFO - camera.py:21 - __init__()]  Platform is linux
+[05-Oct-23 21:02:51 - INFO - NetworkClient.cpp:427 - None()]  CONNECTED NT4 to 10.27.67.2 port 5810
+[05-Oct-23 21:02:52 - INFO - camera.py:38 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
+[05-Oct-23 21:02:52 - INFO - camera.py:66 - __init__()]  Supported resolutions: [(160, 120), (320, 240), (640, 480), (800, 600), (1280, 720), (1280, 960), (1600, 1200)]
+[05-Oct-23 21:02:52 - INFO - camera.py:75 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[05-Oct-23 21:02:52 - INFO - camera.py:252 - importConfig()]  Attempting to import config for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[05-Oct-23 21:02:52 - INFO - camera.py:259 - importConfig()]  Config found!
+[05-Oct-23 21:02:52 - INFO - calibration.py:314 - parseCalibration()]  Looking for calibration stored at ./Calibration/Cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(1600, 1200)CalData.json
+[05-Oct-23 21:02:52 - INFO - camera.py:103 - setCalibration()]  Calibration set for platform-fc800000.usb-usb-0:1:1.0-video-index0, using [[880.84671198   0.         800.00690453]
+ [  0.         888.78616351 598.72053361]
+ [  0.           0.           1.        ]]
+[[ 2.22094881e-02 -4.52088393e-02 -3.61060250e-02 -5.89176696e-02
+   4.61055278e-01 -2.14313044e-02  6.27695258e-02 -1.05457858e-01
+   6.34443705e-02 -1.61291367e-02  2.82513810e-02  1.07874125e-05
+   2.87468476e-02 -1.22588256e-01]]
+[05-Oct-23 21:02:52 - INFO - camera.py:152 - setResolution()]  Resolution set to (1600, 1200) for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[05-Oct-23 21:02:52 - INFO - camera.py:168 - setGain()]  Gain set to 0.0
+[05-Oct-23 21:02:52 - INFO - camera.py:192 - setExposure()]  Exposure set to 54.0
+[05-Oct-23 21:02:54 - INFO - image_streams.py:45 - __init__()]  Tag layout loaded
+[05-Oct-23 21:02:58 - INFO - init.py:53 - <module>()]  Web server ready
+[05-Oct-23 21:02:58 - INFO - Processing.py:19 - __init__()]  Tag layout loaded
+[05-Oct-23 21:02:58 - INFO - state.py:107 - makePublisher()]  Existing publisher destroyed
+[05-Oct-23 21:02:58 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[05-Oct-23 21:02:58 - INFO - state.py:112 - makePublisher()]  Robot publisher created: 2767 - High
+[05-Oct-23 21:02:58 - INFO - init.py:63 - <module>()]  Starting main loop
+[05-Oct-23 21:02:58 - INFO - NetworkClient.cpp:427 - None()]  CONNECTED NT4 to 10.27.67.2 port 5810
+[05-Oct-23 21:03:45 - INFO - web_interface.py:46 - connect()]  Client connected
+[05-Oct-23 21:07:51 - INFO - NetworkClient.cpp:460 - None()]  DISCONNECTED NT4 connection: stream error: ECONNRESET
+[05-Oct-23 21:07:54 - INFO - NetworkClient.cpp:427 - None()]  CONNECTED NT4 to 10.27.67.2 port 5810
+[05-Oct-23 21:12:20 - INFO - NetworkClient.cpp:460 - None()]  DISCONNECTED NT4 connection: stream error: ECONNRESET
+[05-Oct-23 21:12:33 - INFO - NetworkClient.cpp:427 - None()]  CONNECTED NT4 to 10.27.67.2 port 5810
+[05-Oct-23 21:02:48 - INFO - init.py:19 - <module>()]  ----------- Starting Up -----------
+[05-Oct-23 21:02:50 - INFO - state.py:151 - setIP()]  Attempting to set static IP
+[05-Oct-23 21:02:50 - INFO - state.py:160 - setIP()]  Static IP set: 10.27.67.12
+[05-Oct-23 21:02:50 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[05-Oct-23 21:02:50 - INFO - state.py:112 - makePublisher()]  Robot publisher created: 2767 - High
+[05-Oct-23 21:02:50 - INFO - camera.py:21 - __init__()]  Platform is linux
+[05-Oct-23 21:02:50 - ERROR - camera.py:28 - __init__()]  No cameras detected!!
+[05-Oct-23 21:02:53 - INFO - init.py:53 - <module>()]  Web server ready
+[05-Oct-23 21:02:53 - INFO - Processing.py:19 - __init__()]  Tag layout loaded
+[05-Oct-23 21:02:53 - INFO - state.py:107 - makePublisher()]  Existing publisher destroyed
+[05-Oct-23 21:02:53 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[05-Oct-23 21:02:53 - INFO - state.py:112 - makePublisher()]  Robot publisher created: 2767 - High
+[05-Oct-23 21:02:53 - INFO - init.py:63 - <module>()]  Starting main loop
+[05-Oct-23 21:02:48 - INFO - init.py:19 - <module>()]  ----------- Starting Up -----------
+[05-Oct-23 21:02:50 - INFO - state.py:151 - setIP()]  Attempting to set static IP
+[05-Oct-23 21:02:50 - INFO - state.py:160 - setIP()]  Static IP set: 10.27.67.12
+[05-Oct-23 21:02:50 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[05-Oct-23 21:02:50 - INFO - state.py:112 - makePublisher()]  Robot publisher created: 2767 - High
+[05-Oct-23 21:02:50 - INFO - camera.py:21 - __init__()]  Platform is linux
+[05-Oct-23 21:02:50 - ERROR - camera.py:28 - __init__()]  No cameras detected!!
+[05-Oct-23 21:02:52 - INFO - init.py:53 - <module>()]  Web server ready
+[05-Oct-23 21:02:52 - INFO - Processing.py:19 - __init__()]  Tag layout loaded
+[05-Oct-23 21:02:52 - INFO - state.py:107 - makePublisher()]  Existing publisher destroyed
+[05-Oct-23 21:02:52 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[05-Oct-23 21:02:52 - INFO - state.py:112 - makePublisher()]  Robot publisher created: 2767 - High
+[05-Oct-23 21:02:52 - INFO - init.py:63 - <module>()]  Starting main loop
+[05-Oct-23 21:03:03 - INFO - init.py:19 - <module>()]  ----------- Starting Up -----------
+[05-Oct-23 21:03:06 - INFO - state.py:151 - setIP()]  Attempting to set static IP
+[05-Oct-23 21:03:06 - INFO - state.py:160 - setIP()]  Static IP set: 10.27.67.12
+[05-Oct-23 21:03:06 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[05-Oct-23 21:03:06 - INFO - state.py:112 - makePublisher()]  Robot publisher created: 2767 - High
+[05-Oct-23 21:03:06 - INFO - camera.py:21 - __init__()]  Platform is linux
+[05-Oct-23 21:03:06 - ERROR - camera.py:28 - __init__()]  No cameras detected!!
+[05-Oct-23 21:03:09 - INFO - init.py:53 - <module>()]  Web server ready
+[05-Oct-23 21:03:09 - INFO - Processing.py:19 - __init__()]  Tag layout loaded
+[05-Oct-23 21:03:09 - INFO - state.py:107 - makePublisher()]  Existing publisher destroyed
+[05-Oct-23 21:03:09 - INFO - state.py:112 - makePublisher()]  Robot publisher created: 2767 - High
+[05-Oct-23 21:03:09 - INFO - init.py:63 - <module>()]  Starting main loop
+[05-Oct-23 21:03:09 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[05-Oct-23 21:03:53 - INFO - web_interface.py:46 - connect()]  Client connected
+[05-Oct-23 21:04:00 - WARNING - web_interface.py:51 - disconnect()]  Client disconnected

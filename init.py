@@ -78,13 +78,15 @@ try:
             logger.info("Beginning calibration")
 
             # Prepare a calibration object for the camera that is being calibrated with pre-set data
-            calibrators[walleyeData.cameraInCalibration] = Calibration(
-                walleyeData.calDelay,
-                walleyeData.boardDims,
-                walleyeData.cameraInCalibration,
-                f"Calibration/Cam_{Cameras.cleanIdentifier(walleyeData.cameraInCalibration)}CalImgs",
-                walleyeData.cameras.info[walleyeData.cameraInCalibration].resolution,
-            )
+            # only if cal object does not exist yet
+            if walleyeData.cameraInCalibration not in calibrators:
+                calibrators[walleyeData.cameraInCalibration] = Calibration(
+                    walleyeData.calDelay,
+                    walleyeData.boardDims,
+                    walleyeData.cameraInCalibration,
+                    f"Calibration/Cam_{Cameras.cleanIdentifier(walleyeData.cameraInCalibration)}CalImgs",
+                    walleyeData.cameras.info[walleyeData.cameraInCalibration].resolution,
+                )
             walleyeData.currentState = States.CALIBRATION_CAPTURE
 
         # Take calibration images
@@ -119,25 +121,27 @@ try:
             )
 
             # Generate a calibration file to the file path
-            calibrators[walleyeData.cameraInCalibration].generateCalibration(
+            hasGenerated = calibrators[walleyeData.cameraInCalibration].generateCalibration(
                 walleyeData.cameras.info[
                     walleyeData.cameraInCalibration
                 ].calibrationPath
             )
 
-            # Get reproj error
-            walleyeData.reprojectionError = calibrators[
-                walleyeData.cameraInCalibration
-            ].getReprojectionError()
+            if hasGenerated:
+                # Get reproj error
+                walleyeData.reprojectionError = calibrators[
+                    walleyeData.cameraInCalibration
+                ].getReprojectionError()
 
-            # Set the cameras calibration, save off the file path, and go to idle
-            walleyeData.cameras.setCalibration(
-                walleyeData.cameraInCalibration,
-                calibrators[walleyeData.cameraInCalibration].calibrationData["K"],
-                calibrators[walleyeData.cameraInCalibration].calibrationData["dist"],
-            )
-            walleyeData.cameras.info[walleyeData.cameraInCalibration].calibrationPath = Calibration.calibrationPathByCam(walleyeData.cameraInCalibration, walleyeData.cameras.info[walleyeData.cameraInCalibration].resolution)
+                # Set the cameras calibration, save off the file path, and go to idle
+                walleyeData.cameras.setCalibration(
+                    walleyeData.cameraInCalibration,
+                    calibrators[walleyeData.cameraInCalibration].calibrationData["K"],
+                    calibrators[walleyeData.cameraInCalibration].calibrationData["dist"],
+                )
+                walleyeData.cameras.info[walleyeData.cameraInCalibration].calibrationPath = Calibration.calibrationPathByCam(walleyeData.cameraInCalibration, walleyeData.cameras.info[walleyeData.cameraInCalibration].resolution)
             walleyeData.currentState = States.IDLE
+            calibrators[walleyeData.cameraInCalibration] = None
             
         # AprilTag processing state
         elif walleyeData.currentState == States.PROCESSING:
