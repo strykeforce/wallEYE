@@ -54,11 +54,6 @@ export default function Config(props) {
                 </InputGroup>
             </Form.Group>
             <Form.Group className="mb-3" >
-                <Button variant="info" onClick={() => { socket.emit("reset_networking"); }}>
-                    Reset Networking
-                </Button>
-            </Form.Group>
-            <Form.Group className="mb-3" >
                 <InputGroup>
                     <InputGroup.Text>Set Tag Size</InputGroup.Text>
                     <Form.Control type="number" value={newTagSize} onChange={(e) => { setNewTagSize(e.target.value) }} />

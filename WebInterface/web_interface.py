@@ -200,13 +200,6 @@ def set_board_dims(w, h):
 def set_static_ip(ip):
     walleyeData.setIP(str(ip))
 
-
-@socketio.on("reset_networking")
-@updateAfter
-def reset_networking():
-    walleyeData.resetNetworking()
-
-
 @socketio.on("shutdown")
 @updateAfter
 def shutdown():
