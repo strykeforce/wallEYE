@@ -79,7 +79,7 @@ try:
 
             # Prepare a calibration object for the camera that is being calibrated with pre-set data
             # only if cal object does not exist yet
-            if walleyeData.cameraInCalibration not in calibrators:
+            if walleyeData.cameraInCalibration not in calibrators or calibrators[walleyeData.cameraInCalibration] is None:
                 calibrators[walleyeData.cameraInCalibration] = Calibration(
                     walleyeData.calDelay,
                     walleyeData.boardDims,
@@ -120,26 +120,31 @@ try:
                 walleyeData.cameras.info[walleyeData.cameraInCalibration].resolution,
             )
 
-            # Generate a calibration file to the file path
-            hasGenerated = calibrators[walleyeData.cameraInCalibration].generateCalibration(
-                walleyeData.cameras.info[
-                    walleyeData.cameraInCalibration
-                ].calibrationPath
-            )
-
-            if hasGenerated:
-                # Get reproj error
-                walleyeData.reprojectionError = calibrators[
-                    walleyeData.cameraInCalibration
-                ].getReprojectionError()
-
-                # Set the cameras calibration, save off the file path, and go to idle
-                walleyeData.cameras.setCalibration(
-                    walleyeData.cameraInCalibration,
-                    calibrators[walleyeData.cameraInCalibration].calibrationData["K"],
-                    calibrators[walleyeData.cameraInCalibration].calibrationData["dist"],
+            if calibrators[walleyeData.cameraInCalibration] is not None:
+                # Generate a calibration file to the file path
+                hasGenerated = calibrators[walleyeData.cameraInCalibration].generateCalibration(
+                    walleyeData.cameras.info[
+                        walleyeData.cameraInCalibration
+                    ].calibrationPath
                 )
-                walleyeData.cameras.info[walleyeData.cameraInCalibration].calibrationPath = Calibration.calibrationPathByCam(walleyeData.cameraInCalibration, walleyeData.cameras.info[walleyeData.cameraInCalibration].resolution)
+
+                if hasGenerated:
+                    # Get reproj error
+                    walleyeData.reprojectionError = calibrators[
+                        walleyeData.cameraInCalibration
+                    ].getReprojectionError()
+
+                    # Set the cameras calibration, save off the file path, and go to idle
+                    walleyeData.cameras.setCalibration(
+                        walleyeData.cameraInCalibration,
+                        calibrators[walleyeData.cameraInCalibration].calibrationData["K"],
+                        calibrators[walleyeData.cameraInCalibration].calibrationData["dist"],
+                    )
+                    walleyeData.cameras.info[walleyeData.cameraInCalibration].calibrationPath = Calibration.calibrationPathByCam(walleyeData.cameraInCalibration, walleyeData.cameras.info[walleyeData.cameraInCalibration].resolution)
+                else:
+                    walleyeData.status = "Could not generate calibration"
+            else:
+                walleyeData.status = "Calibrator for current calibration camera is None"
             walleyeData.currentState = States.IDLE
             calibrators[walleyeData.cameraInCalibration] = None
             
