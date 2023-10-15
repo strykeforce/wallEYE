@@ -126,7 +126,7 @@ public class WallEye {
             // Array is structed as index 0, 1, 2 are position; 3, 4, 5 are rotation; 6 is a timestamp; 7 is n number of tags; 7 + n are tag ids; 7+n+1 is ambiguity
             if(dios.size() == 0 || gyroResults[i][maxGyroResultSize - 1] == null || temp[6] > gyroResults[i][currentGyroIndex - 1 >= 0 ? currentGyroIndex - 1 : maxGyroResultSize - 1].getTimestamp())
                 results.add(new WallEyeResult(new Pose3d(new Translation3d(temp[0], temp[1], temp[2]), new Rotation3d(temp[3], temp[4], temp[5])), 
-                    (double)sub.getAtomic().timestamp + temp[6], i, curUpdateNum, (int) temp[7], tags, temp[8 + (int) temp[7]] ));
+                    (double)sub.getAtomic().timestamp - temp[6], i, curUpdateNum, (int) temp[7], tags, temp[8 + (int) temp[7]] ));
             else {
                 DIOGyroResult savedStrobe = findGyro((sub.getAtomic().timestamp + (long)temp[6]), i, temp[5]);
 
