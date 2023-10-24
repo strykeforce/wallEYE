@@ -1,0 +1,7 @@
+WebInterface/walleye/node_modules/*
+walleye.log*
+**/__pycache__/*.pyc
+Calibration/Cam_*CalImgs/*
+profile.html
+profile.json
+config.zip
