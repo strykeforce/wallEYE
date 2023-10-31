@@ -171,7 +171,7 @@ class Calibration:
                 self.objPoints.append(self.reference)
                 self.imgPoints.append(refined)
 
-    # Generate an openCV calibration and write to a file
+    # Generate a calibration and write to a file
     def generateCalibration(self, calFile: str):
         if len(self.objPoints) == 0:
             Calibration.logger.error("Calibration failed: No image data available")
