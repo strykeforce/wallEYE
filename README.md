@@ -4,6 +4,8 @@
   Use `python3 init.py` to run. If changes are made to the web interface (frontend portion), `cd WebInterface/walleye` and `npm run build` are required to update the site.  
 
   If using from source, `sudo chmod 4755 /sbin/ifconfig` is required prior to running the first time.
+
+  `walleye.service` is located at `/etc/systemd/system/walleye.service`
   
 ## Boot Up
   Before connecting a WallEYE installation to a robot network switch, connect the Orange Pi via ethernet directly and turn on the Pi. Using an IP scanner, the PI's IP can be found. From there connect to the website and set a static IP (it is recommended to set a static ip to the format `10.27.67.#` or one that conforms to a team number). Also set a unique name that identifies the WallEYE installation (this is for robot side implementation). Although Calibration may be done on the first bootup it is not required. 
