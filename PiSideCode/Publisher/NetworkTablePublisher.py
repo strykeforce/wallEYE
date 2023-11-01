@@ -14,7 +14,7 @@ class NetworkIO:
 
         # Start the WallEye_Client and set server depending on testing
         self.inst.startClient4("WallEye_Client")
-        self.updateNum = 0
+        self.updateNum = []
         if test:
             self.inst.setServer("127.0.0.1", 5810)
         else:
@@ -24,9 +24,7 @@ class NetworkIO:
         self.publishers = []
 
         # Update publisher
-        self.publishUpdate = self.table.getIntegerTopic("Update").publish(
-            ntcore.PubSubOptions(periodic=0.01, sendAll=True, keepDuplicates=True)
-        )
+        self.publishUpdate = []
 
         # Pose publisher
         for index in range(5):
@@ -37,6 +35,14 @@ class NetworkIO:
                     )
                 )
             )
+            self.publishUpdate.append(
+                self.table.getIntegerTopic("Update"  + str(index)).publish(
+                    ntcore.PubSubOptions(
+                        periodic=0.01, sendAll=True, keepDuplicates=True
+                    )
+                )
+            )
+            self.updateNum.append(0)
 
     def getTime(self):
         return ntcore._now()
@@ -53,6 +59,8 @@ class NetworkIO:
             result.append(tags[i])
         result.append(ambig)
         self.publishers[index].set(result)
+        self.updateNum[index] += 1
+        self.publishUpdate[index].set(self.updateNum[index])
 
     # Publish a new update number
     def increaseUpdateNum(self):
