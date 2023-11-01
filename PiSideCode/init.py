@@ -166,10 +166,10 @@ try:
             # Publish camera number, timestamp, poses, tags, ambiguity and increase the update number
             # logger.info(f"Poses at {imageTime}: {poses}")
             for i in range(len(poses)):
-                walleyeData.robotPublisher.publish(
-                    i, imageTime, poses[i], tags[i], ambig[i]
-                )
-            walleyeData.robotPublisher.increaseUpdateNum()
+                if poses[i].X() < 2000:
+                    walleyeData.robotPublisher.publish(
+                        i, imageTime, poses[i], tags[i], ambig[i]
+                    )
 
             # Update the pose visualization
             for i, (identifier, img) in enumerate(images.items()):
