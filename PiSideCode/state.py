@@ -156,8 +156,8 @@ class Config:
         
         # Set IP
         os.system("/usr/sbin/ifconfig eth0 up")
-        if not os.system(f"/usr/sbin/ifconfig eth0 {ip} netmask 255.255.255.0"):
-            Config.logger.info(f"Static IP set: {ip}")
+        if not os.system(f"nmcli con mod eth0 ipv4.addresses {ip}/8 ipv4.method \"manual\" ipv6.method \"disabled\""):
+            Config.logger.info(f"Static IP set: {ip} =? {Config.getCurrentIP()}")
             self.ip = ip
         else:
             self.ip = Config.getCurrentIP()
