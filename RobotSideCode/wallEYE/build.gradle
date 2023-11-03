@@ -8,7 +8,7 @@ sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
 
 group = "org.strykeforce"
-version = '1.0.0'
+version = '1.0.1-SNAPSHOT'
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
 // This is added by GradleRIO's backing project DeployUtils.
@@ -31,7 +31,7 @@ deploy {
 
                 // Static files artifact
                 frcStaticFileDeploy(getArtifactTypeClass('FileTreeArtifact')) {
-                    files = project.fileTree('src/main/deploy')
+                    files = project.fileTree('/src/main/deploy')
                     directory = '/home/lvuser/deploy'
                 }
             }
