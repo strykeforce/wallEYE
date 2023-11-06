@@ -56,7 +56,7 @@ public class WallEyeCam {
 
         camToCenter = new Transform3d();
         NetworkTableInstance nt = NetworkTableInstance.getDefault();
-        nt.startServer()
+        nt.startServer();
         NetworkTable table = nt.getTable(tableName);
         double[] def = {2767.0, 2767.0, 2767.0, 2767.0, 2767.0, 2767.0, 2767.0};
         dsub = table.getDoubleArrayTopic("Result" + camIndex).subscribe(def);
