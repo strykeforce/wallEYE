@@ -83,7 +83,7 @@ class NetworkIO:
 
     def increaseImageNum(self, index):
         self.imageNum[index] += 1
-        self.publishImageNum.set(self.imageNum[index])
+        self.publishImageNum[index].set(self.imageNum[index])
 
     def destroy(self):
         self.inst.stopClient()
