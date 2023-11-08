@@ -15,6 +15,7 @@ class NetworkIO:
         # Start the WallEye_Client and set server depending on testing
         self.inst.startClient4("WallEye_Client")
         self.updateNum = []
+        self.imageNum = []
         if test:
             self.inst.setServer("127.0.0.1", 5810)
         else:
@@ -25,6 +26,9 @@ class NetworkIO:
 
         # Update publisher
         self.publishUpdate = []
+
+        # image publisher ie has recieved a new image
+        self.publishImageNum = []
 
         # Pose publisher
         for index in range(5):
@@ -42,7 +46,17 @@ class NetworkIO:
                     )
                 )
             )
+
+            self.publishImageNum.append(
+                self.table.getIntegerTopic("Image"  + str(index)).publish(
+                    ntcore.PubSubOptions(
+                        periodic=0.01, sendAll=True, keepDuplicates=True
+                    )
+                )
+            )
+
             self.updateNum.append(0)
+            self.imageNum.append(0)
 
     def getTime(self):
         return ntcore._now()
@@ -66,6 +80,10 @@ class NetworkIO:
     def increaseUpdateNum(self):
         self.updateNum += 1
         self.publishUpdate.set(self.updateNum)
+
+    def increaseImageNum(self, index):
+        self.imageNum[index] += 1
+        self.publishImageNum.set(self.imageNum[index])
 
     def destroy(self):
         self.inst.stopClient()
