@@ -13,10 +13,9 @@ class Buffer:
     outputFrame = b""
     lastNone = False
 
-    
     def update(self, img):
         if img is None:
-            if not self.lastNone: 
+            if not self.lastNone:
                 logger.error("Updated image is None - Skipping")
             self.lastNone = True
             return
@@ -97,8 +96,7 @@ class LivePlotBuffer(Buffer):
         self.ax.draw_artist(self.poses2D)
         self.ax.draw_artist(self.tags)
         self.fig.canvas.blit(self.fig.bbox)
-        
-    
+
     def update(self, pose, tags):
         self.fig.canvas.restore_region(self.bg)
 
@@ -115,12 +113,25 @@ class LivePlotBuffer(Buffer):
         self.poses2D.set_data(self.x, self.y)
         self.poses2D.set_3d_properties(np.atleast_1d(0))
 
-        tagsX = [(self.tagLayout[tag - 1]["pose"]["translation"]["x"] if (tag < 9 and tag > 0) else 2767) for tag in tags]
-        tagsY = [(self.tagLayout[tag - 1]["pose"]["translation"]["y"] if (tag < 9 and tag > 0) else 2767) for tag in tags]
+        tagsX = [
+            (
+                self.tagLayout[tag - 1]["pose"]["translation"]["x"]
+                if (tag < 9 and tag > 0)
+                else 2767
+            )
+            for tag in tags
+        ]
+        tagsY = [
+            (
+                self.tagLayout[tag - 1]["pose"]["translation"]["y"]
+                if (tag < 9 and tag > 0)
+                else 2767
+            )
+            for tag in tags
+        ]
 
         self.tags.set_data(tagsX, tagsY)
         self.tags.set_3d_properties(np.atleast_1d(0))
-
 
         self.ax.draw_artist(self.poses2D)
         self.ax.draw_artist(self.poses)
@@ -131,6 +142,3 @@ class LivePlotBuffer(Buffer):
         plot = np.frombuffer(self.fig.canvas.tostring_rgb(), dtype=np.uint8)
         img = plot.reshape(self.fig.canvas.get_width_height()[::-1] + (3,))
         self.outputFrame = simplejpeg.encode_jpeg(img)
-
-
-

@@ -8,6 +8,8 @@ class CameraInfo:
         self.identifier = identifier
         self.resolution = resolution
         self.supportedResolutions = supportedResolutions
+        self.exposureRange = (0, 100, 1)
+        self.gainRange = (0, 100, 1)
 
         # Calibration
         self.K = K

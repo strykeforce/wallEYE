@@ -7,7 +7,6 @@ class NetworkIO:
 
     # Create a Network Tables Client with given info
     def __init__(self, test, team, tableName):
-
         # Grab the default network table instance and grab the table name
         self.inst = ntcore.NetworkTableInstance.getDefault()
         self.table = self.inst.getTable(tableName)
@@ -21,7 +20,7 @@ class NetworkIO:
         else:
             self.inst.setServerTeam(team)
 
-        # Set all the publishers and update publishers 
+        # Set all the publishers and update publishers
         self.publishers = []
 
         # Update publisher
@@ -40,7 +39,7 @@ class NetworkIO:
                 )
             )
             self.publishUpdate.append(
-                self.table.getIntegerTopic("Update"  + str(index)).publish(
+                self.table.getIntegerTopic("Update" + str(index)).publish(
                     ntcore.PubSubOptions(
                         periodic=0.01, sendAll=True, keepDuplicates=True
                     )
@@ -48,7 +47,7 @@ class NetworkIO:
             )
 
             self.publishImageNum.append(
-                self.table.getIntegerTopic("Image"  + str(index)).publish(
+                self.table.getIntegerTopic("Image" + str(index)).publish(
                     ntcore.PubSubOptions(
                         periodic=0.01, sendAll=True, keepDuplicates=True
                     )
@@ -68,7 +67,16 @@ class NetworkIO:
     def publish(self, index, time, pose, tags, ambig):
         t = pose.translation()
         r = pose.rotation()
-        result = [t.X(), t.Y(), t.Z(), r.X(), r.Y(), r.Z(), ntcore._now() - float(time), len(tags)]
+        result = [
+            t.X(),
+            t.Y(),
+            t.Z(),
+            r.X(),
+            r.Y(),
+            r.Z(),
+            ntcore._now() - float(time),
+            len(tags),
+        ]
         for i in range(len(tags)):
             result.append(tags[i])
         result.append(ambig)

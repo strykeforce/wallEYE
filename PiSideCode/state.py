@@ -61,7 +61,7 @@ class Config:
 
                 self.setIP(self.ip)
 
-        # If no system file is found boot with base settings and create system settings 
+        # If no system file is found boot with base settings and create system settings
         except (FileNotFoundError, json.decoder.JSONDecodeError, KeyError):
             self.teamNumber = 2767
             self.tableName = "WallEye"
@@ -101,7 +101,7 @@ class Config:
         self.teamNumber = teamNumber
         self.tableName = tableName
 
-        # Destroy any existing publisher 
+        # Destroy any existing publisher
         if self.robotPublisher is not None:
             self.robotPublisher.destroy()
             Config.logger.info("Existing publisher destroyed")
@@ -133,7 +133,7 @@ class Config:
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             Config.logger.error(f"Failed to write Dimensions {dim}")
 
-    # Set Tag Size (meters) and set it in system settings 
+    # Set Tag Size (meters) and set it in system settings
     def setTagSize(self, size):
         try:
             # Write it in system settings file
@@ -149,11 +149,11 @@ class Config:
     # Set static IP and write it into system files
     def setIP(self, ip):
         Config.logger.info("Attempting to set static IP")
-        
+
         # Destroy because changing IP breaks network tables
         if self.robotPublisher:
             self.robotPublisher.destroy()
-        
+
         # Set IP
         os.system("/usr/sbin/ifconfig eth0 up")
         if not os.system(f"/usr/sbin/ifconfig eth0 {ip} netmask 255.255.255.0"):
@@ -177,7 +177,7 @@ class Config:
 
         self.makePublisher(self.teamNumber, self.tableName)
 
-    # Obsolete 
+    # Obsolete
     # def resetNetworking(self):
     #     if not os.system("/usr/sbin/ifconfig eth0 down"):
     #         if not os.system("/usr/sbin/ifconfig eth0 up"):
@@ -218,10 +218,12 @@ class Config:
             "supportedResolutions": {
                 k: v.supportedResolutions for k, v in self.cameras.info.items()
             },
+            "exposureRange": {k: v.exposureRange for k, v in self.cameras.info.items()},
+            "gainRange": {k: v.gainRange for k, v in self.cameras.info.items()},
             "ip": self.ip,
             "tagSize": self.tagSize,
             "visualizingPoses": self.visualizingPoses,
-            "status": self.status
+            "status": self.status,
         }
 
 

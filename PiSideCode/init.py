@@ -32,16 +32,21 @@ from WebInterface.web_interface import (
     camBuffers,
     socketio,
     app,
-    visualizationBuffers, 
+    visualizationBuffers,
     displayInfo,
-    sendStateUpdate
+    sendStateUpdate,
 )  # After walleyeData.cameras is set
 
 try:
     # Start the web server
     webServer = threading.Thread(
         target=lambda: socketio.run(
-            app, host="0.0.0.0", port=5800, debug=True, use_reloader=False, log_output=False
+            app,
+            host="0.0.0.0",
+            port=5800,
+            debug=True,
+            use_reloader=False,
+            log_output=False,
         ),
         daemon=True,
     ).start()
@@ -66,12 +71,11 @@ try:
 
     # Main loop (Runs everything)
     while True:
-
         # Calculate loop time
         currTime = time.time()
         walleyeData.loopTime = round(currTime - lastLoopTime, 3)
         lastLoopTime = currTime
-        
+
         # State changes
         # Pre-Calibration
         if walleyeData.currentState == States.BEGIN_CALIBRATION:
@@ -79,19 +83,23 @@ try:
 
             # Prepare a calibration object for the camera that is being calibrated with pre-set data
             # only if cal object does not exist yet
-            if walleyeData.cameraInCalibration not in calibrators or calibrators[walleyeData.cameraInCalibration] is None:
+            if (
+                walleyeData.cameraInCalibration not in calibrators
+                or calibrators[walleyeData.cameraInCalibration] is None
+            ):
                 calibrators[walleyeData.cameraInCalibration] = Calibration(
                     walleyeData.calDelay,
                     walleyeData.boardDims,
                     walleyeData.cameraInCalibration,
                     f"Calibration/Cam_{Cameras.cleanIdentifier(walleyeData.cameraInCalibration)}CalImgs",
-                    walleyeData.cameras.info[walleyeData.cameraInCalibration].resolution,
+                    walleyeData.cameras.info[
+                        walleyeData.cameraInCalibration
+                    ].resolution,
                 )
             walleyeData.currentState = States.CALIBRATION_CAPTURE
 
         # Take calibration images
         elif walleyeData.currentState == States.CALIBRATION_CAPTURE:
-
             # Read in frames
             _, img = walleyeData.cameras.info[
                 walleyeData.cameraInCalibration
@@ -111,7 +119,6 @@ try:
 
         # Finished Calibration, generate calibration
         elif walleyeData.currentState == States.GENERATE_CALIBRATION:
-
             # Get file path for the calibration to be saved
             walleyeData.cameras.info[
                 walleyeData.cameraInCalibration
@@ -122,7 +129,9 @@ try:
 
             if calibrators[walleyeData.cameraInCalibration] is not None:
                 # Generate a calibration file to the file path
-                hasGenerated = calibrators[walleyeData.cameraInCalibration].generateCalibration(
+                hasGenerated = calibrators[
+                    walleyeData.cameraInCalibration
+                ].generateCalibration(
                     walleyeData.cameras.info[
                         walleyeData.cameraInCalibration
                     ].calibrationPath
@@ -137,20 +146,30 @@ try:
                     # Set the cameras calibration, save off the file path, and go to idle
                     walleyeData.cameras.setCalibration(
                         walleyeData.cameraInCalibration,
-                        calibrators[walleyeData.cameraInCalibration].calibrationData["K"],
-                        calibrators[walleyeData.cameraInCalibration].calibrationData["dist"],
+                        calibrators[walleyeData.cameraInCalibration].calibrationData[
+                            "K"
+                        ],
+                        calibrators[walleyeData.cameraInCalibration].calibrationData[
+                            "dist"
+                        ],
                     )
-                    walleyeData.cameras.info[walleyeData.cameraInCalibration].calibrationPath = Calibration.calibrationPathByCam(walleyeData.cameraInCalibration, walleyeData.cameras.info[walleyeData.cameraInCalibration].resolution)
+                    walleyeData.cameras.info[
+                        walleyeData.cameraInCalibration
+                    ].calibrationPath = Calibration.calibrationPathByCam(
+                        walleyeData.cameraInCalibration,
+                        walleyeData.cameras.info[
+                            walleyeData.cameraInCalibration
+                        ].resolution,
+                    )
                 else:
                     walleyeData.status = "Could not generate calibration"
             else:
                 walleyeData.status = "Calibrator for current calibration camera is None"
             walleyeData.currentState = States.IDLE
             calibrators[walleyeData.cameraInCalibration] = None
-            
+
         # AprilTag processing state
         elif walleyeData.currentState == States.PROCESSING:
-
             # Set tag size, grab camera frames, and grab image timestamp
             poseEstimator.setTagSize(walleyeData.tagSize)
             images = walleyeData.cameras.getFrames()
@@ -205,7 +224,7 @@ try:
                 _, img = cameraInfo.cam.read()
 
                 camBuffers[cameraInfo.identifier].update(img)
-                
+
 except Exception as e:
     # Something bad happened
     logging.critical(e, exc_info=True)

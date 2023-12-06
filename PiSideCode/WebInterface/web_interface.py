@@ -13,7 +13,7 @@ import io
 
 logger = logging.getLogger(__name__)
 
-    
+
 app = Flask(__name__, static_folder="./walleye/build", static_url_path="/")
 socketio = SocketIO(app, logger=True, cors_allowed_origins="*")
 
@@ -21,6 +21,8 @@ camBuffers = {identifier: Buffer() for identifier in walleyeData.cameras.info.ke
 visualizationBuffers = {
     identifier: LivePlotBuffer() for identifier in walleyeData.cameras.info.keys()
 }
+
+
 def displayInfo(msg):
     logger.info(f"Sending message to web interface: {msg}")
     walleyeData.status = msg
@@ -116,10 +118,15 @@ def import_calibration(camID, file):
         calData["K"] = np.asarray(calData["K"])
         calData["dist"] = np.asarray(calData["dist"])
         walleyeData.cameras.setCalibration(camID, calData["K"], calData["dist"])
-        walleyeData.cameras.info[camID].calibrationPath = Calibration.calibrationPathByCam(camID, walleyeData.cameras.info[camID].resolution)
+        walleyeData.cameras.info[
+            camID
+        ].calibrationPath = Calibration.calibrationPathByCam(
+            camID, walleyeData.cameras.info[camID].resolution
+        )
 
     logger.info(f"Calibration sucessfully imported for {camID}")
     walleyeData.status = "Calibration loaded"
+
 
 @socketio.on("import_config")
 @updateAfter
@@ -137,9 +144,10 @@ def import_config(file):
         for camID in walleyeData.cameras.info.keys():
             walleyeData.cameras.importConfig(camID)
             logger.info(f"Camera config imported for {camID}")
-       
+
     logger.info(f"Configs sucessfully imported for {camID}")
     walleyeData.status = "Configs/Cals loaded"
+
 
 @socketio.on("export_config")
 @updateAfter
@@ -147,7 +155,6 @@ def export_config():
     logger.info("Attempting to prepare config.zip")
     walleyeData.status = "Attempting to prepare config.zip"
     directory = pathlib.Path(".")
-
 
     with zipfile.ZipFile("config.zip", "w") as config:
         logger.info("Opening config.zip for writing")
@@ -162,7 +169,7 @@ def export_config():
 
         config.write("SystemData.json")
         logger.info(f"Zipping SystemData.json")
-       
+
     logger.info(f"Config sucessfully zipped")
     walleyeData.status = "Config.zip ready"
     socketio.emit("config_ready")
@@ -200,6 +207,7 @@ def set_board_dims(w, h):
 def set_static_ip(ip):
     walleyeData.setIP(str(ip))
 
+
 @socketio.on("shutdown")
 @updateAfter
 def shutdown():
@@ -221,7 +229,11 @@ def toggle_pnp():
 @updateAfter
 def toggle_pose_visualization():
     walleyeData.visualizingPoses = not walleyeData.visualizingPoses
-    walleyeData.status = "Visualizing poses" if walleyeData.visualizingPoses else "Not visualizating poses"
+    walleyeData.status = (
+        "Visualizing poses"
+        if walleyeData.visualizingPoses
+        else "Not visualizating poses"
+    )
 
 
 @socketio.on("pose_update")
@@ -236,6 +248,7 @@ def pose_update():
 def pose_update():
     socketio.sleep(0)
     socketio.emit("performance_update", walleyeData.loopTime)
+
 
 @socketio.on("msg_update")
 @updateAfter
@@ -253,6 +266,7 @@ def sendStateUpdate():
 @app.route("/files/<path:path>")
 def files(path):
     return send_from_directory(os.getcwd(), path, as_attachment=True)
+
 
 @app.route("/video_feed/<camID>")
 def video_feed(camID):

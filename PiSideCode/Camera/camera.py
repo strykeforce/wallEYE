@@ -38,9 +38,9 @@ class Cameras:
                     Cameras.logger.info(f"Camera found: {camPath}")
 
                     # Get supported resolutions using v4l2-ctl and a little regex
-                    supportedResolutions = sorted( # Sort values
+                    supportedResolutions = sorted(  # Sort values
                         list(
-                            set( # Unique values
+                            set(  # Unique values
                                 map(
                                     lambda x: (
                                         int(x.split("x")[0]),
@@ -62,9 +62,28 @@ class Cameras:
                             )
                         )
                     )
+                    parameters = subprocess.run(
+                        ["v4l2-ctl", "-d", path, "--list-ctrls-menus"],
+                        capture_output=True,
+                    ).stdout.decode("utf-8")
+
+                    exposureRange = tuple(
+                        map(
+                            lambda x: int(x.split("=")[-1]),
+                            re.search(
+                                "exposure_absolute .* min=[0-9]+ max=[0-9]+ step=[0-9]+",
+                                parameters,
+                            )
+                            .group()
+                            .split()[-3:],
+                        )
+                    )
 
                     Cameras.logger.info(
                         f"Supported resolutions: {supportedResolutions}"
+                    )
+                    Cameras.logger.info(
+                        f"Supported exposures (min, max, step): {exposureRange}"
                     )
 
                     # Disable buffer so we always pull the latest image
@@ -81,6 +100,7 @@ class Cameras:
                     # Initialize CameraInfo object
                     self.info[camPath] = CameraInfo(cam, camPath, supportedResolutions)
                     self.info[camPath].resolution = self.getResolutions()[camPath]
+                    self.info[camPath].exposureRange = exposureRange
 
                     # Attempt to import config from file
                     self.importConfig(camPath)
@@ -95,7 +115,7 @@ class Cameras:
 
         else:
             Cameras.logger.error("Unknown platform!")
-    
+
     def setCalibration(self, identifier, K, D):
         self.info[identifier].K = K
         self.info[identifier].D = D
@@ -127,8 +147,10 @@ class Cameras:
         # os.system(f"v4l2-ctl -d /dev/v4l/by-path/{identifier} --set-fmt-video=width={resolution[0]},height={resolution[1]}")
         self.info[identifier].cam.set(cv2.CAP_PROP_FRAME_HEIGHT, resolution[1])
         self.info[identifier].cam.set(cv2.CAP_PROP_FRAME_WIDTH, resolution[0])
-        self.info[identifier].cam.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*"MJPG"))
-        self.info[identifier].cam.set(cv2.CAP_PROP_FPS, 30)
+        self.info[identifier].cam.set(
+            cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*"MJPG")
+        )
+        self.info[identifier].cam.set(cv2.CAP_PROP_FPS, 30)  # Lower can be better
         resolution = tuple(resolution)
 
         # Test if resolution got set
@@ -180,12 +202,12 @@ class Cameras:
             return False
 
         # Set exposure with a command
-        os.system(
+        returned = os.system(
             f"v4l2-ctl -d /dev/v4l/by-path/{identifier} --set-ctrl exposure_auto=1 --set-ctrl exposure_absolute={exposure}"
         )
 
         # Check if it set, if so write it to a file
-        if self.info[identifier].cam.get(cv2.CAP_PROP_EXPOSURE) != exposure:
+        if returned != 0:
             Cameras.logger.warning(f"Exposure not set: {exposure} not accepted")
             return False
         else:
@@ -246,7 +268,7 @@ class Cameras:
                 f"Calibration not found for camera {identifier} at resolution {resolution}"
             )
             return False
-    
+
     def importConfig(self, camPath):
         # Attempt to import config from file
         Cameras.logger.info(f"Attempting to import config for {camPath}")
@@ -272,10 +294,8 @@ class Cameras:
 
         else:
             self.importCalibration(camPath)
-            Cameras.logger.warning(
-                f"Camera config not found for camera {camPath}"
-            )
-        
+            Cameras.logger.warning(f"Camera config not found for camera {camPath}")
+
         return config
 
     @staticmethod

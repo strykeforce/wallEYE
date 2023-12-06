@@ -23,6 +23,7 @@ def parseConfig(camPath):
             json.dump(fileDump, outFile)
         return fileDump
 
+
 # Write config data to a file following naming conventions
 def writeConfig(camPath, resolution, gain, exposure):
     with open(f"./Camera/CameraConfigs/ConfigSettings_{camPath}.json", "w") as data:
