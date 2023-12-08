@@ -172,7 +172,13 @@ try:
         elif walleyeData.currentState == States.PROCESSING:
             # Set tag size, grab camera frames, and grab image timestamp
             poseEstimator.setTagSize(walleyeData.tagSize)
-            images = walleyeData.cameras.getFrames()
+            connections, images = walleyeData.cameras.getFramesForProcessing()
+
+            for idx, val in enumerate(connections.values()):
+                if not val and walleyeData.robotPublisher.getConnectionValue(idx):
+                    logger.info("Camera disconnected")
+                walleyeData.robotPublisher.setConnectionValue(idx, val)
+
             imageTime = walleyeData.robotPublisher.getTime()
 
             # Use the poseEstimator class to find the pose, tags, and ambiguity
@@ -184,9 +190,6 @@ try:
 
             # Publish camera number, timestamp, poses, tags, ambiguity and increase the update number
             # logger.info(f"Poses at {imageTime}: {poses}")
-            for idx, img in enumerate(images):
-                if img is not None:
-                    walleyeData.robotPublisher.increaseImageNum(idx)
 
             for i in range(len(poses)):
                 if poses[i].X() < 2000:

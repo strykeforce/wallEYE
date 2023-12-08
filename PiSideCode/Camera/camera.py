@@ -138,6 +138,16 @@ class Cameras:
             frames[identifier] = img
         return frames
 
+    # Grab frames from each camera specifically for processing
+    def getFramesForProcessing(self):
+        frames = {}
+        connections = {}
+        for identifier, camInfo in self.info.items():
+            flag, img = camInfo.cam.read()
+            frames[identifier] = img
+            connections[identifier] = True if flag else False
+        return (connections, frames)
+
     # Sets resolution, video format, and FPS
     def setResolution(self, identifier, resolution):
         if resolution is None:
