@@ -26,7 +26,8 @@ export default function CameraSettings(props) {
 
             <DataRangeBox
                 label="Exposure"
-                value={props.state.gain[props.camID]}
+                value={props.state.exposure[props.camID]}
+                camID={props.camID}
                 min={props.state.exposureRange[props.camID][0]}
                 max={props.state.exposureRange[props.camID][1]}
                 step={props.state.exposureRange[props.camID][2]}
@@ -35,6 +36,7 @@ export default function CameraSettings(props) {
             <DataRangeBox
                 label="Gain"
                 value={props.state.gain[props.camID]}
+                camID={props.camID}
                 min={props.state.gainRange[props.camID][0]}
                 max={props.state.gainRange[props.camID][1]}
                 step={props.state.gainRange[props.camID][2]}

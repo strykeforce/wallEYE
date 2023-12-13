@@ -65,11 +65,9 @@ class Config:
         except (FileNotFoundError, json.decoder.JSONDecodeError, KeyError):
             self.teamNumber = 2767
             self.tableName = "WallEye"
-            try:
-                self.ip = Config.getCurrentIP()
-                Config.logger.info(f"IP is {self.ip}")
-            except IndexError:
-                Config.logger.error("Could not get current IP")
+            self.ip = Config.getCurrentIP()
+            Config.logger.info(f"IP is {self.ip}")
+            
             dataDump = {
                 "TeamNumber": self.teamNumber,
                 "TableName": self.tableName,
@@ -192,13 +190,17 @@ class Config:
 
     @staticmethod
     def getCurrentIP():
-        return (
-            os.popen('ip addr show eth0 | grep "\<inet\>"')
-            .read()
-            .split()[1]
-            .split("/")[0]
-            .strip()
-        )
+        try:
+            return (
+                os.popen('ip addr show eth0 | grep "\<inet\>"')
+                .read()
+                .split()[1]
+                .split("/")[0]
+                .strip()
+            )
+        except IndexError:
+            Config.logger.error("Could not get current IP - Returning None")
+            return None
 
     def getState(self):
         return {

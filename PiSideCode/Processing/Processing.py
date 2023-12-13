@@ -22,7 +22,9 @@ class Processor:
         # Create an aruco detector (finds the tags in images)
         self.arucoDetector = cv2.aruco.ArucoDetector()
         self.arucoDetector.setDictionary(
-            cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_APRILTAG_16H5)
+            cv2.aruco.getPredefinedDictionary(
+                cv2.aruco.DICT_APRILTAG_16H5
+            )  # Old: DICT_APRILTAG_16H5 ---- NEW: DICT_APRILTAG_36H11
         )
 
         # Change params to balance speed and accuracy

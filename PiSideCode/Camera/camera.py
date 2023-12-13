@@ -190,11 +190,11 @@ class Cameras:
             return False
 
         # Set gain through command line
-        os.system(f"v4l2-ctl -d /dev/v4l/by-path/{identifier} --set-ctrl gain={gain}")
+        returned = os.system(f"v4l2-ctl -d /dev/v4l/by-path/{identifier} --set-ctrl gain={gain}")
 
         # Check if it set, if so write it to a file
-        if self.info[identifier].cam.get(cv2.CAP_PROP_GAIN) != gain:
-            Cameras.logger.warning(f"Gain not set: {gain} not accepted")
+        if returned != 0:
+            Cameras.logger.warning(f"Gain not set: {gain} not accepted on camera {identifier}")
             return False
         else:
             Cameras.logger.info(f"Gain set to {gain}")
@@ -218,7 +218,7 @@ class Cameras:
 
         # Check if it set, if so write it to a file
         if returned != 0:
-            Cameras.logger.warning(f"Exposure not set: {exposure} not accepted")
+            Cameras.logger.warning(f"Exposure not set: {exposure} not accepted on camera {identifier}")
             return False
         else:
             Cameras.logger.info(f"Exposure set to {exposure}")
