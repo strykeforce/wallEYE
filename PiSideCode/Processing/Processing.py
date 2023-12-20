@@ -23,7 +23,7 @@ class Processor:
         self.arucoDetector = cv2.aruco.ArucoDetector()
         self.arucoDetector.setDictionary(
             cv2.aruco.getPredefinedDictionary(
-                cv2.aruco.DICT_APRILTAG_16H5
+                cv2.aruco.DICT_APRILTAG_36H11
             )  # Old: DICT_APRILTAG_16H5 ---- NEW: DICT_APRILTAG_36H11
         )
 

@@ -23,7 +23,10 @@ class Buffer:
             logger.info("Updated image is NOT none!")
         self.lastNone = False
         # self.outputFrame = cv2.imencode(".jpg", img)[1].tobytes()
-        self.outputFrame = simplejpeg.encode_jpeg(img)
+        encoded = simplejpeg.encode_jpeg(img)
+        # if (img == encoded).all():
+        #     logger.warning("Frame did not update!")
+        self.outputFrame = encoded
 
     def output(self):
         while True:

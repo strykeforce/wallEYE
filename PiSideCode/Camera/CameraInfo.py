@@ -9,7 +9,8 @@ class CameraInfo:
         self.resolution = resolution
         self.supportedResolutions = supportedResolutions
         self.exposureRange = (0, 100, 1)
-        self.gainRange = (0, 100, 1)
+        self.brightnessRange = (0, 240, 1)
+        self.validFormats = []
 
         # Calibration
         self.K = K

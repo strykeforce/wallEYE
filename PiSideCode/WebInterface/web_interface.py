@@ -53,10 +53,10 @@ def disconnect():
     logger.warning("Client disconnected")
 
 
-@socketio.on("set_gain")
+@socketio.on("set_brightness")
 @updateAfter
-def set_gain(camID, newValue):
-    walleyeData.cameras.setGain(camID, float(newValue))
+def set_brightness(camID, newValue):
+    walleyeData.cameras.setbrightness(camID, float(newValue))
 
 
 @socketio.on("set_exposure")

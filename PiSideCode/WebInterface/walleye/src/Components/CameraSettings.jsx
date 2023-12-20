@@ -34,13 +34,13 @@ export default function CameraSettings(props) {
                 event="set_exposure"
             />
             <DataRangeBox
-                label="Gain"
-                value={props.state.gain[props.camID]}
+                label="Brightness"
+                value={props.state.brightness[props.camID]}
                 camID={props.camID}
-                min={props.state.gainRange[props.camID][0]}
-                max={props.state.gainRange[props.camID][1]}
-                step={props.state.gainRange[props.camID][2]}
-                event="set_gain"
+                min={props.state.brightnessRange[props.camID][0]}
+                max={props.state.brightnessRange[props.camID][1]}
+                step={props.state.brightnessRange[props.camID][2]}
+                event="set_brightness"
             />
 
             <br />

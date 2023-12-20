@@ -67,7 +67,7 @@ class Config:
             self.tableName = "WallEye"
             self.ip = Config.getCurrentIP()
             Config.logger.info(f"IP is {self.ip}")
-            
+
             dataDump = {
                 "TeamNumber": self.teamNumber,
                 "TableName": self.tableName,
@@ -215,13 +215,15 @@ class Config:
             "reprojectionError": self.reprojectionError,
             "calFilePaths": self.getCalFilePaths(),
             "resolution": self.cameras.getResolutions(),
-            "gain": self.cameras.getGains(),
+            "brightness": self.cameras.getBrightnesss(),
             "exposure": self.cameras.getExposures(),
             "supportedResolutions": {
                 k: v.supportedResolutions for k, v in self.cameras.info.items()
             },
             "exposureRange": {k: v.exposureRange for k, v in self.cameras.info.items()},
-            "gainRange": {k: v.gainRange for k, v in self.cameras.info.items()},
+            "brightnessRange": {
+                k: v.brightnessRange for k, v in self.cameras.info.items()
+            },
             "ip": self.ip,
             "tagSize": self.tagSize,
             "visualizingPoses": self.visualizingPoses,
