@@ -190,9 +190,6 @@ try:
 
             # Publish camera number, timestamp, poses, tags, ambiguity and increase the update number
             # logger.info(f"Poses at {imageTime}: {poses}")
-            for idx, img in enumerate(images):
-                if img is not None:
-                    walleyeData.robotPublisher.increaseImageNum(idx)
 
             for i in range(len(poses)):
                 if poses[i].X() < 2000:
