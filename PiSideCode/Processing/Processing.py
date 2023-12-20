@@ -3,28 +3,28 @@ import json
 import logging
 import wpimath.geometry as wpi
 import numpy as np
-import time
 
 
 class Processor:
     logger = logging.getLogger(__name__)
     BAD_POSE = wpi.Pose3d(wpi.Translation3d(2767, 2767, 2767), wpi.Rotation3d())
 
-    # Create a pose estimator 
+    # Create a pose estimator
     def __init__(self, tagLength):
-
         # Open tag layout for tag poses
         with open("./Processing/AprilTagLayout.json", "r") as f:
             self.tagLayout = json.load(f)
             Processor.logger.info("Tag layout loaded")
 
-        # Save layout 
+        # Save layout
         self.tagLayout = self.tagLayout["tags"]
 
-        # Create an aruco detector (finds the tags in images) 
+        # Create an aruco detector (finds the tags in images)
         self.arucoDetector = cv2.aruco.ArucoDetector()
         self.arucoDetector.setDictionary(
-            cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_APRILTAG_16H5)
+            cv2.aruco.getPredefinedDictionary(
+                cv2.aruco.DICT_APRILTAG_36H11
+            )  # Old: DICT_APRILTAG_16H5 ---- NEW: DICT_APRILTAG_36H11
         )
 
         # Change params to balance speed and accuracy
@@ -96,22 +96,21 @@ class Processor:
             corners, ids, rej = arucoDetector.detectMarkers(
                 img
             )  # BEWARE: ids is a 2D array!!!
-            
+
             # If you have corners, find pose
             if len(corners) > 0:
                 # Processor.logger.info(corners)
                 num = 0
-                
+
                 # Draw lines around tags for ease of seeing (website)
                 cv2.aruco.drawDetectedMarkers(img, corners, ids)
-                
+
                 tagLoc = None
                 cornerLoc = None
                 tagCount = 0
 
                 # Loop through each id
                 for i in ids:
-
                     # Filter out invalid ids
                     if i > 8 or i <= 0:
                         Processor.logger.warning(f"BAD TAG ID: {i}")
@@ -181,12 +180,12 @@ class Processor:
                         D[imgIndex],
                         flags=cv2.SOLVEPNP_IPPE_SQUARE,
                     )
-                  
+
                     # Find tag ambiguity
                     if len(ids) == 1:
                         ambig.append(reproj[0][0] / reproj[1][0])
 
-                    # Draw axis on the tags 
+                    # Draw axis on the tags
                     cv2.drawFrameAxes(
                         img, K[imgIndex], D[imgIndex], rvec[0], tvec[0], 0.1
                     )
@@ -205,7 +204,6 @@ class Processor:
                 if (
                     cornerLoc is not None
                 ):  # Make sure that tag is valid (i >= 0 and i <= 8)
-                    
                     # Ambiguity does not matter with 2+ tags
                     if len(ids) > 1:
                         ambig.append(2767)
@@ -244,6 +242,5 @@ class Processor:
                 poses.append(Processor.BAD_POSE)
                 tags.append([])
                 ambig.append(2767)
-            
 
         return (poses, tags, ambig)

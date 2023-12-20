@@ -296,7 +296,7 @@ class Calibration:
 
         return totalError / len(self.objPoints)
 
-    # Load a calibration file 
+    # Load a calibration file
     def loadCalibration(self, file: str):
         with open(file, "r") as f:
             self.calibrationData = json.load(f)
