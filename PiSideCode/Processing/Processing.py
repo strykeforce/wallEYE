@@ -8,6 +8,8 @@ import numpy as np
 class Processor:
     logger = logging.getLogger(__name__)
     BAD_POSE = wpi.Pose3d(wpi.Translation3d(2767, 2767, 2767), wpi.Rotation3d())
+    MIN_TAG = 0
+    MAX_TAG = 16
 
     # Create a pose estimator
     def __init__(self, tagLength):
@@ -112,7 +114,7 @@ class Processor:
                 # Loop through each id
                 for i in ids:
                     # Filter out invalid ids
-                    if i > 8 or i <= 0:
+                    if i < Processor.MIN_TAG or i > Processor.MAX_TAG:
                         Processor.logger.warning(f"BAD TAG ID: {i}")
                         continue
 
