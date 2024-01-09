@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.networktables.BooleanSubscriber;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.IntegerSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
@@ -21,6 +22,7 @@ import edu.wpi.first.wpilibj.RobotController;
  */
 public class WallEyeCam {
     private DoubleArraySubscriber dsub;
+    private BooleanSubscriber connectSub;
     private int curUpdateNum = 0;
     private IntegerSubscriber updateSub;
     private Transform3d camToCenter;
@@ -61,6 +63,7 @@ public class WallEyeCam {
         double[] def = {2767.0, 2767.0, 2767.0, 2767.0, 2767.0, 2767.0, 2767.0};
         dsub = table.getDoubleArrayTopic("Result" + camIndex).subscribe(def);
         updateSub = table.getIntegerTopic("Update" + camIndex).subscribe(0);
+        connectSub = table.getBooleanTopic("Connected" + camIndex).subscribe(false);
     }
 
     /**
@@ -78,6 +81,16 @@ public class WallEyeCam {
 
     }
 
+    /**
+     * TESTME TESTME
+     * Check if the camera is still supplying images
+     * TESTME TESTME   
+     *
+     * @return Returns a boolean (True : if and only if the Pi's supplied images are new)
+    */
+    public boolean isCameraConnected() {
+        return connectSub.get();
+    }
 
     /**
      * Getter for the number of Cameras
