@@ -5,3 +5,10 @@ PiSideCode/Calibration/Cam_*
 profile.html
 profile.json
 PiSideCode/config.zip
+
+### Gradle ###
+.gradle
+/build/
+
+## VS Code Java ##
+bin/
