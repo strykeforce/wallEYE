@@ -58,7 +58,7 @@ public class WallEyeResult {
     /**
      * Getter for the timestamp
      *   
-     * @return timestamp of the result
+     * @return timestamp of the result (IN MICROSECONDS)
     */
     public double getTimeStamp() {
         return timeStamp;
