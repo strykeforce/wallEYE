@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "org.strykeforce"
-version = '2024.0.0'
+version = '24.0.0'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -89,6 +89,16 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
+        }
+        
+    }
+    repositories {
+        maven {
+            url "s3://packages.strykeforce.org/repo"
+            credentials(AwsCredentials) {
+                accessKey "${System.getenv("STRYKEFORCE_AWS_KEY")}"
+                secretKey "${System.getenv("STRYKEFORCE_AWS_SECRET")}"
+            }
         }
     }
 }
