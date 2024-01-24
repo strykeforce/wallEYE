@@ -7,7 +7,7 @@ import os
 from sys import platform
 import logging
 from Camera.CameraInfo import CameraInfo
-
+from pathlib import Path
 
 # Maintains camera info provided by cv2
 class Cameras:
@@ -29,6 +29,9 @@ class Cameras:
 
             # Try all cameras found by the PI
             for camPath in cameraPaths:
+                if (Path('../../../deadeye').is_dir() and camPath == 'platform-xhci-hcd.9.auto-usb-0:1:1.0-video-index0'):
+                    continue
+                
                 path = f"/dev/v4l/by-path/{camPath}"
 
                 # Open camera and check if it is opened
