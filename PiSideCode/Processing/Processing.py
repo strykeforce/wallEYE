@@ -128,7 +128,7 @@ class Processor:
                         + wpi.Transform3d(
                             wpi.Translation3d(
                                 0, -self.squareLength / 2, -self.squareLength / 2
-                            ),
+                            ).rotateBy(pose.rotation),
                             wpi.Rotation3d(),
                         )
                     )
@@ -137,7 +137,7 @@ class Processor:
                         + wpi.Transform3d(
                             wpi.Translation3d(
                                 0, self.squareLength / 2, -self.squareLength / 2
-                            ),
+                            ).rotateBy(pose.rotation),
                             wpi.Rotation3d(),
                         )
                     )
@@ -146,7 +146,7 @@ class Processor:
                         + wpi.Transform3d(
                             wpi.Translation3d(
                                 0, self.squareLength / 2, self.squareLength / 2
-                            ),
+                            ).rotateBy(pose.rotation),
                             wpi.Rotation3d(),
                         )
                     )
@@ -155,7 +155,7 @@ class Processor:
                         + wpi.Transform3d(
                             wpi.Translation3d(
                                 0, -self.squareLength / 2, self.squareLength / 2
-                            ),
+                            ).rotateBy(pose.rotation),
                             wpi.Rotation3d(),
                         )
                     )

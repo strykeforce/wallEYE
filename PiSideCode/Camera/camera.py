@@ -92,17 +92,21 @@ class Cameras:
                         )
                     )
 
-                    brightnessRange = tuple(
-                        map(
-                            lambda x: int(x.split("=")[-1]),
-                            re.search(
-                                "brightness .* min=[0-9]+ max=[0-9]+ step=[0-9]+",
-                                settingParams,
+                    try:
+                        brightnessRange = tuple(
+                            map(
+                                lambda x: int(x.split("=")[-1]),
+                                re.search(
+                                    "brightness .* min=[0-9]+ max=[0-9]+ step=[0-9]+",
+                                    settingParams,
+                                )
+                                .group()
+                                .split()[-3:],
                             )
-                            .group()
-                            .split()[-3:],
                         )
-                    )
+                    except:
+                        Cameras.logger.info("Brightness is not allowed with this camera")
+                        brightnessRange = (1,1000,1)
 
                     Cameras.logger.info(
                         f"Supported resolutions: {supportedResolutions}"
@@ -190,9 +194,10 @@ class Cameras:
         # os.system(f"v4l2-ctl -d /dev/v4l/by-path/{identifier} --set-fmt-video=width={resolution[0]},height={resolution[1]}")
         self.info[identifier].cam.set(cv2.CAP_PROP_FRAME_HEIGHT, resolution[1])
         self.info[identifier].cam.set(cv2.CAP_PROP_FRAME_WIDTH, resolution[0])
-        self.info[identifier].cam.set(
-            cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*("MJPG" if "MJPG" in self.info[identifier].validFormats else "GREY"))
-        )
+        #self.info[identifier].cam.set(
+        #    cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*("MJPG" if "MJPG" in self.info[identifier].validFormats else "GREY"))
+        #)
+        self.info[identifier].cam.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*"YUYV"))
         self.info[identifier].cam.set(cv2.CAP_PROP_FPS, 30)  # Lower can be better
         resolution = tuple(resolution)
 
