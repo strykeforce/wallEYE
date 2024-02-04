@@ -3,6 +3,7 @@ import json
 import logging
 import wpimath.geometry as wpi
 import numpy as np
+import math
 
 
 class Processor:
@@ -66,9 +67,9 @@ class Processor:
                     temp["rotation"]["quaternion"]["X"],
                     temp["rotation"]["quaternion"]["Y"],
                     temp["rotation"]["quaternion"]["Z"],
-                )
-            ),
-        )
+            ).rotateBy(wpi.Rotation3d(0, 0, math.radians(180))),
+          )
+	)
 
     # Translate corner locations
     @staticmethod
@@ -128,7 +129,7 @@ class Processor:
                         + wpi.Transform3d(
                             wpi.Translation3d(
                                 0, -self.squareLength / 2, -self.squareLength / 2
-                            ).rotateBy(pose.rotation()),
+                            ),
                             wpi.Rotation3d(),
                         )
                     )
@@ -137,7 +138,7 @@ class Processor:
                         + wpi.Transform3d(
                             wpi.Translation3d(
                                 0, self.squareLength / 2, -self.squareLength / 2
-                            ).rotateBy(pose.rotation()),
+                            ),
                             wpi.Rotation3d(),
                         )
                     )
@@ -146,7 +147,7 @@ class Processor:
                         + wpi.Transform3d(
                             wpi.Translation3d(
                                 0, self.squareLength / 2, self.squareLength / 2
-                            ).rotateBy(pose.rotation()),
+                            ),
                             wpi.Rotation3d(),
                         )
                     )
@@ -155,7 +156,7 @@ class Processor:
                         + wpi.Transform3d(
                             wpi.Translation3d(
                                 0, -self.squareLength / 2, self.squareLength / 2
-                            ).rotateBy(pose.rotation()),
+                            ),
                             wpi.Rotation3d(),
                         )
                     )
