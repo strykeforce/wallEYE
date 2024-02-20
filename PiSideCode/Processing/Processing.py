@@ -70,6 +70,25 @@ class Processor:
             ),
         )
 
+    # ROT MUST BE A 3x3 ROTATION MATRIX
+    def getTransform(trans, rot):
+        return np.concatenate(
+            (np.concatenate((rot, trans), axis=1), np.asarray([[0, 0, 0, 1]])), axis=0
+        )
+
+    def getTagTransform(jsonID):
+        pose = Processor.makePoseObject(jsonID)
+        rot = pose.rotation()
+        translation = np.asarray([pose.X(), pose.Y(), pose.Z()]).reshape(3, 1)
+        rot, _ = cv2.Rodrigues(np.asarray([rot.X(), rot.Y(), rot.Z()]).reshape(3, 1))
+        return Processor.getTransform(translation, rot)
+
+    def getRotFromTransform(transform):
+        return transform[:3, :3]
+
+    def getTranslationFromTransform(transform):
+        return transform[:3, 3]
+
     # Translate corner locations
     @staticmethod
     def addCorners(tagPos, cornerPos):
@@ -183,7 +202,7 @@ class Processor:
                         flags=cv2.SOLVEPNP_IPPE_SQUARE,
                     )
 
-                    # Find tag ambiguity
+                    # Find poses for one tag case
                     if len(ids) == 1:
                         ambig.append(reproj[0][0] / reproj[1][0])
 
@@ -210,6 +229,55 @@ class Processor:
                     if len(ids) > 1:
                         ambig.append(2767)
 
+                if len(ids) == 1:
+                    tempc1 = np.asarray(
+                        [self.squareLength / 2, self.squareLength / 2, 0]
+                    )
+                    tempc2 = np.asarray(
+                        [-self.squareLength / 2, self.squareLength / 2, 0]
+                    )
+                    tempc3 = np.asarray(
+                        [self.squareLength / 2, -self.squareLength / 2, 0]
+                    )
+                    tempc4 = np.asarray(
+                        [-self.squareLength / 2, -self.squareLength / 2, 0]
+                    )
+
+                    ret, rvecs, tvecs, reproj = cv2.solvePnPGeneric(
+                        np.asarray([tempc2, tempc1, tempc3, tempc4]),
+                        corners[0][0],
+                        K[imgIndex],
+                        D[imgIndex],
+                        flags=cv2.SOLVEPNP_IPPE_SQUARE,
+                    )
+                    # Processor.logger.info(tvecs)
+                    curId = ids[0][0]
+                    camTvecs = tvecs[0].reshape(3, 1)
+
+                    x = camTvecs[0]
+                    y = camTvecs[1]
+                    z = camTvecs[2]
+
+                    camTvecs = np.asarray([z, -x, -y]).reshape(3, 1)
+
+                    camRvecs = rvecs[0]
+
+                    x = camRvecs[0]
+                    y = camRvecs[1]
+                    z = camRvecs[2]
+
+                    camRvecs = np.asarray([z, -x, -y]).reshape(3, 1)
+
+                    camRotMat, _ = cv2.Rodrigues(camRvecs)
+                    cam2Tag = Processor.getTransform(camTvecs, camRotMat)
+                    world2Tag = Processor.getTagTransform(layout[curId - 1]["pose"])
+
+                    world2Cam = np.dot(world2Tag, np.linalg.inv(cam2Tag))
+
+                    transVec = Processor.getTranslationFromTransform(world2Cam)
+                    rvecs = Processor.getRotFromTransform(world2Cam)
+
+                else:
                     # Calculate robot pose with 2d and 3d points
                     ret, rvecs, tvecs = cv2.solvePnP(
                         tagLoc,
@@ -222,23 +290,24 @@ class Processor:
                     # Grab the rotation matrix and find the translation vector
                     rotMat, _ = cv2.Rodrigues(rvecs)
                     transVec = -np.dot(np.transpose(rotMat), tvecs)
+                    transVec = np.asarray([transVec[2], -transVec[0], -transVec[1]])
 
-                    # Convert the rotation matrix to a three rotation system (yaw, pitch, roll)
-                    rot3D = wpi.Rotation3d(
-                        np.array([rvecs[2][0], -rvecs[0][0], +rvecs[1][0]]),
-                        (rvecs[0][0] ** 2 + rvecs[1][0] ** 2 + rvecs[2][0] ** 2) ** 0.5,
-                    )
+                # Convert the rotation matrix to a three rotation system (yaw, pitch, roll)
+                rot3D = wpi.Rotation3d(
+                    np.array([rvecs[2][0], -rvecs[0][0], +rvecs[1][0]]),
+                    (rvecs[0][0] ** 2 + rvecs[1][0] ** 2 + rvecs[2][0] ** 2) ** 0.5,
+                )
 
-                    # Append the pose
-                    poses.append(
-                        wpi.Pose3d(
-                            # Translation between openCV and WPILib
-                            wpi.Translation3d(transVec[2], -transVec[0], -transVec[1]),
-                            rot3D,
-                        )
+                # Append the pose
+                poses.append(
+                    wpi.Pose3d(
+                        # Translation between openCV and WPILib
+                        wpi.Translation3d(transVec[0], transVec[1], transVec[2]),
+                        rot3D,
                     )
-                    tags.append(curTags)
-                    num += 1
+                )
+                tags.append(curTags)
+                num += 1
             else:
                 # If no tags
                 poses.append(Processor.BAD_POSE)
