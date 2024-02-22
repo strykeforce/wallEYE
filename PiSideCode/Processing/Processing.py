@@ -3,6 +3,7 @@ import json
 import logging
 import wpimath.geometry as wpi
 import numpy as np
+import math
 
 
 class Processor:
@@ -67,8 +68,8 @@ class Processor:
                     temp["rotation"]["quaternion"]["Y"],
                     temp["rotation"]["quaternion"]["Z"],
                 )
-            ),
-        )
+            ).rotateBy(wpi.Rotation3d(0, 0, math.radians(180))))
+        
 
     # ROT MUST BE A 3x3 ROTATION MATRIX
     def getTransform(trans, rot):
@@ -78,7 +79,7 @@ class Processor:
 
     def getTagTransform(jsonID):
         pose = Processor.makePoseObject(jsonID)
-        rot = pose.rotation()
+        rot = pose.rotation().rotateBy(wpi.Rotation3d(0,0,math.radians(180)))
         translation = np.asarray([pose.X(), pose.Y(), pose.Z()]).reshape(3, 1)
         rot, _ = cv2.Rodrigues(np.asarray([rot.X(), rot.Y(), rot.Z()]).reshape(3, 1))
         return Processor.getTransform(translation, rot)
@@ -229,7 +230,7 @@ class Processor:
                     if len(ids) > 1:
                         ambig.append(2767)
 
-                if len(ids) == 1:
+                if len(ids) == 0:
                     tempc1 = np.asarray(
                         [self.squareLength / 2, self.squareLength / 2, 0]
                     )

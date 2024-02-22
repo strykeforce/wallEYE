@@ -195,12 +195,13 @@ class Cameras:
         # os.system(f"v4l2-ctl -d /dev/v4l/by-path/{identifier} --set-fmt-video=width={resolution[0]},height={resolution[1]}")
         self.info[identifier].cam.set(cv2.CAP_PROP_FRAME_HEIGHT, resolution[1])
         self.info[identifier].cam.set(cv2.CAP_PROP_FRAME_WIDTH, resolution[0])
-        self.info[identifier].cam.set(
-            cv2.CAP_PROP_FOURCC,
-            cv2.VideoWriter_fourcc(
-                *("MJPG" if "MJPG" in self.info[identifier].validFormats else "GREY")
-            ),
-        )
+        # self.info[identifier].cam.set(
+        #     cv2.CAP_PROP_FOURCC,
+        #     cv2.VideoWriter_fourcc(
+        #         *("MJPG" if "MJPG" in self.info[identifier].validFormats else "GREY")
+        #     ),
+        # )
+        self.info[identifier].cam.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*"YUYV"))
         self.info[identifier].cam.set(cv2.CAP_PROP_FPS, 30)  # Lower can be better
         resolution = tuple(resolution)
 
