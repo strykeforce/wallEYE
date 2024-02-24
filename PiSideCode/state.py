@@ -109,7 +109,7 @@ class Config:
             Config.logger.info("Existing publisher destroyed")
 
         # Create the robot publisher
-        self.robotPublisher = NetworkIO(False, self.teamNumber, self.tableName)
+        self.robotPublisher = NetworkIO(False, self.teamNumber, self.tableName, 2)
 
         Config.logger.info(f"Robot publisher created: {teamNumber} - {tableName}")
 
