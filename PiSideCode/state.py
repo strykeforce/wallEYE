@@ -55,11 +55,15 @@ class Config:
                 config = json.load(data)
                 self.teamNumber = config["TeamNumber"]
                 self.tableName = config["TableName"]
-                self.ip = config["ip"]
+                ip = config["ip"]
                 self.boardDims = config["BoardDim"]
                 self.tagSize = config["TagSize"]
 
-                self.setIP(self.ip)
+                self.setIP(ip)
+
+                if Config.getCurrentIP() != ip:
+                    Config.logger.warning("Failed to set static ip, trying again...")
+                    self.setIP(ip)
 
         # If no system file is found boot with base settings and create system settings
         except (FileNotFoundError, json.decoder.JSONDecodeError, KeyError):

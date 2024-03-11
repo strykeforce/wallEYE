@@ -184,9 +184,9 @@ class Calibration:
             self.imgShape,
             None,
             None,
-            flags=cv2.CALIB_RATIONAL_MODEL
-            + cv2.CALIB_THIN_PRISM_MODEL
-            + cv2.CALIB_TILTED_MODEL,
+            # flags=cv2.CALIB_RATIONAL_MODEL
+            # + cv2.CALIB_THIN_PRISM_MODEL
+            # + cv2.CALIB_TILTED_MODEL,
         )
 
         # Write to a dictionary
