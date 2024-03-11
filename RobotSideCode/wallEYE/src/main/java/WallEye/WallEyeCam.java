@@ -124,7 +124,7 @@ public class WallEyeCam {
      * Pulls most recent poses from Network Tables.
      * 
      * @return Returns an array of WallEyeResult, with each nth result being the nth camera as shown on the web interface 
-     * @throws AssertionError
+     * @throws AssertionError Happens if network tables feeds a bad value to the pose arrays.
      * @see WallEyeResult
     */
     public WallEyeResult getResults() {
@@ -208,10 +208,9 @@ public class WallEyeCam {
      * Sets the translation for the camera to the center of the robot
      *   
      *
-     * @param camNum The index number for the camera as shown in the web interface
      * @param translation The Transform3d of camera to the center of the robot when the robot has not turned
     */
-    public void setCamToCenter(int camNum, Transform3d translation) {
+    public void setCamToCenter(Transform3d translation) {
         camToCenter = translation;
     }
 
@@ -219,12 +218,11 @@ public class WallEyeCam {
      * Gets the pose for the center of the robot from a camera pose
      *   
      *
-     * @param camNum The index number for the camera as shown in the web interface
      * @param camPose the pose as returned by the camera
      * 
      * @return returns the pose from the center of the robot
     */
-    public Pose3d camPoseToCenter(int camNum, Pose3d camPose) {
+    public Pose3d camPoseToCenter(Pose3d camPose) {
         return camToCenter != null ? camPose.transformBy(camToCenter) : new Pose3d(new Translation3d(2767.0, 2767.0, 2767.0), new Rotation3d());
     }
 }

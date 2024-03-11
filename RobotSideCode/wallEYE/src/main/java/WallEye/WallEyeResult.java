@@ -21,7 +21,8 @@ public class WallEyeResult {
     /**
      * Creates a WallEyeResult object with an associated Pose, timestamp and what cam produced this pose
      *   
-     * @param pose the pose that the SolvePNP returned
+     * @param pose1 the first pose that the SolvePNP returned
+     * @param pose2 the second pose that the SolvePNP returned
      * @param timeStamp the time that NetworkTables recieved the update
      * @param originCam the camera's index that gave this pose
      * @param updateNum the nth result from WallEye
