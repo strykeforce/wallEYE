@@ -1,5 +1,6 @@
 package WallEye;
 
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.DoubleSupplier;
@@ -10,6 +11,8 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.BooleanSubscriber;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
+import edu.wpi.first.networktables.DoubleSubscriber;
+import edu.wpi.first.networktables.IntegerArraySubscriber;
 import edu.wpi.first.networktables.IntegerSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -21,7 +24,11 @@ import edu.wpi.first.wpilibj.RobotController;
  * A robot side code interface to interact and pull data from an Orange Pi running WallEye
  */
 public class WallEyeCam {
-    private DoubleArraySubscriber dsub;
+    private DoubleArraySubscriber pose1Sub;
+    private DoubleArraySubscriber pose2Sub;
+    private DoubleSubscriber timestampSub;
+    private DoubleSubscriber ambiguitySub;
+    private IntegerArraySubscriber tagsSub;
     private BooleanSubscriber connectSub;
     private int curUpdateNum = 0;
     private IntegerSubscriber updateSub;
@@ -59,9 +66,20 @@ public class WallEyeCam {
         camToCenter = new Transform3d();
         NetworkTableInstance nt = NetworkTableInstance.getDefault();
         nt.startServer();
+        
         NetworkTable table = nt.getTable(tableName);
+        
         double[] def = {2767.0, 2767.0, 2767.0, 2767.0, 2767.0, 2767.0, 2767.0};
-        dsub = table.getDoubleArrayTopic("Result" + camIndex).subscribe(def);
+        long[] defInt = {-1};
+
+        table = table.getSubTable("Result" + camIndex);
+
+        pose1Sub = table.getDoubleArrayTopic("Pose1").subscribe(def);
+        pose2Sub = table.getDoubleArrayTopic("Pose2").subscribe(def);
+        timestampSub = table.getDoubleTopic("TimeStamp").subscribe(0.0);
+        ambiguitySub = table.getDoubleTopic("Ambiguity").subscribe(1.0);
+        tagsSub = table.getIntegerArrayTopic("Tags").subscribe(defInt);
+
         updateSub = table.getIntegerTopic("Update" + camIndex).subscribe(0);
         connectSub = table.getBooleanTopic("Connected" + camIndex).subscribe(false);
     }
@@ -106,33 +124,41 @@ public class WallEyeCam {
      * Pulls most recent poses from Network Tables.
      * 
      * @return Returns an array of WallEyeResult, with each nth result being the nth camera as shown on the web interface 
+     * @throws AssertionError
      * @see WallEyeResult
     */
     public WallEyeResult getResults() {
         WallEyeResult result;
         curUpdateNum = (int) updateSub.get();
-        double[] temp = dsub.get();
-        int[] tags = {-1};
-        if (temp[7] > 0)
-            tags = new int[(int) temp[7]];
-                
-        for (int j = 0; j < temp[7]; ++j)
-            tags[j] = (int) temp[j + 8];
+        double[] tempPose1 = pose1Sub.get();
+        double[] tempPose2 = pose2Sub.get();
+        double timestamp = timestampSub.get();
+        double ambiguity = ambiguitySub.get();
+        long[] tags = tagsSub.get();
+        int[] tagsNew = new int[tags.length];
 
-        //(long)temp[6]
-        // Array is structed as index 0, 1, 2 are position; 3, 4, 5 are rotation; 6 is a timestamp; 7 is n number of tags; 7 + n are tag ids; 7+n+1 is ambiguity
-        if(dioPort > -1 || gyroResults[maxGyroResultSize - 1] == null || temp[6] > gyroResults[currentGyroIndex - 1 >= 0 ? currentGyroIndex - 1 : maxGyroResultSize - 1].getTimestamp())
-            result = new WallEyeResult(new Pose3d(new Translation3d(temp[0], temp[1], temp[2]), new Rotation3d(temp[3], temp[4], temp[5])), 
-                (double)dsub.getAtomic().timestamp - temp[6], camIndex, curUpdateNum, (int) temp[7], tags, temp[8 + (int) temp[7]]);
-        else {
-            DIOGyroResult savedStrobe = findGyro((dsub.getAtomic().timestamp + (long)temp[6]), camIndex, temp[5]);
+        for (int i = 0; i < tags.length; ++i)
+            tagsNew[i] = (int) tags[i];
 
-            result = new WallEyeResult(new Pose3d(new Translation3d(temp[0], temp[1], temp[2]), new Rotation3d(0, 0, savedStrobe.getGyro())), 
-                savedStrobe.getTimestamp(), camIndex, curUpdateNum, (int) temp[7], tags, temp[8 + (int) temp[7]]);
-            }
+
+        Pose3d pose1 = getPoseFromArray(tempPose1);
+        Pose3d pose2 = getPoseFromArray(tempPose2);
+
+        result = new WallEyeResult(pose1, pose2, timestamp, camIndex, curUpdateNum, tags.length, tagsNew, ambiguity);
+        
         return result;
     }
 
+    /**
+     * Takes an array of length 6 to turn into a pose
+     * 
+     * @return Pose3d from the given array
+     * @throws AssertionError
+    */
+    private Pose3d getPoseFromArray(double[] arr) {
+        assert arr.length == 6;
+        return new Pose3d(new Translation3d(arr[0], arr[1], arr[2]), new Rotation3d(arr[3], arr[4], arr[5]));
+    }
 
     /**
      * A method that will go back until it gets a timestamp from before the time reported 

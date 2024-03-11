@@ -9,7 +9,8 @@ import edu.wpi.first.math.geometry.Pose3d;
  * @see WallEye
  */
 public class WallEyeResult {
-    Pose3d cameraPose;
+    Pose3d cameraPose1;
+    Pose3d cameraPose2;
     double timeStamp;
     int updateNum;
     int numTags;
@@ -28,8 +29,9 @@ public class WallEyeResult {
      * @param tags an array of tag ids that was used to calculate pose
      * @param ambiguity a double that represents to confidence of the pose
     */
-    public WallEyeResult(Pose3d pose, double timeStamp, int originCam, int updateNum, int numTags, int[] tags, double ambiguity) {
-        cameraPose = pose;
+    public WallEyeResult(Pose3d pose1, Pose3d pose2, double timeStamp, int originCam, int updateNum, int numTags, int[] tags, double ambiguity) {
+        cameraPose1 = pose1;
+        cameraPose2 = pose2;
         this.timeStamp = timeStamp;
         this.updateNum = updateNum;
         this.numTags = numTags;
@@ -49,10 +51,28 @@ public class WallEyeResult {
     /**
      * Getter for the pose
      *   
-     * @return Pose3d of the camera's pose
+     * @return Pose3d of the camera's pose (Will return first pose if given two pose solution)
     */
     public Pose3d getCameraPose() {
-        return cameraPose;
+        return cameraPose1;
+    }
+
+    /**
+     * Getter for the first pose
+     *   
+     * @return Pose3d of the camera's first pose as given by SolvePNP
+    */
+    public Pose3d getFirstPose() {
+        return cameraPose1;
+    }
+
+    /**
+     * Getter for the second pose
+     *   
+     * @return Pose3d of the camera's second pose as given by SolvePNP
+    */
+    public Pose3d getSecondPose() {
+        return cameraPose2;
     }
 
     /**
