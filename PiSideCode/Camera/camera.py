@@ -7,6 +7,7 @@ import os
 from sys import platform
 import logging
 from Camera.CameraInfo import CameraInfo
+from pathlib import Path
 
 
 # Maintains camera info provided by cv2
@@ -29,6 +30,12 @@ class Cameras:
 
             # Try all cameras found by the PI
             for camPath in cameraPaths:
+                if (
+                    Path("../../../deadeye").is_dir()
+                    and camPath == "platform-xhci-hcd.9.auto-usb-0:1:1.0-video-index0"
+                ):
+                    continue
+
                 path = f"/dev/v4l/by-path/{camPath}"
 
                 # Open camera and check if it is opened
@@ -84,7 +91,7 @@ class Cameras:
                         map(
                             lambda x: int(x.split("=")[-1]),
                             re.search(
-                                "exposure_absolute .* min=[0-9]+ max=[0-9]+ step=[0-9]+",
+                                "exposure_absolute .* min=-?[0-9]+ max=-?[0-9]+ step=[0-9]+",
                                 settingParams,
                             )
                             .group()
@@ -96,7 +103,7 @@ class Cameras:
                         map(
                             lambda x: int(x.split("=")[-1]),
                             re.search(
-                                "brightness .* min=[0-9]+ max=[0-9]+ step=[0-9]+",
+                                "brightness .* min=-?[0-9]+ max=-?[0-9]+ step=[0-9]+",
                                 settingParams,
                             )
                             .group()
@@ -107,9 +114,7 @@ class Cameras:
                     Cameras.logger.info(
                         f"Supported resolutions: {supportedResolutions}"
                     )
-                    Cameras.logger.info(
-                        f"Supported formats: {formats}"
-                    )
+                    Cameras.logger.info(f"Supported formats: {formats}")
                     Cameras.logger.info(
                         f"Supported exposures (min, max, step): {exposureRange}"
                     )
@@ -190,9 +195,13 @@ class Cameras:
         # os.system(f"v4l2-ctl -d /dev/v4l/by-path/{identifier} --set-fmt-video=width={resolution[0]},height={resolution[1]}")
         self.info[identifier].cam.set(cv2.CAP_PROP_FRAME_HEIGHT, resolution[1])
         self.info[identifier].cam.set(cv2.CAP_PROP_FRAME_WIDTH, resolution[0])
-        self.info[identifier].cam.set(
-            cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*("MJPG" if "MJPG" in self.info[identifier].validFormats else "GREY"))
-        )
+        # self.info[identifier].cam.set(
+        #     cv2.CAP_PROP_FOURCC,
+        #     cv2.VideoWriter_fourcc(
+        #         *("MJPG" if "MJPG" in self.info[identifier].validFormats else "GREY")
+        #     ),
+        # )
+        self.info[identifier].cam.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*"YUYV"))
         self.info[identifier].cam.set(cv2.CAP_PROP_FPS, 30)  # Lower can be better
         resolution = tuple(resolution)
 
@@ -221,6 +230,7 @@ class Cameras:
         if brightness is None:
             Cameras.logger.info("Brightness not set")
             return False
+        
 
         # Set brightness through command line
         returned = os.system(

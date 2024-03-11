@@ -56,7 +56,7 @@ def disconnect():
 @socketio.on("set_brightness")
 @updateAfter
 def set_brightness(camID, newValue):
-    walleyeData.cameras.setbrightness(camID, float(newValue))
+    walleyeData.cameras.setBrightness(camID, float(newValue))
 
 
 @socketio.on("set_exposure")
