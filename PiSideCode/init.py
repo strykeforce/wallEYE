@@ -172,14 +172,13 @@ try:
         elif walleyeData.currentState == States.PROCESSING:
             # Set tag size, grab camera frames, and grab image timestamp
             poseEstimator.setTagSize(walleyeData.tagSize)
+            imageTime = walleyeData.robotPublisher.getTime()
             connections, images = walleyeData.cameras.getFramesForProcessing()
-
+            
             for idx, val in enumerate(connections.values()):
                 if not val and walleyeData.robotPublisher.getConnectionValue(idx):
                     logger.info("Camera disconnected")
                 walleyeData.robotPublisher.setConnectionValue(idx, val)
-
-            imageTime = walleyeData.robotPublisher.getTime()
 
             # Use the poseEstimator class to find the pose, tags, and ambiguity
             poses, tags, ambig = poseEstimator.getPose(
