@@ -53,7 +53,7 @@ public class WallEyeResult {
   /**
    * Getter for the ambiguity
    *
-   * @return double that represents pose confidence (higher is better [1.0 is the max])
+   * @return double that represents pose confidence (higher is worse [1.0 is the max])
    */
   public double getAmbiguity() {
     return ambiguity;

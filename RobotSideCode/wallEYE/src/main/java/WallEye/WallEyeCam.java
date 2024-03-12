@@ -41,8 +41,8 @@ public class WallEyeCam {
    * @param tableName a string that specifies the table name of the WallEye instance (is set in the
    *     web interface)
    * @param camIndex number to identify the camera as according to webInterface
-   * @param dioPort NOT IMPLEMENTED an int that corresponds to the dioport that the strobe is connected to (-1 to
-   *     disable it)
+   * @param dioPort NOT IMPLEMENTED an int that corresponds to the dioport that the strobe is
+   *     connected to (-1 to disable it)
    */
   public WallEyeCam(String tableName, int camIndex, int dioPort) {
     gyroResults = new DIOGyroResult[maxGyroResultSize];
