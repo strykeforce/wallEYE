@@ -41,7 +41,7 @@ public class WallEyeCam {
    * @param tableName a string that specifies the table name of the WallEye instance (is set in the
    *     web interface)
    * @param camIndex number to identify the camera as according to webInterface
-   * @param dioPort an int that corresponds to the dioport that the strobe is connected to (-1 to
+   * @param dioPort NOT IMPLEMENTED an int that corresponds to the dioport that the strobe is connected to (-1 to
    *     disable it)
    */
   public WallEyeCam(String tableName, int camIndex, int dioPort) {
@@ -99,7 +99,7 @@ public class WallEyeCam {
   }
 
   /**
-   * Getter for the number of Cameras
+   * Getter for the camera index
    *
    * @return Returns an integer value for the number of cameras attached to the pi as specified by
    *     intialization
@@ -111,8 +111,7 @@ public class WallEyeCam {
   /**
    * Pulls most recent poses from Network Tables.
    *
-   * @return Returns an array of WallEyeResult, with each nth result being the nth camera as shown
-   *     on the web interface
+   * @return Returns a WallEyeResult
    * @throws AssertionError Happens if network tables feeds a bad value to the pose arrays.
    * @see WallEyeResult
    */
