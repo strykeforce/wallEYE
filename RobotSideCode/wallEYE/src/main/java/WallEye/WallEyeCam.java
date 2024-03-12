@@ -68,9 +68,9 @@ public class WallEyeCam {
 
     pose1Sub = table.getDoubleArrayTopic("Pose1").subscribe(def);
     pose2Sub = table.getDoubleArrayTopic("Pose2").subscribe(def);
-    timestampSub = table.getDoubleTopic("TimeStamp").subscribe(0.0);
-    ambiguitySub = table.getDoubleTopic("Ambiguity").subscribe(1.0);
-    tagsSub = table.getIntegerArrayTopic("Tags").subscribe(defInt);
+    timestampSub = table.getDoubleTopic("timestamp").subscribe(0.0);
+    ambiguitySub = table.getDoubleTopic("ambiguity").subscribe(1.0);
+    tagsSub = table.getIntegerArrayTopic("tags").subscribe(defInt);
 
     updateSub = table.getIntegerTopic("Update" + camIndex).subscribe(0);
     connectSub = table.getBooleanTopic("Connected" + camIndex).subscribe(false);
