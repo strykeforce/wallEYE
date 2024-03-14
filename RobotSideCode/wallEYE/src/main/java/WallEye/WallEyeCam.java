@@ -120,7 +120,7 @@ public class WallEyeCam {
     curUpdateNum = (int) updateSub.get();
     double[] tempPose1 = pose1Sub.get();
     double[] tempPose2 = pose2Sub.get();
-    double timestamp = timestampSub.get();
+    double timestamp = RobotController.getFPGATime() - timestampSub.get();
     double ambiguity = ambiguitySub.get();
     long[] tags = tagsSub.get();
     int[] tagsNew = new int[tags.length];
