@@ -64,13 +64,13 @@ public class WallEyeCam {
     double[] def = {2767.0, 2767.0, 2767.0, 2767.0, 2767.0, 2767.0, 2767.0};
     long[] defInt = {-1};
 
-    table = table.getSubTable("Result" + camIndex);
+    NetworkTable subTable = table.getSubTable("Result" + camIndex);
 
-    pose1Sub = table.getDoubleArrayTopic("Pose1").subscribe(def);
-    pose2Sub = table.getDoubleArrayTopic("Pose2").subscribe(def);
-    timestampSub = table.getDoubleTopic("timestamp").subscribe(0.0);
-    ambiguitySub = table.getDoubleTopic("ambiguity").subscribe(1.0);
-    tagsSub = table.getIntegerArrayTopic("tags").subscribe(defInt);
+    pose1Sub = subTable.getDoubleArrayTopic("Pose1").subscribe(def);
+    pose2Sub = subTable.getDoubleArrayTopic("Pose2").subscribe(def);
+    timestampSub = subTable.getDoubleTopic("timestamp").subscribe(0.0);
+    ambiguitySub = subTable.getDoubleTopic("ambiguity").subscribe(1.0);
+    tagsSub = subTable.getIntegerArrayTopic("tags").subscribe(defInt);
 
     updateSub = table.getIntegerTopic("Update" + camIndex).subscribe(0);
     connectSub = table.getBooleanTopic("Connected" + camIndex).subscribe(false);
