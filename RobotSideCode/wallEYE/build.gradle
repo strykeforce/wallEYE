@@ -1,11 +1,12 @@
 plugins {
     id "java"
     id "maven-publish"
-    id "edu.wpi.first.GradleRIO" version "2024.1.1"
+    id "edu.wpi.first.GradleRIO" version "2024.3.1"
+    id "com.diffplug.spotless" version "6.12.1"
 }
 
 group = "org.strykeforce"
-version = '24.0.0'
+version = '24.2.0'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -100,5 +101,14 @@ publishing {
                 secretKey "${System.getenv("STRYKEFORCE_AWS_SECRET")}"
             }
         }
+    }
+}
+
+spotless {
+    java {
+        googleJavaFormat()
+        removeUnusedImports()
+        lineEndings = 'GIT_ATTRIBUTES'
+        targetExclude("src/main/java/frc/robot/constants/BuildConstants.java")
     }
 }
