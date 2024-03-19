@@ -172,9 +172,11 @@ try:
         elif walleyeData.currentState == States.PROCESSING:
             # Set tag size, grab camera frames, and grab image timestamp
             poseEstimator.setTagSize(walleyeData.tagSize)
-            imageTime = walleyeData.robotPublisher.getTime()
-            connections, images = walleyeData.cameras.getFramesForProcessing()
             
+            imageTime = walleyeData.robotPublisher.getTime()
+
+            connections, images = walleyeData.cameras.getFramesForProcessing()
+
             for idx, val in enumerate(connections.values()):
                 if not val and walleyeData.robotPublisher.getConnectionValue(idx):
                     logger.info("Camera disconnected")
@@ -191,7 +193,7 @@ try:
             # logger.info(f"Poses at {imageTime}: {poses}")
 
             for i in range(len(poses)):
-                if poses[i].X() < 2000:
+                if poses[i][0].X() < 2000:
                     walleyeData.robotPublisher.publish(
                         i, imageTime, poses[i], tags[i], ambig[i]
                     )
@@ -201,10 +203,10 @@ try:
                 if i >= len(poses):
                     break
                 camBuffers[identifier].update(img)
-                walleyeData.setPose(identifier, poses[i])
+                walleyeData.setPose(identifier, poses[i][0])
                 if walleyeData.visualizingPoses:
                     visualizationBuffers[identifier].update(
-                        (poses[i].X(), poses[i].Y(), poses[i].Z()), tags[i][1:]
+                        (poses[i][0].X(), poses[i][0].Y(), poses[i][0].Z()), tags[i][1:]
                     )
 
         # Ends the WallEye program through the web interface
