@@ -68,8 +68,8 @@ class Processor:
                     temp["rotation"]["quaternion"]["Y"],
                     temp["rotation"]["quaternion"]["Z"],
                 )
-            ).rotateBy(wpi.Rotation3d(0, 0, math.radians(180))))
-        
+            ).rotateBy(wpi.Rotation3d(0, 0, math.radians(180))),
+        )
 
     # ROT MUST BE A 3x3 ROTATION MATRIX
     def getTransform(trans, rot):
@@ -79,7 +79,7 @@ class Processor:
 
     def getTagTransform(jsonID):
         pose = Processor.makePoseObject(jsonID)
-        rot = pose.rotation().rotateBy(wpi.Rotation3d(0,0,math.radians(180)))
+        rot = pose.rotation().rotateBy(wpi.Rotation3d(0, 0, math.radians(180)))
         translation = np.asarray([pose.X(), pose.Y(), pose.Z()]).reshape(3, 1)
         rot, _ = cv2.Rodrigues(np.asarray([rot.X(), rot.Y(), rot.Z()]).reshape(3, 1))
         return Processor.getTransform(translation, rot)
@@ -97,6 +97,37 @@ class Processor:
             tagPos.translation() + cornerPos.rotateBy(tagPos.rotation())
         )
 
+    @staticmethod
+    def getTransRots(tvecs, rvecs, curId, layout):
+
+        camTvecs = tvecs
+
+        # ambig.append(reproj[0][0])
+
+        x = camTvecs[0]
+        y = camTvecs[1]
+        z = camTvecs[2]
+
+        camTvecs = np.asarray([z, -x, -y]).reshape(3, 1)
+
+        camRvecs = rvecs
+
+        x = camRvecs[0]
+        y = camRvecs[1]
+        z = camRvecs[2]
+
+        camRvecs = np.asarray([z, -x, -y]).reshape(3, 1)
+
+        camRotMat, _ = cv2.Rodrigues(camRvecs)
+        cam2Tag = Processor.getTransform(camTvecs, camRotMat)
+        world2Tag = Processor.getTagTransform(layout[curId - 1]["pose"])
+
+        world2Cam = np.dot(world2Tag, np.linalg.inv(cam2Tag))
+
+        transVec = Processor.getTranslationFromTransform(world2Cam)
+        rvecs = Processor.getRotFromTransform(world2Cam)
+        return (transVec, rvecs)
+
     # Find AprilTags and calculate the camera's pose
     def imagePose(self, images, K, D, layout, arucoDetector):
         poses = []
@@ -105,11 +136,13 @@ class Processor:
 
         # Loop through images
         for imgIndex, img in enumerate(images):
+            pose1 = 0
+            pose2 = 0
             curTags = []
 
             # If an invalid image is given or no calibration return an error pose
             if img is None or K[imgIndex] is None or D[imgIndex] is None:
-                poses.append(Processor.BAD_POSE)
+                poses.append((Processor.BAD_POSE, Processor.BAD_POSE))
                 tags.append([])
                 ambig.append(2767)
                 continue
@@ -230,7 +263,7 @@ class Processor:
                     if len(ids) > 1:
                         ambig.append(2767)
 
-                if len(ids) == 0:
+                if len(ids) == 1:
                     tempc1 = np.asarray(
                         [self.squareLength / 2, self.squareLength / 2, 0]
                     )
@@ -251,32 +284,19 @@ class Processor:
                         D[imgIndex],
                         flags=cv2.SOLVEPNP_IPPE_SQUARE,
                     )
-                    # Processor.logger.info(tvecs)
-                    curId = ids[0][0]
-                    camTvecs = tvecs[0].reshape(3, 1)
+                    t1, r1 = Processor.getTransRots(tvecs[0].reshape(3,1), rvecs[0], ids[0][0], layout)
+                    t2, r2 = Processor.getTransRots(tvecs[1].reshape(3,1), rvecs[1], ids[0][0], layout)
 
-                    x = camTvecs[0]
-                    y = camTvecs[1]
-                    z = camTvecs[2]
+                    rot3D = wpi.Rotation3d(r1)
+                    trans = wpi.Translation3d(t1[0], t1[1], t1[2])
 
-                    camTvecs = np.asarray([z, -x, -y]).reshape(3, 1)
+                    pose1 = wpi.Pose3d(trans, rot3D)
 
-                    camRvecs = rvecs[0]
+                    rot3D = wpi.Rotation3d(r2)
+                    trans = wpi.Translation3d(t2[0], t2[1], t2[2])
 
-                    x = camRvecs[0]
-                    y = camRvecs[1]
-                    z = camRvecs[2]
+                    pose2 = wpi.Pose3d(trans, rot3D)
 
-                    camRvecs = np.asarray([z, -x, -y]).reshape(3, 1)
-
-                    camRotMat, _ = cv2.Rodrigues(camRvecs)
-                    cam2Tag = Processor.getTransform(camTvecs, camRotMat)
-                    world2Tag = Processor.getTagTransform(layout[curId - 1]["pose"])
-
-                    world2Cam = np.dot(world2Tag, np.linalg.inv(cam2Tag))
-
-                    transVec = Processor.getTranslationFromTransform(world2Cam)
-                    rvecs = Processor.getRotFromTransform(world2Cam)
 
                 else:
                     # Calculate robot pose with 2d and 3d points
@@ -288,30 +308,33 @@ class Processor:
                         flags=cv2.SOLVEPNP_SQPNP,
                     )
 
+                    # ambig.append(reproj[0])
+                    
                     # Grab the rotation matrix and find the translation vector
                     rotMat, _ = cv2.Rodrigues(rvecs)
                     transVec = -np.dot(np.transpose(rotMat), tvecs)
                     transVec = np.asarray([transVec[2], -transVec[0], -transVec[1]])
 
-                # Convert the rotation matrix to a three rotation system (yaw, pitch, roll)
-                rot3D = wpi.Rotation3d(
-                    np.array([rvecs[2][0], -rvecs[0][0], +rvecs[1][0]]),
-                    (rvecs[0][0] ** 2 + rvecs[1][0] ** 2 + rvecs[2][0] ** 2) ** 0.5,
-                )
+                    rots, _ = cv2.Rodrigues(rotMat)
+                    rotMat, _ = cv2.Rodrigues(np.asarray([rots[2], -rots[0], rots[1]]))
 
+                    # Convert the rotation matrix to a three rotation system (yaw, pitch, roll)
+                    rot3D = wpi.Rotation3d(rotMat)
+                    pose1 = wpi.Pose3d(
+                            # Translation between openCV and WPILib
+                            wpi.Translation3d(transVec[0], transVec[1], transVec[2]),
+                            rot3D,
+                        )
+                    pose2 = pose1
                 # Append the pose
                 poses.append(
-                    wpi.Pose3d(
-                        # Translation between openCV and WPILib
-                        wpi.Translation3d(transVec[0], transVec[1], transVec[2]),
-                        rot3D,
-                    )
+                    (pose1, pose2)
                 )
                 tags.append(curTags)
                 num += 1
             else:
                 # If no tags
-                poses.append(Processor.BAD_POSE)
+                poses.append((Processor.BAD_POSE, Processor.BAD_POSE))
                 tags.append([])
                 ambig.append(2767)
 
