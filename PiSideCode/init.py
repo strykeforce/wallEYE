@@ -173,7 +173,7 @@ try:
         elif walleyeData.currentState == States.PROCESSING:
             # Set tag size, grab camera frames, and grab image timestamp
             poseEstimator.setTagSize(walleyeData.tagSize)
-
+            
             imageTime = walleyeData.robotPublisher.getTime()
 
             connections, images = walleyeData.cameras.getFramesForProcessing()

@@ -1,14 +1,18 @@
 plugins {
     id "java"
     id "maven-publish"
-    id "edu.wpi.first.GradleRIO" version "2023.4.3"
+    id "edu.wpi.first.GradleRIO" version "2024.3.1"
+    id "com.diffplug.spotless" version "6.12.1"
 }
 
-sourceCompatibility = JavaVersion.VERSION_11
-targetCompatibility = JavaVersion.VERSION_11
-
 group = "org.strykeforce"
-version = '1.0.1-SNAPSHOT'
+version = '24.2.0'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
 // This is added by GradleRIO's backing project DeployUtils.
@@ -19,7 +23,7 @@ deploy {
             // or from command line. If not found an exception will be thrown.
             // You can use getTeamOrDefault(team) instead of getTeamNumber if you
             // want to store a team number in this file.
-            team = project.frc.getTeamOrDefault(2767)
+            team = project.frc.getTeamNumber()
             debug = project.frc.getDebugOrDefault(false)
 
             artifacts {
@@ -31,7 +35,7 @@ deploy {
 
                 // Static files artifact
                 frcStaticFileDeploy(getArtifactTypeClass('FileTreeArtifact')) {
-                    files = project.fileTree('/src/main/deploy')
+                    files = project.fileTree('src/main/deploy')
                     directory = '/home/lvuser/deploy'
                 }
             }
@@ -66,9 +70,8 @@ dependencies {
     nativeRelease wpi.java.vendor.jniRelease(wpi.platforms.desktop)
     simulationRelease wpi.sim.enableRelease()
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.8.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 test {
@@ -88,5 +91,24 @@ publishing {
         mavenJava(MavenPublication) {
             from components.java
         }
+        
+    }
+    repositories {
+        maven {
+            url "s3://packages.strykeforce.org/repo"
+            credentials(AwsCredentials) {
+                accessKey "${System.getenv("STRYKEFORCE_AWS_KEY")}"
+                secretKey "${System.getenv("STRYKEFORCE_AWS_SECRET")}"
+            }
+        }
+    }
+}
+
+spotless {
+    java {
+        googleJavaFormat()
+        removeUnusedImports()
+        lineEndings = 'GIT_ATTRIBUTES'
+        targetExclude("src/main/java/frc/robot/constants/BuildConstants.java")
     }
 }

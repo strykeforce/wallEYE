@@ -287,18 +287,12 @@ class Processor:
                     t1, r1 = Processor.getTransRots(tvecs[0].reshape(3,1), rvecs[0], ids[0][0], layout)
                     t2, r2 = Processor.getTransRots(tvecs[1].reshape(3,1), rvecs[1], ids[0][0], layout)
 
-                    rot3D = wpi.Rotation3d(
-                        np.array([r1[2][0], -r1[0][0], +r1[1][0]]),
-                        (r1[0][0] ** 2 + r1[1][0] ** 2 + r1[2][0] ** 2) ** 0.5,
-                    )
+                    rot3D = wpi.Rotation3d(r1)
                     trans = wpi.Translation3d(t1[0], t1[1], t1[2])
 
                     pose1 = wpi.Pose3d(trans, rot3D)
 
-                    rot3D = wpi.Rotation3d(
-                        np.array([r2[2][0], -r2[0][0], +r2[1][0]]),
-                        (r2[0][0] ** 2 + r2[1][0] ** 2 + r2[2][0] ** 2) ** 0.5,
-                    )
+                    rot3D = wpi.Rotation3d(r2)
                     trans = wpi.Translation3d(t2[0], t2[1], t2[2])
 
                     pose2 = wpi.Pose3d(trans, rot3D)
@@ -321,11 +315,11 @@ class Processor:
                     transVec = -np.dot(np.transpose(rotMat), tvecs)
                     transVec = np.asarray([transVec[2], -transVec[0], -transVec[1]])
 
+                    rots, _ = cv2.Rodrigues(rotMat)
+                    rotMat, _ = cv2.Rodrigues(np.asarray([rots[2], -rots[0], rots[1]]))
+
                     # Convert the rotation matrix to a three rotation system (yaw, pitch, roll)
-                    rot3D = wpi.Rotation3d(
-                        np.array([rvecs[2][0], -rvecs[0][0], +rvecs[1][0]]),
-                        (rvecs[0][0] ** 2 + rvecs[1][0] ** 2 + rvecs[2][0] ** 2) ** 0.5,
-                    )
+                    rot3D = wpi.Rotation3d(rotMat)
                     pose1 = wpi.Pose3d(
                             # Translation between openCV and WPILib
                             wpi.Translation3d(transVec[0], transVec[1], transVec[2]),
