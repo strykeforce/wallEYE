@@ -50,8 +50,8 @@ class Calibration:
 
             # Filter by Area.
             blobParams.filterByArea = True
-            blobParams.minArea = 64    
-            blobParams.maxArea = 2500 
+            blobParams.minArea = 64
+            blobParams.maxArea = 2500
 
             # Filter by Circularity
             blobParams.filterByCircularity = True
@@ -68,12 +68,10 @@ class Calibration:
             self.blobDetector = cv2.SimpleBlobDetector_create(blobParams)
 
             for i in range(cornerShape[0]):
-                self.reference[
-                    i * cornerShape[1] : (i  + 1) * cornerShape[1]
-                ][:, 0] = i
-                self.reference[
-                    i * cornerShape[1] : (i + 1) * cornerShape[1]
-                ][:, 1] = np.arange(i % 2, cornerShape[1] + i % 2)
+                self.reference[i * cornerShape[1] : (i + 1) * cornerShape[1]][:, 0] = i
+                self.reference[i * cornerShape[1] : (i + 1) * cornerShape[1]][:, 1] = (
+                    np.arange(i % 2, cornerShape[1] + i % 2)
+                )
 
         Calibration.logger.info(self.reference)
 
@@ -88,6 +86,8 @@ class Calibration:
 
         self.prevCorner1 = np.array([0, 0])
         self.prevCorner2 = np.array([0, 0])
+
+        self.overlay = np.zeros((*resolution, 3), np.uint8)
 
         if os.path.isdir(self.imgPath):
             shutil.rmtree(self.imgPath)
@@ -117,9 +117,15 @@ class Calibration:
                 + cv2.CALIB_CB_FAST_CHECK,
             )
 
-        elif self.calibType == CalibType.CIRCLE_GRID: # TODO test
-            keypoints = self.blobDetector.detect(gray) 
-            imgKeypoints = cv2.drawKeypoints(img, keypoints, np.array([]), (0,255,0), cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+        elif self.calibType == CalibType.CIRCLE_GRID:  # TODO test
+            keypoints = self.blobDetector.detect(gray)
+            imgKeypoints = cv2.drawKeypoints(
+                img,
+                keypoints,
+                np.array([]),
+                (0, 255, 0),
+                cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS,
+            )
             imgKeypointsGray = cv2.cvtColor(imgKeypoints, cv2.COLOR_BGR2GRAY)
             found, corners = cv2.findCirclesGrid(
                 imgKeypoints, self.cornerShape, None, flags=cv2.CALIB_CB_ASYMMETRIC_GRID
@@ -135,6 +141,7 @@ class Calibration:
             and self.isReady(gray, corners)
         ):
             used = True
+            self.updateOverlay(corners)
             self.lastImageUsed = time.time()
 
             # Refine corner locations (Better calibrations)
@@ -153,6 +160,8 @@ class Calibration:
             cv2.imwrite(pathSaved, gray)
 
             Calibration.logger.info(f"Calibration image saved to {pathSaved}")
+
+        self.drawOverlay(img)
 
         # Draw lines for the calibration board
         cv2.drawChessboardCorners(img, self.cornerShape, corners, found)
@@ -190,6 +199,31 @@ class Calibration:
         )
 
         return (img, used, pathSaved)
+
+    def updateOverlay(self, corners):
+        cv2.fillPoly(
+            self.overlay,
+            [
+                np.asarray(
+                    [
+                        corners[0][0],
+                        corners[self.cornerShape[0] - 1][0],
+                        corners[-1][0],
+                        corners[-(self.cornerShape[0])][0],
+                    ],
+                    "int32",
+                )
+            ],
+            (
+                np.random.randint(0, 255),
+                np.random.randint(0, 255),
+                np.random.randint(0, 255),
+            ),
+        )
+
+    def drawOverlay(self, img, alpha=0.5):
+        mask = self.overlay.astype(bool)
+        img[mask] = cv2.addWeighted(img, alpha, self.overlay, 1 - alpha, 0)[mask]
 
     # Return all saved calibration images
     def loadSavedImages(
