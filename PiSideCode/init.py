@@ -19,6 +19,7 @@ logger = logging.getLogger(__name__)
 logger.info("----------- Starting Up -----------")
 
 from Calibration.calibration import Calibration
+from Calibration.calibration import CalibType
 from Camera.camera import Cameras
 import threading
 from Processing.Processing import Processor
@@ -172,7 +173,7 @@ try:
         elif walleyeData.currentState == States.PROCESSING:
             # Set tag size, grab camera frames, and grab image timestamp
             poseEstimator.setTagSize(walleyeData.tagSize)
-            
+
             imageTime = walleyeData.robotPublisher.getTime()
 
             connections, images = walleyeData.cameras.getFramesForProcessing()

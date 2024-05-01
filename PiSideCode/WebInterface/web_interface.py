@@ -199,7 +199,6 @@ def set_board_dims(w, h):
     walleyeData.boardDims = (int(w), int(h))
     walleyeData.setBoardDim(walleyeData.boardDims)
     logger.info(f"Board dimensions set: {(w, h)}")
-    socketio.info(f"Board dimentions updated: {(w, h)}")
 
 
 @socketio.on("set_static_ip")

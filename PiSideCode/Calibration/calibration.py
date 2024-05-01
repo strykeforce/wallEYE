@@ -5,6 +5,12 @@ import json
 import os
 import shutil
 import logging
+from enum import Enum
+
+
+class CalibType(Enum):
+    CHESSBOARD = "CHESSBOARD"
+    CIRCLE_GRID = "CIRCLE_GRID"
 
 
 class Calibration:
@@ -18,18 +24,58 @@ class Calibration:
         camPath: str,
         imgPath: str,
         resolution: tuple,
+        calibType: CalibType = CalibType.CIRCLE_GRID,
     ):
         self.delay = delay
         self.cornerShape = cornerShape  # (col, row) format
         self.imgPath = imgPath
         self.camPath = camPath
         self.resolution = resolution
+        self.calibType = calibType
 
         # Create a list for the corner locations for the calibration tag
         self.reference = np.zeros((cornerShape[0] * cornerShape[1], 3), np.float32)
-        self.reference[:, :2] = np.mgrid[
-            0 : cornerShape[0], 0 : cornerShape[1]
-        ].T.reshape(-1, 2)
+        if self.calibType == CalibType.CHESSBOARD:
+            self.reference[:, :2] = np.mgrid[
+                0 : cornerShape[0], 0 : cornerShape[1]
+            ].T.reshape(-1, 2)
+        elif self.calibType == CalibType.CIRCLE_GRID:
+            criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
+
+            blobParams = cv2.SimpleBlobDetector_Params()
+
+            # Change thresholds TODO adjust as necessary
+            blobParams.minThreshold = 8
+            blobParams.maxThreshold = 255
+
+            # Filter by Area.
+            blobParams.filterByArea = True
+            blobParams.minArea = 64    
+            blobParams.maxArea = 2500 
+
+            # Filter by Circularity
+            blobParams.filterByCircularity = True
+            blobParams.minCircularity = 0.1
+
+            # Filter by Convexity
+            blobParams.filterByConvexity = True
+            blobParams.minConvexity = 0.87
+
+            # Filter by Inertia
+            blobParams.filterByInertia = True
+            blobParams.minInertiaRatio = 0.01
+
+            self.blobDetector = cv2.SimpleBlobDetector_create(blobParams)
+
+            for i in range(cornerShape[0]):
+                self.reference[
+                    i * cornerShape[1] : (i  + 1) * cornerShape[1]
+                ][:, 0] = i
+                self.reference[
+                    i * cornerShape[1] : (i + 1) * cornerShape[1]
+                ][:, 1] = np.arange(i % 2, cornerShape[1] + i % 2)
+
+        Calibration.logger.info(self.reference)
 
         # Set values
         self.objPoints = []
@@ -61,13 +107,23 @@ class Calibration:
         # Convert it to gray and look for calibration board corners
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         self.imgShape = gray.shape[::-1]
-        found, corners = cv2.findChessboardCorners(
-            gray,
-            self.cornerShape,
-            cv2.CALIB_CB_ADAPTIVE_THRESH
-            + cv2.CALIB_CB_NORMALIZE_IMAGE
-            + cv2.CALIB_CB_FAST_CHECK,
-        )
+
+        if self.calibType == CalibType.CHESSBOARD:
+            found, corners = cv2.findChessboardCorners(
+                gray,
+                self.cornerShape,
+                cv2.CALIB_CB_ADAPTIVE_THRESH
+                + cv2.CALIB_CB_NORMALIZE_IMAGE
+                + cv2.CALIB_CB_FAST_CHECK,
+            )
+
+        elif self.calibType == CalibType.CIRCLE_GRID: # TODO test
+            keypoints = self.blobDetector.detect(gray) 
+            imgKeypoints = cv2.drawKeypoints(img, keypoints, np.array([]), (0,255,0), cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+            imgKeypointsGray = cv2.cvtColor(imgKeypoints, cv2.COLOR_BGR2GRAY)
+            found, corners = cv2.findCirclesGrid(
+                imgKeypoints, self.cornerShape, None, flags=cv2.CALIB_CB_ASYMMETRIC_GRID
+            )
 
         used = False
         pathSaved = None
