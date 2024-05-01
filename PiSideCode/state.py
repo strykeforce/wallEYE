@@ -114,9 +114,9 @@ class Config:
         Config.logger.info(f"Robot publisher created: {teamNumber} - {tableName}")
 
     def setPose(self, identifier, pose):
-        self.poses[
-            identifier
-        ] = f"Translation: {round(pose.X(), 2)}, {round(pose.Y(), 2)}, {round(pose.Z(), 2)} - Rotation: {round(pose.rotation().X(), 2)}, {round(pose.rotation().Y(), 2)}, {round(pose.rotation().Z(), 2)}"
+        self.poses[identifier] = (
+            f"Translation: {round(pose.X(), 2)}, {round(pose.Y(), 2)}, {round(pose.Z(), 2)} - Rotation: {round(pose.rotation().X(), 2)}, {round(pose.rotation().Y(), 2)}, {round(pose.rotation().Z(), 2)}"
+        )
 
     # Return the file path names for each camera
     def getCalFilePaths(self):

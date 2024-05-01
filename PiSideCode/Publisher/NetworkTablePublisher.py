@@ -38,35 +38,50 @@ class NetworkIO:
         for index in range(numCams):
             self.publishers.append(self.table.getSubTable("Result" + str(index)))
 
-            self.pose1Sub.append(self.publishers[index].getDoubleArrayTopic("Pose1").publish(
+            self.pose1Sub.append(
+                self.publishers[index]
+                .getDoubleArrayTopic("Pose1")
+                .publish(
                     ntcore.PubSubOptions(
                         periodic=0.01, sendAll=True, keepDuplicates=True
                     )
                 )
             )
 
-            self.timestampSub.append(self.publishers[index].getDoubleTopic("timestamp").publish(
+            self.timestampSub.append(
+                self.publishers[index]
+                .getDoubleTopic("timestamp")
+                .publish(
                     ntcore.PubSubOptions(
                         periodic=0.01, sendAll=True, keepDuplicates=True
                     )
                 )
             )
 
-            self.pose2Sub.append(self.publishers[index].getDoubleArrayTopic("Pose2").publish(
+            self.pose2Sub.append(
+                self.publishers[index]
+                .getDoubleArrayTopic("Pose2")
+                .publish(
                     ntcore.PubSubOptions(
                         periodic=0.01, sendAll=True, keepDuplicates=True
                     )
                 )
             )
 
-            self.ambiguitySub.append(self.publishers[index].getDoubleTopic("ambiguity").publish(
+            self.ambiguitySub.append(
+                self.publishers[index]
+                .getDoubleTopic("ambiguity")
+                .publish(
                     ntcore.PubSubOptions(
                         periodic=0.01, sendAll=True, keepDuplicates=True
                     )
                 )
             )
 
-            self.tagSub.append(self.publishers[index].getIntegerArrayTopic("tags").publish(
+            self.tagSub.append(
+                self.publishers[index]
+                .getIntegerArrayTopic("tags")
+                .publish(
                     ntcore.PubSubOptions(
                         periodic=0.01, sendAll=True, keepDuplicates=True
                     )
@@ -112,7 +127,6 @@ class NetworkIO:
         self.tagSub[index].set(tags)
         self.timestampSub[index].set(ntcore._now() - time)
 
-
         self.updateNum[index] += 1
         self.publishUpdate[index].set(self.updateNum[index])
 
@@ -127,7 +141,7 @@ class NetworkIO:
 
     def getConnectionValue(self, index):
         return self.connection[index]
-    
+
     def destroy(self):
         self.inst.stopClient()
 

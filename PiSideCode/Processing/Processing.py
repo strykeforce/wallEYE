@@ -284,8 +284,12 @@ class Processor:
                         D[imgIndex],
                         flags=cv2.SOLVEPNP_IPPE_SQUARE,
                     )
-                    t1, r1 = Processor.getTransRots(tvecs[0].reshape(3,1), rvecs[0], ids[0][0], layout)
-                    t2, r2 = Processor.getTransRots(tvecs[1].reshape(3,1), rvecs[1], ids[0][0], layout)
+                    t1, r1 = Processor.getTransRots(
+                        tvecs[0].reshape(3, 1), rvecs[0], ids[0][0], layout
+                    )
+                    t2, r2 = Processor.getTransRots(
+                        tvecs[1].reshape(3, 1), rvecs[1], ids[0][0], layout
+                    )
 
                     rot3D = wpi.Rotation3d(r1)
                     trans = wpi.Translation3d(t1[0], t1[1], t1[2])
@@ -296,7 +300,6 @@ class Processor:
                     trans = wpi.Translation3d(t2[0], t2[1], t2[2])
 
                     pose2 = wpi.Pose3d(trans, rot3D)
-
 
                 else:
                     # Calculate robot pose with 2d and 3d points
@@ -309,7 +312,7 @@ class Processor:
                     )
 
                     # ambig.append(reproj[0])
-                    
+
                     # Grab the rotation matrix and find the translation vector
                     rotMat, _ = cv2.Rodrigues(rvecs)
                     transVec = -np.dot(np.transpose(rotMat), tvecs)
@@ -321,15 +324,13 @@ class Processor:
                     # Convert the rotation matrix to a three rotation system (yaw, pitch, roll)
                     rot3D = wpi.Rotation3d(rotMat)
                     pose1 = wpi.Pose3d(
-                            # Translation between openCV and WPILib
-                            wpi.Translation3d(transVec[0], transVec[1], transVec[2]),
-                            rot3D,
-                        )
+                        # Translation between openCV and WPILib
+                        wpi.Translation3d(transVec[0], transVec[1], transVec[2]),
+                        rot3D,
+                    )
                     pose2 = pose1
                 # Append the pose
-                poses.append(
-                    (pose1, pose2)
-                )
+                poses.append((pose1, pose2))
                 tags.append(curTags)
                 num += 1
             else:
