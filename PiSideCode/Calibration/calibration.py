@@ -40,30 +40,30 @@ class Calibration:
                 0 : cornerShape[0], 0 : cornerShape[1]
             ].T.reshape(-1, 2)
         elif self.calibType == CalibType.CIRCLE_GRID:
-            criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
+            # criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
 
             blobParams = cv2.SimpleBlobDetector_Params()
 
             # Change thresholds TODO adjust as necessary
-            blobParams.minThreshold = 8
-            blobParams.maxThreshold = 255
+            # blobParams.minThreshold = 8
+            # blobParams.maxThreshold = 255
 
-            # Filter by Area.
-            blobParams.filterByArea = True
-            blobParams.minArea = 64
-            blobParams.maxArea = 2500
+            # # Filter by Area.
+            # blobParams.filterByArea = True
+            # blobParams.minArea = 64
+            # blobParams.maxArea = 2500
 
-            # Filter by Circularity
-            blobParams.filterByCircularity = True
-            blobParams.minCircularity = 0.1
+            # # Filter by Circularity
+            # blobParams.filterByCircularity = True
+            # blobParams.minCircularity = 0.1
 
-            # Filter by Convexity
-            blobParams.filterByConvexity = True
-            blobParams.minConvexity = 0.87
+            # # Filter by Convexity
+            # blobParams.filterByConvexity = True
+            # blobParams.minConvexity = 0.87
 
-            # Filter by Inertia
-            blobParams.filterByInertia = True
-            blobParams.minInertiaRatio = 0.01
+            # # Filter by Inertia
+            # blobParams.filterByInertia = True
+            # blobParams.minInertiaRatio = 0.01
 
             self.blobDetector = cv2.SimpleBlobDetector_create(blobParams)
 
@@ -72,8 +72,6 @@ class Calibration:
                 self.reference[i * cornerShape[1] : (i + 1) * cornerShape[1]][:, 1] = (
                     np.arange(i % 2, cornerShape[1] + i % 2)
                 )
-
-        Calibration.logger.info(self.reference)
 
         # Set values
         self.objPoints = []
@@ -84,10 +82,13 @@ class Calibration:
         self.lastImageStable = False
         self.lastImageSharp = False
 
-        self.prevCorner1 = np.array([0, 0])
-        self.prevCorner2 = np.array([0, 0])
+        self.prevCorner1 = np.zeros(2)
+        self.prevCorner2 = np.zeros(2)
 
-        self.overlay = np.zeros((*resolution, 3), np.uint8)
+        self.prevUsedCorner1 = np.zeros(2)
+        self.prevUsedCorner2 = np.zeros(2)
+
+        self.overlay = np.zeros((resolution[1], resolution[0], 3), np.uint8)
 
         if os.path.isdir(self.imgPath):
             shutil.rmtree(self.imgPath)
@@ -126,7 +127,6 @@ class Calibration:
                 (0, 255, 0),
                 cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS,
             )
-            imgKeypointsGray = cv2.cvtColor(imgKeypoints, cv2.COLOR_BGR2GRAY)
             found, corners = cv2.findCirclesGrid(
                 imgKeypoints, self.cornerShape, None, flags=cv2.CALIB_CB_ASYMMETRIC_GRID
             )
@@ -143,6 +143,8 @@ class Calibration:
             used = True
             self.updateOverlay(corners)
             self.lastImageUsed = time.time()
+            self.prevUsedCorner1 = corners[0][0]
+            self.prevUsedCorner2 = corners[-1][-1]
 
             # Refine corner locations (Better calibrations)
             refined = cv2.cornerSubPix(
@@ -317,7 +319,7 @@ class Calibration:
     # Check if the current image has a stable board
     def isStable(self, corners: np.ndarray):
         corner1 = corners[0][0]
-        corner2 = corners[self.cornerShape[0] * self.cornerShape[1] - 1][0]
+        corner2 = corners[-1][0]
 
         dt = time.time() - self.lastImageUsed
 
@@ -355,10 +357,18 @@ class Calibration:
     def isReady(
         self, img: np.ndarray, corners: np.ndarray, requiredReadyCounts: int = 10
     ) -> bool:
-        if self.isStable(corners):  # Not checking isSharp
+        threshold = self.resolution[0] / 50
+        print(np.linalg.norm(self.prevUsedCorner2 - corners[-1][-1]), threshold)
+        if (
+            np.linalg.norm(self.prevUsedCorner1 - corners[0][0]) > threshold
+            and np.linalg.norm(self.prevUsedCorner2 - corners[-1][-1]) > threshold
+            and self.isStable(corners)
+        ):  # Not checking isSharp
             self.readyCounts += 1
         else:
             self.readyCounts = 0
+
+        print(self.readyCounts)
 
         return requiredReadyCounts <= self.readyCounts
 

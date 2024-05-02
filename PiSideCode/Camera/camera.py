@@ -172,7 +172,11 @@ class Cameras:
     def getFrames(self):
         frames = {}
         for identifier, camInfo in self.info.items():
-            _, img = camInfo.cam.read()
+            ret, img = camInfo.cam.read()
+
+            if not ret:
+                Cameras.logger.error(f"Failed to capture image: {identifier}")
+
             frames[identifier] = img
         return frames
 

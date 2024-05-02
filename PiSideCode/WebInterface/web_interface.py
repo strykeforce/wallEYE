@@ -83,12 +83,12 @@ def toggle_calibration(camID):
         walleyeData.reprojectionError = None
         walleyeData.currentState = States.BEGIN_CALIBRATION
         logger.info(f"Starting calibration capture for {camID}")
-        walleyeData.status = "Starting calibration capture for {camID}"
+        walleyeData.status = f"Starting calibration capture for {camID}"
 
     elif walleyeData.currentState == States.CALIBRATION_CAPTURE:
         walleyeData.currentState = States.IDLE
         logger.info(f"Stopping calibration capture")
-        walleyeData.status = "Stopping calibration capture"
+        walleyeData.status = f"Stopping calibration capture"
 
 
 @socketio.on("generate_calibration")

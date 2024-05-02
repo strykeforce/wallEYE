@@ -102,21 +102,26 @@ try:
         # Take calibration images
         elif walleyeData.currentState == States.CALIBRATION_CAPTURE:
             # Read in frames
-            _, img = walleyeData.cameras.info[
+            ret, img = walleyeData.cameras.info[
                 walleyeData.cameraInCalibration
             ].cam.read()
 
-            # Process frames with the calibration object created prior
-            returned, used, pathSaved = calibrators[
-                walleyeData.cameraInCalibration
-            ].processFrame(img)
+            if not ret:
+                logger.error(
+                    f"Failed to capture image: {walleyeData.cameraInCalibration}"
+                )
+            else:
+                # Process frames with the calibration object created prior
+                returned, used, pathSaved = calibrators[
+                    walleyeData.cameraInCalibration
+                ].processFrame(img)
 
-            # If the image is a part of the accepted images save it
-            if used:
-                walleyeData.calImgPaths.append(pathSaved)
+                # If the image is a part of the accepted images save it
+                if used:
+                    walleyeData.calImgPaths.append(pathSaved)
 
-            # Keep a buffer with the images
-            camBuffers[walleyeData.cameraInCalibration].update(returned)
+                # Keep a buffer with the images
+                camBuffers[walleyeData.cameraInCalibration].update(returned)
 
         # Finished Calibration, generate calibration
         elif walleyeData.currentState == States.GENERATE_CALIBRATION:
@@ -226,7 +231,7 @@ try:
                 ):
                     continue
 
-                _, img = cameraInfo.cam.read()
+                ret, img = cameraInfo.cam.read()
 
                 camBuffers[cameraInfo.identifier].update(img)
 
