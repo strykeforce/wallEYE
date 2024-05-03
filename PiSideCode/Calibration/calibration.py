@@ -67,10 +67,10 @@ class Calibration:
 
             self.blobDetector = cv2.SimpleBlobDetector_create(blobParams)
 
-            for i in range(cornerShape[0]):
-                self.reference[i * cornerShape[1] : (i + 1) * cornerShape[1]][:, 0] = i
-                self.reference[i * cornerShape[1] : (i + 1) * cornerShape[1]][:, 1] = (
-                    np.arange(i % 2, cornerShape[1] + i % 2)
+            for i in range(cornerShape[1]):
+                self.reference[i * cornerShape[0] : (i + 1) * cornerShape[0]][:, 0] = i
+                self.reference[i * cornerShape[0] : (i + 1) * cornerShape[0]][:, 1] = (
+                    np.arange(0, cornerShape[0]) * 2 + i % 2
                 )
 
         # Set values
@@ -355,10 +355,9 @@ class Calibration:
 
     # Check if the current image can be use for calibration
     def isReady(
-        self, img: np.ndarray, corners: np.ndarray, requiredReadyCounts: int = 10
+        self, img: np.ndarray, corners: np.ndarray, requiredReadyCounts: int = 6
     ) -> bool:
         threshold = self.resolution[0] / 50
-        print(np.linalg.norm(self.prevUsedCorner2 - corners[-1][-1]), threshold)
         if (
             np.linalg.norm(self.prevUsedCorner1 - corners[0][0]) > threshold
             and np.linalg.norm(self.prevUsedCorner2 - corners[-1][-1]) > threshold
@@ -368,14 +367,11 @@ class Calibration:
         else:
             self.readyCounts = 0
 
-        print(self.readyCounts)
-
         return requiredReadyCounts <= self.readyCounts
 
     # calculate error of the calibration
     def getReprojectionError(self) -> float:
         if len(self.objPoints) == 0:
-            print("Cannot compute reprojection error: No image data")
             Calibration.logger.error("Cannot compute reprojection error: No image data")
             return
 

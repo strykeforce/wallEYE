@@ -303,13 +303,23 @@ class Processor:
 
                 else:
                     # Calculate robot pose with 2d and 3d points
-                    ret, rvecs, tvecs = cv2.solvePnP(
-                        tagLoc,
-                        cornerLoc,
-                        K[imgIndex],
-                        D[imgIndex],
-                        flags=cv2.SOLVEPNP_SQPNP,
-                    )
+                    # Sometimes dies:  point_coordinate_variance >= POINT_VARIANCE_THRESHOLD in function 'computeOmega'
+
+                    try:
+                        ret, rvecs, tvecs = cv2.solvePnP( 
+                            tagLoc,
+                            cornerLoc,
+                            K[imgIndex],
+                            D[imgIndex],
+                            flags=cv2.SOLVEPNP_SQPNP,
+                        )
+                    except:
+                        Processor.logger.error("solvePnP error?!")
+                        poses.append((Processor.BAD_POSE, Processor.BAD_POSE))
+                        tags.append([])
+                        ambig.append(2767)
+
+                        return (poses, tags, ambig)
 
                     # ambig.append(reproj[0])
 
