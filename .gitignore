@@ -2,6 +2,7 @@ PiSideCode/WebInterface/walleye/node_modules/*
 PiSideCode/walleye.log*
 **/__pycache__
 PiSideCode/Calibration/Cam_*
+PiSideCode/Camera/CameraConfigs/*
 profile.html
 profile.json
 PiSideCode/config.zip
