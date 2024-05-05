@@ -18,18 +18,18 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 logger.info("----------- Starting Up -----------")
 
-from Calibration.calibration import Calibration
-from Calibration.calibration import CalibType
-from Camera.camera import Cameras
+from calibration.calibration import Calibration, CalibType
+from camera.camera import Cameras
 import threading
-from Processing.Processing import Processor
-from Camera.camera import Cameras
+from processing.processing import Processor
+from camera.camera import Cameras
 from state import walleyeData, States, CALIBRATION_STATES
+from directory import calibrationImageFolder, calibrationPathByCam
 
 # Create and intialize cameras
 walleyeData.cameras = Cameras()
 
-from WebInterface.web_interface import (
+from web_interface.web_interface import (
     camBuffers,
     socketio,
     app,
@@ -63,7 +63,8 @@ try:
 
     # Create network tables publisher and AprilTag Processor
     poseEstimator = Processor(walleyeData.tagSize)
-    walleyeData.makePublisher(walleyeData.teamNumber, walleyeData.tableName)
+    # Publisher already created during construction of walleyeData
+    # walleyeData.makePublisher(walleyeData.teamNumber, walleyeData.tableName)
     walleyeData.currentState = States.PROCESSING
 
     logger.info("Starting main loop")
@@ -92,7 +93,7 @@ try:
                     walleyeData.calDelay,
                     walleyeData.boardDims,
                     walleyeData.cameraInCalibration,
-                    f"Calibration/Cam_{Cameras.cleanIdentifier(walleyeData.cameraInCalibration)}CalImgs",
+                    calibrationImageFolder(walleyeData.cameraInCalibration),
                     walleyeData.cameras.info[
                         walleyeData.cameraInCalibration
                     ].resolution,
@@ -128,7 +129,7 @@ try:
             # Get file path for the calibration to be saved
             walleyeData.cameras.info[
                 walleyeData.cameraInCalibration
-            ].calibrationPath = Calibration.calibrationPathByCam(
+            ].calibrationPath = calibrationPathByCam(
                 walleyeData.cameraInCalibration,
                 walleyeData.cameras.info[walleyeData.cameraInCalibration].resolution,
             )
@@ -161,7 +162,7 @@ try:
                     )
                     walleyeData.cameras.info[
                         walleyeData.cameraInCalibration
-                    ].calibrationPath = Calibration.calibrationPathByCam(
+                    ].calibrationPath = calibrationPathByCam(
                         walleyeData.cameraInCalibration,
                         walleyeData.cameras.info[
                             walleyeData.cameraInCalibration

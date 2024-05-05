@@ -2,11 +2,12 @@ from flask import Response, Flask, send_from_directory
 import os
 from flask_socketio import SocketIO
 import json
-from Calibration.calibration import Calibration
+from calibration.calibration import Calibration
+from directory import CONFIG_DATA_PATH
 from state import walleyeData, States
 import logging
 import numpy as np
-from WebInterface.image_streams import Buffer, LivePlotBuffer
+from web_interface.image_streams import Buffer, LivePlotBuffer
 import zipfile
 import pathlib
 import io
@@ -159,16 +160,16 @@ def export_config():
     with zipfile.ZipFile("config.zip", "w") as config:
         logger.info("Opening config.zip for writing")
 
-        for f in directory.rglob("Calibration/*CalData.json"):
+        for f in directory.rglob("calibration/*CalData.json"):
             config.write(f)
             logger.info(f"Zipping {f}")
 
-        for f in directory.rglob("Camera/CameraConfigs/ConfigSettings_*.json"):
+        for f in directory.rglob("camera/camera_configs/ConfigSettings_*.json"):
             config.write(f)
             logger.info(f"Zipping {f}")
 
-        config.write("SystemData.json")
-        logger.info(f"Zipping SystemData.json")
+        config.write(CONFIG_DATA_PATH)
+        logger.info(f"Zipping {CONFIG_DATA_PATH}")
 
     logger.info(f"Config sucessfully zipped")
     walleyeData.status = "Config.zip ready"

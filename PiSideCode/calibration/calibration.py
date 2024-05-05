@@ -421,7 +421,3 @@ class Calibration:
             Calibration.logger.error(f"Invalid calibration format in {file}")
 
         return calibrationData
-
-    @staticmethod
-    def calibrationPathByCam(camIdentifier, resolution):
-        return f"./Calibration/Cam_{camIdentifier.replace(':', '-').replace('.', '-')}_{resolution}CalData.json"

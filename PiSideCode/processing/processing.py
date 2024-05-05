@@ -15,7 +15,7 @@ class Processor:
     # Create a pose estimator
     def __init__(self, tagLength):
         # Open tag layout for tag poses
-        with open("./Processing/AprilTagLayout.json", "r") as f:
+        with open("./processing/april_tag_layout.json", "r") as f:
             self.tagLayout = json.load(f)
             Processor.logger.info("Tag layout loaded")
 

@@ -1,11 +1,12 @@
 import json
+from directory import camConfigPath
 
-
-def parseConfig(camPath):
+def parseConfig(identifier):
+    configPath = camConfigPath(identifier)
     try:
         # Look for config data and return it
-        print(f"Looking for ./Camera/CameraConfigs/ConfigSettings_{camPath}.json")
-        with open(f"./Camera/CameraConfigs/ConfigSettings_{camPath}.json", "r") as data:
+        print(f"Looking for {configPath}")
+        with open(configPath, "r") as data:
             config = json.load(data)
             return config
 
@@ -18,15 +19,15 @@ def parseConfig(camPath):
         }
 
         with open(
-            f"./Camera/CameraConfigs/ConfigSettings_{camPath}.json", "w"
+            configPath, "w"
         ) as outFile:
             json.dump(fileDump, outFile)
         return fileDump
 
 
 # Write config data to a file following naming conventions
-def writeConfig(camPath, resolution, brightness, exposure):
-    with open(f"./Camera/CameraConfigs/ConfigSettings_{camPath}.json", "w") as data:
+def writeConfig(identifier, resolution, brightness, exposure):
+    with open(camConfigPath(identifier), "w") as data:
         fileDump = {
             "Resolution": resolution,
             "Brightness": brightness,

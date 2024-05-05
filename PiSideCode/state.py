@@ -1,6 +1,7 @@
 from enum import Enum
 import json
-from Publisher.NetworkTablePublisher import NetworkIO
+from directory import CONFIG_DATA_PATH
+from publisher.network_table_publisher import NetworkIO
 import logging
 import os
 
@@ -21,7 +22,7 @@ CALIBRATION_STATES = (
 )
 
 
-class Config:
+class Data:
     logger = logging.getLogger(__name__)
 
     def __init__(self) -> None:
@@ -30,7 +31,7 @@ class Config:
 
         self.visualizingPoses = False
 
-        self.loopTime = 2767
+        self.loopTime = 2767.0
 
         # Calibration
         self.cameraInCalibration = None
@@ -51,7 +52,7 @@ class Config:
 
         try:
             # Open and load system settings
-            with open("SystemData.json", "r") as data:
+            with open(CONFIG_DATA_PATH, "r") as data:
                 config = json.load(data)
                 self.teamNumber = config["TeamNumber"]
                 self.tableName = config["TableName"]
@@ -61,16 +62,16 @@ class Config:
 
                 self.setIP(ip)
 
-                if Config.getCurrentIP() != ip:
-                    Config.logger.warning("Failed to set static ip, trying again...")
+                if Data.getCurrentIP() != ip:
+                    Data.logger.warning("Failed to set static ip, trying again...")
                     self.setIP(ip)
 
         # If no system file is found boot with base settings and create system settings
         except (FileNotFoundError, json.decoder.JSONDecodeError, KeyError):
             self.teamNumber = 2767
             self.tableName = "WallEye"
-            self.ip = Config.getCurrentIP()
-            Config.logger.info(f"IP is {self.ip}")
+            self.ip = Data.getCurrentIP()
+            Data.logger.info(f"IP is {self.ip}")
 
             dataDump = {
                 "TeamNumber": self.teamNumber,
@@ -79,7 +80,7 @@ class Config:
                 "BoardDim": self.boardDims,
                 "TagSize": self.tagSize,
             }
-            with open("SystemData.json", "w") as out:
+            with open(CONFIG_DATA_PATH, "w") as out:
                 json.dump(dataDump, out)
 
     def boardDims(self, newValue):
@@ -89,15 +90,15 @@ class Config:
     def makePublisher(self, teamNumber, tableName):
         try:
             # Create and write output file
-            with open("SystemData.json", "r") as file:
+            with open(CONFIG_DATA_PATH, "r") as file:
                 config = json.load(file)
                 config["TeamNumber"] = teamNumber
                 config["TableName"] = tableName
-                with open("SystemData.json", "w") as out:
+                with open(CONFIG_DATA_PATH, "w") as out:
                     json.dump(config, out)
 
         except (FileNotFoundError, json.decoder.JSONDecodeError):
-            Config.logger.error(
+            Data.logger.error(
                 f"Failed to write TableName | {tableName} | or TeamNumber | {teamNumber} |"
             )
         self.teamNumber = teamNumber
@@ -106,12 +107,12 @@ class Config:
         # Destroy any existing publisher
         if self.robotPublisher is not None:
             self.robotPublisher.destroy()
-            Config.logger.info("Existing publisher destroyed")
+            Data.logger.info("Existing publisher destroyed")
 
         # Create the robot publisher
         self.robotPublisher = NetworkIO(False, self.teamNumber, self.tableName, 2)
 
-        Config.logger.info(f"Robot publisher created: {teamNumber} - {tableName}")
+        Data.logger.info(f"Robot publisher created: {teamNumber} - {tableName}")
 
     def setPose(self, identifier, pose):
         self.poses[identifier] = (
@@ -126,31 +127,31 @@ class Config:
     def setBoardDim(self, dim):
         try:
             # Write it in system settings file
-            with open("SystemData.json", "r") as file:
+            with open(CONFIG_DATA_PATH, "r") as file:
                 config = json.load(file)
                 config["BoardDim"] = dim
-                with open("SystemData.json", "w") as out:
+                with open(CONFIG_DATA_PATH, "w") as out:
                     json.dump(config, out)
 
         except (FileNotFoundError, json.decoder.JSONDecodeError):
-            Config.logger.error(f"Failed to write Dimensions {dim}")
+            Data.logger.error(f"Failed to write Dimensions {dim}")
 
     # Set Tag Size (meters) and set it in system settings
     def setTagSize(self, size):
         try:
             # Write it in system settings file
-            with open("SystemData.json", "r") as file:
+            with open(CONFIG_DATA_PATH, "r") as file:
                 config = json.load(file)
                 config["TagSize"] = size
-                with open("SystemData.json", "w") as out:
+                with open(CONFIG_DATA_PATH, "w") as out:
                     json.dump(config, out)
 
         except (FileNotFoundError, json.decoder.JSONDecodeError):
-            Config.logger.error(f"Failed to write tag size {size}")
+            Data.logger.error(f"Failed to write tag size {size}")
 
     # Set static IP and write it into system files
     def setIP(self, ip):
-        Config.logger.info("Attempting to set static IP")
+        Data.logger.info("Attempting to set static IP")
 
         # Destroy because changing IP breaks network tables
         if self.robotPublisher:
@@ -159,23 +160,23 @@ class Config:
         # Set IP
         os.system("/usr/sbin/ifconfig eth0 up")
         if not os.system(f"/usr/sbin/ifconfig eth0 {ip} netmask 255.255.255.0"):
-            Config.logger.info(f"Static IP set: {ip} =? {Config.getCurrentIP()}")
+            Data.logger.info(f"Static IP set: {ip} =? {Data.getCurrentIP()}")
             self.ip = ip
         else:
-            self.ip = Config.getCurrentIP()
-            Config.logger.error(f"Failed to set static ip: {ip}")
+            self.ip = Data.getCurrentIP()
+            Data.logger.error(f"Failed to set static ip: {ip}")
         os.system("/usr/sbin/ifconfig eth0 up")
 
         try:
             # Write IP to a system file
-            with open("SystemData.json", "r") as file:
+            with open(CONFIG_DATA_PATH, "r") as file:
                 config = json.load(file)
                 config["ip"] = self.ip
-                with open("SystemData.json", "w") as out:
+                with open(CONFIG_DATA_PATH, "w") as out:
                     json.dump(config, out)
 
         except (FileNotFoundError, json.decoder.JSONDecodeError):
-            Config.logger.error(f"Failed to write static ip: {ip}")
+            Data.logger.error(f"Failed to write static ip: {ip}")
 
         self.makePublisher(self.teamNumber, self.tableName)
 
@@ -203,7 +204,7 @@ class Config:
                 .strip()
             )
         except IndexError:
-            Config.logger.error("Could not get current IP - Returning None")
+            Data.logger.error("Could not get current IP - Returning None")
             return None
 
     def getState(self):
@@ -235,4 +236,4 @@ class Config:
         }
 
 
-walleyeData = Config()
+walleyeData = Data()

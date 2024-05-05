@@ -1,13 +1,14 @@
 import cv2
-from Camera.BootUp import *
-from Calibration.calibration import Calibration
-import subprocess
+from camera.boot_up import *
+from calibration.calibration import Calibration
 import re
 import os
 from sys import platform
 import logging
-from Camera.CameraInfo import CameraInfo
+from camera.camera_info import CameraInfo
 from pathlib import Path
+from camera.v4l_cmd_line import getFormats, getSettings, setBrightness, setExposure
+from directory import V4L_PATH, fullCamPath, cleanIdentifier, calibrationPathByCam
 
 
 # Maintains camera info provided by cv2
@@ -23,93 +24,30 @@ class Cameras:
 
             # Automatically detect cameras
             try:
-                cameraPaths = os.listdir(r"/dev/v4l/by-path")
+                cameraPaths = os.listdir(V4L_PATH)
             except FileNotFoundError:
                 cameraPaths = []
                 Cameras.logger.error("No cameras detected!!")
 
             # Try all cameras found by the PI
-            for camPath in cameraPaths:
+            for identifier in cameraPaths:
                 if (
                     Path("../../../deadeye").is_dir()
-                    and camPath == "platform-xhci-hcd.9.auto-usb-0:1:1.0-video-index0"
+                    and identifier == "platform-xhci-hcd.9.auto-usb-0:1:1.0-video-index0"
                 ):
                     continue
 
-                path = f"/dev/v4l/by-path/{camPath}"
+                path = fullCamPath(identifier)
 
                 # Open camera and check if it is opened
                 cam = cv2.VideoCapture(path, cv2.CAP_V4L2)
 
                 if cam.isOpened():
-                    Cameras.logger.info(f"Camera found: {camPath}")
+                    Cameras.logger.info(f"Camera found: {identifier}")
 
                     # Get supported resolutions using v4l2-ctl and a little regex
-                    formatParams = subprocess.run(
-                        [
-                            "v4l2-ctl",
-                            "-d",
-                            path,
-                            "--list-formats-ext",
-                        ],
-                        capture_output=True,
-                    ).stdout.decode("utf-8")
-
-                    supportedResolutions = sorted(  # Sort values
-                        list(
-                            set(  # Unique values
-                                map(
-                                    lambda x: (
-                                        int(x.split("x")[0]),
-                                        int(x.split("x")[1]),
-                                    ),
-                                    re.findall(
-                                        "[0-9]+x[0-9]+",
-                                        formatParams,
-                                    ),
-                                )
-                            )
-                        )
-                    )
-
-                    formats = set(
-                        map(
-                            lambda x: re.search("'....'", x).group().strip("'"),
-                            re.findall(
-                                ": '....'",
-                                formatParams,
-                            ),
-                        )
-                    )
-
-                    settingParams = subprocess.run(
-                        ["v4l2-ctl", "-d", path, "--list-ctrls-menus"],
-                        capture_output=True,
-                    ).stdout.decode("utf-8")
-
-                    exposureRange = tuple(
-                        map(
-                            lambda x: int(x.split("=")[-1]),
-                            re.search(
-                                "exposure_absolute .* min=-?[0-9]+ max=-?[0-9]+ step=[0-9]+",
-                                settingParams,
-                            )
-                            .group()
-                            .split()[-3:],
-                        )
-                    )
-
-                    brightnessRange = tuple(
-                        map(
-                            lambda x: int(x.split("=")[-1]),
-                            re.search(
-                                "brightness .* min=-?[0-9]+ max=-?[0-9]+ step=[0-9]+",
-                                settingParams,
-                            )
-                            .group()
-                            .split()[-3:],
-                        )
-                    )
+                    supportedResolutions, formats = getFormats(identifier)
+                    exposureRange, brightnessRange = getSettings(identifier)
 
                     Cameras.logger.info(
                         f"Supported resolutions: {supportedResolutions}"
@@ -127,32 +65,35 @@ class Cameras:
 
                     # Try to disable auto exposure
                     if cam.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1):
-                        Cameras.logger.info(f"Auto exposure disabled for {camPath}")
+                        Cameras.logger.info(f"Auto exposure disabled for {identifier}")
                     else:
                         Cameras.logger.warning(
-                            f"Failed to disable auto exposure for {camPath}"
+                            f"Failed to disable auto exposure for {identifier}"
                         )
 
                     # Initialize CameraInfo object
-                    self.info[camPath] = CameraInfo(cam, camPath, supportedResolutions)
-                    self.info[camPath].resolution = self.getResolutions()[camPath]
-                    self.info[camPath].exposureRange = exposureRange
-                    self.info[camPath].brightnessRange = brightnessRange
-                    self.info[camPath].validFormats = formats
+                    self.info[identifier] = CameraInfo(cam, identifier, supportedResolutions)
+                    self.info[identifier].resolution = self.getResolutions()[identifier]
+                    self.info[identifier].exposureRange = exposureRange
+                    self.info[identifier].brightnessRange = brightnessRange
+                    self.info[identifier].validFormats = formats
 
                     # Attempt to import config from file
-                    self.importConfig(camPath)
+                    self.importConfig(identifier)
 
                     # Save configs
                     writeConfig(
-                        self.cleanIdentifier(camPath),
-                        self.getResolutions()[camPath],
-                        self.getBrightnesss()[camPath],
-                        self.getExposures()[camPath],
+                        identifier,
+                        self.getResolutions()[identifier],
+                        self.getBrightnesss()[identifier],
+                        self.getExposures()[identifier],
                     )
 
+                else:
+                    Cameras.logger.warning(f"Failed to open camera: {identifier}")
+
         else:
-            Cameras.logger.error("Unknown platform!")
+            Cameras.logger.error("Unsupported platform!")
 
     def setCalibration(self, identifier, K, D):
         self.info[identifier].K = K
@@ -185,9 +126,9 @@ class Cameras:
         frames = {}
         connections = {}
         for identifier, camInfo in self.info.items():
-            flag, img = camInfo.cam.read()
+            ret, img = camInfo.cam.read()
             frames[identifier] = img
-            connections[identifier] = True if flag else False
+            connections[identifier] = ret
         return (connections, frames)
 
     # Sets resolution, video format, and FPS
@@ -221,7 +162,7 @@ class Cameras:
         self.importCalibration(identifier)
 
         writeConfig(
-            self.cleanIdentifier(identifier),
+            identifier,
             resolution,
             self.getBrightnesss()[identifier],
             self.getExposures()[identifier],
@@ -236,9 +177,7 @@ class Cameras:
             return False
 
         # Set brightness through command line
-        returned = os.system(
-            f"v4l2-ctl -d /dev/v4l/by-path/{identifier} --set-ctrl brightness={brightness}"
-        )
+        returned = setBrightness(identifier, brightness)
 
         # Check if it set, if so write it to a file
         if returned != 0:
@@ -249,7 +188,7 @@ class Cameras:
         else:
             Cameras.logger.info(f"Brightness set to {brightness}")
             writeConfig(
-                self.cleanIdentifier(identifier),
+                identifier,
                 self.getResolutions()[identifier],
                 brightness,
                 self.getExposures()[identifier],
@@ -262,9 +201,7 @@ class Cameras:
             return False
 
         # Set exposure with a command
-        returned = os.system(
-            f"v4l2-ctl -d /dev/v4l/by-path/{identifier} --set-ctrl exposure_absolute={exposure}"  #  --set-ctrl exposure_auto=1
-        )
+        returned = setExposure(identifier, exposure)
 
         # Check if it set, if so write it to a file
         if returned != 0:
@@ -276,7 +213,7 @@ class Cameras:
             Cameras.logger.info(f"Exposure set to {exposure}")
 
             writeConfig(
-                self.cleanIdentifier(identifier),
+                identifier,
                 self.getResolutions()[identifier],
                 self.getBrightnesss()[identifier],
                 exposure,
@@ -321,12 +258,12 @@ class Cameras:
         # Look for the calibration file
         try:
             calib = Calibration.parseCalibration(
-                Calibration.calibrationPathByCam(identifier, resolution)
+                calibrationPathByCam(identifier, resolution)
             )
 
             # grab the camera matrix and distortion coefficent and set it
             self.setCalibration(identifier, calib["K"], calib["dist"])
-            self.info[identifier].calibrationPath = Calibration.calibrationPathByCam(
+            self.info[identifier].calibrationPath = calibrationPathByCam(
                 identifier, resolution
             )
             return True
@@ -337,35 +274,30 @@ class Cameras:
             )
             return False
 
-    def importConfig(self, camPath):
+    def importConfig(self, identifier):
         # Attempt to import config from file
-        Cameras.logger.info(f"Attempting to import config for {camPath}")
-        cleaned = self.cleanIdentifier(camPath)
+        Cameras.logger.info(f"Attempting to import config for {identifier}")
         config = None
 
         try:
             # Parse config from config file
-            config = parseConfig(cleaned)
+            config = parseConfig(identifier)
             Cameras.logger.info(f"Config found!")
 
         except (FileNotFoundError, json.decoder.JSONDecodeError):
-            Cameras.logger.warning(f"Config not found for camera {camPath}")
+            Cameras.logger.warning(f"Config not found for camera {identifier}")
 
         if config is not None:
             # Config was found, set config data
             if not self.setResolution(
-                camPath, config["Resolution"]
+                identifier, config["Resolution"]
             ):  # Calls self.importCalibration iff resolution was set
-                self.importCalibration(camPath)
-            self.setBrightness(camPath, config["Brightness"])
-            self.setExposure(camPath, config["Exposure"])
+                self.importCalibration(identifier)
+            self.setBrightness(identifier, config["Brightness"])
+            self.setExposure(identifier, config["Exposure"])
 
         else:
-            self.importCalibration(camPath)
-            Cameras.logger.warning(f"Camera config not found for camera {camPath}")
+            self.importCalibration(identifier)
+            Cameras.logger.warning(f"Camera config not found for camera {identifier}")
 
         return config
-
-    @staticmethod
-    def cleanIdentifier(identifier):
-        return identifier.replace(":", "-").replace(".", "-")

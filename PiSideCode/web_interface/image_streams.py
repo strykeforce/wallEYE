@@ -42,7 +42,7 @@ class LivePlotBuffer(Buffer):
     def __init__(self):
         super(LivePlotBuffer, self).__init__()
 
-        with open("./Processing/AprilTagLayout.json", "r") as f:
+        with open("./processing/april_tag_layout.json", "r") as f:
             self.tagLayout = json.load(f)
             logger.info("Tag layout loaded")
         self.tagLayout = self.tagLayout["tags"]
@@ -84,7 +84,7 @@ class LivePlotBuffer(Buffer):
         self.fig.tight_layout()
         self.fig.subplots_adjust(left=-0.26, right=1.21, bottom=-0.08, top=1.08)
 
-        img = mpimg.imread("./WebInterface/field.png")
+        img = mpimg.imread("./web_interface/field.png")
         x = np.linspace(0, LivePlotBuffer.FIELD_DIMS[0], img.shape[1])
         y = np.linspace(0, LivePlotBuffer.FIELD_DIMS[1], img.shape[0])
         x, y = np.meshgrid(x, y)
