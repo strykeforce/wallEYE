@@ -90,3 +90,44 @@ def setExposure(identifier, exposure):
         f"v4l2-ctl -d {fullCamPath(identifier)} --set-ctrl exposure_absolute={exposure}"  #  --set-ctrl exposure_auto=1
     )
 ###
+
+# if __name__ == "__main__":
+#     from pyrav4l2 import Device
+
+#     dev = Device(
+#         os.path.join("/dev/v4l/by-path", "pci-0000:04:00.0-usb-0:1:1.0-video-index0")
+#     )
+
+#     print(f"Device name: {dev.device_name}")
+#     print(f"Driver name: {dev.driver_name}")
+#     if dev.is_video_capture_capable:
+#         print(f"Device supports video capturing")
+#     else:
+#         print(f"Device does not support video capturing")
+
+#     color_format, frame_size = dev.get_format()
+#     print(f"Color format: {color_format}")
+#     print(f"Frame size: {frame_size}")
+
+#     available_formats = dev.available_formats
+
+#     for color_format in available_formats.keys():
+#         print(f"{color_format}:")
+#         for frame_size in available_formats[color_format]:
+#             print(f"    {frame_size}")
+#         print()
+
+#     color_format = list(available_formats.keys())[0]
+#     frame_size = available_formats[color_format][0]
+#     print(type(color_format), type(frame_size))
+#     dev.set_format(color_format, frame_size)
+
+#     available_controls = dev.controls
+#     print(list(map(lambda x: x.name, available_controls)))
+#     for control in available_controls:
+#         print(control.name)
+#         dev.reset_control_to_default(control)
+
+#     test = dict(zip(list(map(lambda x: x.name, available_controls[1:])), available_controls[1:]))
+#     print(test)
+    

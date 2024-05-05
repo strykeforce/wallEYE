@@ -1,4 +1,10 @@
+from pyrav4l2 import Device
+from directory import fullCamPath
+import logging
+
 class CameraInfo:
+    logger = logging.getLogger(__name__)
+
     def __init__(
         self, cam, identifier, supportedResolutions, resolution=None, K=None, D=None
     ):
@@ -17,3 +23,29 @@ class CameraInfo:
         self.D = D
 
         self.calibrationPath = None
+
+        self.controller = Device(
+            fullCamPath(identifier)
+        )
+
+        self.controls = dict(
+            zip(
+                list(map(lambda control: control.name, self.controller.controls[1:])),
+                self.controller.controls[1:],
+            )
+        )
+
+    def set(self, controlName, value):
+        try:
+            self.controller.set_control_value(self.controls[controlName], value)
+
+            if self.get(controlName) == value:
+                CameraInfo.logger.info(f"Successfully set {controlName} = {value} in camera {self.identifier}")
+        
+        except Exception as e:
+            CameraInfo.logger.error(f"Camera {self.identifier} error: {e}")
+        
+        return False
+
+    def get(self, controlName):
+        self.controller.get_control_value(controlName)
