@@ -1,12 +1,5 @@
-from directory import calibrationImageFolder, calibrationPathByCam
-from state import walleyeData, States, CALIBRATION_STATES
-from processing.processing import Processor
-import threading
-from camera.camera import Cameras
-from calibration.calibration import Calibration, CalibType
-import logging
 import sys
-import time
+import logging
 from logging.handlers import RotatingFileHandler
 
 # Create logger and set settings
@@ -26,6 +19,16 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 logger.info("----------- Starting Up -----------")
+
+
+from directory import calibrationImageFolder, calibrationPathByCam
+from state import walleyeData, States, CALIBRATION_STATES
+from processing.processing import Processor
+import threading
+from camera.camera import Cameras
+from calibration.calibration import Calibration, CalibType
+import time
+
 
 
 # Create and intialize cameras

@@ -4,6 +4,13 @@ from directory import CONFIG_DATA_PATH
 from publisher.network_table_publisher import NetworkIO
 import logging
 import os
+import socket, struct, fcntl
+
+SIOCSIFADDR = 0x8916
+SIOCGIFADDR = 0x8915
+SIOCSIFNETMASK = 0x891C
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sockfd = sock.fileno()
 
 
 class States(Enum):
@@ -154,23 +161,45 @@ class Data:
             Data.logger.error(f"Failed to write tag size {size}")
 
     # Set static IP and write it into system files
-    def setIP(self, ip):
+    def setIP(self, ip, interface="wlp2s0"):
         Data.logger.info("Attempting to set static IP")
+
+        if not ip:
+            Data.logger.warning("IP is None")
+            if not self.robotPublisher:
+                self.makePublisher(self.teamNumber, self.tableName)
+            return
 
         # Destroy because changing IP breaks network tables
         if self.robotPublisher:
             self.robotPublisher.destroy()
 
         # Set IP
-        os.system("/usr/sbin/ifconfig eth0 up")
-        if not os.system(
-                f"/usr/sbin/ifconfig eth0 {ip} netmask 255.255.255.0"):
-            Data.logger.info(f"Static IP set: {ip} =? {Data.getCurrentIP()}")
-            self.ip = ip
-        else:
-            self.ip = Data.getCurrentIP()
-            Data.logger.error(f"Failed to set static ip: {ip}")
-        os.system("/usr/sbin/ifconfig eth0 up")
+        # os.system("/usr/sbin/ifconfig eth0 up")
+        # if not os.system(
+        #         f"/usr/sbin/ifconfig eth0 {ip} netmask 255.255.255.0"):
+        #     Data.logger.info(f"Static IP set: {ip} =? {Data.getCurrentIP()}")
+        #     self.ip = ip
+        # else:
+        #     self.ip = Data.getCurrentIP()
+        #     Data.logger.error(f"Failed to set static ip: {ip}")
+        # os.system("/usr/sbin/ifconfig eth0 up")
+
+        # https://stackoverflow.com/questions/20420937/how-to-assign-ip-address-to-interface-in-python
+        bin_ip = socket.inet_aton(ip)
+        ifreq = struct.pack(
+            b"16sH2s4s8s",
+            interface.encode("utf-8"),
+            socket.AF_INET,
+            b"\x00" * 2,
+            bin_ip,
+            b"\x00" * 8,
+        )
+        # https://stackoverflow.com/questions/70310413/python-fcntl-ioctl-errno-1-operation-not-permitted
+        fcntl.ioctl(sock, SIOCSIFADDR, ifreq)
+
+        Data.logger.info(f"Static IP set: {ip} =? {Data.getCurrentIP()}")
+        self.ip = ip
 
         try:
             # Write IP to a system file
@@ -199,18 +228,31 @@ class Data:
     #         Config.logger.error("Networking failed to stop")
 
     @staticmethod
-    def getCurrentIP():
+    def getCurrentIP(interface="wlp2s0"):
+        # https://stackoverflow.com/questions/166506/finding-local-ip-addresses-using-pythons-stdlib/9267833#9267833
+        ifreq = struct.pack(
+            b"16sH14s", interface.encode("utf-8"), socket.AF_INET, b"\x00" * 14
+        )
         try:
-            return (
-                os.popen('ip addr show eth0 | grep "\\<inet\\>"')
-                .read()
-                .split()[1]
-                .split("/")[0]
-                .strip()
-            )
-        except IndexError:
+            res = fcntl.ioctl(sockfd, SIOCGIFADDR, ifreq)
+        except:
             Data.logger.error("Could not get current IP - Returning None")
             return None
+
+        ip = struct.unpack("16sH2x4s8x", res)[2]
+        return socket.inet_ntoa(ip)
+
+        # try:
+        #     return (
+        #         os.popen('ip addr show eth0 | grep "\\<inet\\>"')
+        #         .read()
+        #         .split()[1]
+        #         .split("/")[0]
+        #         .strip()
+        #     )
+        # except IndexError:
+        #     Data.logger.error("Could not get current IP - Returning None")
+        #     return None
 
     def getState(self):
         return {

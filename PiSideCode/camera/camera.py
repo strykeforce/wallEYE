@@ -59,7 +59,7 @@ class Cameras:
                         f"Supported resolutions: {self.info[identifier].getSupportedResolutions()}"
                     )
                     Cameras.logger.info(
-                        f"Supported formats: {self.info[identifier].validFormats.keys()}")
+                        f"Supported formats: {list(self.info[identifier].validFormats.keys())}")
                     Cameras.logger.info(
                         f"Supported exposures (min, max, step): {self.info[identifier].exposureRange}"
                     )
