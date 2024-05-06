@@ -1,22 +1,25 @@
 import cv2
-from camera.boot_up import *
+from camera.boot_up import writeConfig, parseConfig
 from calibration.calibration import Calibration
-import re
+# import re
 import os
 from sys import platform
 import logging
-from camera.camera_info import CameraInfo
+from camera.camera_info import CameraInfo, EXPOSURE, BRIGHTNESS
 from pathlib import Path
-from camera.v4l_cmd_line import getFormats, getSettings, setBrightness, setExposure
+# from camera.v4l_cmd_line import getFormats, getSettings, setBrightness, setExposure
 from directory import V4L_PATH, fullCamPath, cleanIdentifier, calibrationPathByCam
-
+import json
 
 # Maintains camera info provided by cv2
+
+
 class Cameras:
     logger = logging.getLogger(__name__)
 
     def __init__(self):
-        # Cameras identified by their path (or whatever unique identifier is available)
+        # Cameras identified by their path (or whatever unique identifier is
+        # available)
         self.info = {}
 
         if platform == "linux" or platform == "linux2":
@@ -31,10 +34,8 @@ class Cameras:
 
             # Try all cameras found by the PI
             for identifier in cameraPaths:
-                if (
-                    Path("../../../deadeye").is_dir()
-                    and identifier == "platform-xhci-hcd.9.auto-usb-0:1:1.0-video-index0"
-                ):
+                if (Path("../../../deadeye").is_dir() and identifier ==
+                        "platform-xhci-hcd.9.auto-usb-0:1:1.0-video-index0"):
                     continue
 
                 path = fullCamPath(identifier)
@@ -45,19 +46,25 @@ class Cameras:
                 if cam.isOpened():
                     Cameras.logger.info(f"Camera found: {identifier}")
 
-                    # Get supported resolutions using v4l2-ctl and a little regex
-                    supportedResolutions, formats = getFormats(identifier)
-                    exposureRange, brightnessRange = getSettings(identifier)
+                    # Get supported resolutions using v4l2-ctl and a little
+                    # regex
+                    # OLD (from import v4l_cmd_line import getFormats, getSettings)
+                    # supportedResolutions, formats = getFormats(identifier)
+                    # exposureRange, brightnessRange = getSettings(identifier)
+
+                    # Initialize CameraInfo object
+                    self.info[identifier] = CameraInfo(cam, identifier)
 
                     Cameras.logger.info(
-                        f"Supported resolutions: {supportedResolutions}"
-                    )
-                    Cameras.logger.info(f"Supported formats: {formats}")
-                    Cameras.logger.info(
-                        f"Supported exposures (min, max, step): {exposureRange}"
+                        f"Supported resolutions: {self.info[identifier].getSupportedResolutions()}"
                     )
                     Cameras.logger.info(
-                        f"Supported brightnesses (min, max, step): {brightnessRange}"
+                        f"Supported formats: {self.info[identifier].validFormats.keys()}")
+                    Cameras.logger.info(
+                        f"Supported exposures (min, max, step): {self.info[identifier].exposureRange}"
+                    )
+                    Cameras.logger.info(
+                        f"Supported brightnesses (min, max, step): {self.info[identifier].brightnessRange}"
                     )
 
                     # Disable buffer so we always pull the latest image
@@ -65,18 +72,12 @@ class Cameras:
 
                     # Try to disable auto exposure
                     if cam.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1):
-                        Cameras.logger.info(f"Auto exposure disabled for {identifier}")
+                        Cameras.logger.info(
+                            f"Auto exposure disabled for {identifier}")
                     else:
                         Cameras.logger.warning(
                             f"Failed to disable auto exposure for {identifier}"
                         )
-
-                    # Initialize CameraInfo object
-                    self.info[identifier] = CameraInfo(cam, identifier, supportedResolutions)
-                    self.info[identifier].resolution = self.getResolutions()[identifier]
-                    self.info[identifier].exposureRange = exposureRange
-                    self.info[identifier].brightnessRange = brightnessRange
-                    self.info[identifier].validFormats = formats
 
                     # Attempt to import config from file
                     self.importConfig(identifier)
@@ -90,7 +91,8 @@ class Cameras:
                     )
 
                 else:
-                    Cameras.logger.warning(f"Failed to open camera: {identifier}")
+                    Cameras.logger.warning(
+                        f"Failed to open camera: {identifier}")
 
         else:
             Cameras.logger.error("Unsupported platform!")
@@ -99,7 +101,8 @@ class Cameras:
         self.info[identifier].K = K
         self.info[identifier].D = D
 
-        Cameras.logger.info(f"Calibration set for {identifier}, using {K}\n{D}")
+        Cameras.logger.info(
+            f"Calibration set for {identifier}, using {K}\n{D}")
 
     # Return a list of camera matrixs
     def listK(self):
@@ -147,7 +150,8 @@ class Cameras:
             ),
         )
         # self.info[identifier].cam.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*"YUYV"))
-        self.info[identifier].cam.set(cv2.CAP_PROP_FPS, 5)  # Lower can be better
+        self.info[identifier].cam.set(
+            cv2.CAP_PROP_FPS, 5)  # Lower can be better
         resolution = tuple(resolution)
 
         # Test if resolution got set
@@ -176,49 +180,73 @@ class Cameras:
             Cameras.logger.info("Brightness not set")
             return False
 
-        # Set brightness through command line
-        returned = setBrightness(identifier, brightness)
+        success = self.info[identifier].set(BRIGHTNESS, brightness)
 
-        # Check if it set, if so write it to a file
-        if returned != 0:
-            Cameras.logger.warning(
-                f"Brightness not set: {brightness} not accepted on camera {identifier}"
-            )
-            return False
-        else:
-            Cameras.logger.info(f"Brightness set to {brightness}")
+        if success:
             writeConfig(
                 identifier,
                 self.getResolutions()[identifier],
                 brightness,
                 self.getExposures()[identifier],
             )
-            return True
+
+        return success
+
+        # Set brightness through command line
+        # returned = setBrightness(identifier, brightness)
+
+        # Check if it set, if so write it to a file
+        # if returned != 0:
+        #     Cameras.logger.warning(
+        #         f"Brightness not set: {brightness} not accepted on camera {identifier}"
+        #     )
+        #     return False
+        # else:
+        #     Cameras.logger.info(f"Brightness set to {brightness}")
+        #     writeConfig(
+        #         identifier,
+        #         self.getResolutions()[identifier],
+        #         brightness,
+        #         self.getExposures()[identifier],
+        #     )
+        #     return True
 
     def setExposure(self, identifier, exposure):
         if exposure is None:
             Cameras.logger.info("Exposure not set")
             return False
 
-        # Set exposure with a command
-        returned = setExposure(identifier, exposure)
+        success = self.info[identifier].set(EXPOSURE, exposure)
 
-        # Check if it set, if so write it to a file
-        if returned != 0:
-            Cameras.logger.warning(
-                f"Exposure not set: {exposure} not accepted on camera {identifier}"
-            )
-            return False
-        else:
-            Cameras.logger.info(f"Exposure set to {exposure}")
-
+        if success:
             writeConfig(
                 identifier,
                 self.getResolutions()[identifier],
                 self.getBrightnesss()[identifier],
                 exposure,
             )
-            return True
+
+        return success
+
+        # Set exposure with a command
+        # returned = setExposure(identifier, exposure)
+
+        # Check if it set, if so write it to a file
+        # if returned != 0:
+        #     Cameras.logger.warning(
+        #         f"Exposure not set: {exposure} not accepted on camera {identifier}"
+        #     )
+        #     return False
+        # else:
+        #     Cameras.logger.info(f"Exposure set to {exposure}")
+
+        #     writeConfig(
+        #         identifier,
+        #         self.getResolutions()[identifier],
+        #         self.getBrightnesss()[identifier],
+        #         exposure,
+        #     )
+        #     return True
 
     # Return a dictionary of all camera exposures
     def getExposures(self):
@@ -298,6 +326,7 @@ class Cameras:
 
         else:
             self.importCalibration(identifier)
-            Cameras.logger.warning(f"Camera config not found for camera {identifier}")
+            Cameras.logger.warning(
+                f"Camera config not found for camera {identifier}")
 
         return config

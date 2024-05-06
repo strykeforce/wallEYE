@@ -1,6 +1,7 @@
 import json
 from directory import camConfigPath
 
+
 def parseConfig(identifier):
     configPath = camConfigPath(identifier)
     try:

@@ -7,3 +7,4 @@ eventlet
 matplotlib
 numpy >= 1.25
 simplejpeg
+git+https://github.com/antmicro/pyrav4l2.git

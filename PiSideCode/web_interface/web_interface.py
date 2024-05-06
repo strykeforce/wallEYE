@@ -11,6 +11,7 @@ from web_interface.image_streams import Buffer, LivePlotBuffer
 import zipfile
 import pathlib
 import io
+import time
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +19,8 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__, static_folder="./walleye/build", static_url_path="/")
 socketio = SocketIO(app, logger=True, cors_allowed_origins="*")
 
-camBuffers = {identifier: Buffer() for identifier in walleyeData.cameras.info.keys()}
+camBuffers = {identifier: Buffer()
+              for identifier in walleyeData.cameras.info.keys()}
 visualizationBuffers = {
     identifier: LivePlotBuffer() for identifier in walleyeData.cameras.info.keys()
 }
@@ -118,7 +120,8 @@ def import_calibration(camID, file):
         # Load
         calData["K"] = np.asarray(calData["K"])
         calData["dist"] = np.asarray(calData["dist"])
-        walleyeData.cameras.setCalibration(camID, calData["K"], calData["dist"])
+        walleyeData.cameras.setCalibration(
+            camID, calData["K"], calData["dist"])
         walleyeData.cameras.info[camID].calibrationPath = (
             Calibration.calibrationPathByCam(
                 camID, walleyeData.cameras.info[camID].resolution
@@ -164,7 +167,8 @@ def export_config():
             config.write(f)
             logger.info(f"Zipping {f}")
 
-        for f in directory.rglob("camera/camera_configs/ConfigSettings_*.json"):
+        for f in directory.rglob(
+                "camera/camera_configs/ConfigSettings_*.json"):
             config.write(f)
             logger.info(f"Zipping {f}")
 
@@ -245,14 +249,14 @@ def pose_update():
 
 @socketio.on("performance_update")
 @updateAfter
-def pose_update():
+def performance_update():
     socketio.sleep(0)
     socketio.emit("performance_update", walleyeData.loopTime)
 
 
 @socketio.on("msg_update")
 @updateAfter
-def pose_update():
+def msg_update():
     socketio.sleep(0)
     socketio.emit("msg_update", walleyeData.status)
 
@@ -275,8 +279,8 @@ def video_feed(camID):
         return
 
     return Response(
-        camBuffers[camID].output(), mimetype="multipart/x-mixed-replace; boundary=frame"
-    )
+        camBuffers[camID].output(),
+        mimetype="multipart/x-mixed-replace; boundary=frame")
 
 
 @app.route("/pose_visualization/<camID>")

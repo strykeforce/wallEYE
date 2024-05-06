@@ -1,7 +1,10 @@
+# Unused 
+# The old way
 import subprocess
 from directory import fullCamPath
 import re
 import os
+
 
 def getFormats(identifier):
     formatParams = subprocess.run(
@@ -80,14 +83,18 @@ def getSettings(identifier):
     return exposureRange, brightnessRange
 
 # Use methods in Cameras, do not use directly
+
+
 def setBrightness(identifier, brightness):
     return os.system(
         f"v4l2-ctl -d {fullCamPath(identifier)} --set-ctrl brightness={brightness}"
     )
 
+
 def setExposure(identifier, exposure):
     return os.system(
-        f"v4l2-ctl -d {fullCamPath(identifier)} --set-ctrl exposure_absolute={exposure}"  #  --set-ctrl exposure_auto=1
+        # --set-ctrl exposure_auto=1
+        f"v4l2-ctl -d {fullCamPath(identifier)} --set-ctrl exposure_absolute={exposure}"
     )
 ###
 
@@ -130,4 +137,3 @@ def setExposure(identifier, exposure):
 
 #     test = dict(zip(list(map(lambda x: x.name, available_controls[1:])), available_controls[1:]))
 #     print(test)
-    

@@ -1,3 +1,9 @@
+from directory import calibrationImageFolder, calibrationPathByCam
+from state import walleyeData, States, CALIBRATION_STATES
+from processing.processing import Processor
+import threading
+from camera.camera import Cameras
+from calibration.calibration import Calibration, CalibType
 import logging
 import sys
 import time
@@ -9,7 +15,10 @@ logging.basicConfig(
     format=LOG_FORMAT,
     handlers=[
         logging.StreamHandler(sys.stdout),
-        RotatingFileHandler("walleye.log", maxBytes=1024 * 1024, backupCount=5),
+        RotatingFileHandler(
+            "walleye.log",
+            maxBytes=1024 * 1024,
+            backupCount=5),
     ],
     datefmt="%d-%b-%y %H:%M:%S",
     level=logging.INFO,  # Set to DEBUG for pose printouts
@@ -18,13 +27,6 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 logger.info("----------- Starting Up -----------")
 
-from calibration.calibration import Calibration, CalibType
-from camera.camera import Cameras
-import threading
-from processing.processing import Processor
-from camera.camera import Cameras
-from state import walleyeData, States, CALIBRATION_STATES
-from directory import calibrationImageFolder, calibrationPathByCam
 
 # Create and intialize cameras
 walleyeData.cameras = Cameras()
@@ -150,7 +152,8 @@ try:
                         walleyeData.cameraInCalibration
                     ].getReprojectionError()
 
-                    # Set the cameras calibration, save off the file path, and go to idle
+                    # Set the cameras calibration, save off the file path, and
+                    # go to idle
                     walleyeData.cameras.setCalibration(
                         walleyeData.cameraInCalibration,
                         calibrators[walleyeData.cameraInCalibration].calibrationData[
@@ -185,7 +188,8 @@ try:
             connections, images = walleyeData.cameras.getFramesForProcessing()
 
             for idx, val in enumerate(connections.values()):
-                if not val and walleyeData.robotPublisher.getConnectionValue(idx):
+                if not val and walleyeData.robotPublisher.getConnectionValue(
+                        idx):
                     logger.info("Camera disconnected")
                 walleyeData.robotPublisher.setConnectionValue(idx, val)
 

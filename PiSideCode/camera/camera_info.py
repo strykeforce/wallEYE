@@ -2,21 +2,40 @@ from pyrav4l2 import Device
 from directory import fullCamPath
 import logging
 
+BRIGHTNESS = "Brightness"
+EXPOSURE = "Exposure Time, Absolute"
+
+
 class CameraInfo:
     logger = logging.getLogger(__name__)
 
     def __init__(
-        self, cam, identifier, supportedResolutions, resolution=None, K=None, D=None
-    ):
+            self,
+            cam,
+            identifier,
+            K=None,
+            D=None):
         self.lastImage = None
 
         self.cam = cam
         self.identifier = identifier
-        self.resolution = resolution
-        self.supportedResolutions = supportedResolutions
-        self.exposureRange = (0, 100, 1)
-        self.brightnessRange = (0, 240, 1)
-        self.validFormats = []
+
+        self.controller = Device(
+            fullCamPath(identifier)
+        )
+
+        # Modified with self.set()
+        self.controls = {c.name: c for c in self.controller.controls[1:]}
+        self.validFormats = {
+            str(f): [(r.width, r.height) for r in res]
+            for f, res in self.controller.available_formats.items()
+        }
+
+        currFormat = self.controller.get_format()
+        self.resolution = (currFormat[1].width, currFormat[1].height)
+
+        self.exposureRange = self.makeControlTuple(EXPOSURE)
+        self.brightnessRange = self.makeControlTuple(BRIGHTNESS)
 
         # Calibration
         self.K = K
@@ -24,28 +43,34 @@ class CameraInfo:
 
         self.calibrationPath = None
 
-        self.controller = Device(
-            fullCamPath(identifier)
-        )
+    def getSupportedResolutions(self):
+        currFormat = self.controller.get_format()
+        return self.validFormats[str(currFormat[0])]
 
-        self.controls = dict(
-            zip(
-                list(map(lambda control: control.name, self.controller.controls[1:])),
-                self.controller.controls[1:],
-            )
-        )
-
+    # V4L2 Controls
     def set(self, controlName, value):
         try:
-            self.controller.set_control_value(self.controls[controlName], value)
+            self.controller.set_control_value(
+                self.controls[controlName], int(value))
 
-            if self.get(controlName) == value:
-                CameraInfo.logger.info(f"Successfully set {controlName} = {value} in camera {self.identifier}")
-        
+            CameraInfo.logger.info(
+                f"{controlName} set to {value} in camera {self.identifier}")
+            
+            return True
+
         except Exception as e:
             CameraInfo.logger.error(f"Camera {self.identifier} error: {e}")
-        
+
         return False
 
     def get(self, controlName):
-        self.controller.get_control_value(controlName)
+        self.controller.get_control_value(self.controls[controlName])
+
+    # Util
+    def makeControlTuple(self, controlName):
+        control = self.controls[controlName]
+        return (
+            control.minimum,
+            control.maximum,
+            control.step,
+        )

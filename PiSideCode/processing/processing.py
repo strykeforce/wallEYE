@@ -8,7 +8,12 @@ import math
 
 class Processor:
     logger = logging.getLogger(__name__)
-    BAD_POSE = wpi.Pose3d(wpi.Translation3d(2767, 2767, 2767), wpi.Rotation3d())
+    BAD_POSE = wpi.Pose3d(
+        wpi.Translation3d(
+            2767,
+            2767,
+            2767),
+        wpi.Rotation3d())
     MIN_TAG = 0
     MAX_TAG = 16
 
@@ -47,10 +52,12 @@ class Processor:
     def setTagSize(self, size):
         self.squareLength = size
 
-    # A method that translates the WPILib coordinate system to the openCV coordinate system
+    # A method that translates the WPILib coordinate system to the openCV
+    # coordinate system
     @staticmethod
     def translationToSolvePnP(translation):
-        return np.asarray([-translation.Y(), -translation.Z(), translation.X()])
+        return np.asarray(
+            [-translation.Y(), -translation.Z(), translation.X()])
 
     # Grab AprilTag pose information
     @staticmethod
@@ -81,7 +88,8 @@ class Processor:
         pose = Processor.makePoseObject(jsonID)
         rot = pose.rotation().rotateBy(wpi.Rotation3d(0, 0, math.radians(180)))
         translation = np.asarray([pose.X(), pose.Y(), pose.Z()]).reshape(3, 1)
-        rot, _ = cv2.Rodrigues(np.asarray([rot.X(), rot.Y(), rot.Z()]).reshape(3, 1))
+        rot, _ = cv2.Rodrigues(np.asarray(
+            [rot.X(), rot.Y(), rot.Z()]).reshape(3, 1))
         return Processor.getTransform(translation, rot)
 
     def getRotFromTransform(transform):
@@ -140,7 +148,8 @@ class Processor:
             pose2 = 0
             curTags = []
 
-            # If an invalid image is given or no calibration return an error pose
+            # If an invalid image is given or no calibration return an error
+            # pose
             if img is None or K[imgIndex] is None or D[imgIndex] is None:
                 poses.append((Processor.BAD_POSE, Processor.BAD_POSE))
                 tags.append([])
@@ -253,7 +262,8 @@ class Processor:
                         cornerLoc = np.concatenate(
                             (cornerLoc, corners[tagCount][0]), axis=0
                         )
-                        tagLoc = np.concatenate((tagLoc, np.asarray([c1, c2, c3, c4])))
+                        tagLoc = np.concatenate(
+                            (tagLoc, np.asarray([c1, c2, c3, c4])))
                     tagCount += 1
 
                 if (
@@ -303,17 +313,18 @@ class Processor:
 
                 else:
                     # Calculate robot pose with 2d and 3d points
-                    # Sometimes dies:  point_coordinate_variance >= POINT_VARIANCE_THRESHOLD in function 'computeOmega'
+                    # Sometimes dies:  point_coordinate_variance >=
+                    # POINT_VARIANCE_THRESHOLD in function 'computeOmega'
 
                     try:
-                        ret, rvecs, tvecs = cv2.solvePnP( 
+                        ret, rvecs, tvecs = cv2.solvePnP(
                             tagLoc,
                             cornerLoc,
                             K[imgIndex],
                             D[imgIndex],
                             flags=cv2.SOLVEPNP_SQPNP,
                         )
-                    except:
+                    except BaseException:
                         Processor.logger.error("solvePnP error?!")
                         poses.append((Processor.BAD_POSE, Processor.BAD_POSE))
                         tags.append([])
@@ -326,16 +337,20 @@ class Processor:
                     # Grab the rotation matrix and find the translation vector
                     rotMat, _ = cv2.Rodrigues(rvecs)
                     transVec = -np.dot(np.transpose(rotMat), tvecs)
-                    transVec = np.asarray([transVec[2], -transVec[0], -transVec[1]])
+                    transVec = np.asarray(
+                        [transVec[2], -transVec[0], -transVec[1]])
 
                     rots, _ = cv2.Rodrigues(rotMat)
-                    rotMat, _ = cv2.Rodrigues(np.asarray([rots[2], -rots[0], rots[1]]))
+                    rotMat, _ = cv2.Rodrigues(
+                        np.asarray([rots[2], -rots[0], rots[1]]))
 
-                    # Convert the rotation matrix to a three rotation system (yaw, pitch, roll)
+                    # Convert the rotation matrix to a three rotation system
+                    # (yaw, pitch, roll)
                     rot3D = wpi.Rotation3d(rotMat)
                     pose1 = wpi.Pose3d(
                         # Translation between openCV and WPILib
-                        wpi.Translation3d(transVec[0], transVec[1], transVec[2]),
+                        wpi.Translation3d(
+                            transVec[0], transVec[1], transVec[2]),
                         rot3D,
                     )
                     pose2 = pose1

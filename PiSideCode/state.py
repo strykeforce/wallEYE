@@ -63,10 +63,12 @@ class Data:
                 self.setIP(ip)
 
                 if Data.getCurrentIP() != ip:
-                    Data.logger.warning("Failed to set static ip, trying again...")
+                    Data.logger.warning(
+                        "Failed to set static ip, trying again...")
                     self.setIP(ip)
 
-        # If no system file is found boot with base settings and create system settings
+        # If no system file is found boot with base settings and create system
+        # settings
         except (FileNotFoundError, json.decoder.JSONDecodeError, KeyError):
             self.teamNumber = 2767
             self.tableName = "WallEye"
@@ -110,9 +112,11 @@ class Data:
             Data.logger.info("Existing publisher destroyed")
 
         # Create the robot publisher
-        self.robotPublisher = NetworkIO(False, self.teamNumber, self.tableName, 2)
+        self.robotPublisher = NetworkIO(
+            False, self.teamNumber, self.tableName, 2)
 
-        Data.logger.info(f"Robot publisher created: {teamNumber} - {tableName}")
+        Data.logger.info(
+            f"Robot publisher created: {teamNumber} - {tableName}")
 
     def setPose(self, identifier, pose):
         self.poses[identifier] = (
@@ -159,7 +163,8 @@ class Data:
 
         # Set IP
         os.system("/usr/sbin/ifconfig eth0 up")
-        if not os.system(f"/usr/sbin/ifconfig eth0 {ip} netmask 255.255.255.0"):
+        if not os.system(
+                f"/usr/sbin/ifconfig eth0 {ip} netmask 255.255.255.0"):
             Data.logger.info(f"Static IP set: {ip} =? {Data.getCurrentIP()}")
             self.ip = ip
         else:
@@ -197,7 +202,7 @@ class Data:
     def getCurrentIP():
         try:
             return (
-                os.popen('ip addr show eth0 | grep "\<inet\>"')
+                os.popen('ip addr show eth0 | grep "\\<inet\\>"')
                 .read()
                 .split()[1]
                 .split("/")[0]
@@ -212,7 +217,8 @@ class Data:
             "teamNumber": self.teamNumber,
             "tableName": self.tableName,
             "currentState": self.currentState.value,
-            "cameraIDs": list(self.cameras.info.keys()),
+            "cameraIDs": list(
+                self.cameras.info.keys()),
             "cameraInCalibration": self.cameraInCalibration,
             "boardDims": self.boardDims,
             "calDelay": self.calDelay,
@@ -223,12 +229,14 @@ class Data:
             "brightness": self.cameras.getBrightnesss(),
             "exposure": self.cameras.getExposures(),
             "supportedResolutions": {
-                k: v.supportedResolutions for k, v in self.cameras.info.items()
-            },
-            "exposureRange": {k: v.exposureRange for k, v in self.cameras.info.items()},
+                k: v.getSupportedResolutions() for k,
+                v in self.cameras.info.items()},
+            "exposureRange": {
+                k: v.exposureRange for k,
+                v in self.cameras.info.items()},
             "brightnessRange": {
-                k: v.brightnessRange for k, v in self.cameras.info.items()
-            },
+                k: v.brightnessRange for k,
+                v in self.cameras.info.items()},
             "ip": self.ip,
             "tagSize": self.tagSize,
             "visualizingPoses": self.visualizingPoses,
