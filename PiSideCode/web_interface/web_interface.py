@@ -11,6 +11,8 @@ import zipfile
 import pathlib
 import io
 
+# import asyncio
+
 logger = logging.getLogger(__name__)
 
 
@@ -28,6 +30,23 @@ visualizationBuffers = {
 }
 
 
+# def iter_over_async(ait, loop):
+#     ait = ait.__aiter__()
+
+#     async def get_next():
+#         try:
+#             obj = await ait.__anext__()
+#             return False, obj
+#         except StopAsyncIteration:
+#             return True, None
+
+#     while True:
+#         done, obj = loop.run_until_complete(get_next())
+#         if done:
+#             break
+#         yield obj
+
+
 def displayInfo(msg):
     logger.info(f"Sending message to web interface: {msg}")
     walleyeData.status = msg
@@ -37,7 +56,7 @@ def update_after(action):
     def action_and_update(*args, **kwargs):
         action(*args, **kwargs)
         send_state_update()
-        logger.info(action.__name__)
+        # logger.info(action.__name__)
 
     return action_and_update
 
@@ -205,8 +224,10 @@ def set_static_ip(ip):
 
 
 @socketio.on("shutdown")
+@update_after
 def shutdown():
     walleyeData.currentState = States.SHUTDOWN
+    socketio.stop()
 
 
 @socketio.on("toggle_pnp")
@@ -265,6 +286,10 @@ def video_feed(camID):
     if camID not in camBuffers:
         logger.error(f"Bad cam id recieved: {camID}")
         return
+
+    # loop = asyncio.new_event_loop()
+    # asyncio.set_event_loop(loop)
+    # img = iter_over_async(camBuffers[camID].output(), loop)
 
     return Response(
         camBuffers[camID].output(), mimetype="multipart/x-mixed-replace; boundary=frame"

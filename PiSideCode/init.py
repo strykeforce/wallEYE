@@ -16,6 +16,7 @@ logging.basicConfig(
 )
 
 logger = logging.getLogger(__name__)
+
 logger.info("----------- Starting Up -----------")
 
 from state import walleyeData, States, CALIBRATION_STATES
@@ -33,9 +34,7 @@ from web_interface.web_interface import (
     camBuffers,
     socketio,
     app,
-    visualizationBuffers,
-    displayInfo,
-    send_state_update,
+    visualizationBuffers
 )  # After walleyeData.cameras is set
 
 webServer = threading.Thread(
@@ -53,9 +52,11 @@ try:
     # Start the web server
     webServer.start()
 
+    logging.getLogger("geventwebsocket.handler").setLevel(logging.ERROR)
     logging.getLogger("socketio").setLevel(logging.ERROR)
     logging.getLogger("socketio.server").setLevel(logging.ERROR)
     logging.getLogger("engineio").setLevel(logging.ERROR)
+
 
     logger.info("Web server ready")
 
@@ -223,7 +224,6 @@ try:
         elif walleyeData.currentState == States.SHUTDOWN:
             logger.info("Shutting down")
             logging.shutdown()
-            webServer.join()
             socketio.stop()
             break
 
@@ -244,6 +244,5 @@ except Exception as e:
     # Something bad happened
     logging.critical(e, exc_info=True)
     logger.info("Shutting down")
-    webServer.join()
     socketio.stop()
     logging.shutdown()

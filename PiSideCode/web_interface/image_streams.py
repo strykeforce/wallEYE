@@ -5,6 +5,8 @@ import numpy as np
 import matplotlib.image as mpimg
 import json
 import simplejpeg
+import time
+import asyncio
 
 logger = logging.getLogger(__name__)
 
@@ -29,6 +31,7 @@ class Buffer:
         # self.outputFrame = encoded
 
     def output(self):
+        # await asyncio.sleep(0.1)
         while True:
             yield (
                 b"--frame\r\n"
