@@ -1,9 +1,10 @@
 pyntcore == 2023.2.1.2
 robotpy-wpimath
 Flask
+gevent
+gevent-websocket
 opencv-contrib-python >= 4.8.0
 flask-socketio
-eventlet
 matplotlib
 numpy >= 1.25
 simplejpeg

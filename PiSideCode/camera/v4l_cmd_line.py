@@ -1,4 +1,4 @@
-# Unused 
+# Unused
 # The old way
 import subprocess
 from directory import fullCamPath
@@ -82,6 +82,7 @@ def getSettings(identifier):
 
     return exposureRange, brightnessRange
 
+
 # Use methods in Cameras, do not use directly
 
 
@@ -96,6 +97,8 @@ def setExposure(identifier, exposure):
         # --set-ctrl exposure_auto=1
         f"v4l2-ctl -d {fullCamPath(identifier)} --set-ctrl exposure_absolute={exposure}"
     )
+
+
 ###
 
 # if __name__ == "__main__":

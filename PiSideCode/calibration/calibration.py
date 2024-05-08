@@ -8,6 +8,7 @@ import logging
 from enum import Enum
 from pathlib import Path
 
+
 class CalibType(Enum):
     CHESSBOARD = "CHESSBOARD"
     CIRCLE_GRID = "CIRCLE_GRID"
@@ -34,11 +35,10 @@ class Calibration:
         self.calibType = calibType
 
         # Create a list for the corner locations for the calibration tag
-        self.reference = np.zeros(
-            (cornerShape[0] * cornerShape[1], 3), np.float32)
+        self.reference = np.zeros((cornerShape[0] * cornerShape[1], 3), np.float32)
         if self.calibType == CalibType.CHESSBOARD:
             self.reference[:, :2] = np.mgrid[
-                0: cornerShape[0], 0: cornerShape[1]
+                0 : cornerShape[0], 0 : cornerShape[1]
             ].T.reshape(-1, 2)
         elif self.calibType == CalibType.CIRCLE_GRID:
             # criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
@@ -69,14 +69,10 @@ class Calibration:
             self.blobDetector = cv2.SimpleBlobDetector_create(blobParams)
 
             for i in range(cornerShape[1]):
-                self.reference[i * cornerShape[0]: (i + 1) * cornerShape[0]][:, 0] = i
-                self.reference[i *
-                               cornerShape[0]: (i +
-                                                1) *
-                               cornerShape[0]][:, 1] = (np.arange(0, cornerShape[0]) *
-                                                        2 +
-                                                        i %
-                                                        2)
+                self.reference[i * cornerShape[0] : (i + 1) * cornerShape[0]][:, 0] = i
+                self.reference[i * cornerShape[0] : (i + 1) * cornerShape[0]][:, 1] = (
+                    np.arange(0, cornerShape[0]) * 2 + i % 2
+                )
 
         # Set values
         self.objPoints = []
@@ -133,7 +129,8 @@ class Calibration:
                 cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS,
             )
             found, corners = cv2.findCirclesGrid(
-                imgKeypoints, self.cornerShape, None, flags=cv2.CALIB_CB_ASYMMETRIC_GRID)
+                imgKeypoints, self.cornerShape, None, flags=cv2.CALIB_CB_ASYMMETRIC_GRID
+            )
 
         used = False
         pathSaved = None
@@ -229,8 +226,7 @@ class Calibration:
 
     def drawOverlay(self, img, alpha=0.5):
         mask = self.overlay.astype(bool)
-        img[mask] = cv2.addWeighted(
-            img, alpha, self.overlay, 1 - alpha, 0)[mask]
+        img[mask] = cv2.addWeighted(img, alpha, self.overlay, 1 - alpha, 0)[mask]
 
     # Return all saved calibration images
     def loadSavedImages(
@@ -272,8 +268,7 @@ class Calibration:
     # Generate a calibration and write to a file
     def generateCalibration(self, calFile: str):
         if len(self.objPoints) == 0:
-            Calibration.logger.error(
-                "Calibration failed: No image data available")
+            Calibration.logger.error("Calibration failed: No image data available")
             return False
 
         # Using the saved off 2d and 3d points, it will return a camera matrix
@@ -303,7 +298,9 @@ class Calibration:
 
         self.calibrationData["reprojError"] = reprojError
 
-        Path(os.path.join("config_data", "calibrations")).mkdir(parents=True, exist_ok=True)
+        Path(os.path.join("config_data", "calibrations")).mkdir(
+            parents=True, exist_ok=True
+        )
 
         # Write to a calibration file
         with open(calFile, "w") as f:
@@ -364,8 +361,9 @@ class Calibration:
     #     return self.lastImageSharp
 
     # Check if the current image can be use for calibration
-    def isReady(self, img: np.ndarray, corners: np.ndarray,
-                requiredReadyCounts: int = 6) -> bool:
+    def isReady(
+        self, img: np.ndarray, corners: np.ndarray, requiredReadyCounts: int = 6
+    ) -> bool:
         threshold = self.resolution[0] / 50
         if (
             np.linalg.norm(self.prevUsedCorner1 - corners[0][0]) > threshold
@@ -381,8 +379,7 @@ class Calibration:
     # calculate error of the calibration
     def getReprojectionError(self) -> float:
         if len(self.objPoints) == 0:
-            Calibration.logger.error(
-                "Cannot compute reprojection error: No image data")
+            Calibration.logger.error("Cannot compute reprojection error: No image data")
             return
 
         totalError = 0

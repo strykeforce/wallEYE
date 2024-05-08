@@ -1,5 +1,6 @@
 import json
 from directory import camConfigPath
+from pathlib import Path
 
 
 def parseConfig(identifier):
@@ -19,15 +20,16 @@ def parseConfig(identifier):
             "Exposure": None,
         }
 
-        with open(
-            configPath, "w"
-        ) as outFile:
+        with open(configPath, "w") as outFile:
             json.dump(fileDump, outFile)
         return fileDump
 
 
 # Write config data to a file following naming conventions
 def writeConfig(identifier, resolution, brightness, exposure):
+    Path("config_data/camera_configs").mkdir(parents=True, exist_ok=True)
+    Path("config_data/calibrations").mkdir(parents=True, exist_ok=True)
+
     with open(camConfigPath(identifier), "w") as data:
         fileDump = {
             "Resolution": resolution,

@@ -9,20 +9,13 @@ EXPOSURE = "Exposure Time, Absolute"
 class CameraInfo:
     logger = logging.getLogger(__name__)
 
-    def __init__(
-            self,
-            cam,
-            identifier,
-            K=None,
-            D=None):
+    def __init__(self, cam, identifier, K=None, D=None):
         self.lastImage = None
 
         self.cam = cam
         self.identifier = identifier
 
-        self.controller = Device(
-            fullCamPath(identifier)
-        )
+        self.controller = Device(fullCamPath(identifier))
 
         # Modified with self.set()
         self.controls = {c.name: c for c in self.controller.controls[1:]}
@@ -50,12 +43,12 @@ class CameraInfo:
     # V4L2 Controls
     def set(self, controlName, value):
         try:
-            self.controller.set_control_value(
-                self.controls[controlName], int(value))
+            self.controller.set_control_value(self.controls[controlName], int(value))
 
             CameraInfo.logger.info(
-                f"{controlName} set to {value} in camera {self.identifier}")
-            
+                f"{controlName} set to {value} in camera {self.identifier}"
+            )
+
             return True
 
         except Exception as e:

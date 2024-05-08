@@ -3,7 +3,6 @@ import json
 from directory import CONFIG_DATA_PATH
 from publisher.network_table_publisher import NetworkIO
 import logging
-import os
 import socket, struct, fcntl
 
 SIOCSIFADDR = 0x8916
@@ -32,9 +31,10 @@ CALIBRATION_STATES = (
 class Data:
     logger = logging.getLogger(__name__)
 
-    def __init__(self) -> None:
+    def __init__(self):
         self.currentState = States.PROCESSING
         self.status = "Running"
+        self.ip = None
 
         self.visualizingPoses = False
 
@@ -70,8 +70,7 @@ class Data:
                 self.setIP(ip)
 
                 if Data.getCurrentIP() != ip:
-                    Data.logger.warning(
-                        "Failed to set static ip, trying again...")
+                    Data.logger.warning("Failed to set static ip, trying again...")
                     self.setIP(ip)
 
         # If no system file is found boot with base settings and create system
@@ -119,11 +118,9 @@ class Data:
             Data.logger.info("Existing publisher destroyed")
 
         # Create the robot publisher
-        self.robotPublisher = NetworkIO(
-            False, self.teamNumber, self.tableName, 2)
+        self.robotPublisher = NetworkIO(False, self.teamNumber, self.tableName, 2)
 
-        Data.logger.info(
-            f"Robot publisher created: {teamNumber} - {tableName}")
+        Data.logger.info(f"Robot publisher created: {teamNumber} - {tableName}")
 
     def setPose(self, identifier, pose):
         self.poses[identifier] = (
@@ -161,7 +158,7 @@ class Data:
             Data.logger.error(f"Failed to write tag size {size}")
 
     # Set static IP and write it into system files
-    def setIP(self, ip, interface="wlp2s0"):
+    def setIP(self, ip, interface="eth0"):
         Data.logger.info("Attempting to set static IP")
 
         if not ip:
@@ -196,7 +193,10 @@ class Data:
             b"\x00" * 8,
         )
         # https://stackoverflow.com/questions/70310413/python-fcntl-ioctl-errno-1-operation-not-permitted
-        fcntl.ioctl(sock, SIOCSIFADDR, ifreq)
+        try:
+            fcntl.ioctl(sock, SIOCSIFADDR, ifreq)
+        except Exception as e:
+            Data.logger.info(f"Failed to set IP address: {e}")
 
         Data.logger.info(f"Static IP set: {ip} =? {Data.getCurrentIP()}")
         self.ip = ip
@@ -228,15 +228,15 @@ class Data:
     #         Config.logger.error("Networking failed to stop")
 
     @staticmethod
-    def getCurrentIP(interface="wlp2s0"):
+    def getCurrentIP(interface="eth0"):
         # https://stackoverflow.com/questions/166506/finding-local-ip-addresses-using-pythons-stdlib/9267833#9267833
         ifreq = struct.pack(
             b"16sH14s", interface.encode("utf-8"), socket.AF_INET, b"\x00" * 14
         )
         try:
             res = fcntl.ioctl(sockfd, SIOCGIFADDR, ifreq)
-        except:
-            Data.logger.error("Could not get current IP - Returning None")
+        except Exception as e:
+            Data.logger.error(f"Could not get current IP - {e} - Returning None")
             return None
 
         ip = struct.unpack("16sH2x4s8x", res)[2]
@@ -259,8 +259,7 @@ class Data:
             "teamNumber": self.teamNumber,
             "tableName": self.tableName,
             "currentState": self.currentState.value,
-            "cameraIDs": list(
-                self.cameras.info.keys()),
+            "cameraIDs": list(self.cameras.info.keys()),
             "cameraInCalibration": self.cameraInCalibration,
             "boardDims": self.boardDims,
             "calDelay": self.calDelay,
@@ -271,14 +270,12 @@ class Data:
             "brightness": self.cameras.getBrightnesss(),
             "exposure": self.cameras.getExposures(),
             "supportedResolutions": {
-                k: v.getSupportedResolutions() for k,
-                v in self.cameras.info.items()},
-            "exposureRange": {
-                k: v.exposureRange for k,
-                v in self.cameras.info.items()},
+                k: v.getSupportedResolutions() for k, v in self.cameras.info.items()
+            },
+            "exposureRange": {k: v.exposureRange for k, v in self.cameras.info.items()},
             "brightnessRange": {
-                k: v.brightnessRange for k,
-                v in self.cameras.info.items()},
+                k: v.brightnessRange for k, v in self.cameras.info.items()
+            },
             "ip": self.ip,
             "tagSize": self.tagSize,
             "visualizingPoses": self.visualizingPoses,

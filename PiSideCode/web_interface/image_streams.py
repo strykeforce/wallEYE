@@ -22,11 +22,11 @@ class Buffer:
         if self.lastNone:
             logger.info("Updated image is NOT none!")
         self.lastNone = False
-        # self.outputFrame = cv2.imencode(".jpg", img)[1].tobytes()
-        encoded = simplejpeg.encode_jpeg(img)
+        self.outputFrame = cv2.imencode(".jpg", img)[1].tobytes()
+        # encoded = simplejpeg.encode_jpeg(img)
         # if (img == encoded).all():
         #     logger.warning("Frame did not update!")
-        self.outputFrame = encoded
+        # self.outputFrame = encoded
 
     def output(self):
         while True:
@@ -82,11 +82,7 @@ class LivePlotBuffer(Buffer):
         plt.locator_params(axis="z", nbins=2)
         self.ax.set_aspect("equal")
         self.fig.tight_layout()
-        self.fig.subplots_adjust(
-            left=-0.26,
-            right=1.21,
-            bottom=-0.08,
-            top=1.08)
+        self.fig.subplots_adjust(left=-0.26, right=1.21, bottom=-0.08, top=1.08)
 
         img = mpimg.imread("./web_interface/field.png")
         x = np.linspace(0, LivePlotBuffer.FIELD_DIMS[0], img.shape[1])

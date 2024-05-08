@@ -1,17 +1,14 @@
 import cv2
 from camera.boot_up import writeConfig, parseConfig
 from calibration.calibration import Calibration
-# import re
 import os
+import time
 from sys import platform
 import logging
 from camera.camera_info import CameraInfo, EXPOSURE, BRIGHTNESS
 from pathlib import Path
-# from camera.v4l_cmd_line import getFormats, getSettings, setBrightness, setExposure
-from directory import V4L_PATH, fullCamPath, cleanIdentifier, calibrationPathByCam
+from directory import V4L_PATH, fullCamPath, calibrationPathByCam
 import json
-
-# Maintains camera info provided by cv2
 
 
 class Cameras:
@@ -34,8 +31,11 @@ class Cameras:
 
             # Try all cameras found by the PI
             for identifier in cameraPaths:
-                if (Path("../../../deadeye").is_dir() and identifier ==
-                        "platform-xhci-hcd.9.auto-usb-0:1:1.0-video-index0"):
+                if (
+                    Path("../../../deadeye").is_dir()
+                    and identifier
+                    == "platform-xhci-hcd.9.auto-usb-0:1:1.0-video-index0"
+                ):
                     continue
 
                 path = fullCamPath(identifier)
@@ -59,7 +59,8 @@ class Cameras:
                         f"Supported resolutions: {self.info[identifier].getSupportedResolutions()}"
                     )
                     Cameras.logger.info(
-                        f"Supported formats: {list(self.info[identifier].validFormats.keys())}")
+                        f"Supported formats: {list(self.info[identifier].validFormats.keys())}"
+                    )
                     Cameras.logger.info(
                         f"Supported exposures (min, max, step): {self.info[identifier].exposureRange}"
                     )
@@ -72,8 +73,7 @@ class Cameras:
 
                     # Try to disable auto exposure
                     if cam.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1):
-                        Cameras.logger.info(
-                            f"Auto exposure disabled for {identifier}")
+                        Cameras.logger.info(f"Auto exposure disabled for {identifier}")
                     else:
                         Cameras.logger.warning(
                             f"Failed to disable auto exposure for {identifier}"
@@ -91,8 +91,7 @@ class Cameras:
                     )
 
                 else:
-                    Cameras.logger.warning(
-                        f"Failed to open camera: {identifier}")
+                    Cameras.logger.warning(f"Failed to open camera: {identifier}")
 
         else:
             Cameras.logger.error("Unsupported platform!")
@@ -101,8 +100,7 @@ class Cameras:
         self.info[identifier].K = K
         self.info[identifier].D = D
 
-        Cameras.logger.info(
-            f"Calibration set for {identifier}, using {K}\n{D}")
+        Cameras.logger.info(f"Calibration set for {identifier}, using {K}\n{D}")
 
     # Return a list of camera matrixs
     def listK(self):
@@ -112,27 +110,26 @@ class Cameras:
     def listD(self):
         return [i.D for i in self.info.values()]
 
-    # Grab frames from each camera
-    def getFrames(self):
-        frames = {}
-        for identifier, camInfo in self.info.items():
-            ret, img = camInfo.cam.read()
-
-            if not ret:
-                Cameras.logger.error(f"Failed to capture image: {identifier}")
-
-            frames[identifier] = img
-        return frames
-
     # Grab frames from each camera specifically for processing
     def getFramesForProcessing(self):
         frames = {}
         connections = {}
+        delay = {}
         for identifier, camInfo in self.info.items():
             ret, img = camInfo.cam.read()
+
+            # if not ret:
+            #     Cameras.logger.error(f"Failed to capture image: {identifier}")
+
             frames[identifier] = img
             connections[identifier] = ret
-        return (connections, frames)
+            delay[identifier] = time.clock_gettime_ns(
+                time.CLOCK_MONOTONIC
+            ) / 1000000 - camInfo.cam.get(
+                cv2.CAP_PROP_POS_MSEC
+            )  # Expect -28 to -32 on laptop testing TODO CHECK THIS
+
+        return (connections, frames, delay)
 
     # Sets resolution, video format, and FPS
     def setResolution(self, identifier, resolution):
@@ -146,12 +143,15 @@ class Cameras:
         self.info[identifier].cam.set(
             cv2.CAP_PROP_FOURCC,
             cv2.VideoWriter_fourcc(
-                *("YUYV" if "YUYV" in self.info[identifier].validFormats else "GREY")
+                *(
+                    "YUYV"
+                    if "YUYV" in "".join(self.info[identifier].validFormats)
+                    else "GREY"
+                )
             ),
         )
         # self.info[identifier].cam.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*"YUYV"))
-        self.info[identifier].cam.set(
-            cv2.CAP_PROP_FPS, 5)  # Lower can be better
+        self.info[identifier].cam.set(cv2.CAP_PROP_FPS, 5)  # Lower can be better
         resolution = tuple(resolution)
 
         # Test if resolution got set
@@ -326,7 +326,6 @@ class Cameras:
 
         else:
             self.importCalibration(identifier)
-            Cameras.logger.warning(
-                f"Camera config not found for camera {identifier}")
+            Cameras.logger.warning(f"Camera config not found for camera {identifier}")
 
         return config

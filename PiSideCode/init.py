@@ -1,6 +1,7 @@
 import sys
 import logging
 from logging.handlers import RotatingFileHandler
+from directory import calibrationImageFolder, calibrationPathByCam, LOG
 
 # Create logger and set settings
 LOG_FORMAT = "[%(asctime)s - %(levelname)s - %(filename)s:%(lineno)s - %(funcName)s()]  %(message)s"
@@ -8,27 +9,21 @@ logging.basicConfig(
     format=LOG_FORMAT,
     handlers=[
         logging.StreamHandler(sys.stdout),
-        RotatingFileHandler(
-            "walleye.log",
-            maxBytes=1024 * 1024,
-            backupCount=5),
+        RotatingFileHandler(LOG, maxBytes=1024 * 1024, backupCount=5),
     ],
     datefmt="%d-%b-%y %H:%M:%S",
-    level=logging.INFO,  # Set to DEBUG for pose printouts
+    level=logging.INFO,
 )
 
 logger = logging.getLogger(__name__)
 logger.info("----------- Starting Up -----------")
 
-
-from directory import calibrationImageFolder, calibrationPathByCam
 from state import walleyeData, States, CALIBRATION_STATES
 from processing.processing import Processor
 import threading
 from camera.camera import Cameras
 from calibration.calibration import Calibration, CalibType
 import time
-
 
 
 # Create and intialize cameras
@@ -40,22 +35,23 @@ from web_interface.web_interface import (
     app,
     visualizationBuffers,
     displayInfo,
-    sendStateUpdate,
+    send_state_update,
 )  # After walleyeData.cameras is set
 
+webServer = threading.Thread(
+    target=lambda: socketio.run(
+        app,
+        host="0.0.0.0",
+        port=5800,
+        debug=False,
+        use_reloader=False,
+        log_output=False,
+    ),
+    daemon=True,
+)
 try:
     # Start the web server
-    webServer = threading.Thread(
-        target=lambda: socketio.run(
-            app,
-            host="0.0.0.0",
-            port=5800,
-            debug=True,
-            use_reloader=False,
-            log_output=False,
-        ),
-        daemon=True,
-    ).start()
+    webServer.start()
 
     logging.getLogger("socketio").setLevel(logging.ERROR)
     logging.getLogger("socketio.server").setLevel(logging.ERROR)
@@ -186,14 +182,14 @@ try:
             # Set tag size, grab camera frames, and grab image timestamp
             poseEstimator.setTagSize(walleyeData.tagSize)
 
-            imageTime = walleyeData.robotPublisher.getTime()
+            imageTime = walleyeData.robotPublisher.getTime() 
 
-            connections, images = walleyeData.cameras.getFramesForProcessing()
+            connections, images, delay = walleyeData.cameras.getFramesForProcessing()
 
             for idx, val in enumerate(connections.values()):
-                if not val and walleyeData.robotPublisher.getConnectionValue(
-                        idx):
+                if not val and walleyeData.robotPublisher.getConnectionValue(idx):
                     logger.info("Camera disconnected")
+
                 walleyeData.robotPublisher.setConnectionValue(idx, val)
 
             # Use the poseEstimator class to find the pose, tags, and ambiguity
@@ -209,7 +205,7 @@ try:
             for i in range(len(poses)):
                 if poses[i][0].X() < 2000:
                     walleyeData.robotPublisher.publish(
-                        i, imageTime, poses[i], tags[i], ambig[i]
+                        i, imageTime - delay[i], poses[i], tags[i], ambig[i]
                     )
 
             # Update the pose visualization
@@ -227,6 +223,7 @@ try:
         elif walleyeData.currentState == States.SHUTDOWN:
             logger.info("Shutting down")
             logging.shutdown()
+            webServer.join()
             socketio.stop()
             break
 
@@ -247,5 +244,6 @@ except Exception as e:
     # Something bad happened
     logging.critical(e, exc_info=True)
     logger.info("Shutting down")
-    logging.shutdown()
+    webServer.join()
     socketio.stop()
+    logging.shutdown()
