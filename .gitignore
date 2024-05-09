@@ -1,8 +1,8 @@
-PiSideCode/WebInterface/walleye/node_modules/*
+PiSideCode/web_interface/walleye/node_modules/*
 PiSideCode/walleye.log*
 **/__pycache__
-PiSideCode/Calibration/Cam_*
-PiSideCode/Camera/CameraConfigs/*
+PiSideCode/calibration/Cam_*
+PiSideCode/camera/camera_configs/*
 profile.html
 profile.json
 PiSideCode/config.zip
@@ -13,3 +13,4 @@ PiSideCode/config.zip
 
 ## VS Code Java ##
 bin/
+**/.vscode

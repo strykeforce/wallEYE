@@ -35,7 +35,7 @@ class CameraInfo:
         }
 
         curr_format = self.controller.get_format()
-        self.resolution = (curr_format[1].width, curr_format[1].height)
+        self.resolution: tuple[int, int] = (curr_format[1].width, curr_format[1].height)
 
         self.exposure_range = self.make_control_tuple(EXPOSURE)
         self.brightness_range = self.make_control_tuple(BRIGHTNESS)

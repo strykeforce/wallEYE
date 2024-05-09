@@ -294,12 +294,12 @@ class Cameras:
 
             # grab the camera matrix and distortion coefficent and set it
             self.set_calibration(identifier, calib["K"], calib["dist"])
-            self.info[identifier].calibrationPath = calibration_path_by_cam(
+            self.info[identifier].calibration_path = calibration_path_by_cam(
                 identifier, resolution
             )
             return True
         except (FileNotFoundError, json.decoder.JSONDecodeError):
-            self.info[identifier].calibrationPath = None
+            self.info[identifier].calibration_path = None
             Cameras.logger.error(
                 f"Calibration not found for camera {identifier} at resolution {resolution}"
             )

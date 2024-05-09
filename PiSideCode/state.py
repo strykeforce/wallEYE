@@ -1,5 +1,6 @@
 from enum import Enum
 import json
+from camera.camera import Cameras
 from camera.camera_info import CameraInfo
 from directory import CONFIG_DATA_PATH
 from publisher.network_table_publisher import NetworkIO
@@ -50,9 +51,9 @@ class Data:
         self.reprojection_error: float | None = None
 
         # Cams
-        self.cameras: CameraInfo | None = None
+        self.cameras: Cameras = None
 
-        self.robot_publisher: NetworkIO | None = None
+        self.robot_publisher: NetworkIO = None
 
         self.poses: dict[str, str] = {}
 
@@ -131,7 +132,7 @@ class Data:
 
     # Return the file path names for each camera
     def get_cal_file_paths(self):
-        return {i.identifier: i.calibrationPath for i in self.cameras.info.values()}
+        return {i.identifier: i.calibration_path for i in self.cameras.info.values()}
 
     # Set the calibration board dimensions and set it in system settings
     def set_board_dim(self, dim: tuple[int, int]):
