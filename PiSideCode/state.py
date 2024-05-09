@@ -1,9 +1,11 @@
 from enum import Enum
 import json
+from camera.camera_info import CameraInfo
 from directory import CONFIG_DATA_PATH
 from publisher.network_table_publisher import NetworkIO
 import logging
 import socket, struct, fcntl
+import wpimath.geometry as wpi
 
 SIOCSIFADDR = 0x8916
 SIOCGIFADDR = 0x8915
@@ -32,107 +34,107 @@ class Data:
     logger = logging.getLogger(__name__)
 
     def __init__(self):
-        self.currentState = States.PROCESSING
-        self.status = "Running"
-        self.ip = None
+        self.current_state: States = States.PROCESSING
+        self.status: str = "Running"
+        self.ip: str | None = None
 
-        self.visualizingPoses = False
+        self.visualizing_poses: bool = False
 
-        self.loopTime = 2767.0
+        self.loop_time: float = 2767.0
 
         # Calibration
-        self.cameraInCalibration = None
-        self.boardDims = (7, 7)
-        self.calDelay = 1
-        self.calImgPaths = []
-        self.reprojectionError = None
+        self.camera_in_calibration: str | None = None
+        self.board_dims: tuple[int, int] = (7, 7)
+        self.cal_delay: float = 1
+        self.cal_img_paths: list[str] = []
+        self.reprojection_error: float | None = None
 
         # Cams
-        self.cameras = None
+        self.cameras: CameraInfo | None = None
 
-        self.robotPublisher = None
+        self.robot_publisher: NetworkIO | None = None
 
-        self.poses = {}
+        self.poses: dict[str, str] = {}
 
         # SolvePNP
-        self.tagSize = 0.157
+        self.tag_size: float = 0.157
 
         try:
             # Open and load system settings
             with open(CONFIG_DATA_PATH, "r") as data:
                 config = json.load(data)
-                self.teamNumber = config["TeamNumber"]
-                self.tableName = config["TableName"]
+                self.team_number = config["TeamNumber"]
+                self.table_name = config["TableName"]
                 ip = config["ip"]
-                self.boardDims = config["BoardDim"]
-                self.tagSize = config["TagSize"]
+                self.board_dims = config["BoardDim"]
+                self.tag_size = config["TagSize"]
 
-                self.setIP(ip)
+                self.set_ip(ip)
 
-                if Data.getCurrentIP() != ip:
+                if Data.get_current_ip() != ip:
                     Data.logger.warning("Failed to set static ip, trying again...")
-                    self.setIP(ip)
+                    self.set_ip(ip)
 
         # If no system file is found boot with base settings and create system
         # settings
         except (FileNotFoundError, json.decoder.JSONDecodeError, KeyError):
-            self.teamNumber = 2767
-            self.tableName = "WallEye"
-            self.ip = Data.getCurrentIP()
+            self.team_number = 2767
+            self.table_name = "WallEye"
+            self.ip = Data.get_current_ip()
             Data.logger.info(f"IP is {self.ip}")
 
-            dataDump = {
-                "TeamNumber": self.teamNumber,
-                "TableName": self.tableName,
+            data_dump = {
+                "TeamNumber": self.team_number,
+                "TableName": self.table_name,
                 "ip": self.ip,
-                "BoardDim": self.boardDims,
-                "TagSize": self.tagSize,
+                "BoardDim": self.board_dims,
+                "TagSize": self.tag_size,
             }
             with open(CONFIG_DATA_PATH, "w") as out:
-                json.dump(dataDump, out)
+                json.dump(data_dump, out)
 
-    def boardDims(self, newValue):
-        self.boardDims = newValue
+    def board_dims(self, new_value: tuple[int, int]):
+        self.board_dims = new_value
 
     # Create a new robot publisher and create an output file for the data
-    def makePublisher(self, teamNumber, tableName):
+    def make_publisher(self, team_number: int, table_name: str):
         try:
             # Create and write output file
             with open(CONFIG_DATA_PATH, "r") as file:
                 config = json.load(file)
-                config["TeamNumber"] = teamNumber
-                config["TableName"] = tableName
+                config["TeamNumber"] = team_number
+                config["TableName"] = table_name
                 with open(CONFIG_DATA_PATH, "w") as out:
                     json.dump(config, out)
 
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             Data.logger.error(
-                f"Failed to write TableName | {tableName} | or TeamNumber | {teamNumber} |"
+                f"Failed to write TableName | {table_name} | or TeamNumber | {team_number} |"
             )
-        self.teamNumber = teamNumber
-        self.tableName = tableName
+        self.team_number = team_number
+        self.table_name = table_name
 
         # Destroy any existing publisher
-        if self.robotPublisher is not None:
-            self.robotPublisher.destroy()
+        if self.robot_publisher is not None:
+            self.robot_publisher.destroy()
             Data.logger.info("Existing publisher destroyed")
 
         # Create the robot publisher
-        self.robotPublisher = NetworkIO(False, self.teamNumber, self.tableName, 2)
+        self.robot_publisher = NetworkIO(False, self.team_number, self.table_name, 2)
 
-        Data.logger.info(f"Robot publisher created: {teamNumber} - {tableName}")
+        Data.logger.info(f"Robot publisher created: {team_number} - {table_name}")
 
-    def setPose(self, identifier, pose):
+    def set_pose(self, identifier: str, pose: wpi.Pose3d):
         self.poses[identifier] = (
             f"Translation: {round(pose.X(), 2)}, {round(pose.Y(), 2)}, {round(pose.Z(), 2)} - Rotation: {round(pose.rotation().X(), 2)}, {round(pose.rotation().Y(), 2)}, {round(pose.rotation().Z(), 2)}"
         )
 
     # Return the file path names for each camera
-    def getCalFilePaths(self):
+    def get_cal_file_paths(self):
         return {i.identifier: i.calibrationPath for i in self.cameras.info.values()}
 
     # Set the calibration board dimensions and set it in system settings
-    def setBoardDim(self, dim):
+    def set_board_dim(self, dim: tuple[int, int]):
         try:
             # Write it in system settings file
             with open(CONFIG_DATA_PATH, "r") as file:
@@ -145,7 +147,7 @@ class Data:
             Data.logger.error(f"Failed to write Dimensions {dim}")
 
     # Set Tag Size (meters) and set it in system settings
-    def setTagSize(self, size):
+    def set_tag_size(self, size: float):
         try:
             # Write it in system settings file
             with open(CONFIG_DATA_PATH, "r") as file:
@@ -158,27 +160,27 @@ class Data:
             Data.logger.error(f"Failed to write tag size {size}")
 
     # Set static IP and write it into system files
-    def setIP(self, ip, interface="eth0"):
+    def set_ip(self, ip: str, interface: str = "eth0"):
         Data.logger.info("Attempting to set static IP")
 
         if not ip:
             Data.logger.warning("IP is None")
-            if not self.robotPublisher:
-                self.makePublisher(self.teamNumber, self.tableName)
+            if not self.robot_publisher:
+                self.make_publisher(self.team_number, self.table_name)
             return
 
         # Destroy because changing IP breaks network tables
-        if self.robotPublisher:
-            self.robotPublisher.destroy()
+        if self.robot_publisher:
+            self.robot_publisher.destroy()
 
         # Set IP
         # os.system("/usr/sbin/ifconfig eth0 up")
         # if not os.system(
         #         f"/usr/sbin/ifconfig eth0 {ip} netmask 255.255.255.0"):
-        #     Data.logger.info(f"Static IP set: {ip} =? {Data.getCurrentIP()}")
+        #     Data.logger.info(f"Static IP set: {ip} =? {Data.get_current_ip()}")
         #     self.ip = ip
         # else:
-        #     self.ip = Data.getCurrentIP()
+        #     self.ip = Data.get_current_ip()
         #     Data.logger.error(f"Failed to set static ip: {ip}")
         # os.system("/usr/sbin/ifconfig eth0 up")
 
@@ -198,7 +200,7 @@ class Data:
         except Exception as e:
             Data.logger.info(f"Failed to set IP address: {e}")
 
-        Data.logger.info(f"Static IP set: {ip} =? {Data.getCurrentIP()}")
+        Data.logger.info(f"Static IP set: {ip} =? {Data.get_current_ip()}")
         self.ip = ip
 
         try:
@@ -212,7 +214,7 @@ class Data:
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             Data.logger.error(f"Failed to write static ip: {ip}")
 
-        self.makePublisher(self.teamNumber, self.tableName)
+        self.make_publisher(self.team_number, self.table_name)
 
     # Obsolete
     # def resetNetworking(self):
@@ -228,7 +230,7 @@ class Data:
     #         Config.logger.error("Networking failed to stop")
 
     @staticmethod
-    def getCurrentIP(interface="eth0"):
+    def get_current_ip(interface: str = "eth0"):
         # https://stackoverflow.com/questions/166506/finding-local-ip-addresses-using-pythons-stdlib/9267833#9267833
         ifreq = struct.pack(
             b"16sH14s", interface.encode("utf-8"), socket.AF_INET, b"\x00" * 14
@@ -254,33 +256,35 @@ class Data:
         #     Data.logger.error("Could not get current IP - Returning None")
         #     return None
 
-    def getState(self):
+    def get_state(self) -> dict:
         return {
-            "teamNumber": self.teamNumber,
-            "tableName": self.tableName,
-            "currentState": self.currentState.value,
+            "teamNumber": self.team_number,
+            "tableName": self.table_name,
+            "currentState": self.current_state.value,
             "cameraIDs": list(self.cameras.info.keys()),
-            "cameraInCalibration": self.cameraInCalibration,
-            "boardDims": self.boardDims,
-            "calDelay": self.calDelay,
-            "calImgPaths": self.calImgPaths,
-            "reprojectionError": self.reprojectionError,
-            "calFilePaths": self.getCalFilePaths(),
-            "resolution": self.cameras.getResolutions(),
-            "brightness": self.cameras.getBrightnesss(),
-            "exposure": self.cameras.getExposures(),
+            "cameraInCalibration": self.camera_in_calibration,
+            "boardDims": self.board_dims,
+            "calDelay": self.cal_delay,
+            "calImgPaths": self.cal_img_paths,
+            "reprojectionError": self.reprojection_error,
+            "calFilePaths": self.get_cal_file_paths(),
+            "resolution": self.cameras.get_resolutions(),
+            "brightness": self.cameras.get_brightnesss(),
+            "exposure": self.cameras.get_exposures(),
             "supportedResolutions": {
-                k: v.getSupportedResolutions() for k, v in self.cameras.info.items()
+                k: v.get_supported_resolutions() for k, v in self.cameras.info.items()
             },
-            "exposureRange": {k: v.exposureRange for k, v in self.cameras.info.items()},
+            "exposureRange": {
+                k: v.exposure_range for k, v in self.cameras.info.items()
+            },
             "brightnessRange": {
-                k: v.brightnessRange for k, v in self.cameras.info.items()
+                k: v.brightness_range for k, v in self.cameras.info.items()
             },
             "ip": self.ip,
-            "tagSize": self.tagSize,
-            "visualizingPoses": self.visualizingPoses,
+            "tagSize": self.tag_size,
+            "visualizingPoses": self.visualizing_poses,
             "status": self.status,
         }
 
 
-walleyeData = Data()
+walleye_data = Data()

@@ -1,6 +1,8 @@
-from pyrav4l2 import Device
-from directory import fullCamPath
+from pyrav4l2 import Device, Control
+from directory import full_cam_path
 import logging
+import cv2
+import numpy as np
 
 BRIGHTNESS = "Brightness"
 EXPOSURE = "Exposure Time, Absolute"
@@ -9,44 +11,52 @@ EXPOSURE = "Exposure Time, Absolute"
 class CameraInfo:
     logger = logging.getLogger(__name__)
 
-    def __init__(self, cam, identifier, K=None, D=None):
-        self.lastImage = None
+    def __init__(
+        self,
+        cam: cv2.VideoCapture,
+        identifier: str,
+        K: np.ndarray | None = None,
+        D: np.ndarray | None = None,
+    ):
+        self.last_image: np.ndarray | None = None
 
         self.cam = cam
         self.identifier = identifier
 
-        self.controller = Device(fullCamPath(identifier))
+        self.controller = Device(full_cam_path(identifier))
 
         # Modified with self.set()
-        self.controls = {c.name: c for c in self.controller.controls[1:]}
-        self.validFormats = {
+        self.controls: dict[str, Control] = {
+            c.name: c for c in self.controller.controls[1:]
+        }
+        self.valid_formats = {
             str(f): [(r.width, r.height) for r in res]
             for f, res in self.controller.available_formats.items()
         }
 
-        currFormat = self.controller.get_format()
-        self.resolution = (currFormat[1].width, currFormat[1].height)
+        curr_format = self.controller.get_format()
+        self.resolution = (curr_format[1].width, curr_format[1].height)
 
-        self.exposureRange = self.makeControlTuple(EXPOSURE)
-        self.brightnessRange = self.makeControlTuple(BRIGHTNESS)
+        self.exposure_range = self.make_control_tuple(EXPOSURE)
+        self.brightness_range = self.make_control_tuple(BRIGHTNESS)
 
         # Calibration
         self.K = K
         self.D = D
 
-        self.calibrationPath = None
+        self.calibration_path: str | None = None
 
-    def getSupportedResolutions(self):
-        currFormat = self.controller.get_format()
-        return self.validFormats[str(currFormat[0])]
+    def get_supported_resolutions(self):
+        curr_format = self.controller.get_format()
+        return self.valid_formats[str(curr_format[0])]
 
     # V4L2 Controls
-    def set(self, controlName, value):
+    def set(self, control_name: str, value: float):
         try:
-            self.controller.set_control_value(self.controls[controlName], int(value))
+            self.controller.set_control_value(self.controls[control_name], int(value))
 
             CameraInfo.logger.info(
-                f"{controlName} set to {value} in camera {self.identifier}"
+                f"{control_name} set to {value} in camera {self.identifier}"
             )
 
             return True
@@ -56,12 +66,12 @@ class CameraInfo:
 
         return False
 
-    def get(self, controlName):
-        self.controller.get_control_value(self.controls[controlName])
+    def get(self, control_name: str):
+        self.controller.get_control_value(self.controls[control_name])
 
     # Util
-    def makeControlTuple(self, controlName):
-        control = self.controls[controlName]
+    def make_control_tuple(self, control_name: str):
+        control = self.controls[control_name]
         return (
             control.minimum,
             control.maximum,

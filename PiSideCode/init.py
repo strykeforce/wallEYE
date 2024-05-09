@@ -1,7 +1,7 @@
 import sys
 import logging
 from logging.handlers import RotatingFileHandler
-from directory import calibrationImageFolder, calibrationPathByCam, LOG
+from directory import calibration_image_folder, calibration_path_by_cam, LOG
 
 # Create logger and set settings
 LOG_FORMAT = "[%(asctime)s - %(levelname)s - %(filename)s:%(lineno)s - %(funcName)s()]  %(message)s"
@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 logger.info("----------- Starting Up -----------")
 
-from state import walleyeData, States, CALIBRATION_STATES
+from state import walleye_data, States, CALIBRATION_STATES
 from processing.processing import Processor
 import threading
 from camera.camera import Cameras
@@ -28,16 +28,16 @@ import time
 
 
 # Create and intialize cameras
-walleyeData.cameras = Cameras()
+walleye_data.cameras = Cameras()
 
 from web_interface.web_interface import (
-    camBuffers,
+    cam_buffers,
     socketio,
     app,
-    visualizationBuffers
-)  # After walleyeData.cameras is set
+    visualization_buffers,
+)  # After walleye_data.cameras is set
 
-webServer = threading.Thread(
+web_server = threading.Thread(
     target=lambda: socketio.run(
         app,
         host="0.0.0.0",
@@ -46,17 +46,16 @@ webServer = threading.Thread(
         use_reloader=False,
         log_output=False,
     ),
-    daemon=True,
+    # daemon=True,
 )
 try:
     # Start the web server
-    webServer.start()
+    web_server.start()
 
     logging.getLogger("geventwebsocket.handler").setLevel(logging.ERROR)
     logging.getLogger("socketio").setLevel(logging.ERROR)
     logging.getLogger("socketio.server").setLevel(logging.ERROR)
     logging.getLogger("engineio").setLevel(logging.ERROR)
-
 
     logger.info("Web server ready")
 
@@ -64,181 +63,187 @@ try:
     calibrators = {}
 
     # Create network tables publisher and AprilTag Processor
-    poseEstimator = Processor(walleyeData.tagSize)
-    # Publisher already created during construction of walleyeData
-    # walleyeData.makePublisher(walleyeData.teamNumber, walleyeData.tableName)
-    walleyeData.currentState = States.PROCESSING
+    pose_estimator = Processor(walleye_data.tag_size)
+    # Publisher already created during construction of walleye_data
+    # walleye_data.make_publisher(walleye_data.team_number, walleye_data.table_name)
+    walleye_data.current_state = States.PROCESSING
 
     logger.info("Starting main loop")
 
-    lastLoopTime = time.time()
+    last_loop_time = time.time()
 
     # Main loop (Runs everything)
     while True:
         # Calculate loop time
-        currTime = time.time()
-        walleyeData.loopTime = round(currTime - lastLoopTime, 3)
-        lastLoopTime = currTime
+        curr_time = time.time()
+        walleye_data.loop_time = round(curr_time - last_loop_time, 3)
+        last_loop_time = curr_time
 
         # State changes
         # Pre-Calibration
-        if walleyeData.currentState == States.BEGIN_CALIBRATION:
+        if walleye_data.current_state == States.BEGIN_CALIBRATION:
             logger.info("Beginning calibration")
 
             # Prepare a calibration object for the camera that is being calibrated with pre-set data
             # only if cal object does not exist yet
             if (
-                walleyeData.cameraInCalibration not in calibrators
-                or calibrators[walleyeData.cameraInCalibration] is None
+                walleye_data.camera_in_calibration not in calibrators
+                or calibrators[walleye_data.camera_in_calibration] is None
             ):
-                calibrators[walleyeData.cameraInCalibration] = Calibration(
-                    walleyeData.calDelay,
-                    walleyeData.boardDims,
-                    walleyeData.cameraInCalibration,
-                    calibrationImageFolder(walleyeData.cameraInCalibration),
-                    walleyeData.cameras.info[
-                        walleyeData.cameraInCalibration
+                calibrators[walleye_data.camera_in_calibration] = Calibration(
+                    walleye_data.cal_delay,
+                    walleye_data.board_dims,
+                    walleye_data.camera_in_calibration,
+                    calibration_image_folder(walleye_data.camera_in_calibration),
+                    walleye_data.cameras.info[
+                        walleye_data.camera_in_calibration
                     ].resolution,
                 )
-            walleyeData.currentState = States.CALIBRATION_CAPTURE
+            walleye_data.current_state = States.CALIBRATION_CAPTURE
 
         # Take calibration images
-        elif walleyeData.currentState == States.CALIBRATION_CAPTURE:
+        elif walleye_data.current_state == States.CALIBRATION_CAPTURE:
             # Read in frames
-            ret, img = walleyeData.cameras.info[
-                walleyeData.cameraInCalibration
+            ret, img = walleye_data.cameras.info[
+                walleye_data.camera_in_calibration
             ].cam.read()
 
             if not ret:
                 logger.error(
-                    f"Failed to capture image: {walleyeData.cameraInCalibration}"
+                    f"Failed to capture image: {walleye_data.camera_in_calibration}"
                 )
             else:
                 # Process frames with the calibration object created prior
-                returned, used, pathSaved = calibrators[
-                    walleyeData.cameraInCalibration
-                ].processFrame(img)
+                returned, used, path_saved = calibrators[
+                    walleye_data.camera_in_calibration
+                ].process_frame(img)
 
                 # If the image is a part of the accepted images save it
                 if used:
-                    walleyeData.calImgPaths.append(pathSaved)
+                    walleye_data.cal_img_paths.append(path_saved)
 
                 # Keep a buffer with the images
-                camBuffers[walleyeData.cameraInCalibration].update(returned)
+                cam_buffers[walleye_data.camera_in_calibration].update(returned)
 
         # Finished Calibration, generate calibration
-        elif walleyeData.currentState == States.GENERATE_CALIBRATION:
+        elif walleye_data.current_state == States.GENERATE_CALIBRATION:
             # Get file path for the calibration to be saved
-            walleyeData.cameras.info[
-                walleyeData.cameraInCalibration
-            ].calibrationPath = calibrationPathByCam(
-                walleyeData.cameraInCalibration,
-                walleyeData.cameras.info[walleyeData.cameraInCalibration].resolution,
+            walleye_data.cameras.info[
+                walleye_data.camera_in_calibration
+            ].calibration_path = calibration_path_by_cam(
+                walleye_data.camera_in_calibration,
+                walleye_data.cameras.info[
+                    walleye_data.camera_in_calibration
+                ].resolution,
             )
 
-            if calibrators[walleyeData.cameraInCalibration] is not None:
+            if calibrators[walleye_data.camera_in_calibration] is not None:
                 # Generate a calibration file to the file path
-                hasGenerated = calibrators[
-                    walleyeData.cameraInCalibration
-                ].generateCalibration(
-                    walleyeData.cameras.info[
-                        walleyeData.cameraInCalibration
-                    ].calibrationPath
+                has_generated = calibrators[
+                    walleye_data.camera_in_calibration
+                ].generate_calibration(
+                    walleye_data.cameras.info[
+                        walleye_data.camera_in_calibration
+                    ].calibration_path
                 )
 
-                if hasGenerated:
+                if has_generated:
                     # Get reproj error
-                    walleyeData.reprojectionError = calibrators[
-                        walleyeData.cameraInCalibration
-                    ].getReprojectionError()
+                    walleye_data.reprojection_error = calibrators[
+                        walleye_data.camera_in_calibration
+                    ].get_reprojection_error()
 
                     # Set the cameras calibration, save off the file path, and
                     # go to idle
-                    walleyeData.cameras.setCalibration(
-                        walleyeData.cameraInCalibration,
-                        calibrators[walleyeData.cameraInCalibration].calibrationData[
+                    walleye_data.cameras.setCalibration(
+                        walleye_data.camera_in_calibration,
+                        calibrators[walleye_data.camera_in_calibration].calibrationData[
                             "K"
                         ],
-                        calibrators[walleyeData.cameraInCalibration].calibrationData[
+                        calibrators[walleye_data.camera_in_calibration].calibrationData[
                             "dist"
                         ],
                     )
-                    walleyeData.cameras.info[
-                        walleyeData.cameraInCalibration
-                    ].calibrationPath = calibrationPathByCam(
-                        walleyeData.cameraInCalibration,
-                        walleyeData.cameras.info[
-                            walleyeData.cameraInCalibration
+                    walleye_data.cameras.info[
+                        walleye_data.camera_in_calibration
+                    ].calibration_path = calibration_path_by_cam(
+                        walleye_data.camera_in_calibration,
+                        walleye_data.cameras.info[
+                            walleye_data.camera_in_calibration
                         ].resolution,
                     )
                 else:
-                    walleyeData.status = "Could not generate calibration"
+                    walleye_data.status = "Could not generate calibration"
             else:
-                walleyeData.status = "Calibrator for current calibration camera is None"
-            walleyeData.currentState = States.IDLE
-            calibrators[walleyeData.cameraInCalibration] = None
+                walleye_data.status = (
+                    "Calibrator for current calibration camera is None"
+                )
+            walleye_data.current_state = States.IDLE
+            calibrators[walleye_data.camera_in_calibration] = None
 
         # AprilTag processing state
-        elif walleyeData.currentState == States.PROCESSING:
+        elif walleye_data.current_state == States.PROCESSING:
             # Set tag size, grab camera frames, and grab image timestamp
-            poseEstimator.setTagSize(walleyeData.tagSize)
+            pose_estimator.set_tag_size(walleye_data.tag_size)
 
-            imageTime = walleyeData.robotPublisher.getTime() 
+            image_time = walleye_data.robot_publisher.get_time()
 
-            connections, images, delay = walleyeData.cameras.getFramesForProcessing()
+            connections, images, delay = (
+                walleye_data.cameras.get_frames_for_processing()
+            )
 
             for idx, val in enumerate(connections.values()):
-                if not val and walleyeData.robotPublisher.getConnectionValue(idx):
+                if not val and walleye_data.robot_publisher.getConnectionValue(idx):
                     logger.info("Camera disconnected")
 
-                walleyeData.robotPublisher.setConnectionValue(idx, val)
+                walleye_data.robot_publisher.setConnectionValue(idx, val)
 
-            # Use the poseEstimator class to find the pose, tags, and ambiguity
-            poses, tags, ambig = poseEstimator.getPose(
+            # Use the pose_estimator class to find the pose, tags, and ambiguity
+            poses, tags, ambig = pose_estimator.get_pose(
                 images.values(),
-                walleyeData.cameras.listK(),
-                walleyeData.cameras.listD(),
+                walleye_data.cameras.list_k(),
+                walleye_data.cameras.list_d(),
             )
 
             # Publish camera number, timestamp, poses, tags, ambiguity and increase the update number
-            # logger.info(f"Poses at {imageTime}: {poses}")
+            # logger.info(f"Poses at {image_time}: {poses}")
 
             for i in range(len(poses)):
                 if poses[i][0].X() < 2000:
-                    walleyeData.robotPublisher.publish(
-                        i, imageTime - delay[i], poses[i], tags[i], ambig[i]
+                    walleye_data.robot_publisher.publish(
+                        i, image_time - delay[i], poses[i], tags[i], ambig[i]
                     )
 
             # Update the pose visualization
             for i, (identifier, img) in enumerate(images.items()):
                 if i >= len(poses):
                     break
-                camBuffers[identifier].update(img)
-                walleyeData.setPose(identifier, poses[i][0])
-                if walleyeData.visualizingPoses:
-                    visualizationBuffers[identifier].update(
+                cam_buffers[identifier].update(img)
+                walleye_data.set_pose(identifier, poses[i][0])
+                if walleye_data.visualizing_poses:
+                    visualization_buffers[identifier].update(
                         (poses[i][0].X(), poses[i][0].Y(), poses[i][0].Z()), tags[i][1:]
                     )
 
         # Ends the WallEye program through the web interface
-        elif walleyeData.currentState == States.SHUTDOWN:
+        elif walleye_data.current_state == States.SHUTDOWN:
             logger.info("Shutting down")
             logging.shutdown()
             socketio.stop()
             break
 
         # Update cameras no matter what state
-        if walleyeData.currentState != States.PROCESSING:
-            for cameraInfo in walleyeData.cameras.info.values():
+        if walleye_data.current_state != States.PROCESSING:
+            for camera_info in walleye_data.cameras.info.values():
                 if (
-                    cameraInfo.identifier == walleyeData.cameraInCalibration
-                    and walleyeData.currentState in CALIBRATION_STATES
+                    camera_info.identifier == walleye_data.camera_in_calibration
+                    and walleye_data.current_state in CALIBRATION_STATES
                 ):
                     continue
 
-                ret, img = cameraInfo.cam.read()
+                ret, img = camera_info.cam.read()
 
-                camBuffers[cameraInfo.identifier].update(img)
+                cam_buffers[camera_info.identifier].update(img)
 
 except Exception as e:
     # Something bad happened

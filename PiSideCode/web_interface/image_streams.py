@@ -12,19 +12,19 @@ logger = logging.getLogger(__name__)
 
 
 class Buffer:
-    outputFrame = b""
-    lastNone = False
+    output_frame = b""
+    last_none = False
 
-    def update(self, img):
+    def update(self, img: np.ndarray):
         if img is None:
-            if not self.lastNone:
+            if not self.last_none:
                 logger.error("Updated image is None - Skipping")
-            self.lastNone = True
+            self.last_none = True
             return
-        if self.lastNone:
+        if self.last_none:
             logger.info("Updated image is NOT none!")
-        self.lastNone = False
-        self.outputFrame = cv2.imencode(".jpg", img)[1].tobytes()
+        self.last_none = False
+        self.output_frame = cv2.imencode(".jpg", img)[1].tobytes()
         # encoded = simplejpeg.encode_jpeg(img)
         # if (img == encoded).all():
         #     logger.warning("Frame did not update!")
@@ -35,7 +35,7 @@ class Buffer:
         while True:
             yield (
                 b"--frame\r\n"
-                b"Content-Type: image/jpeg\r\n\r\n" + self.outputFrame + b"\r\n"
+                b"Content-Type: image/jpeg\r\n\r\n" + self.output_frame + b"\r\n"
             )
 
 
@@ -46,14 +46,14 @@ class LivePlotBuffer(Buffer):
         super(LivePlotBuffer, self).__init__()
 
         with open("./processing/april_tag_layout.json", "r") as f:
-            self.tagLayout = json.load(f)
+            self.tag_layout = json.load(f)
             logger.info("Tag layout loaded")
-        self.tagLayout = self.tagLayout["tags"]
+        self.tag_layout = self.tag_layout["tags"]
         self.fig = plt.figure()
         self.ax = self.fig.add_subplot(111, projection="3d")
         self.ax.view_init(elev=35, azim=-80, roll=0)
         self.x, self.y, self.z = [], [], []
-        (self.poses2D,) = self.ax.plot3D(
+        (self.poses2_d,) = self.ax.plot3D(
             self.x,
             self.y,
             np.atleast_1d(0),
@@ -99,7 +99,7 @@ class LivePlotBuffer(Buffer):
 
         self.bg = self.fig.canvas.copy_from_bbox(self.fig.bbox)
         self.ax.draw_artist(self.poses)
-        self.ax.draw_artist(self.poses2D)
+        self.ax.draw_artist(self.poses2_d)
         self.ax.draw_artist(self.tags)
         self.fig.canvas.blit(self.fig.bbox)
 
@@ -116,30 +116,30 @@ class LivePlotBuffer(Buffer):
         self.z = self.z[-50:]
         self.poses.set_data(self.x, self.y)
         self.poses.set_3d_properties(self.z)
-        self.poses2D.set_data(self.x, self.y)
-        self.poses2D.set_3d_properties(np.atleast_1d(0))
+        self.poses2_d.set_data(self.x, self.y)
+        self.poses2_d.set_3d_properties(np.atleast_1d(0))
 
-        tagsX = [
+        tags_x = [
             (
-                self.tagLayout[tag - 1]["pose"]["translation"]["x"]
+                self.tag_layout[tag - 1]["pose"]["translation"]["x"]
                 if (tag < 9 and tag > 0)
                 else 2767
             )
             for tag in tags
         ]
-        tagsY = [
+        tags_y = [
             (
-                self.tagLayout[tag - 1]["pose"]["translation"]["y"]
+                self.tag_layout[tag - 1]["pose"]["translation"]["y"]
                 if (tag < 9 and tag > 0)
                 else 2767
             )
             for tag in tags
         ]
 
-        self.tags.set_data(tagsX, tagsY)
+        self.tags.set_data(tags_x, tags_y)
         self.tags.set_3d_properties(np.atleast_1d(0))
 
-        self.ax.draw_artist(self.poses2D)
+        self.ax.draw_artist(self.poses2_d)
         self.ax.draw_artist(self.poses)
         self.ax.draw_artist(self.tags)
         self.fig.canvas.blit(self.fig.bbox)
@@ -147,4 +147,4 @@ class LivePlotBuffer(Buffer):
 
         plot = np.frombuffer(self.fig.canvas.tostring_rgb(), dtype=np.uint8)
         img = plot.reshape(self.fig.canvas.get_width_height()[::-1] + (3,))
-        self.outputFrame = simplejpeg.encode_jpeg(img)
+        self.output_frame = simplejpeg.encode_jpeg(img)

@@ -6,29 +6,29 @@ LOG = "walleye.log"
 CONFIG_ZIP = "config.zip"
 
 
-def cleanIdentifier(identifier):
+def clean_identifier(identifier: str) -> str:
     return identifier.replace(":", "-").replace(".", "-")
 
 
-def calibrationImageFolder(identifier):
-    return os.path.join("config_data", f"cam_{cleanIdentifier(identifier)}_cal_imgs")
+def calibration_image_folder(identifier: str) -> str:
+    return os.path.join("config_data", f"cam_{clean_identifier(identifier)}_cal_imgs")
 
 
-def calibrationPathByCam(identifier, resolution):
+def calibration_path_by_cam(identifier: str, resolution: tuple[int, int]) -> str:
     return os.path.join(
         "config_data",
         "calibrations",
-        f"cam_{cleanIdentifier(identifier)}_{resolution}_cal_data.json",
+        f"cam_{clean_identifier(identifier)}_{resolution}_cal_data.json",
     )
 
 
-def camConfigPath(identifier):
+def cam_config_path(identifier: str) -> str:
     return os.path.join(
         "config_data",
         "camera_configs",
-        f"config_settings_{cleanIdentifier(identifier)}.json",
+        f"config_settings_{clean_identifier(identifier)}.json",
     )
 
 
-def fullCamPath(identifier):
+def full_cam_path(identifier: str) -> str:
     return os.path.join(V4L_PATH, identifier)

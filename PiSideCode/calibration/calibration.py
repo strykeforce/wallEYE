@@ -21,29 +21,29 @@ class Calibration:
     def __init__(
         self,
         delay: float,
-        cornerShape: tuple[int, int],
-        camPath: str,
-        imgPath: str,
+        corner_shape: tuple[int, int],
+        cam_path: str,
+        img_path: str,
         resolution: tuple,
         calibType: CalibType = CalibType.CHESSBOARD,
     ):
         self.delay = delay
-        self.cornerShape = cornerShape  # (col, row) format
-        self.imgPath = imgPath
-        self.camPath = camPath
+        self.corner_shape = corner_shape  # (col, row) format
+        self.img_path = img_path
+        self.cam_path = cam_path
         self.resolution = resolution
-        self.calibType = calibType
+        self.calib_type = calibType
 
         # Create a list for the corner locations for the calibration tag
-        self.reference = np.zeros((cornerShape[0] * cornerShape[1], 3), np.float32)
-        if self.calibType == CalibType.CHESSBOARD:
+        self.reference = np.zeros((corner_shape[0] * corner_shape[1], 3), np.float32)
+        if self.calib_type == CalibType.CHESSBOARD:
             self.reference[:, :2] = np.mgrid[
-                0 : cornerShape[0], 0 : cornerShape[1]
+                0 : corner_shape[0], 0 : corner_shape[1]
             ].T.reshape(-1, 2)
-        elif self.calibType == CalibType.CIRCLE_GRID:
+        elif self.calib_type == CalibType.CIRCLE_GRID:
             # criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
 
-            blobParams = cv2.SimpleBlobDetector_Params()
+            blob_params = cv2.SimpleBlobDetector_Params()
 
             # Change thresholds TODO adjust as necessary
             # blobParams.minThreshold = 8
@@ -66,62 +66,64 @@ class Calibration:
             # blobParams.filterByInertia = True
             # blobParams.minInertiaRatio = 0.01
 
-            self.blobDetector = cv2.SimpleBlobDetector_create(blobParams)
+            self.blob_detector = cv2.SimpleBlobDetector_create(blob_params)
 
-            for i in range(cornerShape[1]):
-                self.reference[i * cornerShape[0] : (i + 1) * cornerShape[0]][:, 0] = i
-                self.reference[i * cornerShape[0] : (i + 1) * cornerShape[0]][:, 1] = (
-                    np.arange(0, cornerShape[0]) * 2 + i % 2
-                )
+            for i in range(corner_shape[1]):
+                self.reference[i * corner_shape[0] : (i + 1) * corner_shape[0]][
+                    :, 0
+                ] = i
+                self.reference[i * corner_shape[0] : (i + 1) * corner_shape[0]][
+                    :, 1
+                ] = (np.arange(0, corner_shape[0]) * 2 + i % 2)
 
         # Set values
-        self.objPoints = []
-        self.imgPoints = []
-        self.lastImageUsed = 0
-        self.readyCounts = 0
+        self.obj_points = []
+        self.img_points = []
+        self.last_image_used = 0
+        self.ready_counts = 0
 
-        self.lastImageStable = False
-        self.lastImageSharp = False
+        self.last_image_stable = False
+        self.last_image_sharp = False
 
-        self.prevCorner1 = np.zeros(2)
-        self.prevCorner2 = np.zeros(2)
+        self.prev_corner1 = np.zeros(2)
+        self.prev_corner2 = np.zeros(2)
 
-        self.prevUsedCorner1 = np.zeros(2)
-        self.prevUsedCorner2 = np.zeros(2)
+        self.prev_used_corner1 = np.zeros(2)
+        self.prev_used_corner2 = np.zeros(2)
 
         self.overlay = np.zeros((resolution[1], resolution[0], 3), np.uint8)
 
-        if os.path.isdir(self.imgPath):
-            shutil.rmtree(self.imgPath)
-        os.mkdir(self.imgPath)
+        if os.path.isdir(self.img_path):
+            shutil.rmtree(self.img_path)
+        os.mkdir(self.img_path)
 
     # Take a frame and process it for calibration
-    def processFrame(
+    def process_frame(
         self,
-        img,
+        img: np.ndarray,
         refinementWindow: tuple[int, int] = (5, 5),
         refinementCriteria: tuple[float, int, float] = (
             cv2.TERM_CRITERIA_EPS + cv2.TermCriteria_COUNT,
             40,
             0.001,
         ),
-    ):
+    ) -> tuple[np.ndarray, bool, str]:
         # Convert it to gray and look for calibration board corners
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        self.imgShape = gray.shape[::-1]
+        self.img_shape = gray.shape[::-1]
 
-        if self.calibType == CalibType.CHESSBOARD:
+        if self.calib_type == CalibType.CHESSBOARD:
             found, corners = cv2.findChessboardCorners(
                 gray,
-                self.cornerShape,
+                self.corner_shape,
                 cv2.CALIB_CB_ADAPTIVE_THRESH
                 + cv2.CALIB_CB_NORMALIZE_IMAGE
                 + cv2.CALIB_CB_FAST_CHECK,
             )
 
-        elif self.calibType == CalibType.CIRCLE_GRID:  # TODO test
-            keypoints = self.blobDetector.detect(gray)
-            imgKeypoints = cv2.drawKeypoints(
+        elif self.calib_type == CalibType.CIRCLE_GRID:  # TODO test
+            keypoints = self.blob_detector.detect(gray)
+            img_keypoints = cv2.drawKeypoints(
                 img,
                 keypoints,
                 np.array([]),
@@ -129,23 +131,26 @@ class Calibration:
                 cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS,
             )
             found, corners = cv2.findCirclesGrid(
-                imgKeypoints, self.cornerShape, None, flags=cv2.CALIB_CB_ASYMMETRIC_GRID
+                img_keypoints,
+                self.corner_shape,
+                None,
+                flags=cv2.CALIB_CB_ASYMMETRIC_GRID,
             )
 
         used = False
-        pathSaved = None
+        path_saved = None
 
         # If there is a board and it has been long enough
         if (
             found
-            and time.time() - self.lastImageUsed > self.delay
-            and self.isReady(gray, corners)
+            and time.time() - self.last_image_used > self.delay
+            and self.is_ready(gray, corners)
         ):
             used = True
-            self.updateOverlay(corners)
-            self.lastImageUsed = time.time()
-            self.prevUsedCorner1 = corners[0][0]
-            self.prevUsedCorner2 = corners[-1][-1]
+            self.update_overlay(corners)
+            self.last_image_used = time.time()
+            self.prev_used_corner1 = corners[0][0]
+            self.prev_used_corner2 = corners[-1][-1]
 
             # Refine corner locations (Better calibrations)
             refined = cv2.cornerSubPix(
@@ -153,21 +158,21 @@ class Calibration:
             )
 
             # Set 3d locations and 2d location for image
-            self.objPoints.append(self.reference)
-            self.imgPoints.append(refined)
+            self.obj_points.append(self.reference)
+            self.img_points.append(refined)
 
             # Save off time and image
-            currTime = time.time_ns()
-            pathSaved = os.path.join(self.imgPath, f"{currTime}.png")
+            curr_time = time.time_ns()
+            path_saved = os.path.join(self.img_path, f"{curr_time}.png")
 
-            cv2.imwrite(pathSaved, gray)
+            cv2.imwrite(path_saved, gray)
 
-            Calibration.logger.info(f"Calibration image saved to {pathSaved}")
+            Calibration.logger.info(f"Calibration image saved to {path_saved}")
 
-        self.drawOverlay(img)
+        self.draw_overlay(img)
 
         # Draw lines for the calibration board
-        cv2.drawChessboardCorners(img, self.cornerShape, corners, found)
+        cv2.drawChessboardCorners(img, self.corner_shape, corners, found)
 
         if found:
             # cv2.putText(
@@ -182,18 +187,18 @@ class Calibration:
             # Text for calibrating the camera
             cv2.putText(
                 img,
-                "Stable" if self.lastImageStable else "Not stable",
+                "Stable" if self.last_image_stable else "Not stable",
                 (0, img.shape[0] - 50),
                 cv2.FONT_HERSHEY_SIMPLEX,
                 1,
-                (255, 0, 0) if self.lastImageStable else (0, 0, 255),
+                (255, 0, 0) if self.last_image_stable else (0, 0, 255),
                 2,
             )
 
         # Keep track of the amount of images taken on the image
         cv2.putText(
             img,
-            f"Imgs taken: {len(self.imgPoints)}",
+            f"Imgs taken: {len(self.img_points)}",
             (0, img.shape[0] - 100),
             cv2.FONT_HERSHEY_SIMPLEX,
             1,
@@ -201,18 +206,18 @@ class Calibration:
             2,
         )
 
-        return (img, used, pathSaved)
+        return (img, used, path_saved)
 
-    def updateOverlay(self, corners):
+    def update_overlay(self, corners: np.ndarray):
         cv2.fillPoly(
             self.overlay,
             [
                 np.asarray(
                     [
                         corners[0][0],
-                        corners[self.cornerShape[0] - 1][0],
+                        corners[self.corner_shape[0] - 1][0],
                         corners[-1][0],
-                        corners[-(self.cornerShape[0])][0],
+                        corners[-(self.corner_shape[0])][0],
                     ],
                     "int32",
                 )
@@ -224,12 +229,12 @@ class Calibration:
             ),
         )
 
-    def drawOverlay(self, img, alpha=0.5):
+    def draw_overlay(self, img: np.ndarray, alpha=0.5):
         mask = self.overlay.astype(bool)
         img[mask] = cv2.addWeighted(img, alpha, self.overlay, 1 - alpha, 0)[mask]
 
     # Return all saved calibration images
-    def loadSavedImages(
+    def load_saved_images(
         self,
         imgs: list[str],
         refinementWindow: tuple[int, int] = (5, 5),
@@ -244,10 +249,10 @@ class Calibration:
         for img in imgs:
             saved = cv2.imread(img)
             gray = cv2.cvtColor(saved, cv2.COLOR_BGR2GRAY)
-            self.imgShape = gray.shape[::-1]
+            self.img_shape = gray.shape[::-1]
             found, corners = cv2.findChessboardCorners(
                 gray,
-                self.cornerShape,
+                self.corner_shape,
                 cv2.CALIB_CB_ADAPTIVE_THRESH
                 + cv2.CALIB_CB_NORMALIZE_IMAGE
                 + cv2.CALIB_CB_FAST_CHECK,
@@ -262,21 +267,21 @@ class Calibration:
                     refinementCriteria,
                 )
 
-                self.objPoints.append(self.reference)
-                self.imgPoints.append(refined)
+                self.obj_points.append(self.reference)
+                self.img_points.append(refined)
 
     # Generate a calibration and write to a file
-    def generateCalibration(self, calFile: str):
-        if len(self.objPoints) == 0:
+    def generate_calibration(self, cal_file: str) -> bool:
+        if len(self.obj_points) == 0:
             Calibration.logger.error("Calibration failed: No image data available")
             return False
 
         # Using the saved off 2d and 3d points, it will return a camera matrix
         # and distortion coeff
-        ret, camMtx, distortion, rot, trans = cv2.calibrateCamera(
-            self.objPoints,
-            self.imgPoints,
-            self.imgShape,
+        ret, cam_mtx, distortion, rot, trans = cv2.calibrateCamera(
+            self.obj_points,
+            self.img_points,
+            self.img_shape,
             None,
             None,
             # flags=cv2.CALIB_RATIONAL_MODEL
@@ -285,8 +290,8 @@ class Calibration:
         )
 
         # Write to a dictionary
-        self.calibrationData = {
-            "K": camMtx,
+        self.calibration_data = {
+            "K": cam_mtx,
             "dist": distortion,
             "r": rot,
             "t": trans,
@@ -294,53 +299,53 @@ class Calibration:
         }
 
         # Get calibration error and set it
-        reprojError = self.getReprojectionError()
+        reproj_error = self.get_reprojection_error()
 
-        self.calibrationData["reprojError"] = reprojError
+        self.calibration_data["reprojError"] = reproj_error
 
         Path(os.path.join("config_data", "calibrations")).mkdir(
             parents=True, exist_ok=True
         )
 
         # Write to a calibration file
-        with open(calFile, "w") as f:
+        with open(cal_file, "w") as f:
             json.dump(
                 {
-                    "camPath": self.camPath,
-                    "K": camMtx.tolist(),
+                    "camPath": self.cam_path,
+                    "K": cam_mtx.tolist(),
                     "dist": distortion.tolist(),
                     "r": np.asarray(rot).tolist(),
                     "t": np.asarray(trans).tolist(),
-                    "reproj": reprojError,
+                    "reproj": reproj_error,
                     "resolution": self.resolution,
                 },
                 f,
             )
 
         Calibration.logger.info(
-            f"Calibration successfully generated and saved to {calFile} with resolution {self.resolution}"
+            f"Calibration successfully generated and saved to {cal_file} with resolution {self.resolution}"
         )
 
         return ret
 
     # Check if the current image has a stable board
-    def isStable(self, corners: np.ndarray):
+    def is_stable(self, corners: np.ndarray) -> bool:
         corner1 = corners[0][0]
         corner2 = corners[-1][0]
 
-        dt = time.time() - self.lastImageUsed
+        dt = time.time() - self.last_image_used
 
-        speed1 = np.linalg.norm(corner1 - self.prevCorner1) / dt
-        speed2 = np.linalg.norm(corner2 - self.prevCorner2) / dt
+        speed1 = np.linalg.norm(corner1 - self.prev_corner1) / dt
+        speed2 = np.linalg.norm(corner2 - self.prev_corner2) / dt
 
-        self.prevCorner1 = corner1
-        self.prevCorner2 = corner2
+        self.prev_corner1 = corner1
+        self.prev_corner2 = corner2
 
         threshold = self.resolution[0] / 200
 
-        self.lastImageStable = speed1 < threshold and speed2 < threshold
+        self.last_image_stable = speed1 < threshold and speed2 < threshold
 
-        return self.lastImageStable
+        return self.last_image_stable
 
     # Not currently used
     # def isSharp(self, img: np.ndarray, threshold: float = 10, cutoff: float = 80):
@@ -361,70 +366,70 @@ class Calibration:
     #     return self.lastImageSharp
 
     # Check if the current image can be use for calibration
-    def isReady(
+    def is_ready(
         self, img: np.ndarray, corners: np.ndarray, requiredReadyCounts: int = 6
     ) -> bool:
         threshold = self.resolution[0] / 50
         if (
-            np.linalg.norm(self.prevUsedCorner1 - corners[0][0]) > threshold
-            and np.linalg.norm(self.prevUsedCorner2 - corners[-1][-1]) > threshold
-            and self.isStable(corners)
+            np.linalg.norm(self.prev_used_corner1 - corners[0][0]) > threshold
+            and np.linalg.norm(self.prev_used_corner2 - corners[-1][-1]) > threshold
+            and self.is_stable(corners)
         ):  # Not checking isSharp
-            self.readyCounts += 1
+            self.ready_counts += 1
         else:
-            self.readyCounts = 0
+            self.ready_counts = 0
 
-        return requiredReadyCounts <= self.readyCounts
+        return requiredReadyCounts <= self.ready_counts
 
     # calculate error of the calibration
-    def getReprojectionError(self) -> float:
-        if len(self.objPoints) == 0:
+    def get_reprojection_error(self) -> float:
+        if len(self.obj_points) == 0:
             Calibration.logger.error("Cannot compute reprojection error: No image data")
             return
 
-        totalError = 0
+        total_error = 0
 
-        for i in range(len(self.objPoints)):
+        for i in range(len(self.obj_points)):
             imgpoints2, _ = cv2.projectPoints(
-                self.objPoints[i],
-                self.calibrationData["r"][i],
-                self.calibrationData["t"][i],
-                self.calibrationData["K"],
-                self.calibrationData["dist"],
+                self.obj_points[i],
+                self.calibration_data["r"][i],
+                self.calibration_data["t"][i],
+                self.calibration_data["K"],
+                self.calibration_data["dist"],
             )
-            error = cv2.norm(self.imgPoints[i], imgpoints2, cv2.NORM_L2) / len(
+            error = cv2.norm(self.img_points[i], imgpoints2, cv2.NORM_L2) / len(
                 imgpoints2
             )
-            totalError += error
+            total_error += error
 
-        return totalError / len(self.objPoints)
+        return total_error / len(self.obj_points)
 
     # Load a calibration file
-    def loadCalibration(self, file: str):
+    def load_calibration(self, file: str):
         with open(file, "r") as f:
-            self.calibrationData = json.load(f)
+            self.calibration_data = json.load(f)
 
-        self.calibrationData["K"] = np.asarray(self.calibrationData["K"])
-        self.calibrationData["dist"] = np.asarray(self.calibrationData["dist"])
-        self.calibrationData["r"] = np.asarray(self.calibrationData["r"])
-        self.calibrationData["t"] = np.asarray(self.calibrationData["t"])
+        self.calibration_data["K"] = np.asarray(self.calibration_data["K"])
+        self.calibration_data["dist"] = np.asarray(self.calibration_data["dist"])
+        self.calibration_data["r"] = np.asarray(self.calibration_data["r"])
+        self.calibration_data["t"] = np.asarray(self.calibration_data["t"])
 
         Calibration.logger.info(f"Calibration loaded from {file}")
 
     # Get calibration data from a calibration file
     @staticmethod
-    def parseCalibration(file: str):
+    def parse_calibration(file: str) -> dict[str, np.ndarray]:
         Calibration.logger.info(f"Looking for calibration stored at {file}")
 
         with open(file, "r") as f:
-            calibrationData = json.load(f)
+            calibration_data = json.load(f)
 
         try:
-            calibrationData["K"] = np.array(calibrationData["K"])
-            calibrationData["dist"] = np.array(calibrationData["dist"])
-            calibrationData["r"] = np.array(calibrationData["r"])
-            calibrationData["t"] = np.array(calibrationData["t"])
+            calibration_data["K"] = np.array(calibration_data["K"])
+            calibration_data["dist"] = np.array(calibration_data["dist"])
+            calibration_data["r"] = np.array(calibration_data["r"])
+            calibration_data["t"] = np.array(calibration_data["t"])
         except BaseException:
             Calibration.logger.error(f"Invalid calibration format in {file}")
 
-        return calibrationData
+        return calibration_data

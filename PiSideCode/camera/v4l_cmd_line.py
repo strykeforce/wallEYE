@@ -1,23 +1,23 @@
 # Unused
 # The old way
 import subprocess
-from directory import fullCamPath
+from directory import full_cam_path
 import re
 import os
 
 
-def getFormats(identifier):
-    formatParams = subprocess.run(
+def get_formats(identifier):
+    format_params = subprocess.run(
         [
             "v4l2-ctl",
             "-d",
-            fullCamPath(identifier),
+            full_cam_path(identifier),
             "--list-formats-ext",
         ],
         capture_output=True,
     ).stdout.decode("utf-8")
 
-    supportedResolutions = sorted(
+    supported_resolutions = sorted(
         list(
             set(  # Unique values
                 map(
@@ -27,7 +27,7 @@ def getFormats(identifier):
                     ),
                     re.findall(
                         "[0-9]+x[0-9]+",
-                        formatParams,
+                        format_params,
                     ),
                 )
             )
@@ -39,63 +39,63 @@ def getFormats(identifier):
             lambda x: re.search("'....'", x).group().strip("'"),
             re.findall(
                 ": '....'",
-                formatParams,
+                format_params,
             ),
         )
     )
 
-    return supportedResolutions, formats
+    return supported_resolutions, formats
 
 
-def getSettings(identifier):
-    settingParams = subprocess.run(
-        ["v4l2-ctl", "-d", fullCamPath(identifier), "--list-ctrls-menus"],
+def get_settings(identifier):
+    setting_params = subprocess.run(
+        ["v4l2-ctl", "-d", full_cam_path(identifier), "--list-ctrls-menus"],
         capture_output=True,
     ).stdout.decode("utf-8")
 
     try:
-        exposureRange = tuple(
+        exposure_range = tuple(
             map(
                 lambda x: int(x.split("=")[-1]),
                 re.search(
                     "exposure_absolute .* min=-?[0-9]+ max=-?[0-9]+ step=[0-9]+",
-                    settingParams,
+                    setting_params,
                 )
                 .group()
                 .split()[-3:],
             )
         )
     except AttributeError:
-        exposureRange = [0, 0, 0]
+        exposure_range = [0, 0, 0]
 
-    brightnessRange = tuple(
+    brightness_range = tuple(
         map(
             lambda x: int(x.split("=")[-1]),
             re.search(
                 "brightness .* min=-?[0-9]+ max=-?[0-9]+ step=[0-9]+",
-                settingParams,
+                setting_params,
             )
             .group()
             .split()[-3:],
         )
     )
 
-    return exposureRange, brightnessRange
+    return exposure_range, brightness_range
 
 
 # Use methods in Cameras, do not use directly
 
 
-def setBrightness(identifier, brightness):
+def set_brightness(identifier, brightness):
     return os.system(
-        f"v4l2-ctl -d {fullCamPath(identifier)} --set-ctrl brightness={brightness}"
+        f"v4l2-ctl -d {full_cam_path(identifier)} --set-ctrl brightness={brightness}"
     )
 
 
-def setExposure(identifier, exposure):
+def set_exposure(identifier, exposure):
     return os.system(
         # --set-ctrl exposure_auto=1
-        f"v4l2-ctl -d {fullCamPath(identifier)} --set-ctrl exposure_absolute={exposure}"
+        f"v4l2-ctl -d {full_cam_path(identifier)} --set-ctrl exposure_absolute={exposure}"
     )
 
 
