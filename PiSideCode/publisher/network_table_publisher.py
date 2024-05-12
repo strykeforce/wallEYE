@@ -37,7 +37,8 @@ class NetworkIO:
 
         # Pose publisher
         for index in range(num_cams):
-            self.publishers.append(self.table.getSubTable("Result" + str(index)))
+            self.publishers.append(
+                self.table.getSubTable("Result" + str(index)))
 
             self.pose1_sub.append(
                 self.publishers[index]
@@ -122,8 +123,10 @@ class NetworkIO:
         t2 = pose2.translation()
         r2 = pose2.rotation()
 
-        self.pose1_sub[index].set([t1.X(), t1.Y(), t1.Z(), r1.X(), r1.Y(), r1.Z()])
-        self.pose2_sub[index].set([t2.X(), t2.Y(), t2.Z(), r2.X(), r2.Y(), r2.Z()])
+        self.pose1_sub[index].set(
+            [t1.X(), t1.Y(), t1.Z(), r1.X(), r1.Y(), r1.Z()])
+        self.pose2_sub[index].set(
+            [t2.X(), t2.Y(), t2.Z(), r2.X(), r2.Y(), r2.Z()])
         self.ambiguity_sub[index].set(ambig)
         self.tag_sub[index].set(tags)
         self.timestamp_sub[index].set(ntcore._now() - time)

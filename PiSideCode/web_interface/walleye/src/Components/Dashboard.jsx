@@ -57,7 +57,7 @@ export default function Dashboard(props) {
             <CameraStreamList
                 state={props.state}
                 poses={props.poses}
-                showConfig={false}
+                showConfig={true}
             />
 
             <hr />

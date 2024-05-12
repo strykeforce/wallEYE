@@ -4,7 +4,6 @@ import { pages } from "./data.js";
 import Config from "./Components/Config.jsx";
 import "./bootstrap.min.css";
 import Dashboard from "./Components/Dashboard.jsx";
-import CameraConfig from "./Components/CameraConfig.jsx";
 import { socket } from "./socket.js";
 import { Container, Form, Spinner, Stack } from "react-bootstrap";
 import { Helmet } from "react-helmet";
@@ -21,11 +20,15 @@ function App() {
     const [msg, setMsg] = useState("Unknown!!!");
 
     useEffect(() => {
-        setInterval(function () {
+        const interval = setInterval(function () {
             socket.emit("pose_update");
             socket.emit("performance_update");
             socket.emit("msg_update");
         }, 500);
+
+        return () => {
+            clearInterval(interval);
+        };
     }, []);
 
     // Runs once, force render after
@@ -140,9 +143,6 @@ function App() {
                     <Dashboard state={state} poses={poses} />
                 )}
                 {page === "config" && <Config state={state} />}
-                {page === "camera_config" && (
-                    <CameraConfig state={state} poses={poses} />
-                )}
                 {page === "pose_visualization" && (
                     <PoseVisualizationList state={state} poses={poses} />
                 )}

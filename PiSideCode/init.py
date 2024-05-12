@@ -1,4 +1,8 @@
 import sys
+
+# import eventlet
+# eventlet.monkey_patch()
+
 import logging
 from logging.handlers import RotatingFileHandler
 from directory import calibration_image_folder, calibration_path_by_cam, LOG
@@ -21,9 +25,8 @@ logger.info("----------- Starting Up -----------")
 
 from state import walleye_data, States, CALIBRATION_STATES
 from processing.processing import Processor
-import threading
 from camera.camera import Cameras
-from calibration.calibration import Calibration, CalibType
+from calibration.calibration import Calibration
 import time
 
 
@@ -37,6 +40,8 @@ from web_interface.web_interface import (
     visualization_buffers,
 )  # After walleye_data.cameras is set
 
+import threading
+
 web_server = threading.Thread(
     target=lambda: socketio.run(
         app,
@@ -46,13 +51,14 @@ web_server = threading.Thread(
         use_reloader=False,
         log_output=False,
     ),
-    # daemon=True,
+    daemon=True,
 )
+
+
 try:
     # Start the web server
     web_server.start()
 
-    logging.getLogger("geventwebsocket.handler").setLevel(logging.ERROR)
     logging.getLogger("socketio").setLevel(logging.ERROR)
     logging.getLogger("socketio.server").setLevel(logging.ERROR)
     logging.getLogger("engineio").setLevel(logging.ERROR)
@@ -94,7 +100,8 @@ try:
                     walleye_data.cal_delay,
                     walleye_data.board_dims,
                     walleye_data.camera_in_calibration,
-                    calibration_image_folder(walleye_data.camera_in_calibration),
+                    calibration_image_folder(
+                        walleye_data.camera_in_calibration),
                     walleye_data.cameras.info[
                         walleye_data.camera_in_calibration
                     ].resolution,
@@ -123,7 +130,8 @@ try:
                     walleye_data.cal_img_paths.append(path_saved)
 
                 # Keep a buffer with the images
-                cam_buffers[walleye_data.camera_in_calibration].update(returned)
+                cam_buffers[walleye_data.camera_in_calibration].update(
+                    returned)
 
         # Finished Calibration, generate calibration
         elif walleye_data.current_state == States.GENERATE_CALIBRATION:
@@ -214,7 +222,7 @@ try:
                         i, image_time - delay[i], poses[i], tags[i], ambig[i]
                     )
 
-            # Update the pose visualization
+            # Update video stream for web interface
             for i, (identifier, img) in enumerate(images.items()):
                 if i >= len(poses):
                     break
@@ -222,7 +230,8 @@ try:
                 walleye_data.set_pose(identifier, poses[i][0])
                 if walleye_data.visualizing_poses:
                     visualization_buffers[identifier].update(
-                        (poses[i][0].X(), poses[i][0].Y(), poses[i][0].Z()), tags[i][1:]
+                        (poses[i][0].X(), poses[i][0].Y(),
+                         poses[i][0].Z()), tags[i][1:]
                     )
 
         # Ends the WallEye program through the web interface

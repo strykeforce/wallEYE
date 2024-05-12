@@ -2,11 +2,11 @@ pyntcore == 2023.2.1.2
 robotpy-wpimath
 Flask
 flask[async]
-gevent
-gevent-websocket
+eventlet
 opencv-contrib-python >= 4.8.0
 flask-socketio
 matplotlib
 numpy >= 1.25
-simplejpeg
+Pillow >= 10.3
+cffi
 git+https://github.com/antmicro/pyrav4l2.git

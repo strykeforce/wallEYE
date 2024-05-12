@@ -56,7 +56,7 @@ class CameraInfo:
             self.controller.set_control_value(self.controls[control_name], int(value))
 
             CameraInfo.logger.info(
-                f"{control_name} set to {value} in camera {self.identifier}"
+                f"{control_name} set to {value} in camera {self.identifier} (actually {self.get(control_name)})"
             )
 
             return True
@@ -67,7 +67,7 @@ class CameraInfo:
         return False
 
     def get(self, control_name: str):
-        self.controller.get_control_value(self.controls[control_name])
+        return self.controller.get_control_value(self.controls[control_name])
 
     # Util
     def make_control_tuple(self, control_name: str):

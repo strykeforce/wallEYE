@@ -5,7 +5,9 @@ from camera.camera_info import CameraInfo
 from directory import CONFIG_DATA_PATH
 from publisher.network_table_publisher import NetworkIO
 import logging
-import socket, struct, fcntl
+import socket
+import struct
+import fcntl
 import wpimath.geometry as wpi
 
 SIOCSIFADDR = 0x8916
@@ -73,7 +75,8 @@ class Data:
                 self.set_ip(ip)
 
                 if Data.get_current_ip() != ip:
-                    Data.logger.warning("Failed to set static ip, trying again...")
+                    Data.logger.warning(
+                        "Failed to set static ip, trying again...")
                     self.set_ip(ip)
 
         # If no system file is found boot with base settings and create system
@@ -99,6 +102,8 @@ class Data:
 
     # Create a new robot publisher and create an output file for the data
     def make_publisher(self, team_number: int, table_name: str):
+        Data.logger.info(
+            f"Making publisher {table_name} for team {team_number}")
         try:
             # Create and write output file
             with open(CONFIG_DATA_PATH, "r") as file:
@@ -107,6 +112,9 @@ class Data:
                 config["TableName"] = table_name
                 with open(CONFIG_DATA_PATH, "w") as out:
                     json.dump(config, out)
+
+            Data.logger.info(
+                f"Publisher information written to {CONFIG_DATA_PATH}")
 
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             Data.logger.error(
@@ -117,13 +125,17 @@ class Data:
 
         # Destroy any existing publisher
         if self.robot_publisher is not None:
+            Data.logger.info("Destorying existing publisher")
             self.robot_publisher.destroy()
             Data.logger.info("Existing publisher destroyed")
 
         # Create the robot publisher
-        self.robot_publisher = NetworkIO(False, self.team_number, self.table_name, 2)
+        Data.logger.info("Creating publisher")
+        self.robot_publisher = NetworkIO(
+            False, self.team_number, self.table_name, 2)
 
-        Data.logger.info(f"Robot publisher created: {team_number} - {table_name}")
+        Data.logger.info(
+            f"Robot publisher created: {team_number} - {table_name}")
 
     def set_pose(self, identifier: str, pose: wpi.Pose3d):
         self.poses[identifier] = (
@@ -168,6 +180,7 @@ class Data:
             Data.logger.warning("IP is None")
             if not self.robot_publisher:
                 self.make_publisher(self.team_number, self.table_name)
+            print("Done")
             return
 
         # Destroy because changing IP breaks network tables
@@ -239,7 +252,8 @@ class Data:
         try:
             res = fcntl.ioctl(sockfd, SIOCGIFADDR, ifreq)
         except Exception as e:
-            Data.logger.error(f"Could not get current IP - {e} - Returning None")
+            Data.logger.error(
+                f"Could not get current IP - {e} - Returning None")
             return None
 
         ip = struct.unpack("16sH2x4s8x", res)[2]

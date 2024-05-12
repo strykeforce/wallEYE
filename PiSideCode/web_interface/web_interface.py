@@ -11,20 +11,19 @@ import zipfile
 import pathlib
 import io
 
-# import asyncio
-
 logger = logging.getLogger(__name__)
 
 
 app = Flask(__name__, static_folder="./walleye/build", static_url_path="/")
 socketio = SocketIO(
     app,
-    logger=True,
+    logger=False,
     cors_allowed_origins="*",
-    async_mode="gevent",
+    async_mode="eventlet",
 )
 
-cam_buffers = {identifier: Buffer() for identifier in walleye_data.cameras.info.keys()}
+cam_buffers = {identifier: Buffer()
+               for identifier in walleye_data.cameras.info.keys()}
 visualization_buffers = {
     identifier: LivePlotBuffer() for identifier in walleye_data.cameras.info.keys()
 }
@@ -129,7 +128,8 @@ def generate_calibration(cam_id: str):
 @update_after
 def import_calibration(cam_id: str, file):
     with open(
-        calibration_path_by_cam(cam_id, walleye_data.cameras.info[cam_id].resolution),
+        calibration_path_by_cam(
+            cam_id, walleye_data.cameras.info[cam_id].resolution),
         "w",
     ) as outFile:
         # Save
@@ -140,7 +140,8 @@ def import_calibration(cam_id: str, file):
         # Load
         cal_data["K"] = np.asarray(cal_data["K"])
         cal_data["dist"] = np.asarray(cal_data["dist"])
-        walleye_data.cameras.set_calibration(cam_id, cal_data["K"], cal_data["dist"])
+        walleye_data.cameras.set_calibration(
+            cam_id, cal_data["K"], cal_data["dist"])
         walleye_data.cameras.info[cam_id].calibration_path = calibration_path_by_cam(
             cam_id, walleye_data.cameras.info[cam_id].resolution
         )
@@ -189,6 +190,7 @@ def export_config():
     logger.info(f"Config sucessfully zipped")
     walleye_data.status = "Config.zip ready"
     socketio.emit("config_ready")
+    socketio.sleep(0)
 
 
 @socketio.on("set_table_name")
@@ -254,26 +256,26 @@ def toggle_pose_visualization():
 
 @socketio.on("pose_update")
 def pose_update():
-    socketio.sleep(0)
     socketio.emit("pose_update", walleye_data.poses)
+    socketio.sleep(0)
 
 
 @socketio.on("performance_update")
 def performance_update():
-    socketio.sleep(0)
     socketio.emit("performance_update", walleye_data.loop_time)
+    socketio.sleep(0)
 
 
 @socketio.on("msg_update")
 def msg_update():
-    socketio.sleep(0)
     socketio.emit("msg_update", walleye_data.status)
+    socketio.sleep(0)
 
 
 def send_state_update():
     # logger.info(f"Sending state update : {walleye_data.get_state()}")
-    socketio.sleep(0)
     socketio.emit("state_update", walleye_data.get_state())
+    socketio.sleep(0)
 
 
 @app.route("/files/<path:path>")
@@ -287,16 +289,12 @@ def video_feed(cam_id):
         logger.error(f"Bad cam id recieved: {cam_id}")
         return
 
-    # loop = asyncio.new_event_loop()
-    # asyncio.set_event_loop(loop)
-    # img = iter_over_async(camBuffers[camID].output(), loop)
-
     return Response(
         cam_buffers[cam_id].output(), mimetype="multipart/x-mixed-replace; boundary=frame"
     )
 
 
-@app.route("/pose_visualization/<camID>")
+@app.route("/pose_visualization/<cam_id>")
 def pose_visualization(cam_id):
     if cam_id not in cam_buffers:
         logger.error(f"Bad cam id recieved: {cam_id}")

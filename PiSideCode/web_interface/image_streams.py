@@ -4,11 +4,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.image as mpimg
 import json
-import simplejpeg
-import time
-import asyncio
+import eventlet
 
 logger = logging.getLogger(__name__)
+
+STREAM_QUALITY = 100
 
 
 class Buffer:
@@ -24,19 +24,17 @@ class Buffer:
         if self.last_none:
             logger.info("Updated image is NOT none!")
         self.last_none = False
-        self.output_frame = cv2.imencode(".jpg", img)[1].tobytes()
-        # encoded = simplejpeg.encode_jpeg(img)
-        # if (img == encoded).all():
-        #     logger.warning("Frame did not update!")
-        # self.outputFrame = encoded
+        # img = cv2.resize(img, (img.shape[1] // 2, img.shape[0] // 2))
+        self.output_frame = cv2.imencode(
+            ".jpg", img, [int(cv2.IMWRITE_JPEG_QUALITY), STREAM_QUALITY])[1].tobytes()
 
     def output(self):
-        # await asyncio.sleep(0.1)
         while True:
             yield (
                 b"--frame\r\n"
                 b"Content-Type: image/jpeg\r\n\r\n" + self.output_frame + b"\r\n"
             )
+            eventlet.sleep(0.2)
 
 
 class LivePlotBuffer(Buffer):
@@ -85,7 +83,8 @@ class LivePlotBuffer(Buffer):
         plt.locator_params(axis="z", nbins=2)
         self.ax.set_aspect("equal")
         self.fig.tight_layout()
-        self.fig.subplots_adjust(left=-0.26, right=1.21, bottom=-0.08, top=1.08)
+        self.fig.subplots_adjust(
+            left=-0.26, right=1.21, bottom=-0.08, top=1.08)
 
         img = mpimg.imread("./web_interface/field.png")
         x = np.linspace(0, LivePlotBuffer.FIELD_DIMS[0], img.shape[1])
