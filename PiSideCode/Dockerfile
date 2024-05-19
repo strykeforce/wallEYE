@@ -1,8 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM ubuntu
-
-RUN apt-get update && apt-get install -y software-properties-common && add-apt-repository ppa:deadsnakes/ppa && apt-get install -y python3.11 python3-pip
+FROM python:3.12-slim-bookworm
 
 # Prevents Python from writing pyc files.
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -14,9 +12,9 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
 # Install Git, cv2 dependencies, v4l2
-RUN apt-get install -y git ffmpeg libsm6 libxext6 v4l-utils
-
-RUN python3.11 -m pip install -U setuptools
+RUN apt-get update && apt-get install -y git ffmpeg libsm6 libxext6 v4l-utils
+RUN python -m ensurepip --upgrade
+RUN python -m pip install --upgrade pip setuptools
 
 # Download dependencies as a separate step to take advantage of Docker's caching.
 # Leverage a cache mount to /root/.cache/pip to speed up subsequent builds.
@@ -24,7 +22,7 @@ RUN python3.11 -m pip install -U setuptools
 # into this layer.
 RUN --mount=type=cache,target=/root/.cache/pip \
     --mount=type=bind,source=requirements.txt,target=requirements.txt \
-    python3.11 -m pip install -U -r requirements.txt
+    python -m pip install -r requirements.txt
 
 # Add user to groups 
 RUN usermod -a -G video root
@@ -36,4 +34,4 @@ COPY . .
 EXPOSE 5800
 
 # Run the application.
-CMD python3.11 init.py
+CMD python init.py

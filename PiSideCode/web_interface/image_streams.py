@@ -8,7 +8,7 @@ import eventlet
 
 logger = logging.getLogger(__name__)
 
-STREAM_QUALITY = 100
+STREAM_QUALITY = 80
 
 
 class Buffer:
