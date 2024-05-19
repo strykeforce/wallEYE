@@ -28,7 +28,7 @@ export default function Dashboard(props) {
                     ? "Stop PnP"
                     : "Start PnP"}
             </Button>
-            <a href="files/walleye-data/walleye.log" className="btn btn-info" role="button">
+            <a href="files/walleye_data/walleye.log" className="btn btn-info" role="button">
                 {" "}
                 <i class="bi bi-file-earmark-arrow-down"></i> Export Log
             </a>
@@ -66,7 +66,7 @@ export default function Dashboard(props) {
 
             {props.state.calImgPaths.map((path) => (
                 <>
-                    <a href={"files/walleye-data/" + path}>{path}</a>
+                    <a href={"files/walleye_data/" + path}>{path}</a>
                     <br />
                 </>
             ))}

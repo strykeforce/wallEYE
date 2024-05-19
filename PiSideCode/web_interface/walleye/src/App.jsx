@@ -42,7 +42,7 @@ function App() {
         }
 
         function onConfigReady() {
-            window.open("./files/walleye-data/config.zip", "_blank");
+            window.open("./files/walleye_data/config.zip", "_blank");
         }
 
         function onStateUpdate(newState) {

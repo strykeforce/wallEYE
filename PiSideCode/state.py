@@ -87,6 +87,8 @@ class Data:
             self.ip = Data.get_current_ip()
             Data.logger.info(f"IP is {self.ip}")
 
+            self.make_publisher(self.team_number, self.table_name)
+
             data_dump = {
                 "TeamNumber": self.team_number,
                 "TableName": self.table_name,

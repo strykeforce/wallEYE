@@ -1,7 +1,7 @@
 import os.path
 import pathlib
 
-DOCKER_VOLUME = "walleye-data"
+DOCKER_VOLUME = "walleye_data"
 
 V4L_PATH = "/dev/v4l/by-path"
 CONFIG_DIRECTORY = os.path.join(DOCKER_VOLUME, "config_data")
