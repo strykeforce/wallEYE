@@ -2,7 +2,7 @@ from flask import Response, Flask, send_from_directory
 import os
 from flask_socketio import SocketIO
 import json
-from directory import CONFIG_ZIP, calibration_path_by_cam
+from directory import CONFIG_ZIP, calibration_path_by_cam, CONFIG_DIRECTORY
 from state import walleye_data, States
 import logging
 import numpy as np
@@ -180,7 +180,7 @@ def export_config():
     with zipfile.ZipFile(CONFIG_ZIP, "w") as config:
         logger.info(f"Opening {CONFIG_ZIP} for writing")
 
-        for f in directory.rglob("config_data/*"):
+        for f in directory.rglob(f"{CONFIG_DIRECTORY}/*"):
             config.write(f)
             logger.info(f"Zipping {f}")
 

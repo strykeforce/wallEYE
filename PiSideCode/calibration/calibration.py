@@ -303,7 +303,7 @@ class Calibration:
 
         self.calibration_data["reprojError"] = reproj_error
 
-        Path(os.path.join("config_data", "calibrations")).mkdir(
+        Path(os.path.join(CONFIG_DIRECTORY, "calibrations")).mkdir(
             parents=True, exist_ok=True
         )
 
