@@ -13,6 +13,10 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.SocketException;
 import java.util.function.DoubleSupplier;
 
 /** A robot side code interface to interact and pull data from an Orange Pi running WallEye */
@@ -26,12 +30,16 @@ public class WallEyeCam {
   private int curUpdateNum = 0;
   private IntegerSubscriber updateSub;
   private Transform3d camToCenter;
+  private DatagramSocket socket;
+  byte[] udpData = new byte[65535];
+  String udpNumTargets = "0";
   DoubleSupplier gyro;
   int currentGyroIndex = 0;
   private final int maxGyroResultSize = 100;
   DIOGyroResult[] gyroResults;
   boolean hasTurnedOff;
   Notifier dioLoop = new Notifier(this::grabGyro);
+  Notifier udpLoop = new Notifier(this::grabUDPdata);
   int dioPort = -1;
   private int camIndex = -1;
 
@@ -45,6 +53,12 @@ public class WallEyeCam {
    *     connected to (-1 to disable it)
    */
   public WallEyeCam(String tableName, int camIndex, int dioPort) {
+    try {
+      socket = new DatagramSocket(5802);
+    } catch (SocketException e) {
+      System.err.print("COULD NOT CREATE VISION SOCKET");
+    }
+
     gyroResults = new DIOGyroResult[maxGyroResultSize];
     hasTurnedOff = false;
     this.camIndex = camIndex;
@@ -54,7 +68,7 @@ public class WallEyeCam {
       this.dioPort = dioPort;
       dioLoop.startPeriodic(0.01);
     }
-
+    udpLoop.startPeriodic(0.01);
     camToCenter = new Transform3d();
     NetworkTableInstance nt = NetworkTableInstance.getDefault();
     nt.startServer();
@@ -108,6 +122,17 @@ public class WallEyeCam {
     return camIndex;
   }
 
+  private void grabUDPdata() {
+    DatagramPacket receive = new DatagramPacket(udpData, udpData.length);
+    try {
+      socket.receive(receive);
+    } catch (IOException e) {
+      System.err.println("COULD NOT RECEIVE DATA");
+    }
+    udpNumTargets = data(udpData).toString();
+    udpData = new byte[65535];
+  }
+
   /**
    * Pulls most recent poses from Network Tables.
    *
@@ -135,6 +160,21 @@ public class WallEyeCam {
             pose1, pose2, timestamp, camIndex, curUpdateNum, tags.length, tagsNew, ambiguity);
 
     return result;
+  }
+
+  public String getUDPnumTargets() {
+    return udpNumTargets;
+  }
+
+  private static StringBuilder data(byte[] a) {
+    if (a == null) return null;
+    StringBuilder ret = new StringBuilder();
+    int i = 0;
+    while (a[i] != 0) {
+      ret.append((char) a[i]);
+      i++;
+    }
+    return ret;
   }
 
   /**
