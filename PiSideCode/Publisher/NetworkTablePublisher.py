@@ -1,6 +1,6 @@
 import ntcore
 import logging
-
+import socket
 
 class NetworkIO:
     logger = logging.getLogger(__name__)
@@ -10,6 +10,10 @@ class NetworkIO:
         # Grab the default network table instance and grab the table name
         self.inst = ntcore.NetworkTableInstance.getDefault()
         self.table = self.inst.getTable(tableName)
+
+        self.robotIP = "10.27.67.2"
+        self.robotUDP = 5802
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
         # Start the WallEye_Client and set server depending on testing
         self.inst.startClient4("WallEye_Client")
@@ -112,6 +116,7 @@ class NetworkIO:
         self.tagSub[index].set(tags)
         self.timestampSub[index].set(ntcore._now() - time)
 
+        self.sock.sendto(bytes(str(t1.X()), 'utf-8'), (self.robotIP, self.robotUDP))
 
         self.updateNum[index] += 1
         self.publishUpdate[index].set(self.updateNum[index])
