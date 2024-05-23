@@ -17,5 +17,3 @@ Run these as root.
 `docker system prune -a`
 
 `docker load < NAME.tar`
-
-Volumes are stored at `/var/lib/docker/volume`
