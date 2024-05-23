@@ -32,6 +32,7 @@ COPY . .
 
 # Expose the port that the application listens on.
 EXPOSE 5800
+EXPOSE 0
 
 # Run the application.
 CMD python init.py

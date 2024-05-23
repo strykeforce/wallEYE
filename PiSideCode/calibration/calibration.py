@@ -7,6 +7,7 @@ import shutil
 import logging
 from enum import Enum
 from pathlib import Path
+from directory import CONFIG_DIRECTORY
 
 
 class CalibType(Enum):
@@ -121,7 +122,7 @@ class Calibration:
                 + cv2.CALIB_CB_FAST_CHECK,
             )
 
-        elif self.calib_type == CalibType.CIRCLE_GRID:  # TODO test
+        elif self.calib_type == CalibType.CIRCLE_GRID:
             keypoints = self.blob_detector.detect(gray)
             img_keypoints = cv2.drawKeypoints(
                 img,

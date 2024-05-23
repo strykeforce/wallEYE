@@ -13,8 +13,8 @@ import wpimath.geometry as wpi
 SIOCSIFADDR = 0x8916
 SIOCGIFADDR = 0x8915
 SIOCSIFNETMASK = 0x891C
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-sockfd = sock.fileno()
+networking_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sockfd = networking_socket.fileno()
 
 
 class States(Enum):
@@ -212,7 +212,7 @@ class Data:
         )
         # https://stackoverflow.com/questions/70310413/python-fcntl-ioctl-errno-1-operation-not-permitted
         try:
-            fcntl.ioctl(sock, SIOCSIFADDR, ifreq)
+            fcntl.ioctl(networking_socket, SIOCSIFADDR, ifreq)
         except Exception as e:
             Data.logger.info(f"Failed to set IP address: {e}")
 

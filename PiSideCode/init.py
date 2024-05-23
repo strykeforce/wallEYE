@@ -237,8 +237,8 @@ try:
         # Ends the WallEye program through the web interface
         elif walleye_data.current_state == States.SHUTDOWN:
             logger.info("Shutting down")
-            logging.shutdown()
             socketio.stop()
+            logging.shutdown()
             break
 
         # Update cameras no matter what state

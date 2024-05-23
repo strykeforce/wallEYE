@@ -51,7 +51,7 @@ class LivePlotBuffer(Buffer):
         self.ax = self.fig.add_subplot(111, projection="3d")
         self.ax.view_init(elev=35, azim=-80, roll=0)
         self.x, self.y, self.z = [], [], []
-        (self.poses2_d,) = self.ax.plot3D(
+        (self.poses_2d,) = self.ax.plot3D(
             self.x,
             self.y,
             np.atleast_1d(0),
@@ -98,7 +98,7 @@ class LivePlotBuffer(Buffer):
 
         self.bg = self.fig.canvas.copy_from_bbox(self.fig.bbox)
         self.ax.draw_artist(self.poses)
-        self.ax.draw_artist(self.poses2_d)
+        self.ax.draw_artist(self.poses_2d)
         self.ax.draw_artist(self.tags)
         self.fig.canvas.blit(self.fig.bbox)
 
@@ -115,8 +115,8 @@ class LivePlotBuffer(Buffer):
         self.z = self.z[-50:]
         self.poses.set_data(self.x, self.y)
         self.poses.set_3d_properties(self.z)
-        self.poses2_d.set_data(self.x, self.y)
-        self.poses2_d.set_3d_properties(np.atleast_1d(0))
+        self.poses_2d.set_data(self.x, self.y)
+        self.poses_2d.set_3d_properties(np.atleast_1d(0))
 
         tags_x = [
             (
@@ -138,7 +138,7 @@ class LivePlotBuffer(Buffer):
         self.tags.set_data(tags_x, tags_y)
         self.tags.set_3d_properties(np.atleast_1d(0))
 
-        self.ax.draw_artist(self.poses2_d)
+        self.ax.draw_artist(self.poses_2d)
         self.ax.draw_artist(self.poses)
         self.ax.draw_artist(self.tags)
         self.fig.canvas.blit(self.fig.bbox)
@@ -146,4 +146,5 @@ class LivePlotBuffer(Buffer):
 
         plot = np.frombuffer(self.fig.canvas.tostring_rgb(), dtype=np.uint8)
         img = plot.reshape(self.fig.canvas.get_width_height()[::-1] + (3,))
-        self.output_frame = simplejpeg.encode_jpeg(img)
+        self.output_frame = cv2.imencode(
+            ".jpg", img, [int(cv2.IMWRITE_JPEG_QUALITY), STREAM_QUALITY])[1].tobytes()
