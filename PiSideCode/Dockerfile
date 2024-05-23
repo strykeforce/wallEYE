@@ -12,9 +12,9 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
 # Install Git, cv2 dependencies, v4l2
-RUN apt-get update && apt-get install -y git ffmpeg libsm6 libxext6 v4l-utils
-RUN python -m ensurepip --upgrade
-RUN python -m pip install --upgrade pip setuptools
+RUN apt-get update && apt-get install -y && apt-get install -y git ffmpeg libsm6 libxext6 v4l-utils \ 
+    && python -m ensurepip --upgrade \
+    && python -m pip install --upgrade pip setuptools
 
 # Download dependencies as a separate step to take advantage of Docker's caching.
 # Leverage a cache mount to /root/.cache/pip to speed up subsequent builds.
@@ -24,8 +24,6 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     --mount=type=bind,source=requirements.txt,target=requirements.txt \
     python -m pip install -r requirements.txt
 
-# Add user to groups 
-RUN usermod -a -G video root
 
 # Copy the source code into the container.
 COPY . .
