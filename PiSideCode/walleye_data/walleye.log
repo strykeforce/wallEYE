@@ -1,0 +1,30 @@
+[22-May-24 22:05:46 - INFO - init.py:24 - <module>()]  ----------- Starting Up -----------
+[22-May-24 22:05:46 - ERROR - state.py:257 - get_current_ip()]  Could not get current IP - [Errno 19] No such device - Returning None
+[22-May-24 22:05:46 - INFO - state.py:88 - __init__()]  IP is None
+[22-May-24 22:05:46 - INFO - state.py:107 - make_publisher()]  Making publisher WallEye for team 2767
+[22-May-24 22:05:46 - ERROR - state.py:122 - make_publisher()]  Failed to write TableName | WallEye | or TeamNumber | 2767 |
+[22-May-24 22:05:46 - INFO - state.py:135 - make_publisher()]  Creating publisher
+[22-May-24 22:05:46 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[22-May-24 22:05:46 - INFO - state.py:139 - make_publisher()]  Robot publisher created: 2767 - WallEye
+[22-May-24 22:05:46 - INFO - camera.py:24 - __init__()]  Platform is linux
+[22-May-24 22:05:46 - WARNING - camera.py:95 - __init__()]  Failed to open camera: pci-0000:04:00.0-usbv2-0:1:1.0-video-index1
+[22-May-24 22:05:46 - INFO - camera.py:48 - __init__()]  Camera found: pci-0000:04:00.0-usb-0:1:1.0-video-index0
+[22-May-24 22:05:46 - INFO - camera.py:59 - __init__()]  Supported resolutions: [(640, 360), (640, 480)]
+[22-May-24 22:05:46 - INFO - camera.py:62 - __init__()]  Supported formats: ['Motion-JPEG', 'YUYV 4:2:2']
+[22-May-24 22:05:46 - INFO - camera.py:65 - __init__()]  Supported exposures (min, max, step): (10, 2500, 1)
+[22-May-24 22:05:46 - INFO - camera.py:68 - __init__()]  Supported brightnesses (min, max, step): (-64, 64, 1)
+[22-May-24 22:05:46 - INFO - camera.py:77 - __init__()]  Auto exposure disabled for pci-0000:04:00.0-usb-0:1:1.0-video-index0
+[22-May-24 22:05:46 - INFO - camera.py:312 - import_config()]  Attempting to import config for pci-0000:04:00.0-usb-0:1:1.0-video-index0
+[22-May-24 22:05:46 - WARNING - camera.py:321 - import_config()]  Config not found for camera pci-0000:04:00.0-usb-0:1:1.0-video-index0
+[22-May-24 22:05:46 - INFO - calibration.py:423 - parse_calibration()]  Looking for calibration stored at walleye_data/config_data/calibrations/cam_pci-0000-04-00-0-usb-0-1-1-0-video-index0_(640, 480)_cal_data.json
+[22-May-24 22:05:46 - ERROR - camera.py:303 - import_calibration()]  Calibration not found for camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 at resolution (640, 480)
+[22-May-24 22:05:46 - WARNING - camera.py:334 - import_config()]  Camera config not found for camera pci-0000:04:00.0-usb-0:1:1.0-video-index0
+[22-May-24 22:05:46 - WARNING - camera.py:95 - __init__()]  Failed to open camera: pci-0000:04:00.0-usb-0:1:1.0-video-index1
+[22-May-24 22:05:46 - WARNING - camera.py:95 - __init__()]  Failed to open camera: pci-0000:04:00.0-usbv2-0:1:1.0-video-index0
+[22-May-24 22:05:48 - INFO - image_streams.py:48 - __init__()]  Tag layout loaded
+[22-May-24 22:05:50 - INFO - init.py:66 - <module>()]  Web server ready
+[22-May-24 22:05:50 - INFO - processing.py:20 - __init__()]  Tag layout loaded
+[22-May-24 22:05:50 - INFO - init.py:77 - <module>()]  Starting main loop
+[22-May-24 22:05:51 - INFO - web_interface.py:72 - connect()]  Client connected
+[22-May-24 22:05:59 - WARNING - web_interface.py:77 - disconnect()]  Client disconnected
+[22-May-24 22:05:59 - INFO - init.py:239 - <module>()]  Shutting down
