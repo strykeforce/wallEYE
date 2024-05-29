@@ -5,6 +5,7 @@ services:
     ports:
       - 5800:5800
     volumes:
+      - /home/orangepi/walleye_data:/app/walleye_data
       - type: bind
         source: /dev
         target: /dev

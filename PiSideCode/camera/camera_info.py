@@ -5,7 +5,7 @@ import cv2
 import numpy as np
 
 BRIGHTNESS = "Brightness"
-EXPOSURE = "Exposure Time, Absolute"
+EXPOSURE = "Exposure (Absolute)"
 
 
 class CameraInfo:
@@ -27,8 +27,11 @@ class CameraInfo:
 
         # Modified with self.set()
         self.controls: dict[str, Control] = {
-            c.name: c for c in self.controller.controls[1:]
+            c.name: c for c in self.controller.controls
         }
+
+        CameraInfo.logger.info(f"Valid Controls: {list(self.controls)}")
+
         self.valid_formats = {
             str(f): [(r.width, r.height) for r in res]
             for f, res in self.controller.available_formats.items()

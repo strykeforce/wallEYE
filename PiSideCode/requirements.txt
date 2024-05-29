@@ -1,4 +1,5 @@
-pyntcore >= 2023.2.1.2
+git+https://github.com/antmicro/pyrav4l2.git
+pyntcore # >= 2023.2.1.2
 robotpy-wpimath
 Flask
 flask[async]
@@ -9,4 +10,3 @@ matplotlib
 numpy >= 1.26.4
 Pillow >= 10.3
 cffi
-git+https://github.com/antmicro/pyrav4l2.git
