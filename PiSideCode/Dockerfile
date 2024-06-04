@@ -12,7 +12,8 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
 # Install Git, cv2 dependencies, v4l2
-RUN apt-get update && apt-get install -y git ffmpeg libsm6 libxext6 v4l-utils libatomic1
+RUN apt-get update && apt-get install -y git ffmpeg libsm6 libxext6 v4l-utils libatomic1 net-tools
+
 # RUN python -m ensurepip --upgrade \
 #     && python -m pip install --upgrade pip setuptools 
     
@@ -27,7 +28,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 COPY . .
 
 # Expose the port that the application listens on.
-EXPOSE 0 5800
+EXPOSE 5800
 
 # Run the application.
 CMD python init.py

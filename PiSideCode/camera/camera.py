@@ -117,7 +117,7 @@ class Cameras:
     ) -> tuple[dict[str, bool], dict[str, np.ndarray], dict[str, float]]:
         frames = {}
         connections = {}
-        delay = {}
+        timestamp = {}
         for identifier, camInfo in self.info.items():
             ret, img = camInfo.cam.read()
 
@@ -126,13 +126,11 @@ class Cameras:
 
             frames[identifier] = img
             connections[identifier] = ret
-            delay[identifier] = time.clock_gettime_ns(
-                time.CLOCK_MONOTONIC
-            ) / 1000000 - camInfo.cam.get(
+            timestamp[identifier] = camInfo.cam.get(
                 cv2.CAP_PROP_POS_MSEC
-            )  # Expect -28 to -32 on laptop testing TODO CHECK THIS
+            )  
 
-        return (connections, frames, delay)
+        return (connections, frames, timestamp)
 
     # Sets resolution, video format, and FPS
     def set_resolution(self, identifier: str, resolution: tuple[int, int]) -> bool:

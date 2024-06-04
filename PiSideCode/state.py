@@ -9,6 +9,7 @@ import socket
 import struct
 import fcntl
 import wpimath.geometry as wpi
+import os
 
 SIOCSIFADDR = 0x8916
 SIOCGIFADDR = 0x8915
@@ -61,6 +62,8 @@ class Data:
 
         # SolvePNP
         self.tag_size: float = 0.157
+
+        os.system('nmcli --terse connection show | cut -d : -f 1 | while read name; do echo nmcli connection delete "$name"; done')
 
         try:
             # Open and load system settings
@@ -182,7 +185,6 @@ class Data:
             Data.logger.warning("IP is None")
             if not self.robot_publisher:
                 self.make_publisher(self.team_number, self.table_name)
-            print("Done")
             return
 
         # Destroy because changing IP breaks network tables

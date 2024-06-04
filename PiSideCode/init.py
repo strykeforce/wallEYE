@@ -163,14 +163,14 @@ try:
 
                     # Set the cameras calibration, save off the file path, and
                     # go to idle
-                    walleye_data.cameras.setCalibration(
+                    walleye_data.cameras.set_calibration(
                         walleye_data.camera_in_calibration,
-                        calibrators[walleye_data.camera_in_calibration].calibrationData[
-                            "K"
-                        ],
-                        calibrators[walleye_data.camera_in_calibration].calibrationData[
-                            "dist"
-                        ],
+                        calibrators[
+                            walleye_data.camera_in_calibration
+                        ].calibration_data["K"],
+                        calibrators[
+                            walleye_data.camera_in_calibration
+                        ].calibration_data["dist"],
                     )
                     walleye_data.cameras.info[
                         walleye_data.camera_in_calibration
@@ -196,9 +196,10 @@ try:
 
             image_time = walleye_data.robot_publisher.get_time()
 
-            connections, images, delay = (
+            connections, images, img_time = (
                 walleye_data.cameras.get_frames_for_processing()
             )
+            list_img_time = [i for i in img_time.values()] 
 
             for idx, val in enumerate(connections.values()):
                 if not val and walleye_data.robot_publisher.getConnectionValue(idx):
@@ -219,7 +220,7 @@ try:
             for i in range(len(poses)):
                 if poses[i][0].X() < 2000:
                     walleye_data.robot_publisher.publish(
-                        i, image_time - delay[i], poses[i], tags[i], ambig[i]
+                        i, list_img_time[i], poses[i], tags[i], ambig[i]
                     )
 
             # Update video stream for web interface
