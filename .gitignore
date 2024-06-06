@@ -14,3 +14,4 @@ PiSideCode/config.zip
 ## VS Code Java ##
 bin/
 **/.vscode
+PiSideCode/walleye_data/walleye.log

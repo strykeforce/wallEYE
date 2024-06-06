@@ -107,3 +107,31 @@
 [04-Jun-24 18:09:19 - INFO - init.py:66 - <module>()]  Web server ready
 [04-Jun-24 18:09:19 - INFO - processing.py:20 - __init__()]  Tag layout loaded
 [04-Jun-24 18:09:19 - INFO - init.py:77 - <module>()]  Starting main loop
+[06-Jun-24 19:15:25 - INFO - init.py:24 - <module>()]  ----------- Starting Up -----------
+[06-Jun-24 19:15:28 - INFO - state.py:182 - set_ip()]  Attempting to set static IP
+[06-Jun-24 19:15:28 - INFO - state.py:221 - set_ip()]  Static IP set: 192.168.3.93 =? 192.168.3.93
+[06-Jun-24 19:15:28 - INFO - state.py:110 - make_publisher()]  Making publisher WallEye for team 2767
+[06-Jun-24 19:15:28 - INFO - state.py:121 - make_publisher()]  Publisher information written to walleye_data/config_data/system_data.json
+[06-Jun-24 19:15:28 - INFO - state.py:138 - make_publisher()]  Creating publisher
+[06-Jun-24 19:15:28 - INFO - NetworkClient.cpp:144 - None()]  starting network client
+[06-Jun-24 19:15:28 - INFO - state.py:142 - make_publisher()]  Robot publisher created: 2767 - WallEye
+[06-Jun-24 19:15:28 - INFO - camera.py:24 - __init__()]  Platform is linux
+[06-Jun-24 19:15:28 - INFO - camera.py:48 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
+[06-Jun-24 19:15:28 - INFO - camera_info.py:33 - __init__()]  Valid Controls: ['Brightness', 'Contrast', 'Saturation', 'White Balance Temperature, Auto', 'Power Line Frequency', 'White Balance Temperature', 'Sharpness', 'Backlight Compensation', 'Exposure, Auto', 'Exposure (Absolute)', 'Pan (Absolute)', 'Tilt (Absolute)', 'Zoom, Absolute']
+[06-Jun-24 19:15:28 - INFO - camera.py:59 - __init__()]  Supported resolutions: [(640, 480), (1280, 720), (960, 544), (800, 448), (640, 360), (424, 240), (352, 288), (320, 240), (800, 600), (176, 144), (160, 120), (1280, 800)]
+[06-Jun-24 19:15:28 - INFO - camera.py:62 - __init__()]  Supported formats: ['YUYV 4:2:2', 'Motion-JPEG']
+[06-Jun-24 19:15:28 - INFO - camera.py:65 - __init__()]  Supported exposures (min, max, step): (5, 20000, 1)
+[06-Jun-24 19:15:28 - INFO - camera.py:68 - __init__()]  Supported brightnesses (min, max, step): (30, 255, 1)
+[06-Jun-24 19:15:28 - INFO - camera.py:77 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[06-Jun-24 19:15:28 - INFO - camera.py:310 - import_config()]  Attempting to import config for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[06-Jun-24 19:15:28 - INFO - camera.py:316 - import_config()]  Config found!
+[06-Jun-24 19:15:28 - INFO - calibration.py:423 - parse_calibration()]  Looking for calibration stored at walleye_data/config_data/calibrations/cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(640, 480)_cal_data.json
+[06-Jun-24 19:15:28 - ERROR - camera.py:301 - import_calibration()]  Calibration not found for camera platform-fc800000.usb-usb-0:1:1.0-video-index0 at resolution (640, 480)
+[06-Jun-24 19:15:28 - INFO - camera.py:176 - set_resolution()]  Resolution set to (640, 480) for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[06-Jun-24 19:15:28 - INFO - camera_info.py:61 - set()]  Brightness set to 30.0 in camera platform-fc800000.usb-usb-0:1:1.0-video-index0 (actually 30)
+[06-Jun-24 19:15:28 - INFO - camera_info.py:61 - set()]  Exposure (Absolute) set to 1062.0 in camera platform-fc800000.usb-usb-0:1:1.0-video-index0 (actually 1062)
+[06-Jun-24 19:15:28 - WARNING - camera.py:95 - __init__()]  Failed to open camera: platform-fc800000.usb-usb-0:1:1.0-video-index1
+[06-Jun-24 19:15:31 - INFO - image_streams.py:48 - __init__()]  Tag layout loaded
+[06-Jun-24 19:15:35 - INFO - init.py:66 - <module>()]  Web server ready
+[06-Jun-24 19:15:35 - INFO - processing.py:20 - __init__()]  Tag layout loaded
+[06-Jun-24 19:15:35 - INFO - init.py:77 - <module>()]  Starting main loop
