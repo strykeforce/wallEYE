@@ -17,6 +17,9 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.function.DoubleSupplier;
 
 /** A robot side code interface to interact and pull data from an Orange Pi running WallEye */
@@ -42,6 +45,15 @@ public class WallEyeCam {
   Notifier udpLoop = new Notifier(this::grabUDPdata);
   int dioPort = -1;
   private int camIndex = -1;
+  int udpPort;
+  String camName;
+  WallEyeResult curData = new WallEyeResult(null, null, 0, 0, 0, 0, null, 0);
+
+  private final int kIntByteSize = 4;
+  private final int kDoubleByteSize = 8;
+  private final int kLongByteSize = 8;
+  private final int kPoseByteSize = kDoubleByteSize * 6;
+  private final int kFinalTagInt = -1;
 
   /**
    * Creates a WallEye object that can pull pose location and timestamp data from Network Tables.
@@ -49,12 +61,14 @@ public class WallEyeCam {
    * @param tableName a string that specifies the table name of the WallEye instance (is set in the
    *     web interface)
    * @param camIndex number to identify the camera as according to webInterface
+   * @param udpPort port that recieves the UDP data NEEDS TO MATCH WEB INTERFACE
    * @param dioPort NOT IMPLEMENTED an int that corresponds to the dioport that the strobe is
    *     connected to (-1 to disable it)
    */
-  public WallEyeCam(String tableName, int camIndex, int dioPort) {
+  public WallEyeCam(String camName, int camIndex, int udpPort, int dioPort) {
+    this.udpPort = udpPort;
     try {
-      socket = new DatagramSocket(5802);
+      socket = new DatagramSocket(udpPort);
     } catch (SocketException e) {
       System.err.print("COULD NOT CREATE VISION SOCKET");
     }
@@ -73,7 +87,7 @@ public class WallEyeCam {
     NetworkTableInstance nt = NetworkTableInstance.getDefault();
     nt.startServer();
 
-    NetworkTable table = nt.getTable(tableName);
+    NetworkTable table = nt.getTable(camName);
 
     double[] def = {2767.0, 2767.0, 2767.0, 2767.0, 2767.0, 2767.0, 2767.0};
     long[] defInt = {-1};
@@ -88,6 +102,7 @@ public class WallEyeCam {
 
     updateSub = table.getIntegerTopic("Update" + camIndex).subscribe(0);
     connectSub = table.getBooleanTopic("Connected" + camIndex).subscribe(false);
+    this.camName = camName;
   }
 
   /** A method that checks the DIO port for an input and upon input will grab gyro and timestamp */
@@ -126,10 +141,107 @@ public class WallEyeCam {
     DatagramPacket receive = new DatagramPacket(udpData, udpData.length);
     try {
       socket.receive(receive);
+      System.out.println(udpData);
     } catch (IOException e) {
       System.err.println("COULD NOT RECEIVE DATA");
     }
-    udpNumTargets = data(udpData).toString();
+
+    // Data packets are structured as such:
+    //  The first element is the cameras name
+    //  The second element is an integer that is the camera's update number
+    //         (ie how many new packets have been delivered to each camera)
+    //  The third element is an integer that represents a mode the camera could be in
+    //  The fourth and fifth element is an encoded pose from the camera
+    //          each element contains six doubles
+    //          X,Y,Z,RX,RY,RZ with RX being the X rotation
+    //  The sixth element is a double which is the ambiguity
+    //  The seventh element is a double that is a timestamp
+    //  The eighth is a list of integers of tag numbers that ends with negative one
+    //  THERE ARE NO SPLITTING TOKENS
+
+    String rawDataString = parseDataString(udpData).toString();
+    String[] splitData = rawDataString.split(camName);
+
+    // This is a very odd catch, it means that somehow the data when converted to a string had the
+    // cameras name twice
+    //      ie the doubles when read as a char spell out the tables name (VERY IMPROBABLE [I
+    // think?])
+    if (splitData.length != 2) {
+      return;
+    }
+    String camData = splitData[1];
+    int newUpdateNum = parseDataInt(stringToByte(camData.substring(0, kIntByteSize)));
+    int mode = parseDataInt(stringToByte(camData.substring(kIntByteSize, 2 * kIntByteSize)));
+    String modeSpecificData = camData.substring(2 * kIntByteSize);
+
+    if (newUpdateNum <= curUpdateNum) return;
+
+    switch (mode) {
+      case 0:
+        Pose3d pose1 = parseDataPose(modeSpecificData.substring(0, kPoseByteSize));
+        Pose3d pose2 = parseDataPose(modeSpecificData.substring(kPoseByteSize, kPoseByteSize * 2));
+        double ambig =
+            parseDataDouble(
+                stringToByte(
+                    modeSpecificData.substring(
+                        kPoseByteSize * 2, kPoseByteSize * 2 + kDoubleByteSize)));
+        double timestamp =
+            parseDataDouble(
+                stringToByte(
+                    modeSpecificData.substring(
+                        kPoseByteSize * 2 + kDoubleByteSize,
+                        kPoseByteSize * 2 + kDoubleByteSize * 2)));
+        Integer[] tags =
+            parseDataTags(modeSpecificData.substring(kPoseByteSize * 2 + kDoubleByteSize * 2));
+        curData =
+            new WallEyeResult(
+                pose1,
+                pose2,
+                timestamp,
+                camIndex,
+                newUpdateNum,
+                tags.length,
+                IntegerArrayToInt(tags),
+                ambig);
+        break;
+      case 1:
+        break;
+      default:
+        break;
+    }
+
+    // String[] splitData = rawDataString.split("\n");
+    // for (String data: splitData) {
+    //     String[] camData = data.split("|");
+    //     if (camData[0] == camName) {
+    //         int updateNum = parseDataInt(stringToByte(camData[1]));
+    //         if (updateNum > curUpdateNum) {
+    //             curUpdateNum = updateNum;
+    //             int mode = parseDataInt(stringToByte(camData[2]));
+    //             switch (mode) {
+    //                 // This is for pose data
+    //                 case 0:
+    //                     Pose3d pose1 = parseDataPose(camData[3]);
+    //                     Pose3d pose2 = parseDataPose(camData[4]);
+    //                     double ambig = parseDataDouble(stringToByte(camData[5]));
+    //                     int[] tags = parseDataTags(camData[6]);
+    //                     double timestamp = parseDataDouble(stringToByte(camData[7]));
+
+    //                     curData = new WallEyeResult(pose1, pose2, timestamp, camIndex, updateNum,
+    // tags.length, tags, ambig);
+    //                     break;
+
+    //                 // This is for corner data FIXME
+    //                 case 1:
+
+    //                     break;
+    //                 default:
+    //                     break;
+    //             }
+    //         }
+    //     } else continue;
+    // }
+
     udpData = new byte[65535];
   }
 
@@ -141,32 +253,89 @@ public class WallEyeCam {
    * @see WallEyeResult
    */
   public WallEyeResult getResults() {
-    WallEyeResult result;
-    curUpdateNum = (int) updateSub.get();
-    double[] tempPose1 = pose1Sub.get();
-    double[] tempPose2 = pose2Sub.get();
-    double timestamp = RobotController.getFPGATime() - timestampSub.get();
-    double ambiguity = ambiguitySub.get();
-    long[] tags = tagsSub.get();
-    int[] tagsNew = new int[tags.length];
+    // WallEyeResult result;
+    // curUpdateNum = (int) updateSub.get();
+    // double[] tempPose1 = pose1Sub.get();
+    // double[] tempPose2 = pose2Sub.get();
+    // double timestamp = RobotController.getFPGATime() - timestampSub.get();
+    // double ambiguity = ambiguitySub.get();
+    // long[] tags = tagsSub.get();
+    // int[] tagsNew = new int[tags.length];
 
-    for (int i = 0; i < tags.length; ++i) tagsNew[i] = (int) tags[i];
+    // for (int i = 0; i < tags.length; ++i) tagsNew[i] = (int) tags[i];
 
-    Pose3d pose1 = getPoseFromArray(tempPose1);
-    Pose3d pose2 = getPoseFromArray(tempPose2);
+    // Pose3d pose1 = getPoseFromArray(tempPose1);
+    // Pose3d pose2 = getPoseFromArray(tempPose2);
 
-    result =
-        new WallEyeResult(
-            pose1, pose2, timestamp, camIndex, curUpdateNum, tags.length, tagsNew, ambiguity);
+    // result =
+    //     new WallEyeResult(
+    //         pose1, pose2, timestamp, camIndex, curUpdateNum, tags.length, tagsNew, ambiguity);
 
-    return result;
+    // return result;
+    return curData;
   }
 
-  public String getUDPnumTargets() {
-    return udpNumTargets;
+  private int[] IntegerArrayToInt(Integer[] input) {
+    int[] tags = new int[input.length];
+    for (int i = 0; i < input.length; ++i) {
+      tags[i] = input[i];
+    }
+    return tags;
   }
 
-  private static StringBuilder data(byte[] a) {
+  private Integer[] parseDataTags(String str) {
+    ArrayList<Integer> tags = new ArrayList<Integer>();
+    Integer[] tagsArray;
+    int tagID = 0;
+    int numTags = 0;
+    while (tagID != kFinalTagInt) {
+      tagID =
+          parseDataInt(
+              stringToByte(str.substring(kIntByteSize * numTags, kIntByteSize * (numTags + 1))));
+      if (tagID == kFinalTagInt) {
+        tagsArray = new Integer[tags.size()];
+        tags.toArray(tagsArray);
+        return tagsArray;
+      }
+      tags.add(tagID);
+      numTags++;
+    }
+    tagsArray = new Integer[tags.size()];
+    tags.toArray(tagsArray);
+    return tagsArray;
+  }
+
+  private Pose3d parseDataPose(String str) {
+    double[] coords = new double[6];
+    for (int i = 0; i < 6; ++i)
+      coords[i] =
+          parseDataDouble(
+              stringToByte(str.substring(kDoubleByteSize * i, kDoubleByteSize * (i + 1))));
+    return new Pose3d(
+        new Translation3d(coords[0], coords[1], coords[2]),
+        new Rotation3d(coords[3], coords[4], coords[5]));
+  }
+
+  private double parseDataDouble(byte[] a) {
+    if (a == null) return 0;
+    return ByteBuffer.wrap(a).getDouble();
+  }
+
+  private long parseDataLong(byte[] a) {
+    if (a == null) return 0;
+    return ByteBuffer.wrap(a).getLong();
+  }
+
+  private int parseDataInt(byte[] a) {
+    if (a == null) return 0;
+    return ByteBuffer.wrap(a).getInt();
+  }
+
+  private byte[] stringToByte(String str) {
+    return str.getBytes(StandardCharsets.UTF_8);
+  }
+
+  private StringBuilder parseDataString(byte[] a) {
     if (a == null) return null;
     StringBuilder ret = new StringBuilder();
     int i = 0;
