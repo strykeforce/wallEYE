@@ -2,6 +2,7 @@ import ntcore
 import logging
 import socket
 import struct
+import json
 
 class NetworkIO:
     logger = logging.getLogger(__name__)
@@ -11,7 +12,7 @@ class NetworkIO:
         # Grab the default network table instance and grab the table name
         self.inst = ntcore.NetworkTableInstance.getDefault()
         self.table = self.inst.getTable(tableName)
-
+        self.name = tableName
         self.robotIP = "10.27.67.2"
         self.robotUDP = 5802
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -103,23 +104,35 @@ class NetworkIO:
         self.table = self.inst.getTable(name)
 
     def udpPosePublish(self, names, pose1, pose2, ambig, timestamp, tags):
-        sendData = []
+        dataDict = {}
 
-        for name, i in enumerate(names):
+        for i, name in enumerate(names):
             self.updateNum[i] += 1
-            sendData += bytes(name, 'utf-8')
-            sendData += bytearray(struct.pack("i", self.updateNum[i]))
-            sendData += bytearray(struct.pack("i", 0))
-            sendData += self.poseToByte(pose1[i])
-            sendData += self.poseToByte(pose2[i])
-            sendData += bytearray(struct.pack("d", ambig[i]))
-            sendData += bytearray(struct.pack("d", timestamp[i]))
-            for tag in tags[i]:
-                sendData += bytearray(struct.pack("i", tag))
-            sendData += bytearray(struct.pack("i", -1))
-        
-        self.sock.sendto(sendData, (self.robotIP, self.robotUDP))
+            camDict = {}
+            camDict["Mode"] = str(0)
+            camDict["Update"] = str(self.updateNum[i])
+            camDict["Pose1"] = self.poseToDict(pose1[i])
+            camDict["Pose2"] = self.poseToDict(pose2[i])
+            camDict["Ambig"] = str(ambig[i])
+            camDict["Timestamp"] = str(timestamp[i])
+            camDict["Tags"] = str(tags[i])
+            dataDict[self.name + str(i)] = camDict
+        dataString = json.dumps(dataDict)
+        self.logger.info(dataString)
+        self.sock.sendto(bytes(dataString, "utf-8"), (self.robotIP, self.robotUDP))
 
+    def poseToDict(self, pose):
+        t = pose.translation()
+        r = pose.rotation()
+        poseDict = {}
+        poseDict["tX"] = str(t.X())
+        poseDict["tY"] = str(t.Y())
+        poseDict["tZ"] = str(t.Z())
+        poseDict["rX"] = str(r.X())
+        poseDict["rY"] = str(r.Y())
+        poseDict["rZ"] = str(r.Z())
+        return poseDict
+        
     def poseToByte(self, pose):
         t = pose.translation()
         r = pose.rotation()
