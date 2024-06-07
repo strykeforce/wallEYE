@@ -194,6 +194,7 @@ try:
 
             for i in range(len(poses)):
                 if poses[i][0].X() < 2000:
+                    walleyeData.robotPublisher.udpPosePublish(["cameraOne"], [pose[0] for pose in poses], [pose[1] for pose in poses], ambig, [imageTime for pose in poses], tags)
                     walleyeData.robotPublisher.publish(
                         i, imageTime, poses[i], tags[i], ambig[i]
                     )
