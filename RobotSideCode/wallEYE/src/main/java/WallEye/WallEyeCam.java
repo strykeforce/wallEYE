@@ -1,5 +1,8 @@
 package WallEye;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -20,6 +23,8 @@ import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.function.DoubleSupplier;
 
 /** A robot side code interface to interact and pull data from an Orange Pi running WallEye */
@@ -48,6 +53,7 @@ public class WallEyeCam {
   int udpPort;
   String camName;
   WallEyeResult curData = new WallEyeResult(null, null, 0, 0, 0, 0, null, 0);
+  int newUpdateNum = 0;
 
   private final int kIntByteSize = 4;
   private final int kDoubleByteSize = 8;
@@ -65,7 +71,7 @@ public class WallEyeCam {
    * @param dioPort NOT IMPLEMENTED an int that corresponds to the dioport that the strobe is
    *     connected to (-1 to disable it)
    */
-  public WallEyeCam(String camName, int camIndex, int udpPort, int dioPort) {
+  public WallEyeCam(String tableName, int camIndex, int udpPort, int dioPort) {
     this.udpPort = udpPort;
     try {
       socket = new DatagramSocket(udpPort);
@@ -87,7 +93,7 @@ public class WallEyeCam {
     NetworkTableInstance nt = NetworkTableInstance.getDefault();
     nt.startServer();
 
-    NetworkTable table = nt.getTable(camName);
+    NetworkTable table = nt.getTable(tableName);
 
     double[] def = {2767.0, 2767.0, 2767.0, 2767.0, 2767.0, 2767.0, 2767.0};
     long[] defInt = {-1};
@@ -102,7 +108,7 @@ public class WallEyeCam {
 
     updateSub = table.getIntegerTopic("Update" + camIndex).subscribe(0);
     connectSub = table.getBooleanTopic("Connected" + camIndex).subscribe(false);
-    this.camName = camName;
+    this.camName = tableName;
   }
 
   /** A method that checks the DIO port for an input and upon input will grab gyro and timestamp */
@@ -141,117 +147,74 @@ public class WallEyeCam {
     DatagramPacket receive = new DatagramPacket(udpData, udpData.length);
     try {
       socket.receive(receive);
-      System.out.println(udpData);
+      //   System.out.println(udpData);
     } catch (IOException e) {
       System.err.println("COULD NOT RECEIVE DATA");
     }
 
-    // Data packets are structured as such:
-    //  The first element is the cameras name
-    //  The second element is an integer that is the camera's update number
-    //         (ie how many new packets have been delivered to each camera)
-    //  The third element is an integer that represents a mode the camera could be in
-    //  The fourth and fifth element is an encoded pose from the camera
-    //          each element contains six doubles
-    //          X,Y,Z,RX,RY,RZ with RX being the X rotation
-    //  The sixth element is a double which is the ambiguity
-    //  The seventh element is a double that is a timestamp
-    //  The eighth is a list of integers of tag numbers that ends with negative one
-    //  THERE ARE NO SPLITTING TOKENS
+    // its all a json...
+    // The json is formated as such
+    // All data from a camera is under tablename + index number
+    // The mode the camera is in is under "Mode"
+    // The update number is under "Update"
+    // In mode 0 pose1 and pose2 are under "Pose1" and "Pose2" respectively
+    // Each axis in the pose is under "tX", "tY", "tZ", "rX", "rY", "rZ"
+    // Pose ambiguity is under "Ambig"
+    // The timestamp is under "Timestamp"
+    // An array containing all tags is under "Tags"
 
     String rawDataString = parseDataString(udpData).toString();
-    String[] splitData = rawDataString.split(camName);
-
-    // This is a very odd catch, it means that somehow the data when converted to a string had the
-    // cameras name twice
-    //      ie the doubles when read as a char spell out the tables name (VERY IMPROBABLE [I
-    // think?])
-    if (splitData.length != 2) {
-      return;
+    try {
+      JsonObject data = JsonParser.parseString(rawDataString).getAsJsonObject();
+      Map<String, JsonElement> dataMap = data.asMap();
+      Map<String, JsonElement> dataCam = dataMap.get(camName + camIndex).getAsJsonObject().asMap();
+      //   System.out.println(dataCam.toString());
+      if (dataCam != null) {
+        int mode = dataCam.get("Mode").getAsInt();
+        // System.out.println(mode);
+        switch (mode) {
+          case 0:
+            int newUpdateNum = dataCam.get("Update").getAsInt();
+            Pose3d pose1 = parseJsonPose3d(dataCam.get("Pose1").getAsJsonObject().asMap());
+            // System.out.println(pose1);
+            Pose3d pose2 = parseJsonPose3d(dataCam.get("Pose2").getAsJsonObject().asMap());
+            double ambig = dataCam.get("Ambig").getAsDouble();
+            long timestamp = dataCam.get("Timestamp").getAsLong();
+            int[] tags =
+                getTagsArray(
+                    JsonParser.parseString(dataCam.get("Tags").toString().replace("\"", ""))
+                        .getAsJsonArray()
+                        .asList());
+            curData =
+                new WallEyeResult(
+                    pose1, pose2, timestamp, camIndex, newUpdateNum, tags.length, tags, ambig);
+            break;
+          default:
+            break;
+        }
+      }
+    } catch (Exception e) {
+      System.err.println(e.toString());
     }
-    String camData = splitData[1];
-    int newUpdateNum = parseDataInt(stringToByte(camData.substring(0, kIntByteSize)));
-    int mode = parseDataInt(stringToByte(camData.substring(kIntByteSize, 2 * kIntByteSize)));
-    String modeSpecificData = camData.substring(2 * kIntByteSize);
-
-    if (newUpdateNum <= curUpdateNum) return;
-
-    switch (mode) {
-      case 0:
-        Pose3d pose1 = parseDataPose(modeSpecificData.substring(0, kPoseByteSize));
-        Pose3d pose2 = parseDataPose(modeSpecificData.substring(kPoseByteSize, kPoseByteSize * 2));
-        double ambig =
-            parseDataDouble(
-                stringToByte(
-                    modeSpecificData.substring(
-                        kPoseByteSize * 2, kPoseByteSize * 2 + kDoubleByteSize)));
-        double timestamp =
-            parseDataDouble(
-                stringToByte(
-                    modeSpecificData.substring(
-                        kPoseByteSize * 2 + kDoubleByteSize,
-                        kPoseByteSize * 2 + kDoubleByteSize * 2)));
-        Integer[] tags =
-            parseDataTags(modeSpecificData.substring(kPoseByteSize * 2 + kDoubleByteSize * 2));
-        curData =
-            new WallEyeResult(
-                pose1,
-                pose2,
-                timestamp,
-                camIndex,
-                newUpdateNum,
-                tags.length,
-                IntegerArrayToInt(tags),
-                ambig);
-        break;
-      case 1:
-        break;
-      default:
-        break;
-    }
-
-    // String[] splitData = rawDataString.split("\n");
-    // for (String data: splitData) {
-    //     String[] camData = data.split("|");
-    //     if (camData[0] == camName) {
-    //         int updateNum = parseDataInt(stringToByte(camData[1]));
-    //         if (updateNum > curUpdateNum) {
-    //             curUpdateNum = updateNum;
-    //             int mode = parseDataInt(stringToByte(camData[2]));
-    //             switch (mode) {
-    //                 // This is for pose data
-    //                 case 0:
-    //                     Pose3d pose1 = parseDataPose(camData[3]);
-    //                     Pose3d pose2 = parseDataPose(camData[4]);
-    //                     double ambig = parseDataDouble(stringToByte(camData[5]));
-    //                     int[] tags = parseDataTags(camData[6]);
-    //                     double timestamp = parseDataDouble(stringToByte(camData[7]));
-
-    //                     curData = new WallEyeResult(pose1, pose2, timestamp, camIndex, updateNum,
-    // tags.length, tags, ambig);
-    //                     break;
-
-    //                 // This is for corner data FIXME
-    //                 case 1:
-
-    //                     break;
-    //                 default:
-    //                     break;
-    //             }
-    //         }
-    //     } else continue;
-    // }
-
     udpData = new byte[65535];
   }
 
-  /**
-   * Pulls most recent poses from Network Tables.
-   *
-   * @return Returns a WallEyeResult
-   * @throws AssertionError Happens if network tables feeds a bad value to the pose arrays.
-   * @see WallEyeResult
-   */
+  private int[] getTagsArray(List<JsonElement> tagsList) {
+    int[] tags = new int[tagsList.size()];
+    for (int i = 0; i < tagsList.size(); ++i) tags[i] = tagsList.get(i).getAsInt();
+    return tags;
+  }
+
+  private Pose3d parseJsonPose3d(Map<String, JsonElement> poseData) {
+    double tX = poseData.get("tX").getAsDouble();
+    double tY = poseData.get("tY").getAsDouble();
+    double tZ = poseData.get("tZ").getAsDouble();
+    double rX = poseData.get("rX").getAsDouble();
+    double rY = poseData.get("rY").getAsDouble();
+    double rZ = poseData.get("rZ").getAsDouble();
+    return new Pose3d(new Translation3d(tX, tY, tZ), new Rotation3d(rX, rY, rZ));
+  }
+
   public WallEyeResult getResults() {
     // WallEyeResult result;
     // curUpdateNum = (int) updateSub.get();
@@ -272,6 +235,7 @@ public class WallEyeCam {
     //         pose1, pose2, timestamp, camIndex, curUpdateNum, tags.length, tagsNew, ambiguity);
 
     // return result;
+    curUpdateNum = curData.getUpdateNum();
     return curData;
   }
 
@@ -384,7 +348,7 @@ public class WallEyeCam {
    * @return Returns the current update number
    */
   public int getUpdateNumber() {
-    return (int) updateSub.get();
+    return (int) newUpdateNum;
   }
 
   /**
@@ -393,7 +357,7 @@ public class WallEyeCam {
    * @return true if there is an update, false if not
    */
   public boolean hasNewUpdate() {
-    return curUpdateNum != (int) updateSub.get();
+    return curUpdateNum != (int) newUpdateNum;
   }
 
   /**
