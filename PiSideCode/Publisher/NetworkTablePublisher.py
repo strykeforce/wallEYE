@@ -1,6 +1,8 @@
 import ntcore
 import logging
 import socket
+import struct
+import json
 
 class NetworkIO:
     logger = logging.getLogger(__name__)
@@ -10,7 +12,7 @@ class NetworkIO:
         # Grab the default network table instance and grab the table name
         self.inst = ntcore.NetworkTableInstance.getDefault()
         self.table = self.inst.getTable(tableName)
-
+        self.name = tableName
         self.robotIP = "10.27.67.2"
         self.robotUDP = 5802
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -101,6 +103,45 @@ class NetworkIO:
     def setTable(self, name):
         self.table = self.inst.getTable(name)
 
+    def udpPosePublish(self, names, pose1, pose2, ambig, timestamp, tags):
+        dataDict = {}
+
+        for i, name in enumerate(names):
+            self.updateNum[i] += 1
+            camDict = {}
+            camDict["Mode"] = str(0)
+            camDict["Update"] = str(self.updateNum[i])
+            camDict["Pose1"] = self.poseToDict(pose1[i])
+            camDict["Pose2"] = self.poseToDict(pose2[i])
+            camDict["Ambig"] = str(ambig[i])
+            camDict["Timestamp"] = str(timestamp[i])
+            camDict["Tags"] = str(tags[i])
+            dataDict[self.name + str(i)] = camDict
+        dataString = json.dumps(dataDict)
+        self.logger.info(dataString)
+        self.sock.sendto(bytes(dataString, "utf-8"), (self.robotIP, self.robotUDP))
+
+    def poseToDict(self, pose):
+        t = pose.translation()
+        r = pose.rotation()
+        poseDict = {}
+        poseDict["tX"] = str(t.X())
+        poseDict["tY"] = str(t.Y())
+        poseDict["tZ"] = str(t.Z())
+        poseDict["rX"] = str(r.X())
+        poseDict["rY"] = str(r.Y())
+        poseDict["rZ"] = str(r.Z())
+        return poseDict
+        
+    def poseToByte(self, pose):
+        t = pose.translation()
+        r = pose.rotation()
+        axes = [t.X(), t.Y(), t.Z(), r.X(), r.Y(), r.Z()]
+        byteArr = []
+        for axis in axes:
+            byteArr += bytearray(struct.pack("d", axis))
+        return byteArr
+
     # Publishes the supplied pose information in the corresponding publisher
     def publish(self, index, time, pose, tags, ambig):
         pose1 = pose[0]
@@ -116,8 +157,6 @@ class NetworkIO:
         self.tagSub[index].set(tags)
         self.timestampSub[index].set(ntcore._now() - time)
 
-        self.sock.sendto(bytes(str(t1.X()), 'utf-8'), (self.robotIP, self.robotUDP))
-
         self.updateNum[index] += 1
         self.publishUpdate[index].set(self.updateNum[index])
 
@@ -132,7 +171,7 @@ class NetworkIO:
 
     def getConnectionValue(self, index):
         return self.connection[index]
-    
+
     def destroy(self):
         self.inst.stopClient()
 
