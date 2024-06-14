@@ -14,7 +14,8 @@ export default function Config(props) {
     );
     const [newStaticIP, setNewStaticIP] = useState(props.state.ip);
     const [newTagSize, setNewTagSize] = useState(props.state.tagSize);
-
+    const [newUDPPort, setNewUDPPort] = useState(props.state.udpPort);
+      
     return (
         <Form>
             <Form.Group className="mb-3">
@@ -106,6 +107,26 @@ export default function Config(props) {
                         variant="info"
                         onClick={() => {
                             socket.emit("set_static_ip", newStaticIP);
+                        }}
+                    >
+                        Update
+                    </Button>
+                </InputGroup>
+            </Form.Group>
+            <Form.Group className="mb-3">
+                <InputGroup>
+                    <InputGroup.Text>UDP Port</InputGroup.Text>
+                    <Form.Control
+                        type="number"
+                        value={newUDPPort}
+                        onChange={(e) => {
+                            setNewUDPPort(e.target.value);
+                        }}
+                    />
+                    <Button
+                        variant="info"
+                        onClick={() => {
+                            socket.emit("set_udp_port", newUDPPort);
                         }}
                     >
                         Update

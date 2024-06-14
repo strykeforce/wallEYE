@@ -201,6 +201,14 @@ def set_board_dims(w, h):
     logger.info(f"Board dimensions set: {(w, h)}")
     socketio.info(f"Board dimentions updated: {(w, h)}")
 
+@socketio.on("set_udp_port")
+@updateAfter
+def setUDPPort(port):
+    walleyeData.udpPort = port
+    walleyeData.setUDPPort(port)
+    logger.info(f"Port set: {port}")
+    socketio.info(f"Port updated: {port}")
+
 
 @socketio.on("set_static_ip")
 @updateAfter
