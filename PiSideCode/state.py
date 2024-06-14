@@ -48,6 +48,7 @@ class Config:
 
         # SolvePNP
         self.tagSize = 0.157
+        self.udpPort = 5802
 
         try:
             # Open and load system settings
@@ -58,6 +59,7 @@ class Config:
                 ip = config["ip"]
                 self.boardDims = config["BoardDim"]
                 self.tagSize = config["TagSize"]
+                self.udpPort = config["Port"]
 
                 self.setIP(ip)
 
@@ -78,6 +80,7 @@ class Config:
                 "ip": self.ip,
                 "BoardDim": self.boardDims,
                 "TagSize": self.tagSize,
+                "Port" : self.udpPort,
             }
             with open("SystemData.json", "w") as out:
                 json.dump(dataDump, out)
@@ -86,22 +89,24 @@ class Config:
         self.boardDims = newValue
 
     # Create a new robot publisher and create an output file for the data
-    def makePublisher(self, teamNumber, tableName):
+    def makePublisher(self, teamNumber, tableName, port):
         try:
             # Create and write output file
             with open("SystemData.json", "r") as file:
                 config = json.load(file)
                 config["TeamNumber"] = teamNumber
                 config["TableName"] = tableName
+                config["Port"] = port
                 with open("SystemData.json", "w") as out:
                     json.dump(config, out)
 
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             Config.logger.error(
-                f"Failed to write TableName | {tableName} | or TeamNumber | {teamNumber} |"
+                f"Failed to write TableName | {tableName} | or TeamNumber | {teamNumber} | or Port |{port}"
             )
         self.teamNumber = teamNumber
         self.tableName = tableName
+        self.udpPort = port
 
         # Destroy any existing publisher
         if self.robotPublisher is not None:
@@ -109,7 +114,7 @@ class Config:
             Config.logger.info("Existing publisher destroyed")
 
         # Create the robot publisher
-        self.robotPublisher = NetworkIO(False, self.teamNumber, self.tableName, 2)
+        self.robotPublisher = NetworkIO(False, self.teamNumber, self.tableName, self.udpPort, 2)
 
         Config.logger.info(f"Robot publisher created: {teamNumber} - {tableName}")
 
@@ -134,6 +139,22 @@ class Config:
 
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             Config.logger.error(f"Failed to write Dimensions {dim}")
+
+    # Set the udp port and save it off
+    def setUDPPort(self, port):
+        try:
+            # Write it in system settings file
+            with open("SystemData.json", "r") as file:
+                config = json.load(file)
+                config["Port"] = port
+                self.udpPort = port
+                with open("SystemData.json", "w") as out:
+                    json.dump(config, out)
+
+            self.makePublisher(self.teamNumber, self.tableName, self.udpPort)
+        except (FileNotFoundError, json.decoder.JSONDecodeError):
+            Config.logger.error(f"Failed to write port {port}")
+
 
     # Set Tag Size (meters) and set it in system settings
     def setTagSize(self, size):
@@ -165,7 +186,6 @@ class Config:
             self.ip = Config.getCurrentIP()
             Config.logger.error(f"Failed to set static ip: {ip}")
         os.system("/usr/sbin/ifconfig eth0 up")
-
         try:
             # Write IP to a system file
             with open("SystemData.json", "r") as file:
@@ -177,7 +197,7 @@ class Config:
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             Config.logger.error(f"Failed to write static ip: {ip}")
 
-        self.makePublisher(self.teamNumber, self.tableName)
+        self.makePublisher(self.teamNumber, self.tableName, self.udpPort)
 
     # Obsolete
     # def resetNetworking(self):
@@ -230,6 +250,7 @@ class Config:
             },
             "ip": self.ip,
             "tagSize": self.tagSize,
+            "udpPort" : self.udpPort,
             "visualizingPoses": self.visualizingPoses,
             "status": self.status,
         }

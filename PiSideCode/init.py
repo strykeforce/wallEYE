@@ -62,7 +62,7 @@ try:
 
     # Create network tables publisher and AprilTag Processor
     poseEstimator = Processor(walleyeData.tagSize)
-    walleyeData.makePublisher(walleyeData.teamNumber, walleyeData.tableName)
+    walleyeData.makePublisher(walleyeData.teamNumber, walleyeData.tableName, walleyeData.udpPort)
     walleyeData.currentState = States.PROCESSING
 
     logger.info("Starting main loop")
@@ -194,10 +194,10 @@ try:
 
             for i in range(len(poses)):
                 if poses[i][0].X() < 2000:
-                    walleyeData.robotPublisher.udpPosePublish(["cameraOne"], [pose[0] for pose in poses], [pose[1] for pose in poses], ambig, [imageTime for pose in poses], tags)
-                    walleyeData.robotPublisher.publish(
-                        i, imageTime, poses[i], tags[i], ambig[i]
-                    )
+                    walleyeData.robotPublisher.udpPosePublish([pose[0] for pose in poses], [pose[1] for pose in poses], ambig, [imageTime for pose in poses], tags)
+                    # walleyeData.robotPublisher.publish(
+                    #     i, imageTime, poses[i], tags[i], ambig[i]
+                    # )
 
             # Update the pose visualization
             for i, (identifier, img) in enumerate(images.items()):

@@ -8,13 +8,13 @@ class NetworkIO:
     logger = logging.getLogger(__name__)
 
     # Create a Network Tables Client with given info
-    def __init__(self, test, team, tableName, numCams):
+    def __init__(self, test, team, tableName, port, numCams):
         # Grab the default network table instance and grab the table name
         self.inst = ntcore.NetworkTableInstance.getDefault()
         self.table = self.inst.getTable(tableName)
         self.name = tableName
         self.robotIP = "10.27.67.2"
-        self.robotUDP = 5802
+        self.robotPort = int(port)
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
         # Start the WallEye_Client and set server depending on testing
@@ -103,10 +103,10 @@ class NetworkIO:
     def setTable(self, name):
         self.table = self.inst.getTable(name)
 
-    def udpPosePublish(self, names, pose1, pose2, ambig, timestamp, tags):
+    def udpPosePublish(self, pose1, pose2, ambig, timestamp, tags):
         dataDict = {}
 
-        for i, name in enumerate(names):
+        for i in range(len(pose1)):
             self.updateNum[i] += 1
             camDict = {}
             camDict["Mode"] = str(0)
@@ -114,12 +114,12 @@ class NetworkIO:
             camDict["Pose1"] = self.poseToDict(pose1[i])
             camDict["Pose2"] = self.poseToDict(pose2[i])
             camDict["Ambig"] = str(ambig[i])
-            camDict["Timestamp"] = str(timestamp[i])
+            camDict["Timestamp"] = str(ntcore._now() - timestamp[i])
             camDict["Tags"] = str(tags[i])
             dataDict[self.name + str(i)] = camDict
         dataString = json.dumps(dataDict)
         # self.logger.info(dataString)
-        self.sock.sendto(bytes(dataString, "utf-8"), (self.robotIP, self.robotUDP))
+        self.sock.sendto(bytes(dataString, "utf-8"), (self.robotIP, self.robotPort))
 
     def poseToDict(self, pose):
         t = pose.translation()
