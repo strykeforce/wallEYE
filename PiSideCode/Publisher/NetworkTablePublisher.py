@@ -118,7 +118,7 @@ class NetworkIO:
             camDict["Tags"] = str(tags[i])
             dataDict[self.name + str(i)] = camDict
         dataString = json.dumps(dataDict)
-        self.logger.info(dataString)
+        # self.logger.info(dataString)
         self.sock.sendto(bytes(dataString, "utf-8"), (self.robotIP, self.robotUDP))
 
     def poseToDict(self, pose):
@@ -157,7 +157,7 @@ class NetworkIO:
         self.tagSub[index].set(tags)
         self.timestampSub[index].set(ntcore._now() - time)
 
-        self.updateNum[index] += 1
+        # self.updateNum[index] += 1
         self.publishUpdate[index].set(self.updateNum[index])
 
     # Publish a new update number
