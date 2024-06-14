@@ -86,7 +86,7 @@ public class WallEyeCam {
 
     if (dioPort > 0) {
       this.dioPort = dioPort;
-      dioLoop.startPeriodic(0.01);
+      dioLoop.startPeriodic(0.05);
     }
     udpLoop.startPeriodic(0.01);
     camToCenter = new Transform3d();
@@ -168,18 +168,15 @@ public class WallEyeCam {
       JsonObject data = JsonParser.parseString(rawDataString).getAsJsonObject();
       Map<String, JsonElement> dataMap = data.asMap();
       Map<String, JsonElement> dataCam = dataMap.get(camName + camIndex).getAsJsonObject().asMap();
-      //   System.out.println(dataCam.toString());
       if (dataCam != null) {
         int mode = dataCam.get("Mode").getAsInt();
-        // System.out.println(mode);
         switch (mode) {
           case 0:
-            int newUpdateNum = dataCam.get("Update").getAsInt();
+            newUpdateNum = dataCam.get("Update").getAsInt();
             Pose3d pose1 = parseJsonPose3d(dataCam.get("Pose1").getAsJsonObject().asMap());
-            // System.out.println(pose1);
             Pose3d pose2 = parseJsonPose3d(dataCam.get("Pose2").getAsJsonObject().asMap());
             double ambig = dataCam.get("Ambig").getAsDouble();
-            long timestamp = dataCam.get("Timestamp").getAsLong();
+            long timestamp = RobotController.getFPGATime() - dataCam.get("Timestamp").getAsLong();
             int[] tags =
                 getTagsArray(
                     JsonParser.parseString(dataCam.get("Tags").toString().replace("\"", ""))

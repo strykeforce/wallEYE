@@ -129,4 +129,9 @@ public class WallEyeResult {
   public int[] getTagIDs() {
     return tags;
   }
+
+  @Override
+  public String toString() {
+    return "Update: " + updateNum + " | Pose1: " + cameraPose1 + " | Timestamp: " + timeStamp;
+  }
 }
