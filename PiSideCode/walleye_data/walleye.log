@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 [22-May-24 22:05:46 - INFO - init.py:24 - <module>()]  ----------- Starting Up -----------
 [22-May-24 22:05:46 - ERROR - state.py:257 - get_current_ip()]  Could not get current IP - [Errno 19] No such device - Returning None
 [22-May-24 22:05:46 - INFO - state.py:88 - __init__()]  IP is None
@@ -61,3 +62,451 @@
 [23-May-24 15:26:11 - INFO - web_interface.py:72 - connect()]  Client connected
 [23-May-24 15:26:26 - WARNING - web_interface.py:77 - disconnect()]  Client disconnected
 [23-May-24 15:26:27 - INFO - web_interface.py:72 - connect()]  Client connected
+=======
+[28-May-24 20:37:29 - INFO - init.py:24 - <module>()]  ----------- Starting Up -----------
+[28-May-24 20:37:30 - INFO - state.py:88 - __init__()]  IP is 192.168.3.93
+[28-May-24 20:37:30 - INFO - state.py:107 - make_publisher()]  Making publisher WallEye for team 2767
+[28-May-24 20:37:30 - ERROR - state.py:122 - make_publisher()]  Failed to write TableName | WallEye | or TeamNumber | 2767 |
+[28-May-24 20:37:30 - INFO - state.py:135 - make_publisher()]  Creating publisher
+[28-May-24 20:37:30 - INFO - NetworkClient.cpp:144 - None()]  starting network client
+[28-May-24 20:37:30 - INFO - state.py:139 - make_publisher()]  Robot publisher created: 2767 - WallEye
+[28-May-24 20:37:30 - INFO - camera.py:24 - __init__()]  Platform is linux
+[28-May-24 20:37:30 - INFO - camera.py:48 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
+[28-May-24 20:37:30 - INFO - camera_info.py:33 - __init__()]  Valid Controls: ['Brightness', 'Contrast', 'Saturation', 'White Balance Temperature, Auto', 'Power Line Frequency', 'White Balance Temperature', 'Sharpness', 'Backlight Compensation', 'Exposure, Auto', 'Exposure (Absolute)', 'Pan (Absolute)', 'Tilt (Absolute)', 'Zoom, Absolute']
+[28-May-24 20:37:30 - INFO - camera.py:59 - __init__()]  Supported resolutions: [(640, 480), (1280, 720), (960, 544), (800, 448), (640, 360), (424, 240), (352, 288), (320, 240), (800, 600), (176, 144), (160, 120), (1280, 800)]
+[28-May-24 20:37:30 - INFO - camera.py:62 - __init__()]  Supported formats: ['YUYV 4:2:2', 'Motion-JPEG']
+[28-May-24 20:37:30 - INFO - camera.py:65 - __init__()]  Supported exposures (min, max, step): (5, 20000, 1)
+[28-May-24 20:37:30 - INFO - camera.py:68 - __init__()]  Supported brightnesses (min, max, step): (30, 255, 1)
+[28-May-24 20:37:30 - INFO - camera.py:77 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[28-May-24 20:37:30 - INFO - camera.py:312 - import_config()]  Attempting to import config for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[28-May-24 20:37:30 - WARNING - camera.py:321 - import_config()]  Config not found for camera platform-fc800000.usb-usb-0:1:1.0-video-index0
+[28-May-24 20:37:30 - INFO - calibration.py:423 - parse_calibration()]  Looking for calibration stored at walleye_data/config_data/calibrations/cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(640, 480)_cal_data.json
+[28-May-24 20:37:30 - ERROR - camera.py:303 - import_calibration()]  Calibration not found for camera platform-fc800000.usb-usb-0:1:1.0-video-index0 at resolution (640, 480)
+[28-May-24 20:37:30 - WARNING - camera.py:334 - import_config()]  Camera config not found for camera platform-fc800000.usb-usb-0:1:1.0-video-index0
+[28-May-24 20:37:30 - WARNING - camera.py:95 - __init__()]  Failed to open camera: platform-fc800000.usb-usb-0:1:1.0-video-index1
+[28-May-24 20:37:34 - INFO - image_streams.py:48 - __init__()]  Tag layout loaded
+[28-May-24 20:37:37 - INFO - init.py:66 - <module>()]  Web server ready
+[28-May-24 20:37:37 - INFO - processing.py:20 - __init__()]  Tag layout loaded
+[28-May-24 20:37:37 - INFO - init.py:77 - <module>()]  Starting main loop
+[28-May-24 20:59:52 - INFO - init.py:24 - <module>()]  ----------- Starting Up -----------
+[28-May-24 20:59:56 - INFO - state.py:179 - set_ip()]  Attempting to set static IP
+[28-May-24 20:59:56 - INFO - state.py:219 - set_ip()]  Static IP set: 192.168.3.93 =? 192.168.3.93
+[28-May-24 20:59:56 - INFO - state.py:107 - make_publisher()]  Making publisher WallEye for team 2767
+[28-May-24 20:59:56 - INFO - state.py:118 - make_publisher()]  Publisher information written to walleye_data/config_data/system_data.json
+[28-May-24 20:59:56 - INFO - state.py:135 - make_publisher()]  Creating publisher
+[28-May-24 20:59:56 - INFO - NetworkClient.cpp:144 - None()]  starting network client
+[28-May-24 20:59:56 - INFO - state.py:139 - make_publisher()]  Robot publisher created: 2767 - WallEye
+[28-May-24 20:59:56 - INFO - camera.py:24 - __init__()]  Platform is linux
+[28-May-24 20:59:56 - INFO - camera.py:48 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
+[28-May-24 20:59:56 - INFO - camera_info.py:33 - __init__()]  Valid Controls: ['Brightness', 'Contrast', 'Saturation', 'White Balance Temperature, Auto', 'Power Line Frequency', 'White Balance Temperature', 'Sharpness', 'Backlight Compensation', 'Exposure, Auto', 'Exposure (Absolute)', 'Pan (Absolute)', 'Tilt (Absolute)', 'Zoom, Absolute']
+[28-May-24 20:59:56 - INFO - camera.py:59 - __init__()]  Supported resolutions: [(640, 480), (1280, 720), (960, 544), (800, 448), (640, 360), (424, 240), (352, 288), (320, 240), (800, 600), (176, 144), (160, 120), (1280, 800)]
+[28-May-24 20:59:56 - INFO - camera.py:62 - __init__()]  Supported formats: ['YUYV 4:2:2', 'Motion-JPEG']
+[28-May-24 20:59:56 - INFO - camera.py:65 - __init__()]  Supported exposures (min, max, step): (5, 20000, 1)
+[28-May-24 20:59:56 - INFO - camera.py:68 - __init__()]  Supported brightnesses (min, max, step): (30, 255, 1)
+[28-May-24 20:59:56 - INFO - camera.py:77 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[28-May-24 20:59:56 - INFO - camera.py:312 - import_config()]  Attempting to import config for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[28-May-24 20:59:56 - INFO - camera.py:318 - import_config()]  Config found!
+[28-May-24 20:59:56 - INFO - calibration.py:423 - parse_calibration()]  Looking for calibration stored at walleye_data/config_data/calibrations/cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(640, 480)_cal_data.json
+[28-May-24 20:59:56 - ERROR - camera.py:303 - import_calibration()]  Calibration not found for camera platform-fc800000.usb-usb-0:1:1.0-video-index0 at resolution (640, 480)
+[28-May-24 20:59:56 - INFO - camera.py:178 - set_resolution()]  Resolution set to (640, 480) for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[28-May-24 20:59:56 - INFO - camera_info.py:61 - set()]  Brightness set to 30.0 in camera platform-fc800000.usb-usb-0:1:1.0-video-index0 (actually 30)
+[28-May-24 20:59:56 - INFO - camera_info.py:61 - set()]  Exposure (Absolute) set to 1062.0 in camera platform-fc800000.usb-usb-0:1:1.0-video-index0 (actually 1062)
+[28-May-24 20:59:56 - WARNING - camera.py:95 - __init__()]  Failed to open camera: platform-fc800000.usb-usb-0:1:1.0-video-index1
+[30-May-24 18:05:54 - INFO - image_streams.py:48 - __init__()]  Tag layout loaded
+[30-May-24 18:05:57 - INFO - init.py:66 - <module>()]  Web server ready
+[30-May-24 18:05:57 - INFO - processing.py:20 - __init__()]  Tag layout loaded
+[30-May-24 18:05:57 - INFO - init.py:77 - <module>()]  Starting main loop
+[30-May-24 20:33:30 - INFO - init.py:24 - <module>()]  ----------- Starting Up -----------
+[30-May-24 20:33:33 - INFO - state.py:179 - set_ip()]  Attempting to set static IP
+[30-May-24 20:33:33 - INFO - state.py:219 - set_ip()]  Static IP set: 192.168.3.93 =? 192.168.3.93
+[30-May-24 20:33:33 - INFO - state.py:107 - make_publisher()]  Making publisher WallEye for team 2767
+[30-May-24 20:33:33 - INFO - state.py:118 - make_publisher()]  Publisher information written to walleye_data/config_data/system_data.json
+[30-May-24 20:33:33 - INFO - state.py:135 - make_publisher()]  Creating publisher
+[30-May-24 20:33:33 - INFO - NetworkClient.cpp:144 - None()]  starting network client
+[30-May-24 20:33:33 - INFO - state.py:139 - make_publisher()]  Robot publisher created: 2767 - WallEye
+[30-May-24 20:33:33 - INFO - camera.py:24 - __init__()]  Platform is linux
+[30-May-24 20:33:33 - INFO - camera.py:48 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
+[30-May-24 20:33:33 - INFO - camera_info.py:33 - __init__()]  Valid Controls: ['Brightness', 'Contrast', 'Saturation', 'White Balance Temperature, Auto', 'Power Line Frequency', 'White Balance Temperature', 'Sharpness', 'Backlight Compensation', 'Exposure, Auto', 'Exposure (Absolute)', 'Pan (Absolute)', 'Tilt (Absolute)', 'Zoom, Absolute']
+[30-May-24 20:33:33 - INFO - camera.py:59 - __init__()]  Supported resolutions: [(640, 480), (1280, 720), (960, 544), (800, 448), (640, 360), (424, 240), (352, 288), (320, 240), (800, 600), (176, 144), (160, 120), (1280, 800)]
+[30-May-24 20:33:33 - INFO - camera.py:62 - __init__()]  Supported formats: ['YUYV 4:2:2', 'Motion-JPEG']
+[30-May-24 20:33:33 - INFO - camera.py:65 - __init__()]  Supported exposures (min, max, step): (5, 20000, 1)
+[30-May-24 20:33:33 - INFO - camera.py:68 - __init__()]  Supported brightnesses (min, max, step): (30, 255, 1)
+[30-May-24 20:33:33 - INFO - camera.py:77 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[30-May-24 20:33:33 - INFO - camera.py:310 - import_config()]  Attempting to import config for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[30-May-24 20:33:33 - INFO - camera.py:316 - import_config()]  Config found!
+[30-May-24 20:33:33 - INFO - calibration.py:423 - parse_calibration()]  Looking for calibration stored at walleye_data/config_data/calibrations/cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(640, 480)_cal_data.json
+[30-May-24 20:33:33 - ERROR - camera.py:301 - import_calibration()]  Calibration not found for camera platform-fc800000.usb-usb-0:1:1.0-video-index0 at resolution (640, 480)
+[30-May-24 20:33:33 - INFO - camera.py:176 - set_resolution()]  Resolution set to (640, 480) for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[30-May-24 20:33:33 - INFO - camera_info.py:61 - set()]  Brightness set to 30.0 in camera platform-fc800000.usb-usb-0:1:1.0-video-index0 (actually 30)
+[30-May-24 20:33:33 - INFO - camera_info.py:61 - set()]  Exposure (Absolute) set to 1062.0 in camera platform-fc800000.usb-usb-0:1:1.0-video-index0 (actually 1062)
+[30-May-24 20:33:33 - WARNING - camera.py:95 - __init__()]  Failed to open camera: platform-fc800000.usb-usb-0:1:1.0-video-index1
+[30-May-24 20:33:36 - INFO - image_streams.py:48 - __init__()]  Tag layout loaded
+[30-May-24 20:33:39 - INFO - init.py:66 - <module>()]  Web server ready
+[30-May-24 20:33:39 - INFO - processing.py:20 - __init__()]  Tag layout loaded
+[30-May-24 20:33:39 - INFO - init.py:77 - <module>()]  Starting main loop
+[04-Jun-24 18:09:11 - INFO - init.py:24 - <module>()]  ----------- Starting Up -----------
+[04-Jun-24 18:09:14 - INFO - state.py:182 - set_ip()]  Attempting to set static IP
+[04-Jun-24 18:09:14 - INFO - state.py:221 - set_ip()]  Static IP set: 192.168.3.93 =? 192.168.3.93
+[04-Jun-24 18:09:14 - INFO - state.py:110 - make_publisher()]  Making publisher WallEye for team 2767
+[04-Jun-24 18:09:14 - INFO - state.py:121 - make_publisher()]  Publisher information written to walleye_data/config_data/system_data.json
+[04-Jun-24 18:09:14 - INFO - state.py:138 - make_publisher()]  Creating publisher
+[04-Jun-24 18:09:14 - INFO - NetworkClient.cpp:144 - None()]  starting network client
+[04-Jun-24 18:09:14 - INFO - state.py:142 - make_publisher()]  Robot publisher created: 2767 - WallEye
+[04-Jun-24 18:09:14 - INFO - camera.py:24 - __init__()]  Platform is linux
+[04-Jun-24 18:09:14 - INFO - camera.py:48 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
+[04-Jun-24 18:09:14 - INFO - camera_info.py:33 - __init__()]  Valid Controls: ['Brightness', 'Contrast', 'Saturation', 'White Balance Temperature, Auto', 'Power Line Frequency', 'White Balance Temperature', 'Sharpness', 'Backlight Compensation', 'Exposure, Auto', 'Exposure (Absolute)', 'Pan (Absolute)', 'Tilt (Absolute)', 'Zoom, Absolute']
+[04-Jun-24 18:09:14 - INFO - camera.py:59 - __init__()]  Supported resolutions: [(640, 480), (1280, 720), (960, 544), (800, 448), (640, 360), (424, 240), (352, 288), (320, 240), (800, 600), (176, 144), (160, 120), (1280, 800)]
+[04-Jun-24 18:09:14 - INFO - camera.py:62 - __init__()]  Supported formats: ['YUYV 4:2:2', 'Motion-JPEG']
+[04-Jun-24 18:09:14 - INFO - camera.py:65 - __init__()]  Supported exposures (min, max, step): (5, 20000, 1)
+[04-Jun-24 18:09:14 - INFO - camera.py:68 - __init__()]  Supported brightnesses (min, max, step): (30, 255, 1)
+[04-Jun-24 18:09:14 - INFO - camera.py:77 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[04-Jun-24 18:09:14 - INFO - camera.py:310 - import_config()]  Attempting to import config for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[04-Jun-24 18:09:14 - INFO - camera.py:316 - import_config()]  Config found!
+[04-Jun-24 18:09:14 - INFO - calibration.py:423 - parse_calibration()]  Looking for calibration stored at walleye_data/config_data/calibrations/cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(640, 480)_cal_data.json
+[04-Jun-24 18:09:14 - ERROR - camera.py:301 - import_calibration()]  Calibration not found for camera platform-fc800000.usb-usb-0:1:1.0-video-index0 at resolution (640, 480)
+[04-Jun-24 18:09:14 - INFO - camera.py:176 - set_resolution()]  Resolution set to (640, 480) for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[04-Jun-24 18:09:14 - INFO - camera_info.py:61 - set()]  Brightness set to 30.0 in camera platform-fc800000.usb-usb-0:1:1.0-video-index0 (actually 30)
+[04-Jun-24 18:09:14 - INFO - camera_info.py:61 - set()]  Exposure (Absolute) set to 1062.0 in camera platform-fc800000.usb-usb-0:1:1.0-video-index0 (actually 1062)
+[04-Jun-24 18:09:14 - WARNING - camera.py:95 - __init__()]  Failed to open camera: platform-fc800000.usb-usb-0:1:1.0-video-index1
+[04-Jun-24 18:09:16 - INFO - image_streams.py:48 - __init__()]  Tag layout loaded
+[04-Jun-24 18:09:19 - INFO - init.py:66 - <module>()]  Web server ready
+[04-Jun-24 18:09:19 - INFO - processing.py:20 - __init__()]  Tag layout loaded
+[04-Jun-24 18:09:19 - INFO - init.py:77 - <module>()]  Starting main loop
+[06-Jun-24 19:15:25 - INFO - init.py:24 - <module>()]  ----------- Starting Up -----------
+[06-Jun-24 19:15:28 - INFO - state.py:182 - set_ip()]  Attempting to set static IP
+[06-Jun-24 19:15:28 - INFO - state.py:221 - set_ip()]  Static IP set: 192.168.3.93 =? 192.168.3.93
+[06-Jun-24 19:15:28 - INFO - state.py:110 - make_publisher()]  Making publisher WallEye for team 2767
+[06-Jun-24 19:15:28 - INFO - state.py:121 - make_publisher()]  Publisher information written to walleye_data/config_data/system_data.json
+[06-Jun-24 19:15:28 - INFO - state.py:138 - make_publisher()]  Creating publisher
+[06-Jun-24 19:15:28 - INFO - NetworkClient.cpp:144 - None()]  starting network client
+[06-Jun-24 19:15:28 - INFO - state.py:142 - make_publisher()]  Robot publisher created: 2767 - WallEye
+[06-Jun-24 19:15:28 - INFO - camera.py:24 - __init__()]  Platform is linux
+[06-Jun-24 19:15:28 - INFO - camera.py:48 - __init__()]  Camera found: platform-fc800000.usb-usb-0:1:1.0-video-index0
+[06-Jun-24 19:15:28 - INFO - camera_info.py:33 - __init__()]  Valid Controls: ['Brightness', 'Contrast', 'Saturation', 'White Balance Temperature, Auto', 'Power Line Frequency', 'White Balance Temperature', 'Sharpness', 'Backlight Compensation', 'Exposure, Auto', 'Exposure (Absolute)', 'Pan (Absolute)', 'Tilt (Absolute)', 'Zoom, Absolute']
+[06-Jun-24 19:15:28 - INFO - camera.py:59 - __init__()]  Supported resolutions: [(640, 480), (1280, 720), (960, 544), (800, 448), (640, 360), (424, 240), (352, 288), (320, 240), (800, 600), (176, 144), (160, 120), (1280, 800)]
+[06-Jun-24 19:15:28 - INFO - camera.py:62 - __init__()]  Supported formats: ['YUYV 4:2:2', 'Motion-JPEG']
+[06-Jun-24 19:15:28 - INFO - camera.py:65 - __init__()]  Supported exposures (min, max, step): (5, 20000, 1)
+[06-Jun-24 19:15:28 - INFO - camera.py:68 - __init__()]  Supported brightnesses (min, max, step): (30, 255, 1)
+[06-Jun-24 19:15:28 - INFO - camera.py:77 - __init__()]  Auto exposure disabled for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[06-Jun-24 19:15:28 - INFO - camera.py:310 - import_config()]  Attempting to import config for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[06-Jun-24 19:15:28 - INFO - camera.py:316 - import_config()]  Config found!
+[06-Jun-24 19:15:28 - INFO - calibration.py:423 - parse_calibration()]  Looking for calibration stored at walleye_data/config_data/calibrations/cam_platform-fc800000-usb-usb-0-1-1-0-video-index0_(640, 480)_cal_data.json
+[06-Jun-24 19:15:28 - ERROR - camera.py:301 - import_calibration()]  Calibration not found for camera platform-fc800000.usb-usb-0:1:1.0-video-index0 at resolution (640, 480)
+[06-Jun-24 19:15:28 - INFO - camera.py:176 - set_resolution()]  Resolution set to (640, 480) for platform-fc800000.usb-usb-0:1:1.0-video-index0
+[06-Jun-24 19:15:28 - INFO - camera_info.py:61 - set()]  Brightness set to 30.0 in camera platform-fc800000.usb-usb-0:1:1.0-video-index0 (actually 30)
+[06-Jun-24 19:15:28 - INFO - camera_info.py:61 - set()]  Exposure (Absolute) set to 1062.0 in camera platform-fc800000.usb-usb-0:1:1.0-video-index0 (actually 1062)
+[06-Jun-24 19:15:28 - WARNING - camera.py:95 - __init__()]  Failed to open camera: platform-fc800000.usb-usb-0:1:1.0-video-index1
+[06-Jun-24 19:15:31 - INFO - image_streams.py:48 - __init__()]  Tag layout loaded
+[06-Jun-24 19:15:35 - INFO - init.py:66 - <module>()]  Web server ready
+[06-Jun-24 19:15:35 - INFO - processing.py:20 - __init__()]  Tag layout loaded
+[06-Jun-24 19:15:35 - INFO - init.py:77 - <module>()]  Starting main loop
+>>>>>>> UDP-publishing
+[22-Jun-24 18:18:25 - INFO - init.py:24 - <module>()]  ----------- Starting Up -----------
+[22-Jun-24 18:18:25 - ERROR - state.py:294 - get_current_ip()]  Could not get current IP - [Errno 19] No such device - Returning None
+[22-Jun-24 18:18:25 - INFO - state.py:90 - __init__()]  IP is None
+[22-Jun-24 18:19:07 - INFO - init.py:24 - <module>()]  ----------- Starting Up -----------
+[22-Jun-24 18:19:07 - ERROR - state.py:294 - get_current_ip()]  Could not get current IP - [Errno 19] No such device - Returning None
+[22-Jun-24 18:19:07 - INFO - state.py:90 - __init__()]  IP is None
+[22-Jun-24 18:19:55 - INFO - init.py:24 - <module>()]  ----------- Starting Up -----------
+[22-Jun-24 18:19:55 - ERROR - state.py:294 - get_current_ip()]  Could not get current IP - [Errno 19] No such device - Returning None
+[22-Jun-24 18:19:55 - INFO - state.py:90 - __init__()]  IP is None
+[22-Jun-24 18:19:55 - INFO - state.py:110 - make_publisher()]  Making publisher WallEye for team 2767 with UDP port 5802
+[22-Jun-24 18:19:55 - ERROR - state.py:126 - make_publisher()]  Failed to write TableName | WallEye | or TeamNumber | 2767 | or Port |5802
+[22-Jun-24 18:19:55 - INFO - state.py:140 - make_publisher()]  Creating publisher
+[22-Jun-24 18:19:55 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[22-Jun-24 18:19:55 - INFO - state.py:144 - make_publisher()]  Robot publisher created: 2767 - WallEye
+[22-Jun-24 18:20:17 - INFO - init.py:24 - <module>()]  ----------- Starting Up -----------
+[22-Jun-24 18:20:18 - ERROR - state.py:294 - get_current_ip()]  Could not get current IP - [Errno 19] No such device - Returning None
+[22-Jun-24 18:20:18 - INFO - state.py:90 - __init__()]  IP is None
+[22-Jun-24 18:20:18 - INFO - state.py:110 - make_publisher()]  Making publisher WallEye for team 2767 with UDP port 5802
+[22-Jun-24 18:20:18 - ERROR - state.py:126 - make_publisher()]  Failed to write TableName | WallEye | or TeamNumber | 2767 | or Port |5802
+[22-Jun-24 18:20:18 - INFO - state.py:140 - make_publisher()]  Creating publisher
+[22-Jun-24 18:20:18 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[22-Jun-24 18:20:18 - INFO - state.py:144 - make_publisher()]  Robot publisher created: 2767 - WallEye
+[22-Jun-24 18:20:18 - INFO - camera.py:24 - __init__()]  Platform is linux
+[22-Jun-24 18:20:18 - INFO - camera.py:48 - __init__()]  Camera found: pci-0000:04:00.0-usb-0:1:1.0-video-index0
+[22-Jun-24 18:20:18 - INFO - camera.py:59 - __init__()]  Supported resolutions: [(640, 360), (640, 480)]
+[22-Jun-24 18:20:18 - INFO - camera.py:62 - __init__()]  Supported formats: ['Motion-JPEG', 'YUYV 4:2:2']
+[22-Jun-24 18:20:18 - INFO - camera.py:65 - __init__()]  Supported exposures (min, max, step): (10, 2500, 1)
+[22-Jun-24 18:20:18 - INFO - camera.py:68 - __init__()]  Supported brightnesses (min, max, step): (-64, 64, 1)
+[22-Jun-24 18:20:18 - INFO - camera.py:77 - __init__()]  Auto exposure disabled for pci-0000:04:00.0-usb-0:1:1.0-video-index0
+[22-Jun-24 18:20:18 - INFO - camera.py:312 - import_config()]  Attempting to import config for pci-0000:04:00.0-usb-0:1:1.0-video-index0
+[22-Jun-24 18:20:18 - INFO - camera.py:318 - import_config()]  Config found!
+[22-Jun-24 18:20:18 - INFO - calibration.py:423 - parse_calibration()]  Looking for calibration stored at walleye_data/config_data/calibrations/cam_pci-0000-04-00-0-usb-0-1-1-0-video-index0_(640, 480)_cal_data.json
+[22-Jun-24 18:20:18 - ERROR - camera.py:303 - import_calibration()]  Calibration not found for camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 at resolution (640, 480)
+[22-Jun-24 18:20:18 - INFO - camera.py:178 - set_resolution()]  Resolution set to (640, 480) for pci-0000:04:00.0-usb-0:1:1.0-video-index0
+[22-Jun-24 18:20:18 - INFO - camera_info.py:58 - set()]  Brightness set to 21.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 21)
+[22-Jun-24 18:20:18 - INFO - camera_info.py:58 - set()]  Exposure Time, Absolute set to 314.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 314)
+[22-Jun-24 18:20:18 - WARNING - camera.py:95 - __init__()]  Failed to open camera: pci-0000:04:00.0-usbv2-0:1:1.0-video-index1
+[22-Jun-24 18:20:18 - WARNING - camera.py:95 - __init__()]  Failed to open camera: pci-0000:04:00.0-usbv2-0:1:1.0-video-index0
+[22-Jun-24 18:20:18 - WARNING - camera.py:95 - __init__()]  Failed to open camera: pci-0000:04:00.0-usb-0:1:1.0-video-index1
+[22-Jun-24 18:20:19 - INFO - image_streams.py:48 - __init__()]  Tag layout loaded
+[22-Jun-24 18:20:39 - INFO - init.py:24 - <module>()]  ----------- Starting Up -----------
+[22-Jun-24 18:20:40 - INFO - state.py:216 - set_ip()]  Attempting to set static IP
+[22-Jun-24 18:20:40 - WARNING - state.py:219 - set_ip()]  IP is None
+[22-Jun-24 18:21:01 - INFO - init.py:24 - <module>()]  ----------- Starting Up -----------
+[22-Jun-24 18:21:02 - INFO - state.py:216 - set_ip()]  Attempting to set static IP
+[22-Jun-24 18:21:02 - WARNING - state.py:219 - set_ip()]  IP is None
+[22-Jun-24 18:21:02 - INFO - state.py:110 - make_publisher()]  Making publisher WallEye for team 2767 with UDP port 5802
+[22-Jun-24 18:21:02 - INFO - state.py:122 - make_publisher()]  Publisher information written to walleye_data/config_data/system_data.json
+[22-Jun-24 18:21:02 - INFO - state.py:140 - make_publisher()]  Creating publisher
+[22-Jun-24 18:21:02 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[22-Jun-24 18:21:02 - INFO - state.py:144 - make_publisher()]  Robot publisher created: 2767 - WallEye
+[22-Jun-24 18:21:02 - ERROR - state.py:293 - get_current_ip()]  Could not get current IP - [Errno 19] No such device - Returning None
+[22-Jun-24 18:21:02 - INFO - camera.py:24 - __init__()]  Platform is linux
+[22-Jun-24 18:21:02 - INFO - camera.py:48 - __init__()]  Camera found: pci-0000:04:00.0-usb-0:1:1.0-video-index0
+[22-Jun-24 18:21:02 - INFO - camera.py:59 - __init__()]  Supported resolutions: [(640, 360), (640, 480)]
+[22-Jun-24 18:21:02 - INFO - camera.py:62 - __init__()]  Supported formats: ['Motion-JPEG', 'YUYV 4:2:2']
+[22-Jun-24 18:21:02 - INFO - camera.py:65 - __init__()]  Supported exposures (min, max, step): (10, 2500, 1)
+[22-Jun-24 18:21:02 - INFO - camera.py:68 - __init__()]  Supported brightnesses (min, max, step): (-64, 64, 1)
+[22-Jun-24 18:21:02 - INFO - camera.py:77 - __init__()]  Auto exposure disabled for pci-0000:04:00.0-usb-0:1:1.0-video-index0
+[22-Jun-24 18:21:02 - INFO - camera.py:312 - import_config()]  Attempting to import config for pci-0000:04:00.0-usb-0:1:1.0-video-index0
+[22-Jun-24 18:21:02 - INFO - camera.py:318 - import_config()]  Config found!
+[22-Jun-24 18:21:02 - INFO - calibration.py:423 - parse_calibration()]  Looking for calibration stored at walleye_data/config_data/calibrations/cam_pci-0000-04-00-0-usb-0-1-1-0-video-index0_(640, 480)_cal_data.json
+[22-Jun-24 18:21:02 - ERROR - camera.py:303 - import_calibration()]  Calibration not found for camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 at resolution (640, 480)
+[22-Jun-24 18:21:02 - INFO - camera.py:178 - set_resolution()]  Resolution set to (640, 480) for pci-0000:04:00.0-usb-0:1:1.0-video-index0
+[22-Jun-24 18:21:02 - INFO - camera_info.py:58 - set()]  Brightness set to 21.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 21)
+[22-Jun-24 18:21:02 - INFO - camera_info.py:58 - set()]  Exposure Time, Absolute set to 314.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 314)
+[22-Jun-24 18:21:02 - WARNING - camera.py:95 - __init__()]  Failed to open camera: pci-0000:04:00.0-usbv2-0:1:1.0-video-index1
+[22-Jun-24 18:21:02 - WARNING - camera.py:95 - __init__()]  Failed to open camera: pci-0000:04:00.0-usbv2-0:1:1.0-video-index0
+[22-Jun-24 18:21:02 - WARNING - camera.py:95 - __init__()]  Failed to open camera: pci-0000:04:00.0-usb-0:1:1.0-video-index1
+[22-Jun-24 18:21:03 - INFO - image_streams.py:48 - __init__()]  Tag layout loaded
+[22-Jun-24 18:21:05 - INFO - init.py:66 - <module>()]  Web server ready
+[22-Jun-24 18:21:05 - INFO - processing.py:20 - __init__()]  Tag layout loaded
+[22-Jun-24 18:21:05 - INFO - state.py:110 - make_publisher()]  Making publisher WallEye for team 2767 with UDP port 5802
+[22-Jun-24 18:21:05 - INFO - state.py:122 - make_publisher()]  Publisher information written to walleye_data/config_data/system_data.json
+[22-Jun-24 18:21:05 - INFO - state.py:135 - make_publisher()]  Destorying existing publisher
+[22-Jun-24 18:21:23 - INFO - web_interface.py:72 - connect()]  Client connected
+[22-Jun-24 18:23:26 - INFO - init.py:24 - <module>()]  ----------- Starting Up -----------
+[22-Jun-24 18:23:26 - INFO - state.py:216 - set_ip()]  Attempting to set static IP
+[22-Jun-24 18:23:26 - WARNING - state.py:219 - set_ip()]  IP is None
+[22-Jun-24 18:23:26 - INFO - state.py:110 - make_publisher()]  Making publisher WallEye for team 2767 with UDP port 5802
+[22-Jun-24 18:23:26 - INFO - state.py:122 - make_publisher()]  Publisher information written to walleye_data/config_data/system_data.json
+[22-Jun-24 18:23:26 - INFO - state.py:140 - make_publisher()]  Creating publisher
+[22-Jun-24 18:23:26 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[22-Jun-24 18:23:26 - INFO - state.py:144 - make_publisher()]  Robot publisher created: 2767 - WallEye
+[22-Jun-24 18:23:26 - ERROR - state.py:293 - get_current_ip()]  Could not get current IP - [Errno 19] No such device - Returning None
+[22-Jun-24 18:23:26 - INFO - camera.py:24 - __init__()]  Platform is linux
+[22-Jun-24 18:23:26 - INFO - camera.py:48 - __init__()]  Camera found: pci-0000:04:00.0-usb-0:1:1.0-video-index0
+[22-Jun-24 18:23:26 - INFO - camera.py:59 - __init__()]  Supported resolutions: [(640, 360), (640, 480)]
+[22-Jun-24 18:23:26 - INFO - camera.py:62 - __init__()]  Supported formats: ['Motion-JPEG', 'YUYV 4:2:2']
+[22-Jun-24 18:23:26 - INFO - camera.py:65 - __init__()]  Supported exposures (min, max, step): (10, 2500, 1)
+[22-Jun-24 18:23:26 - INFO - camera.py:68 - __init__()]  Supported brightnesses (min, max, step): (-64, 64, 1)
+[22-Jun-24 18:23:26 - INFO - camera.py:77 - __init__()]  Auto exposure disabled for pci-0000:04:00.0-usb-0:1:1.0-video-index0
+[22-Jun-24 18:23:26 - INFO - camera.py:312 - import_config()]  Attempting to import config for pci-0000:04:00.0-usb-0:1:1.0-video-index0
+[22-Jun-24 18:23:26 - INFO - camera.py:318 - import_config()]  Config found!
+[22-Jun-24 18:23:26 - INFO - calibration.py:423 - parse_calibration()]  Looking for calibration stored at walleye_data/config_data/calibrations/cam_pci-0000-04-00-0-usb-0-1-1-0-video-index0_(640, 480)_cal_data.json
+[22-Jun-24 18:23:26 - ERROR - camera.py:303 - import_calibration()]  Calibration not found for camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 at resolution (640, 480)
+[22-Jun-24 18:23:26 - INFO - camera.py:178 - set_resolution()]  Resolution set to (640, 480) for pci-0000:04:00.0-usb-0:1:1.0-video-index0
+[22-Jun-24 18:23:26 - INFO - camera_info.py:58 - set()]  Brightness set to 21.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 21)
+[22-Jun-24 18:23:26 - INFO - camera_info.py:58 - set()]  Exposure Time, Absolute set to 314.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 314)
+[22-Jun-24 18:23:26 - WARNING - camera.py:95 - __init__()]  Failed to open camera: pci-0000:04:00.0-usbv2-0:1:1.0-video-index1
+[22-Jun-24 18:23:26 - WARNING - camera.py:95 - __init__()]  Failed to open camera: pci-0000:04:00.0-usbv2-0:1:1.0-video-index0
+[22-Jun-24 18:23:26 - WARNING - camera.py:95 - __init__()]  Failed to open camera: pci-0000:04:00.0-usb-0:1:1.0-video-index1
+[22-Jun-24 18:23:27 - INFO - image_streams.py:48 - __init__()]  Tag layout loaded
+[22-Jun-24 18:23:29 - INFO - init.py:66 - <module>()]  Web server ready
+[22-Jun-24 18:23:29 - INFO - processing.py:20 - __init__()]  Tag layout loaded
+[22-Jun-24 18:23:29 - INFO - init.py:77 - <module>()]  Starting main loop
+[22-Jun-24 18:23:30 - INFO - web_interface.py:72 - connect()]  Client connected
+[22-Jun-24 18:23:33 - WARNING - web_interface.py:77 - disconnect()]  Client disconnected
+[22-Jun-24 18:23:33 - INFO - web_interface.py:72 - connect()]  Client connected
+[22-Jun-24 18:23:38 - INFO - web_interface.py:248 - toggle_pnp()]  PnP stopped
+[22-Jun-24 18:23:39 - INFO - web_interface.py:251 - toggle_pnp()]  PnP started
+[22-Jun-24 18:23:42 - INFO - web_interface.py:109 - toggle_calibration()]  Starting calibration capture for pci-0000:04:00.0-usb-0:1:1.0-video-index0
+[22-Jun-24 18:23:42 - INFO - init.py:91 - <module>()]  Beginning calibration
+[22-Jun-24 18:23:44 - INFO - web_interface.py:114 - toggle_calibration()]  Stopping calibration capture
+[22-Jun-24 18:23:46 - ERROR - calibration.py:277 - generate_calibration()]  Calibration failed: No image data available
+[22-Jun-24 18:26:04 - INFO - init.py:24 - <module>()]  ----------- Starting Up -----------
+[22-Jun-24 18:26:04 - INFO - state.py:216 - set_ip()]  Attempting to set static IP
+[22-Jun-24 18:26:04 - WARNING - state.py:219 - set_ip()]  IP is None
+[22-Jun-24 18:26:04 - INFO - state.py:110 - make_publisher()]  Making publisher WallEye for team 2767 with UDP port 5802
+[22-Jun-24 18:26:04 - INFO - state.py:122 - make_publisher()]  Publisher information written to walleye_data/config_data/system_data.json
+[22-Jun-24 18:26:04 - INFO - state.py:140 - make_publisher()]  Creating publisher
+[22-Jun-24 18:26:04 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[22-Jun-24 18:26:04 - INFO - state.py:144 - make_publisher()]  Robot publisher created: 2767 - WallEye
+[22-Jun-24 18:26:04 - ERROR - state.py:293 - get_current_ip()]  Could not get current IP - [Errno 19] No such device - Returning None
+[22-Jun-24 18:26:04 - INFO - camera.py:24 - __init__()]  Platform is linux
+[22-Jun-24 18:26:04 - INFO - camera.py:48 - __init__()]  Camera found: pci-0000:04:00.0-usb-0:1:1.0-video-index0
+[22-Jun-24 18:26:04 - INFO - camera.py:59 - __init__()]  Supported resolutions: [(640, 360), (640, 480)]
+[22-Jun-24 18:26:04 - INFO - camera.py:62 - __init__()]  Supported formats: ['Motion-JPEG', 'YUYV 4:2:2']
+[22-Jun-24 18:26:04 - INFO - camera.py:65 - __init__()]  Supported exposures (min, max, step): (10, 2500, 1)
+[22-Jun-24 18:26:04 - INFO - camera.py:68 - __init__()]  Supported brightnesses (min, max, step): (-64, 64, 1)
+[22-Jun-24 18:26:04 - INFO - camera.py:77 - __init__()]  Auto exposure disabled for pci-0000:04:00.0-usb-0:1:1.0-video-index0
+[22-Jun-24 18:26:04 - INFO - camera.py:312 - import_config()]  Attempting to import config for pci-0000:04:00.0-usb-0:1:1.0-video-index0
+[22-Jun-24 18:26:04 - INFO - camera.py:318 - import_config()]  Config found!
+[22-Jun-24 18:26:04 - INFO - calibration.py:423 - parse_calibration()]  Looking for calibration stored at walleye_data/config_data/calibrations/cam_pci-0000-04-00-0-usb-0-1-1-0-video-index0_(640, 480)_cal_data.json
+[22-Jun-24 18:26:04 - ERROR - camera.py:303 - import_calibration()]  Calibration not found for camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 at resolution (640, 480)
+[22-Jun-24 18:26:04 - INFO - camera.py:178 - set_resolution()]  Resolution set to (640, 480) for pci-0000:04:00.0-usb-0:1:1.0-video-index0
+[22-Jun-24 18:26:04 - INFO - camera_info.py:58 - set()]  Brightness set to 21.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 21)
+[22-Jun-24 18:26:04 - INFO - camera_info.py:58 - set()]  Exposure Time, Absolute set to 314.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 314)
+[22-Jun-24 18:26:04 - WARNING - camera.py:95 - __init__()]  Failed to open camera: pci-0000:04:00.0-usbv2-0:1:1.0-video-index1
+[22-Jun-24 18:26:04 - WARNING - camera.py:95 - __init__()]  Failed to open camera: pci-0000:04:00.0-usbv2-0:1:1.0-video-index0
+[22-Jun-24 18:26:04 - WARNING - camera.py:95 - __init__()]  Failed to open camera: pci-0000:04:00.0-usb-0:1:1.0-video-index1
+[22-Jun-24 18:26:06 - INFO - image_streams.py:48 - __init__()]  Tag layout loaded
+[22-Jun-24 18:26:08 - INFO - init.py:66 - <module>()]  Web server ready
+[22-Jun-24 18:26:08 - INFO - processing.py:20 - __init__()]  Tag layout loaded
+[22-Jun-24 18:26:08 - INFO - init.py:77 - <module>()]  Starting main loop
+[22-Jun-24 18:26:09 - INFO - web_interface.py:72 - connect()]  Client connected
+[22-Jun-24 18:26:09 - WARNING - web_interface.py:77 - disconnect()]  Client disconnected
+[22-Jun-24 18:26:10 - INFO - web_interface.py:72 - connect()]  Client connected
+[22-Jun-24 18:26:39 - INFO - camera_info.py:58 - set()]  Exposure Time, Absolute set to 355.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 355)
+[22-Jun-24 18:26:39 - INFO - camera_info.py:58 - set()]  Exposure Time, Absolute set to 371.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 371)
+[22-Jun-24 18:26:39 - INFO - camera_info.py:58 - set()]  Exposure Time, Absolute set to 408.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 408)
+[22-Jun-24 18:26:39 - INFO - camera_info.py:58 - set()]  Exposure Time, Absolute set to 444.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 444)
+[22-Jun-24 18:26:39 - INFO - camera_info.py:58 - set()]  Exposure Time, Absolute set to 462.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 462)
+[22-Jun-24 18:26:39 - INFO - camera_info.py:58 - set()]  Exposure Time, Absolute set to 480.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 480)
+[22-Jun-24 18:26:39 - INFO - camera_info.py:58 - set()]  Exposure Time, Absolute set to 498.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 498)
+[22-Jun-24 18:26:39 - INFO - camera_info.py:58 - set()]  Exposure Time, Absolute set to 516.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 516)
+[22-Jun-24 18:26:39 - INFO - camera_info.py:58 - set()]  Exposure Time, Absolute set to 530.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 530)
+[22-Jun-24 18:26:39 - INFO - camera_info.py:58 - set()]  Exposure Time, Absolute set to 541.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 541)
+[22-Jun-24 18:26:40 - INFO - camera_info.py:58 - set()]  Exposure Time, Absolute set to 533.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 533)
+[22-Jun-24 18:26:40 - INFO - camera_info.py:58 - set()]  Exposure Time, Absolute set to 504.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 504)
+[22-Jun-24 18:26:40 - INFO - camera_info.py:58 - set()]  Exposure Time, Absolute set to 487.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 487)
+[22-Jun-24 18:26:40 - INFO - camera_info.py:58 - set()]  Exposure Time, Absolute set to 451.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 451)
+[22-Jun-24 18:26:40 - INFO - camera_info.py:58 - set()]  Exposure Time, Absolute set to 396.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 396)
+[22-Jun-24 18:26:40 - INFO - camera_info.py:58 - set()]  Exposure Time, Absolute set to 360.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 360)
+[22-Jun-24 18:26:40 - INFO - camera_info.py:58 - set()]  Exposure Time, Absolute set to 342.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 342)
+[22-Jun-24 18:26:40 - INFO - camera_info.py:58 - set()]  Exposure Time, Absolute set to 324.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 324)
+[22-Jun-24 18:26:40 - INFO - camera_info.py:58 - set()]  Exposure Time, Absolute set to 306.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 306)
+[22-Jun-24 18:26:40 - INFO - camera_info.py:58 - set()]  Exposure Time, Absolute set to 287.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 287)
+[22-Jun-24 18:26:40 - INFO - camera_info.py:58 - set()]  Exposure Time, Absolute set to 269.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 269)
+[22-Jun-24 18:26:40 - INFO - camera_info.py:58 - set()]  Exposure Time, Absolute set to 252.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 252)
+[22-Jun-24 18:26:40 - INFO - camera_info.py:58 - set()]  Exposure Time, Absolute set to 240.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 240)
+[22-Jun-24 18:26:44 - INFO - web_interface.py:176 - export_config()]  Attempting to prepare config.zip
+[22-Jun-24 18:26:44 - INFO - web_interface.py:181 - export_config()]  Opening walleye_data/config.zip for writing
+[22-Jun-24 18:26:44 - INFO - web_interface.py:185 - export_config()]  Zipping walleye_data/config_data/calibrations
+[22-Jun-24 18:26:44 - INFO - web_interface.py:185 - export_config()]  Zipping walleye_data/config_data/system_data.json
+[22-Jun-24 18:26:44 - INFO - web_interface.py:185 - export_config()]  Zipping walleye_data/config_data/camera_configs
+[22-Jun-24 18:26:44 - INFO - web_interface.py:185 - export_config()]  Zipping walleye_data/config_data/cam_pci-0000-04-00-0-usb-0-1-1-0-video-index0_cal_imgs
+[22-Jun-24 18:26:44 - INFO - web_interface.py:188 - export_config()]  Zipping walleye_data/config.zip
+[22-Jun-24 18:26:44 - INFO - web_interface.py:190 - export_config()]  Config sucessfully zipped
+[22-Jun-24 18:26:48 - WARNING - web_interface.py:77 - disconnect()]  Client disconnected
+[22-Jun-24 18:26:48 - INFO - init.py:241 - <module>()]  Shutting down
+[22-Jun-24 18:27:42 - INFO - init.py:24 - <module>()]  ----------- Starting Up -----------
+[22-Jun-24 18:27:42 - INFO - state.py:216 - set_ip()]  Attempting to set static IP
+[22-Jun-24 18:27:42 - WARNING - state.py:219 - set_ip()]  IP is None
+[22-Jun-24 18:27:42 - INFO - state.py:110 - make_publisher()]  Making publisher WallEye for team 2767 with UDP port 5802
+[22-Jun-24 18:27:42 - INFO - state.py:122 - make_publisher()]  Publisher information written to walleye_data/config_data/system_data.json
+[22-Jun-24 18:27:42 - INFO - state.py:140 - make_publisher()]  Creating publisher
+[22-Jun-24 18:27:42 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[22-Jun-24 18:27:42 - INFO - state.py:144 - make_publisher()]  Robot publisher created: 2767 - WallEye
+[22-Jun-24 18:27:42 - ERROR - state.py:293 - get_current_ip()]  Could not get current IP - [Errno 19] No such device - Returning None
+[22-Jun-24 18:27:42 - INFO - camera.py:24 - __init__()]  Platform is linux
+[22-Jun-24 18:27:42 - INFO - camera.py:48 - __init__()]  Camera found: pci-0000:04:00.0-usb-0:1:1.0-video-index0
+[22-Jun-24 18:27:42 - INFO - camera.py:59 - __init__()]  Supported resolutions: [(640, 360), (640, 480)]
+[22-Jun-24 18:27:42 - INFO - camera.py:62 - __init__()]  Supported formats: ['Motion-JPEG', 'YUYV 4:2:2']
+[22-Jun-24 18:27:42 - INFO - camera.py:65 - __init__()]  Supported exposures (min, max, step): (10, 2500, 1)
+[22-Jun-24 18:27:42 - INFO - camera.py:68 - __init__()]  Supported brightnesses (min, max, step): (-64, 64, 1)
+[22-Jun-24 18:27:42 - INFO - camera.py:77 - __init__()]  Auto exposure disabled for pci-0000:04:00.0-usb-0:1:1.0-video-index0
+[22-Jun-24 18:27:42 - INFO - camera.py:312 - import_config()]  Attempting to import config for pci-0000:04:00.0-usb-0:1:1.0-video-index0
+[22-Jun-24 18:27:42 - INFO - camera.py:318 - import_config()]  Config found!
+[22-Jun-24 18:27:42 - INFO - calibration.py:423 - parse_calibration()]  Looking for calibration stored at walleye_data/config_data/calibrations/cam_pci-0000-04-00-0-usb-0-1-1-0-video-index0_(640, 480)_cal_data.json
+[22-Jun-24 18:27:42 - ERROR - camera.py:303 - import_calibration()]  Calibration not found for camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 at resolution (640, 480)
+[22-Jun-24 18:27:42 - INFO - camera.py:178 - set_resolution()]  Resolution set to (640, 480) for pci-0000:04:00.0-usb-0:1:1.0-video-index0
+[22-Jun-24 18:27:42 - INFO - camera_info.py:58 - set()]  Brightness set to 21.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 21)
+[22-Jun-24 18:27:42 - INFO - camera_info.py:58 - set()]  Exposure Time, Absolute set to 240.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 240)
+[22-Jun-24 18:27:42 - WARNING - camera.py:95 - __init__()]  Failed to open camera: pci-0000:04:00.0-usbv2-0:1:1.0-video-index1
+[22-Jun-24 18:27:42 - WARNING - camera.py:95 - __init__()]  Failed to open camera: pci-0000:04:00.0-usbv2-0:1:1.0-video-index0
+[22-Jun-24 18:27:42 - WARNING - camera.py:95 - __init__()]  Failed to open camera: pci-0000:04:00.0-usb-0:1:1.0-video-index1
+[22-Jun-24 18:27:44 - INFO - image_streams.py:48 - __init__()]  Tag layout loaded
+[22-Jun-24 18:27:46 - INFO - init.py:66 - <module>()]  Web server ready
+[22-Jun-24 18:27:46 - INFO - processing.py:20 - __init__()]  Tag layout loaded
+[22-Jun-24 18:27:46 - INFO - init.py:77 - <module>()]  Starting main loop
+[22-Jun-24 18:27:49 - INFO - web_interface.py:72 - connect()]  Client connected
+[22-Jun-24 18:27:52 - ERROR - state.py:198 - set_udp_port()]  Failed to write port 5802
+[22-Jun-24 18:27:52 - INFO - web_interface.py:226 - setUDPPort()]  Port set: 5802
+[22-Jun-24 18:29:09 - INFO - init.py:24 - <module>()]  ----------- Starting Up -----------
+[22-Jun-24 18:29:09 - ERROR - state.py:293 - get_current_ip()]  Could not get current IP - [Errno 19] No such device - Returning None
+[22-Jun-24 18:29:09 - INFO - state.py:90 - __init__()]  IP is None
+[22-Jun-24 18:29:09 - INFO - state.py:110 - make_publisher()]  Making publisher WallEye for team 2767 with UDP port 5802
+[22-Jun-24 18:29:09 - ERROR - state.py:126 - make_publisher()]  Failed to write TableName | WallEye | or TeamNumber | 2767 | or Port |5802
+[22-Jun-24 18:29:09 - INFO - state.py:140 - make_publisher()]  Creating publisher
+[22-Jun-24 18:29:09 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[22-Jun-24 18:29:09 - INFO - state.py:144 - make_publisher()]  Robot publisher created: 2767 - WallEye
+[22-Jun-24 18:29:09 - INFO - camera.py:24 - __init__()]  Platform is linux
+[22-Jun-24 18:29:09 - INFO - camera.py:48 - __init__()]  Camera found: pci-0000:04:00.0-usb-0:1:1.0-video-index0
+[22-Jun-24 18:29:09 - INFO - camera.py:59 - __init__()]  Supported resolutions: [(640, 360), (640, 480)]
+[22-Jun-24 18:29:09 - INFO - camera.py:62 - __init__()]  Supported formats: ['Motion-JPEG', 'YUYV 4:2:2']
+[22-Jun-24 18:29:09 - INFO - camera.py:65 - __init__()]  Supported exposures (min, max, step): (10, 2500, 1)
+[22-Jun-24 18:29:09 - INFO - camera.py:68 - __init__()]  Supported brightnesses (min, max, step): (-64, 64, 1)
+[22-Jun-24 18:29:09 - INFO - camera.py:77 - __init__()]  Auto exposure disabled for pci-0000:04:00.0-usb-0:1:1.0-video-index0
+[22-Jun-24 18:29:09 - INFO - camera.py:312 - import_config()]  Attempting to import config for pci-0000:04:00.0-usb-0:1:1.0-video-index0
+[22-Jun-24 18:29:09 - INFO - camera.py:318 - import_config()]  Config found!
+[22-Jun-24 18:29:09 - INFO - calibration.py:423 - parse_calibration()]  Looking for calibration stored at walleye_data/config_data/calibrations/cam_pci-0000-04-00-0-usb-0-1-1-0-video-index0_(640, 480)_cal_data.json
+[22-Jun-24 18:29:09 - ERROR - camera.py:303 - import_calibration()]  Calibration not found for camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 at resolution (640, 480)
+[22-Jun-24 18:29:09 - INFO - camera.py:178 - set_resolution()]  Resolution set to (640, 480) for pci-0000:04:00.0-usb-0:1:1.0-video-index0
+[22-Jun-24 18:29:09 - INFO - camera_info.py:58 - set()]  Brightness set to 21.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 21)
+[22-Jun-24 18:29:09 - INFO - camera_info.py:58 - set()]  Exposure Time, Absolute set to 240.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 240)
+[22-Jun-24 18:29:09 - WARNING - camera.py:95 - __init__()]  Failed to open camera: pci-0000:04:00.0-usbv2-0:1:1.0-video-index1
+[22-Jun-24 18:29:09 - WARNING - camera.py:95 - __init__()]  Failed to open camera: pci-0000:04:00.0-usbv2-0:1:1.0-video-index0
+[22-Jun-24 18:29:09 - WARNING - camera.py:95 - __init__()]  Failed to open camera: pci-0000:04:00.0-usb-0:1:1.0-video-index1
+[22-Jun-24 18:29:11 - INFO - image_streams.py:48 - __init__()]  Tag layout loaded
+[22-Jun-24 18:29:13 - INFO - init.py:66 - <module>()]  Web server ready
+[22-Jun-24 18:29:13 - INFO - processing.py:20 - __init__()]  Tag layout loaded
+[22-Jun-24 18:29:13 - INFO - init.py:77 - <module>()]  Starting main loop
+[22-Jun-24 18:29:13 - INFO - web_interface.py:72 - connect()]  Client connected
+[22-Jun-24 18:29:16 - INFO - state.py:110 - make_publisher()]  Making publisher WallEye for team 2767 with UDP port 5802
+[22-Jun-24 18:29:16 - INFO - state.py:122 - make_publisher()]  Publisher information written to walleye_data/config_data/system_data.json
+[22-Jun-24 18:29:16 - INFO - state.py:135 - make_publisher()]  Destorying existing publisher
+[22-Jun-24 18:29:20 - INFO - init.py:24 - <module>()]  ----------- Starting Up -----------
+[22-Jun-24 18:29:21 - INFO - state.py:216 - set_ip()]  Attempting to set static IP
+[22-Jun-24 18:29:21 - WARNING - state.py:219 - set_ip()]  IP is None
+[22-Jun-24 18:29:21 - INFO - state.py:110 - make_publisher()]  Making publisher WallEye for team 2767 with UDP port 5802
+[22-Jun-24 18:29:21 - INFO - state.py:122 - make_publisher()]  Publisher information written to walleye_data/config_data/system_data.json
+[22-Jun-24 18:29:21 - INFO - state.py:140 - make_publisher()]  Creating publisher
+[22-Jun-24 18:29:21 - INFO - NetworkClient.cpp:141 - None()]  starting network client
+[22-Jun-24 18:29:21 - INFO - state.py:144 - make_publisher()]  Robot publisher created: 2767 - WallEye
+[22-Jun-24 18:29:21 - ERROR - state.py:293 - get_current_ip()]  Could not get current IP - [Errno 19] No such device - Returning None
+[22-Jun-24 18:29:21 - INFO - camera.py:24 - __init__()]  Platform is linux
+[22-Jun-24 18:29:21 - INFO - camera.py:48 - __init__()]  Camera found: pci-0000:04:00.0-usb-0:1:1.0-video-index0
+[22-Jun-24 18:29:21 - INFO - camera.py:59 - __init__()]  Supported resolutions: [(640, 360), (640, 480)]
+[22-Jun-24 18:29:21 - INFO - camera.py:62 - __init__()]  Supported formats: ['Motion-JPEG', 'YUYV 4:2:2']
+[22-Jun-24 18:29:21 - INFO - camera.py:65 - __init__()]  Supported exposures (min, max, step): (10, 2500, 1)
+[22-Jun-24 18:29:21 - INFO - camera.py:68 - __init__()]  Supported brightnesses (min, max, step): (-64, 64, 1)
+[22-Jun-24 18:29:21 - INFO - camera.py:77 - __init__()]  Auto exposure disabled for pci-0000:04:00.0-usb-0:1:1.0-video-index0
+[22-Jun-24 18:29:21 - INFO - camera.py:312 - import_config()]  Attempting to import config for pci-0000:04:00.0-usb-0:1:1.0-video-index0
+[22-Jun-24 18:29:21 - INFO - camera.py:318 - import_config()]  Config found!
+[22-Jun-24 18:29:21 - INFO - calibration.py:423 - parse_calibration()]  Looking for calibration stored at walleye_data/config_data/calibrations/cam_pci-0000-04-00-0-usb-0-1-1-0-video-index0_(640, 480)_cal_data.json
+[22-Jun-24 18:29:21 - ERROR - camera.py:303 - import_calibration()]  Calibration not found for camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 at resolution (640, 480)
+[22-Jun-24 18:29:21 - INFO - camera.py:178 - set_resolution()]  Resolution set to (640, 480) for pci-0000:04:00.0-usb-0:1:1.0-video-index0
+[22-Jun-24 18:29:21 - INFO - camera_info.py:58 - set()]  Brightness set to 21.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 21)
+[22-Jun-24 18:29:21 - INFO - camera_info.py:58 - set()]  Exposure Time, Absolute set to 240.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 240)
+[22-Jun-24 18:29:21 - WARNING - camera.py:95 - __init__()]  Failed to open camera: pci-0000:04:00.0-usbv2-0:1:1.0-video-index1
+[22-Jun-24 18:29:21 - WARNING - camera.py:95 - __init__()]  Failed to open camera: pci-0000:04:00.0-usbv2-0:1:1.0-video-index0
+[22-Jun-24 18:29:21 - WARNING - camera.py:95 - __init__()]  Failed to open camera: pci-0000:04:00.0-usb-0:1:1.0-video-index1
+[22-Jun-24 18:29:22 - INFO - image_streams.py:48 - __init__()]  Tag layout loaded
+[22-Jun-24 18:29:24 - INFO - init.py:66 - <module>()]  Web server ready
+[22-Jun-24 18:29:24 - INFO - processing.py:20 - __init__()]  Tag layout loaded
+[22-Jun-24 18:29:24 - INFO - init.py:77 - <module>()]  Starting main loop
+[22-Jun-24 18:29:28 - INFO - web_interface.py:72 - connect()]  Client connected
+[22-Jun-24 18:29:28 - INFO - web_interface.py:220 - set_board_dims()]  Board dimensions set: (7, 7)
+[22-Jun-24 18:29:28 - INFO - web_interface.py:220 - set_board_dims()]  Board dimensions set: (7, 7)
+[22-Jun-24 18:29:29 - INFO - web_interface.py:220 - set_board_dims()]  Board dimensions set: (7, 7)
+[22-Jun-24 18:29:32 - INFO - state.py:216 - set_ip()]  Attempting to set static IP
+[22-Jun-24 18:29:36 - INFO - web_interface.py:226 - setUDPPort()]  Attempting to set UDP port to 5802
+[22-Jun-24 18:29:36 - ERROR - state.py:198 - set_udp_port()]  Failed to write port 5802
+[22-Jun-24 18:30:08 - INFO - web_interface.py:226 - setUDPPort()]  Attempting to set UDP port to 5802
+[22-Jun-24 18:30:08 - ERROR - state.py:198 - set_udp_port()]  Failed to write port 5802
+[22-Jun-24 18:30:09 - ERROR - state.py:212 - set_tag_size()]  Failed to write tag size 0.157
+[22-Jun-24 18:30:15 - INFO - web_interface.py:248 - toggle_pnp()]  PnP stopped
+[22-Jun-24 18:30:16 - INFO - web_interface.py:251 - toggle_pnp()]  PnP started
+[22-Jun-24 18:30:18 - INFO - web_interface.py:109 - toggle_calibration()]  Starting calibration capture for pci-0000:04:00.0-usb-0:1:1.0-video-index0
+[22-Jun-24 18:30:18 - INFO - init.py:91 - <module>()]  Beginning calibration
+[22-Jun-24 18:30:18 - INFO - web_interface.py:114 - toggle_calibration()]  Stopping calibration capture
+[22-Jun-24 18:30:19 - ERROR - calibration.py:277 - generate_calibration()]  Calibration failed: No image data available
+[22-Jun-24 18:30:22 - INFO - camera_info.py:58 - set()]  Brightness set to -1.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually -1)
+[22-Jun-24 18:30:23 - INFO - camera_info.py:58 - set()]  Brightness set to 2.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 2)
+[22-Jun-24 18:30:23 - INFO - camera_info.py:58 - set()]  Brightness set to 3.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 3)
+[22-Jun-24 18:30:23 - INFO - camera_info.py:58 - set()]  Brightness set to 7.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 7)
+[22-Jun-24 18:30:23 - INFO - camera_info.py:58 - set()]  Brightness set to 10.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 10)
+[22-Jun-24 18:30:23 - INFO - camera_info.py:58 - set()]  Brightness set to 12.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 12)
+[22-Jun-24 18:30:23 - INFO - camera_info.py:58 - set()]  Brightness set to 15.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 15)
+[22-Jun-24 18:30:23 - INFO - camera_info.py:58 - set()]  Brightness set to 17.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 17)
+[22-Jun-24 18:30:23 - INFO - camera_info.py:58 - set()]  Brightness set to 19.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 19)
+[22-Jun-24 18:30:23 - INFO - camera_info.py:58 - set()]  Brightness set to 21.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 21)
+[22-Jun-24 18:30:23 - INFO - camera_info.py:58 - set()]  Brightness set to 22.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 22)
+[22-Jun-24 18:30:23 - INFO - camera_info.py:58 - set()]  Brightness set to 23.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 23)
+[22-Jun-24 18:30:23 - INFO - camera_info.py:58 - set()]  Brightness set to 24.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 24)
+[22-Jun-24 18:30:23 - INFO - camera_info.py:58 - set()]  Brightness set to 25.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 25)
+[22-Jun-24 18:30:28 - WARNING - web_interface.py:77 - disconnect()]  Client disconnected
+[22-Jun-24 18:30:28 - INFO - init.py:241 - <module>()]  Shutting down

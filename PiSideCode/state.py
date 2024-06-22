@@ -60,7 +60,8 @@ class Data:
         self.poses: dict[str, str] = {}
 
         # SolvePNP
-        self.tag_size: float = 0.157
+        self.tag_size = 0.157
+        self.udp_port = 5802
 
         try:
             # Open and load system settings
@@ -71,6 +72,7 @@ class Data:
                 ip = config["ip"]
                 self.board_dims = config["BoardDim"]
                 self.tag_size = config["TagSize"]
+                self.udp_port = config["Port"]
 
                 self.set_ip(ip)
 
@@ -87,7 +89,8 @@ class Data:
             self.ip = Data.get_current_ip()
             Data.logger.info(f"IP is {self.ip}")
 
-            self.make_publisher(self.team_number, self.table_name)
+            self.make_publisher(
+                self.team_number, self.table_name, self.udp_port)
 
             data_dump = {
                 "TeamNumber": self.team_number,
@@ -95,6 +98,7 @@ class Data:
                 "ip": self.ip,
                 "BoardDim": self.board_dims,
                 "TagSize": self.tag_size,
+                "Port": self.udp_port,
             }
             with open(CONFIG_DATA_PATH, "w") as out:
                 json.dump(data_dump, out)
@@ -103,15 +107,16 @@ class Data:
         self.board_dims = new_value
 
     # Create a new robot publisher and create an output file for the data
-    def make_publisher(self, team_number: int, table_name: str):
+    def make_publisher(self, team_number: int, table_name: str, port: int):
         Data.logger.info(
-            f"Making publisher {table_name} for team {team_number}")
+            f"Making publisher {table_name} for team {team_number} with UDP port {port}")
         try:
             # Create and write output file
             with open(CONFIG_DATA_PATH, "r") as file:
                 config = json.load(file)
                 config["TeamNumber"] = team_number
                 config["TableName"] = table_name
+                config["Port"] = port
                 with open(CONFIG_DATA_PATH, "w") as out:
                     json.dump(config, out)
 
@@ -120,10 +125,11 @@ class Data:
 
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             Data.logger.error(
-                f"Failed to write TableName | {table_name} | or TeamNumber | {team_number} |"
+                f"Failed to write TableName | {table_name} | or TeamNumber | {team_number} | or Port |{port}"
             )
         self.team_number = team_number
         self.table_name = table_name
+        self.udp_port = port
 
         # Destroy any existing publisher
         if self.robot_publisher is not None:
@@ -134,7 +140,7 @@ class Data:
         # Create the robot publisher
         Data.logger.info("Creating publisher")
         self.robot_publisher = NetworkIO(
-            False, self.team_number, self.table_name, 2)
+            False, self.team_number, self.table_name, self.udp_port, 2)
 
         Data.logger.info(
             f"Robot publisher created: {team_number} - {table_name}")
@@ -161,7 +167,40 @@ class Data:
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             Data.logger.error(f"Failed to write Dimensions {dim}")
 
+    # Set the udp port and save it off
+    def setUDPPort(self, port):
+        try:
+            # Write it in system settings file
+            with open(CONFIG_DATA_PATH, "r") as file:
+                config = json.load(file)
+                config["Port"] = port
+                self.udpPort = port
+                with open("SystemData.json", "w") as out:
+                    json.dump(config, out)
+
+            self.makePublisher(self.teamNumber, self.tableName, self.udpPort)
+        except (FileNotFoundError, json.decoder.JSONDecodeError):
+            Data.logger.error(f"Failed to write port {port}")
+
+    # Set the udp port and save it off
+
+    def set_udp_port(self, port):
+        try:
+            # Write it in system settings file
+            with open(CONFIG_DATA_PATH, "w+") as file:
+                config = json.load(file)
+                config["Port"] = port
+                self.udp_port = port
+                json.dump(config, file)
+
+            self.make_publisher(
+                self.team_number, self.table_name, self.udp_port)
+
+        except (FileNotFoundError, json.decoder.JSONDecodeError):
+            Data.logger.error(f"Failed to write port {port}")
+
     # Set Tag Size (meters) and set it in system settings
+
     def set_tag_size(self, size: float):
         try:
             # Write it in system settings file
@@ -181,8 +220,8 @@ class Data:
         if not ip:
             Data.logger.warning("IP is None")
             if not self.robot_publisher:
-                self.make_publisher(self.team_number, self.table_name)
-            print("Done")
+                self.make_publisher(
+                    self.team_number, self.table_name, self.udp_port)
             return
 
         # Destroy because changing IP breaks network tables
@@ -230,7 +269,7 @@ class Data:
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             Data.logger.error(f"Failed to write static ip: {ip}")
 
-        self.make_publisher(self.team_number, self.table_name)
+        self.make_publisher(self.team_number, self.table_name, self.udp_port)
 
     # Obsolete
     # def resetNetworking(self):
@@ -299,6 +338,7 @@ class Data:
             },
             "ip": self.ip,
             "tagSize": self.tag_size,
+            "udpPort": self.udp_port,
             "visualizingPoses": self.visualizing_poses,
             "status": self.status,
         }

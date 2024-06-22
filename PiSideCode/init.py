@@ -70,8 +70,8 @@ try:
 
     # Create network tables publisher and AprilTag Processor
     pose_estimator = Processor(walleye_data.tag_size)
-    # Publisher already created during construction of walleye_data
-    # walleye_data.make_publisher(walleye_data.team_number, walleye_data.table_name)
+    # walleye_data.make_publisher(
+    #     walleye_data.team_number, walleye_data.table_name, walleye_data.udp_port)
     walleye_data.current_state = States.PROCESSING
 
     logger.info("Starting main loop")
@@ -218,9 +218,11 @@ try:
 
             for i in range(len(poses)):
                 if poses[i][0].X() < 2000:
-                    walleye_data.robot_publisher.publish(
-                        i, image_time - delay[i], poses[i], tags[i], ambig[i]
-                    )
+                    walleye_data.robot_publisher.udp_pose_publish([pose[0] for pose in poses], [
+                                                           pose[1] for pose in poses], ambig, [image_time for pose in poses], tags)
+                    # walleyeData.robotPublisher.publish(
+                    #     i, imageTime, poses[i], tags[i], ambig[i]
+                    # )
 
             # Update video stream for web interface
             for i, (identifier, img) in enumerate(images.items()):

@@ -1,16 +1,23 @@
 import ntcore
 import logging
 import wpimath.geometry as wpi
+import socket
+import struct
+import json
 
 
 class NetworkIO:
     logger = logging.getLogger(__name__)
 
     # Create a Network Tables Client with given info
-    def __init__(self, test: bool, team: int, table_name: str, num_cams: int):
+    def __init__(self, test: bool, team: int, table_name: str, port: int, num_cams: int):
         # Grab the default network table instance and grab the table name
         self.inst = ntcore.NetworkTableInstance.getDefault()
         self.table = self.inst.getTable(table_name)
+        self.name = table_name
+        self.robot_ip = "10.27.67.2"
+        self.robot_port = int(port)
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
         # Start the WallEye_Client and set server depending on testing
         self.inst.startClient4("WallEye_Client")
@@ -114,6 +121,46 @@ class NetworkIO:
     def set_table(self, name: str):
         self.table = self.inst.getTable(name)
 
+    def udpPosePublish(self, pose1, pose2, ambig, timestamp, tags):
+        dataDict = {}
+
+        for i in range(len(pose1)):
+            self.updateNum[i] += 1
+            camDict = {}
+            camDict["Mode"] = str(0)
+            camDict["Update"] = str(self.updateNum[i])
+            camDict["Pose1"] = self.poseToDict(pose1[i])
+            camDict["Pose2"] = self.poseToDict(pose2[i])
+            camDict["Ambig"] = str(ambig[i])
+            camDict["Timestamp"] = str(ntcore._now() - timestamp[i])
+            camDict["Tags"] = str(tags[i])
+            dataDict[self.name + str(i)] = camDict
+        dataString = json.dumps(dataDict)
+        # self.logger.info(dataString)
+        self.sock.sendto(bytes(dataString, "utf-8"),
+                         (self.robotIP, self.robotPort))
+
+    def poseToDict(self, pose):
+        t = pose.translation()
+        r = pose.rotation()
+        poseDict = {}
+        poseDict["tX"] = str(t.X())
+        poseDict["tY"] = str(t.Y())
+        poseDict["tZ"] = str(t.Z())
+        poseDict["rX"] = str(r.X())
+        poseDict["rY"] = str(r.Y())
+        poseDict["rZ"] = str(r.Z())
+        return poseDict
+
+    def poseToByte(self, pose):
+        t = pose.translation()
+        r = pose.rotation()
+        axes = [t.X(), t.Y(), t.Z(), r.X(), r.Y(), r.Z()]
+        byteArr = []
+        for axis in axes:
+            byteArr += bytearray(struct.pack("d", axis))
+        return byteArr
+
     # Publishes the supplied pose information in the corresponding publisher
     def publish(self, index: int, time: int, pose: wpi.Pose3d, tags: list[int], ambig: list[float]):
         pose1 = pose[0]
@@ -131,7 +178,7 @@ class NetworkIO:
         self.tag_sub[index].set(tags)
         self.timestamp_sub[index].set(ntcore._now() - time)
 
-        self.update_num[index] += 1
+        # self.update_num[index] += 1
         self.publish_update[index].set(self.update_num[index])
 
     # Publish a new update number

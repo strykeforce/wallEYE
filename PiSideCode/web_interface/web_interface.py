@@ -196,13 +196,15 @@ def export_config():
 @socketio.on("set_table_name")
 @update_after
 def set_table_name(name: str):
-    walleye_data.make_publisher(walleye_data.team_number, name)
+    walleye_data.make_publisher(
+        walleye_data.team_number, name, walleye_data.udp_port)
 
 
 @socketio.on("set_team_number")
 @update_after
 def set_team_number(number: int):
-    walleye_data.make_publisher(int(number), walleye_data.table_name)
+    walleye_data.make_publisher(
+        int(number), walleye_data.table_name, walleye_data.udp_port)
 
 
 @socketio.on("set_tag_size")
@@ -217,6 +219,14 @@ def set_board_dims(w: int, h: int):
     walleye_data.board_dims = (int(w), int(h))
     walleye_data.set_board_dim(walleye_data.board_dims)
     logger.info(f"Board dimensions set: {(w, h)}")
+
+
+@socketio.on("set_udp_port")
+@update_after
+def setUDPPort(port):
+    walleye_data.udp_port = port
+    logger.info(f"Attempting to set UDP port to {port}")
+    walleye_data.set_udp_port(port)
 
 
 @socketio.on("set_static_ip")
