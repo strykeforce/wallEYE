@@ -4,7 +4,7 @@ Run these as root.
 
 `docker compose up --build`
 
-`docker compose up --build --build-arg ARCH=arm64v8`
+`docker build --platform linux/arm64v8 .`
 
 `docker save -o NAME.tar IMAGE`
 

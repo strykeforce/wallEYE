@@ -4,7 +4,7 @@ FROM python:3.12-slim-bookworm
 
 # Prevents Python from writing pyc files.
 ENV PYTHONDONTWRITEBYTECODE=1
-
+ 
 # Keeps Python from buffering stdout and stderr to avoid situations where
 # the application crashes without emitting any logs due to buffering.
 ENV PYTHONUNBUFFERED=1
@@ -12,6 +12,7 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
 # Install Git, cv2 dependencies, v4l2
+# https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/python-setup.html
 RUN apt-get update && apt-get install -y && apt-get install -y git ffmpeg libsm6 libxext6 v4l-utils \ 
     && python -m ensurepip --upgrade \
     && python -m pip install --upgrade pip setuptools
