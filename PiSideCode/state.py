@@ -9,6 +9,7 @@ import socket
 import struct
 import fcntl
 import wpimath.geometry as wpi
+import os
 
 SIOCSIFADDR = 0x8916
 SIOCGIFADDR = 0x8915
@@ -62,6 +63,8 @@ class Data:
         # SolvePNP
         self.tag_size = 0.157
         self.udp_port = 5802
+
+        os.system('nmcli --terse connection show | cut -d : -f 1 | while read name; do echo nmcli connection delete "$name"; done')
 
         try:
             # Open and load system settings

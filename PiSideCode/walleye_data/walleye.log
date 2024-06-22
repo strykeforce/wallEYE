@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 [22-May-24 22:05:46 - INFO - init.py:24 - <module>()]  ----------- Starting Up -----------
 [22-May-24 22:05:46 - ERROR - state.py:257 - get_current_ip()]  Could not get current IP - [Errno 19] No such device - Returning None
 [22-May-24 22:05:46 - INFO - state.py:88 - __init__()]  IP is None
@@ -63,6 +64,8 @@
 [23-May-24 15:26:26 - WARNING - web_interface.py:77 - disconnect()]  Client disconnected
 [23-May-24 15:26:27 - INFO - web_interface.py:72 - connect()]  Client connected
 =======
+=======
+>>>>>>> e4b486ec72023313c9f3eb6197482181afe75e0c
 [28-May-24 20:37:29 - INFO - init.py:24 - <module>()]  ----------- Starting Up -----------
 [28-May-24 20:37:30 - INFO - state.py:88 - __init__()]  IP is 192.168.3.93
 [28-May-24 20:37:30 - INFO - state.py:107 - make_publisher()]  Making publisher WallEye for team 2767
@@ -200,6 +203,7 @@
 [06-Jun-24 19:15:35 - INFO - init.py:66 - <module>()]  Web server ready
 [06-Jun-24 19:15:35 - INFO - processing.py:20 - __init__()]  Tag layout loaded
 [06-Jun-24 19:15:35 - INFO - init.py:77 - <module>()]  Starting main loop
+<<<<<<< HEAD
 >>>>>>> UDP-publishing
 [22-Jun-24 18:18:25 - INFO - init.py:24 - <module>()]  ----------- Starting Up -----------
 [22-Jun-24 18:18:25 - ERROR - state.py:294 - get_current_ip()]  Could not get current IP - [Errno 19] No such device - Returning None
@@ -510,3 +514,5 @@
 [22-Jun-24 18:30:23 - INFO - camera_info.py:58 - set()]  Brightness set to 25.0 in camera pci-0000:04:00.0-usb-0:1:1.0-video-index0 (actually 25)
 [22-Jun-24 18:30:28 - WARNING - web_interface.py:77 - disconnect()]  Client disconnected
 [22-Jun-24 18:30:28 - INFO - init.py:241 - <module>()]  Shutting down
+=======
+>>>>>>> e4b486ec72023313c9f3eb6197482181afe75e0c

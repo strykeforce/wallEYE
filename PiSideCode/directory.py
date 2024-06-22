@@ -1,15 +1,15 @@
 import os.path
 import pathlib
 
-DOCKER_VOLUME = "walleye_data"
+PARENT = "walleye_data"
 
 V4L_PATH = "/dev/v4l/by-path"
-CONFIG_DIRECTORY = os.path.join(DOCKER_VOLUME, "config_data")
+CONFIG_DIRECTORY = os.path.join(PARENT, "config_data")
 CAMERA_CONFIG_DIRECTORY = os.path.join(CONFIG_DIRECTORY, "camera_configs")
 CALIBRATION_DIRECTORY = os.path.join(CONFIG_DIRECTORY, "calibrations")
 CONFIG_DATA_PATH = os.path.join(CONFIG_DIRECTORY, "system_data.json")
-LOG = os.path.join(DOCKER_VOLUME, "walleye.log")
-CONFIG_ZIP = os.path.join(DOCKER_VOLUME, "config.zip")
+LOG = os.path.join(PARENT, "walleye.log")
+CONFIG_ZIP = os.path.join(PARENT, "config.zip")
 
 pathlib.Path(CONFIG_DIRECTORY).mkdir(parents=True, exist_ok=True)
 

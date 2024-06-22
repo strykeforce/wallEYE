@@ -26,7 +26,7 @@ class Calibration:
         cam_path: str,
         img_path: str,
         resolution: tuple,
-        calibType: CalibType = CalibType.CHESSBOARD,
+        calibType: CalibType = CalibType.CIRCLE_GRID,
     ):
         self.delay = delay
         self.corner_shape = corner_shape  # (col, row) format
