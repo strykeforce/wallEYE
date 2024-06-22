@@ -219,17 +219,11 @@ try:
 
             for i in range(len(poses)):
                 if poses[i][0].X() < 2000:
-<<<<<<< HEAD
                     walleye_data.robot_publisher.udp_pose_publish([pose[0] for pose in poses], [
                                                            pose[1] for pose in poses], ambig, [image_time for pose in poses], tags)
                     # walleyeData.robotPublisher.publish(
                     #     i, imageTime, poses[i], tags[i], ambig[i]
                     # )
-=======
-                    walleye_data.robot_publisher.publish(
-                        i, list_img_time[i], poses[i], tags[i], ambig[i]
-                    )
->>>>>>> e4b486ec72023313c9f3eb6197482181afe75e0c
 
             # Update video stream for web interface
             for i, (identifier, img) in enumerate(images.items()):

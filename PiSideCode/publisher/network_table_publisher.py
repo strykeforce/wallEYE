@@ -1,14 +1,11 @@
 import ntcore
 import logging
 import wpimath.geometry as wpi
-<<<<<<< HEAD
 import socket
 import struct
 import json
 
-=======
 from time import clock_gettime_ns, CLOCK_MONOTONIC
->>>>>>> e4b486ec72023313c9f3eb6197482181afe75e0c
 
 class NetworkIO:
     logger = logging.getLogger(__name__)
@@ -180,17 +177,11 @@ class NetworkIO:
             [t2.X(), t2.Y(), t2.Z(), r2.X(), r2.Y(), r2.Z()])
         self.ambiguity_sub[index].set(ambig)
         self.tag_sub[index].set(tags)
-<<<<<<< HEAD
-        self.timestamp_sub[index].set(ntcore._now() - time)
-
-        # self.update_num[index] += 1
-=======
         self.timestamp_sub[index].set(ntcore._now() - (clock_gettime_ns(
                 CLOCK_MONOTONIC
             ) / 1000000 - time) * 1000)
         
         self.update_num[index] += 1
->>>>>>> e4b486ec72023313c9f3eb6197482181afe75e0c
         self.publish_update[index].set(self.update_num[index])
 
     # Publish a new update number
