@@ -4,7 +4,7 @@ robotpy-wpimath
 Flask
 flask[async]
 eventlet
-opencv-contrib-python >= 4.8.0
+opencv-contrib-python >= 4.10.0
 flask-socketio
 matplotlib
 numpy >= 1.26.4

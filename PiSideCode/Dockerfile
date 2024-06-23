@@ -12,18 +12,11 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
 # Install Git, cv2 dependencies, v4l2
-<<<<<<< HEAD
-# https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/python-setup.html
-RUN apt-get update && apt-get install -y && apt-get install -y git ffmpeg libsm6 libxext6 v4l-utils \ 
-    && python -m ensurepip --upgrade \
-    && python -m pip install --upgrade pip setuptools
-=======
 RUN apt-get update && apt-get install -y git ffmpeg libsm6 libxext6 v4l-utils libatomic1 net-tools
 
 # RUN python -m ensurepip --upgrade \
 #     && python -m pip install --upgrade pip setuptools 
     
->>>>>>> e4b486ec72023313c9f3eb6197482181afe75e0c
 
 RUN --mount=type=cache,target=/root/.cache/pip \
     --mount=type=bind,source=requirements.txt,target=requirements.txt \
