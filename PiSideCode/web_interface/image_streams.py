@@ -121,7 +121,7 @@ class LivePlotBuffer(Buffer):
         tags_x = [
             (
                 self.tag_layout[tag - 1]["pose"]["translation"]["x"]
-                if (tag < 9 and tag > 0)
+                if (0 < tag < 9)
                 else 2767
             )
             for tag in tags
@@ -129,7 +129,7 @@ class LivePlotBuffer(Buffer):
         tags_y = [
             (
                 self.tag_layout[tag - 1]["pose"]["translation"]["y"]
-                if (tag < 9 and tag > 0)
+                if (0 < tag < 9)
                 else 2767
             )
             for tag in tags

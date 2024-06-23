@@ -21,3 +21,6 @@
   
 ## Robot Side Code
   Robot side code starts with making a WallEYE object and passing the unique name that was given to the WallEYE installation. Calling the `getResults()` method on the WallEYE object will return an array of `WallEYEResults` which are from the cameras so camera 1 on the website would be index 0, camera 2 would be index 1, etc. Getting the pose from a WallEYE result is done by calling the `getCameraPose()` which returns a `Pose3d`. As for the timestamp, call the method `getTimeStamp()` and that returns a `double` that is the timestamp of when that result was sent.
+
+## Maintainers
+See `STYLE-GUIDE.md`
