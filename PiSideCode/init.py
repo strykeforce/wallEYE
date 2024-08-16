@@ -1,5 +1,5 @@
 import sys
-
+import os
 # import eventlet
 # eventlet.monkey_patch()
 
@@ -22,6 +22,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 logger.info("----------- Starting Up -----------")
+# logger.info(f"Running with niceness of {os.nice(-20)}")
 
 from state import walleye_data, States, CALIBRATION_STATES
 from processing.processing import Processor
