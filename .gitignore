@@ -1,5 +1,6 @@
 PiSideCode/web_interface/walleye/node_modules/*
 PiSideCode/walleye.log*
+PiSideCode/walleye_data/*
 **/__pycache__
 PiSideCode/calibration/Cam_*
 PiSideCode/camera/camera_configs/*
