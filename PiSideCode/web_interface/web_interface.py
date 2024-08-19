@@ -10,6 +10,7 @@ from web_interface.image_streams import Buffer, LivePlotBuffer
 import zipfile
 import pathlib
 import io
+import glob
 
 logger = logging.getLogger(__name__)
 
@@ -47,8 +48,10 @@ visualization_buffers = {
 
 
 def display_info(msg: str):
-    logger.info(f"Sending message to web interface: {msg}")
     walleye_data.status = msg
+
+    socketio.emit("msg_update", walleye_data.status)
+    socketio.sleep(0)
 
 
 def update_after(action):
@@ -77,27 +80,22 @@ def disconnect():
     logger.warning("Client disconnected")
 
 
-@socketio.on("set_brightness")
+@socketio.on("set")
 @update_after
-def set_brightness(cam_id: str, new_value: float):
-    walleye_data.cameras.set_brightness(cam_id, float(new_value))
+def set(property: str, cam_id: str, new_value: float | str):
+    camera_info = walleye_data.cameras.info[cam_id]
 
-
-@socketio.on("set_exposure")
-@update_after
-def set_exposure(cam_id: str, new_value: float):
-    walleye_data.cameras.set_exposure(cam_id, float(new_value))
-
-
-@socketio.on("set_resolution")
-@update_after
-def set_resolution(cam_id: str, new_value: str):
-    w, h = map(int, new_value[1:-1].split(","))
-    if walleye_data.cameras.set_resolution(cam_id, (w, h)):
-        walleye_data.status = f"Resolution set to {new_value}"
+    if property == "resolution":
+        w, h = map(int, new_value[1:-1].split(","))
+        camera_info.set_resolution((w, h))
+    elif property == "color_format":
+        camera_info.set_color_format(new_value.strip('"'))
+    elif property == "frame_rate":
+        camera_info.set_frame_rate(int(new_value))
     else:
-        walleye_data.status = f"Could not set resolution: {new_value}"
+        camera_info.set(property, new_value)
 
+    walleye_data.cameras.write_configs(cam_id)
 
 @socketio.on("toggle_calibration")
 @update_after
@@ -107,12 +105,12 @@ def toggle_calibration(cam_id: str):
         walleye_data.reprojection_error = None
         walleye_data.current_state = States.BEGIN_CALIBRATION
         logger.info(f"Starting calibration capture for {cam_id}")
-        walleye_data.status = f"Starting calibration capture for {cam_id}"
+        display_info("Starting calibration capture for {cam_id}")
 
     elif walleye_data.current_state == States.CALIBRATION_CAPTURE:
         walleye_data.current_state = States.IDLE
         logger.info(f"Stopping calibration capture")
-        walleye_data.status = f"Stopping calibration capture"
+        display_info(f"Stopping calibration capture")
 
 
 @socketio.on("generate_calibration")
@@ -121,7 +119,7 @@ def generate_calibration(cam_id: str):
     walleye_data.current_state = States.GENERATE_CALIBRATION
     walleye_data.camera_in_calibration = cam_id
     walleye_data.cameras.info[cam_id].calibration_path = None
-    walleye_data.status = "Calibration generation"
+    display_info("Generating calibration parameters")
 
 
 @socketio.on("import_calibration")
@@ -147,14 +145,14 @@ def import_calibration(cam_id: str, file):
         )
 
     logger.info(f"Calibration sucessfully imported for {cam_id}")
-    walleye_data.status = "Calibration loaded"
+    display_info("Calibration loaded")
 
 
 @socketio.on("import_config")
 @update_after
 def import_config(file):
     logger.info("Importing config")
-    walleye_data.status = "Importing config"
+    display_info("Importing config")
     with zipfile.ZipFile(io.BytesIO(file), "r") as config:
         for name in config.namelist():
             config.extract(name)
@@ -167,20 +165,20 @@ def import_config(file):
             logger.info(f"Camera config imported for {cam_id}")
 
     logger.info(f"Configs sucessfully imported for {cam_id}")
-    walleye_data.status = "Configs/Cals loaded"
+    display_info("Configs/Cals loaded")
 
 
 @socketio.on("export_config")
 @update_after
 def export_config():
     logger.info("Attempting to prepare config.zip")
-    walleye_data.status = "Attempting to prepare config.zip"
+    display_info("Attempting to prepare config.zip")
     directory = pathlib.Path(".")
 
     with zipfile.ZipFile(CONFIG_ZIP, "w") as config:
         logger.info(f"Opening {CONFIG_ZIP} for writing")
 
-        for f in directory.rglob(f"{CONFIG_DIRECTORY}/*"):
+        for f in glob.iglob(f"{CONFIG_DIRECTORY}/**/*", recursive=True):
             config.write(f)
             logger.info(f"Zipping {f}")
 
@@ -188,7 +186,7 @@ def export_config():
         logger.info(f"Zipping {CONFIG_ZIP}")
 
     logger.info(f"Config sucessfully zipped")
-    walleye_data.status = "Config.zip ready"
+    display_info("Config.zip ready")
     socketio.emit("config_ready")
     socketio.sleep(0)
 
@@ -248,16 +246,18 @@ def toggle_pnp():
     if walleye_data.current_state == States.PROCESSING:
         walleye_data.current_state = States.IDLE
         logger.info("PnP stopped")
+        display_info("PnP Stopped")
     else:
         walleye_data.current_state = States.PROCESSING
         logger.info("PnP started")
+        display_info("PnP Started")
 
 
 @socketio.on("toggle_pose_visualization")
 @update_after
 def toggle_pose_visualization():
     walleye_data.visualizing_poses = not walleye_data.visualizing_poses
-    walleye_data.status = (
+    display_info(
         "Visualizing poses"
         if walleye_data.visualizing_poses
         else "Not visualizating poses"
@@ -273,12 +273,6 @@ def pose_update():
 @socketio.on("performance_update")
 def performance_update():
     socketio.emit("performance_update", walleye_data.loop_time)
-    socketio.sleep(0)
-
-
-@socketio.on("msg_update")
-def msg_update():
-    socketio.emit("msg_update", walleye_data.status)
     socketio.sleep(0)
 
 

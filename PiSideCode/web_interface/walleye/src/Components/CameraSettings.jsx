@@ -5,6 +5,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import { useState } from "react";
 import Confirm from "./Confirm";
 import DataRangeBox from "./DataRangeBox";
+import OptionMenu from "./OptionMenu";
 
 export default function CameraSettings(props) {
     const [showCalWarning, setShowCalWarning] = useState(false);
@@ -24,50 +25,32 @@ export default function CameraSettings(props) {
                 action={() => action(calE)}
             />
 
-            <DataRangeBox
-                label="Exposure"
-                value={props.state.exposure[props.camID]}
-                camID={props.camID}
-                min={props.state.exposureRange[props.camID][0]}
-                max={props.state.exposureRange[props.camID][1]}
-                step={props.state.exposureRange[props.camID][2]}
-                event="set_exposure"
-            />
-            <DataRangeBox
-                label="Brightness"
-                value={props.state.brightness[props.camID]}
-                camID={props.camID}
-                min={props.state.brightnessRange[props.camID][0]}
-                max={props.state.brightnessRange[props.camID][1]}
-                step={props.state.brightnessRange[props.camID][2]}
-                event="set_brightness"
-            />
+            {
+                Object.entries(props.state.cameraConfigOptions[props.camID]).map(function (property) {
+                    const info = props.state.cameraConfigs[props.camID];
+                    const [name, rangeOrMenu] = property;
+                    if (name.endsWith("_RANGE")) {
+                        return <DataRangeBox
+                            label={name.split("_RANGE")[0]}
+                            value={info[name.split("_RANGE")[0]]}
+                            camID={props.camID}
+                            min={rangeOrMenu[0]}
+                            max={rangeOrMenu[1]}
+                            step={rangeOrMenu[2]}
+                            event="set"
+                        />
+                    }
+                    else if (name.endsWith("_MENU")) {
+                        return <OptionMenu
+                            label={name.split("_MENU")[0]}
+                            value={info[name.split("_MENU")[0]]}
+                            camID={props.camID}
+                            options={rangeOrMenu}
+                        />
+                    }
+                })
+            }
 
-            <br />
-
-            <Form.Group>
-                <Card.Text for={"res" + props.camID}>
-                    Select a Resolution
-                </Card.Text>
-                <Form.Select
-                    onChange={(e) => {
-                        socket.emit(
-                            "set_resolution",
-                            props.camID,
-                            e.target.value
-                        );
-                    }}
-                    value={JSON.stringify(props.state.resolution[props.camID])}
-                >
-                    {props.state.supportedResolutions[props.camID].map(
-                        (res) => (
-                            <option value={JSON.stringify(res)}>
-                                {JSON.stringify(res)}
-                            </option>
-                        )
-                    )}
-                </Form.Select>
-            </Form.Group>
 
             <br />
             <Form.Label> Import Calibration</Form.Label>

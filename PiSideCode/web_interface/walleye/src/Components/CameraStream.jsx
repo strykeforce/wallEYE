@@ -45,11 +45,13 @@ export default function CameraStream(props) {
                         )}
 
                         <Col>
-                            <Image
-                                src={"video_feed/" + props.camID}
-                                alt="Camera stream failed"
-                                fluid
-                            />
+                            <a href={"video_feed/" + props.camID}>
+                                <Image
+                                    src={"video_feed/" + props.camID}
+                                    alt="Camera stream failed"
+                                    fluid
+                                />
+                            </a>
 
                             <Card.Text>
                                 {" "}
@@ -73,7 +75,7 @@ export default function CameraStream(props) {
                                 <i class="bi bi-camera-video"></i>
                                 {props.state.currentState ===
                                     "BEGIN_CALIBRATION" ||
-                                props.state.currentState ===
+                                    props.state.currentState ===
                                     "CALIBRATION_CAPTURE"
                                     ? "End Calibration"
                                     : "Start Calibration"}

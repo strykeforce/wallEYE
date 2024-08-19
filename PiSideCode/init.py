@@ -182,6 +182,9 @@ try:
                     )
                 else:
                     walleye_data.status = "Could not generate calibration"
+                    walleye_data.cameras.info[
+                        walleye_data.camera_in_calibration
+                    ].calibration_path = None
             else:
                 walleye_data.status = (
                     "Calibrator for current calibration camera is None"

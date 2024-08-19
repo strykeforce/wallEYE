@@ -9,7 +9,7 @@ import math
 class Processor:
     logger = logging.getLogger(__name__)
     BAD_POSE = wpi.Pose3d(wpi.Translation3d(2767, 2767, 2767), wpi.Rotation3d())
-    MIN_TAG = 0
+    MIN_TAG = 1
     MAX_TAG = 16
 
     # Create a pose estimator

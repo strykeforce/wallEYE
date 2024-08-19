@@ -7,10 +7,10 @@ import { useState } from "react";
 export default function DataRangeBox(props) {
     const [value, setValue] = useState(props.value);
     return (
-        <Form.Group>
+        <Form.Group className="p-2">
             <Row>
                 <Col md="auto">
-                    <Card.Text>{props.label}:</Card.Text>
+                    <Card.Text><b>{props.label}:</b></Card.Text>
                 </Col>
                 <Col>
                     <FormRange
@@ -20,7 +20,8 @@ export default function DataRangeBox(props) {
                         value={value}
                         onChange={(e) => {
                             socket.emit(
-                                props.event,
+                                "set",
+                                props.label,
                                 props.camID,
                                 e.target.value
                             );
@@ -28,13 +29,14 @@ export default function DataRangeBox(props) {
                         }}
                     />
                 </Col>
-                <Col xs={2}>
+                <Col xs={3}>
                     <Form.Control
                         type="number"
                         value={value}
                         onChange={(e) => {
                             socket.emit(
-                                props.event,
+                                "set",
+                                props.label,
                                 props.camID,
                                 e.target.value
                             );

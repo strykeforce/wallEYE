@@ -64,7 +64,8 @@ class Data:
         self.tag_size = 0.157
         self.udp_port = 5802
 
-        os.system('nmcli --terse connection show | cut -d : -f 1 | while read name; do echo nmcli connection delete "$name"; done')
+        os.system(
+            'nmcli --terse connection show | cut -d : -f 1 | while read name; do echo nmcli connection delete "$name"; done')
 
         try:
             # Open and load system settings
@@ -327,18 +328,8 @@ class Data:
             "calImgPaths": self.cal_img_paths,
             "reprojectionError": self.reprojection_error,
             "calFilePaths": self.get_cal_file_paths(),
-            "resolution": self.cameras.get_resolutions(),
-            "brightness": self.cameras.get_brightnesss(),
-            "exposure": self.cameras.get_exposures(),
-            "supportedResolutions": {
-                k: v.get_supported_resolutions() for k, v in self.cameras.info.items()
-            },
-            "exposureRange": {
-                k: v.exposure_range for k, v in self.cameras.info.items()
-            },
-            "brightnessRange": {
-                k: v.brightness_range for k, v in self.cameras.info.items()
-            },
+            "cameraConfigs": {identifier: camera_info.export_configs() for identifier, camera_info in self.cameras.info.items()},
+            "cameraConfigOptions": {identifier: camera_info.export_config_options() for identifier, camera_info in self.cameras.info.items()},
             "ip": self.ip,
             "tagSize": self.tag_size,
             "udpPort": self.udp_port,
