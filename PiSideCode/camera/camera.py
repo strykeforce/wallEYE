@@ -1,5 +1,5 @@
 import cv2
-from PiSideCode.camera.camera_config import write_config, parse_config
+from camera.camera_config import write_config, parse_config
 from calibration.calibration import Calibration
 import os
 import time

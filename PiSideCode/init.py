@@ -38,6 +38,7 @@ from web_interface.web_interface import (
     socketio,
     app,
     visualization_buffers,
+    display_info
 )  # After walleye_data.cameras is set
 
 import threading
@@ -145,7 +146,7 @@ try:
                 ].resolution,
             )
 
-            if calibrators[walleye_data.camera_in_calibration] is not None:
+            if walleye_data.camera_in_calibration in calibrators and calibrators[walleye_data.camera_in_calibration] is not None:
                 # Generate a calibration file to the file path
                 has_generated = calibrators[
                     walleye_data.camera_in_calibration
@@ -181,12 +182,12 @@ try:
                         ].resolution,
                     )
                 else:
-                    walleye_data.status = "Could not generate calibration"
+                    display_info("Could not generate calibration")
                     walleye_data.cameras.info[
                         walleye_data.camera_in_calibration
                     ].calibration_path = None
             else:
-                walleye_data.status = (
+                display_info(
                     "Calibrator for current calibration camera is None"
                 )
             walleye_data.current_state = States.IDLE
@@ -262,6 +263,7 @@ try:
 
 except Exception as e:
     # Something bad happened
+    display_info(f"CRITICAL ERROR: {e}")
     logging.critical(e, exc_info=True)
     logger.info("Shutting down")
     socketio.stop()
