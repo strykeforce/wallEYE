@@ -16,6 +16,7 @@ export default function CameraStreamList(props) {
                 state={props.state}
                 poses={props.poses}
                 showConfig={props.showConfig}
+                readTime={props.camReadTime ? props.camReadTime[camID] : "Not Updating!"}
             />
         );
     }

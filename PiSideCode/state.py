@@ -45,6 +45,7 @@ class Data:
         self.visualizing_poses: bool = False
 
         self.loop_time: float = 2767.0
+        self.cam_read_time: dict[str: float] | None = None
 
         # Calibration
         self.camera_in_calibration: str | None = None

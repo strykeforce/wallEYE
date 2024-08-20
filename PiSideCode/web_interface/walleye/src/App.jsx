@@ -18,6 +18,7 @@ function App() {
     const [isDark, setIsDark] = useState(true);
     const [poses, setPoses] = useState(null);
     const [loopTime, setLoopTime] = useState(2767);
+    const [camReadTime, setCamReadTime] = useState(null);
     const [msg, setMsg] = useState("Unknown!!!");
     const [showToast, setShowToast] = useState(false);
 
@@ -64,7 +65,9 @@ function App() {
         }
 
         function onPerformanceUpdate(time) {
-            setLoopTime(time);
+            setLoopTime(time.loopTime);
+            setCamReadTime(time.camReadTime);
+            console.log(time);
         }
 
         function onMsgUpdate(msg) {
@@ -146,7 +149,7 @@ function App() {
 
             <Container>
                 {page === "dashboard" && (
-                    <Dashboard state={state} poses={poses} />
+                    <Dashboard state={state} poses={poses} camReadTime={camReadTime} />
                 )}
                 {page === "config" && <Config state={state} />}
                 {page === "pose_visualization" && (

@@ -200,10 +200,10 @@ try:
 
             image_time = walleye_data.robot_publisher.get_time()
 
-            connections, images, img_time = (
+            connections, images, img_time, walleye_data.cam_read_time = (
                 walleye_data.cameras.get_frames_for_processing()
             )
-            list_img_time = [i for i in img_time.values()] 
+            # list_img_time = list(img_time.values())
 
             for idx, val in enumerate(connections.values()):
                 if not val and walleye_data.robot_publisher.getConnectionValue(idx):

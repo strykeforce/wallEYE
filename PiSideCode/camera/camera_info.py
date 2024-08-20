@@ -85,7 +85,7 @@ class CameraInfo:
             self.get_format()
 
             CameraInfo.logger.info(
-                f"Format set to {self.color_format} at {self.resolution} in camera {self.identifier}"
+                f"Format set to {self.color_format} at {self.resolution} in camera {self.identifier} at {self.frame_rate} fps"
             )
 
             return color_format == self.color_format and resolution == self.resolution

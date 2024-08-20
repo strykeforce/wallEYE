@@ -15,7 +15,7 @@ class Buffer:
     output_frame = b""
     last_none = False
 
-    def update(self, img: np.ndarray):
+    def update(self, img: np.ndarray | None):
         if img is None:
             if not self.last_none:
                 logger.error("Updated image is None - Skipping")

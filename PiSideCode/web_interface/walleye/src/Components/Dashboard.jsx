@@ -58,6 +58,7 @@ export default function Dashboard(props) {
                 state={props.state}
                 poses={props.poses}
                 showConfig={true}
+                camReadTime={props.camReadTime}
             />
 
             <hr />

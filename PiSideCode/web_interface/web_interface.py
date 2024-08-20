@@ -272,7 +272,7 @@ def pose_update():
 
 @socketio.on("performance_update")
 def performance_update():
-    socketio.emit("performance_update", walleye_data.loop_time)
+    socketio.emit("performance_update", {"loopTime": walleye_data.loop_time, "camReadTime": walleye_data.cam_read_time})
     socketio.sleep(0)
 
 

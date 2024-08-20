@@ -23,15 +23,18 @@ export default function CameraStream(props) {
             />
 
             <Card>
-                <Card.Header>
-                    Camera Stream {props.camID}
-                    {props.state.calFilePaths[props.camID] ? (
-                        <Badge bg="success">Calibration found</Badge>
-                    ) : (
-                        props.state.calFilePaths[props.camID] == null && (
-                            <Badge bg="danger">Calibration not found</Badge>
-                        )
-                    )}
+                <Card.Header className="d-flex justify-content-between">
+                    Camera Stream {props.camID} 
+                    <div className="d-flex justify-content-end">
+                        <Badge bg="info" className="mx-1">{props.readTime} secs</Badge>
+                        {props.state.calFilePaths[props.camID] ? (
+                            <Badge bg="success" className="mx-1">Calibration loaded!</Badge>
+                        ) : (
+                            props.state.calFilePaths[props.camID] == null && (
+                                <Badge bg="danger" className="mx-1">Calibration not available!!</Badge>
+                            )
+                        )}
+                    </div>
                 </Card.Header>
                 <Card.Body>
                     <Row>

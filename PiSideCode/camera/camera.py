@@ -100,19 +100,19 @@ class Cameras:
         frames = {}
         connections = {}
         timestamp = {}
+        cam_read_time = {}
         for identifier, camInfo in self.info.items():
+            before = time.perf_counter()
             ret, img = camInfo.cam.read()
 
-            # if not ret:
-            #     Cameras.logger.error(f"Failed to capture image: {identifier}")
-
+            cam_read_time[identifier] = round(time.perf_counter() - before, 3)
             frames[identifier] = img
             connections[identifier] = ret
             timestamp[identifier] = camInfo.cam.get(
                 cv2.CAP_PROP_POS_MSEC
             )
 
-        return (connections, frames, timestamp)
+        return (connections, frames, timestamp, cam_read_time)
 
     # Find a calibration for the camera
     def import_calibration(self, identifier: str) -> bool:
