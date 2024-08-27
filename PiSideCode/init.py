@@ -37,7 +37,7 @@ from web_interface.web_interface import (
     cam_buffers,
     socketio,
     app,
-    visualization_buffers,
+    # visualization_buffers,
     display_info
 )  # After walleye_data.cameras is set
 
@@ -220,9 +220,8 @@ try:
 
             # Publish camera number, timestamp, poses, tags, ambiguity and increase the update number
             # logger.info(f"Poses at {image_time}: {poses}")
-
             for i in range(len(poses)):
-                if poses[i][0].X() < 2000:
+                if poses[i][0][0][0] < 2000:
                     walleye_data.robot_publisher.udp_pose_publish([pose[0] for pose in poses], [
                                                            pose[1] for pose in poses], ambig, [image_time for pose in poses], tags)
                     # walleyeData.robotPublisher.publish(
@@ -235,11 +234,11 @@ try:
                     break
                 cam_buffers[identifier].update(img)
                 walleye_data.set_pose(identifier, poses[i][0])
-                if walleye_data.visualizing_poses:
-                    visualization_buffers[identifier].update(
-                        (poses[i][0].X(), poses[i][0].Y(),
-                         poses[i][0].Z()), tags[i][1:]
-                    )
+                # if walleye_data.visualizing_poses:
+                #     visualization_buffers[identifier].update(
+                #         (poses[i][0].X(), poses[i][0].Y(),
+                #          poses[i][0].Z()), tags[i][1:]
+                #     )
 
         # Ends the WallEye program through the web interface
         elif walleye_data.current_state == States.SHUTDOWN:

@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM python:3.12-slim-bookworm
+FROM python:3.12
 
 # Prevents Python from writing pyc files.
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -12,7 +12,7 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
 # Install Git, cv2 dependencies, v4l2
-RUN apt-get update && apt-get install -y git ffmpeg libsm6 libxext6 v4l-utils libatomic1 net-tools
+RUN apt-get update && apt-get install -y git libgl1-mesa-glx libsm6 libxext6 libatomic1 net-tools
 
 # RUN python -m ensurepip --upgrade \
 #     && python -m pip install --upgrade pip setuptools 
@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y git ffmpeg libsm6 libxext6 v4l-utils li
 
 RUN --mount=type=cache,target=/root/.cache/pip \
     --mount=type=bind,source=requirements.txt,target=requirements.txt \
-    python -m pip install --extra-index-url=https://wpilib.jfrog.io/artifactory/api/pypi/wpilib-python-release-2024/simple robotpy \
+    python -m pip install --extra-index-url=https://wpilib.jfrog.io/artifactory/api/pypi/wpilib-python-release-2024/simple robotpy-wpimath pyntcore \
     && python -m pip install -r requirements.txt
 
 

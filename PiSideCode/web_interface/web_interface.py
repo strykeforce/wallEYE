@@ -25,9 +25,9 @@ socketio = SocketIO(
 
 cam_buffers = {identifier: Buffer()
                for identifier in walleye_data.cameras.info.keys()}
-visualization_buffers = {
-    identifier: LivePlotBuffer() for identifier in walleye_data.cameras.info.keys()
-}
+# visualization_buffers = {
+#     identifier: LivePlotBuffer() for identifier in walleye_data.cameras.info.keys()
+# }
 
 
 # def iter_over_async(ait, loop):

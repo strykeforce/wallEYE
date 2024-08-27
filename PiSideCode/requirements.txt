@@ -10,3 +10,5 @@ matplotlib
 numpy >= 1.26.4
 Pillow >= 10.3
 cffi
+numba
+scipy

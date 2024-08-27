@@ -1,5 +1,5 @@
 services:
-  walleye-pi:
+  walleye:
     build:
       context: .
     ports:
