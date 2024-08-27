@@ -31,4 +31,4 @@ COPY . .
 EXPOSE 5800
 
 # Run the application.
-CMD python init.py
+CMD nice -n -20 python init.py

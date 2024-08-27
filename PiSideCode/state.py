@@ -4,6 +4,7 @@ from camera.camera import Cameras
 from camera.camera_info import CameraInfo
 from directory import CONFIG_DATA_PATH
 from publisher.network_table_publisher import NetworkIO
+from calibration.calibration import CalibType
 import logging
 import socket
 import struct
@@ -27,6 +28,12 @@ class States(Enum):
     SHUTDOWN = "SHUTDOWN"
 
 
+class Modes(Enum):
+    POSE_ESTIMATION = "POSE_ESTIMATION"
+    TAG_SERVOING = "TAG_SERVOING"
+    DISABLED = "DISABLED"
+
+
 CALIBRATION_STATES = (
     States.BEGIN_CALIBRATION,
     States.CALIBRATION_CAPTURE,
@@ -40,14 +47,16 @@ class Data:
     def __init__(self):
         self.current_state: States = States.PROCESSING
         self.status: str = "Running"
+        self.should_update_web_stream = False
         self.ip: str | None = None
 
         self.visualizing_poses: bool = False
 
         self.loop_time: float = 2767.0
-        self.cam_read_time: dict[str: float] | None = None
+        self.cam_read_time: dict[str:float] | None = None
 
         # Calibration
+        self.calibration_type: CalibType = CalibType.CIRCLE_GRID
         self.camera_in_calibration: str | None = None
         self.board_dims: tuple[int, int] = (7, 7)
         self.cal_delay: float = 1
@@ -66,7 +75,8 @@ class Data:
         self.udp_port = 5802
 
         os.system(
-            'nmcli --terse connection show | cut -d : -f 1 | while read name; do echo nmcli connection delete "$name"; done')
+            'nmcli --terse connection show | cut -d : -f 1 | while read name; do echo nmcli connection delete "$name"; done'
+        )
 
         try:
             # Open and load system settings
@@ -82,8 +92,7 @@ class Data:
                 self.set_ip(ip)
 
                 if Data.get_current_ip() != ip:
-                    Data.logger.warning(
-                        "Failed to set static ip, trying again...")
+                    Data.logger.warning("Failed to set static ip, trying again...")
                     self.set_ip(ip)
 
         # If no system file is found boot with base settings and create system
@@ -94,8 +103,7 @@ class Data:
             self.ip = Data.get_current_ip()
             Data.logger.info(f"IP is {self.ip}")
 
-            self.make_publisher(
-                self.team_number, self.table_name, self.udp_port)
+            self.make_publisher(self.team_number, self.table_name, self.udp_port)
 
             data_dump = {
                 "TeamNumber": self.team_number,
@@ -114,7 +122,8 @@ class Data:
     # Create a new robot publisher and create an output file for the data
     def make_publisher(self, team_number: int, table_name: str, port: int):
         Data.logger.info(
-            f"Making publisher {table_name} for team {team_number} with UDP port {port}")
+            f"Making publisher {table_name} for team {team_number} with UDP port {port}"
+        )
         try:
             # Create and write output file
             with open(CONFIG_DATA_PATH, "r") as file:
@@ -125,8 +134,7 @@ class Data:
                 with open(CONFIG_DATA_PATH, "w") as out:
                     json.dump(config, out)
 
-            Data.logger.info(
-                f"Publisher information written to {CONFIG_DATA_PATH}")
+            Data.logger.info(f"Publisher information written to {CONFIG_DATA_PATH}")
 
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             Data.logger.error(
@@ -145,10 +153,10 @@ class Data:
         # Create the robot publisher
         Data.logger.info("Creating publisher")
         self.robot_publisher = NetworkIO(
-            False, self.team_number, self.table_name, self.udp_port, 2)
+            False, self.team_number, self.table_name, self.udp_port, 2
+        )
 
-        Data.logger.info(
-            f"Robot publisher created: {team_number} - {table_name}")
+        Data.logger.info(f"Robot publisher created: {team_number} - {table_name}")
 
     def set_pose(self, identifier: str, pose: wpi.Pose3d):
         self.poses[identifier] = (
@@ -198,8 +206,7 @@ class Data:
                 self.udp_port = port
                 json.dump(config, file)
 
-            self.make_publisher(
-                self.team_number, self.table_name, self.udp_port)
+            self.make_publisher(self.team_number, self.table_name, self.udp_port)
 
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             Data.logger.error(f"Failed to write port {port}")
@@ -225,24 +232,12 @@ class Data:
         if not ip:
             Data.logger.warning("IP is None")
             if not self.robot_publisher:
-                self.make_publisher(
-                    self.team_number, self.table_name, self.udp_port)
+                self.make_publisher(self.team_number, self.table_name, self.udp_port)
             return
 
         # Destroy because changing IP breaks network tables
         if self.robot_publisher:
             self.robot_publisher.destroy()
-
-        # Set IP
-        # os.system("/usr/sbin/ifconfig eth0 up")
-        # if not os.system(
-        #         f"/usr/sbin/ifconfig eth0 {ip} netmask 255.255.255.0"):
-        #     Data.logger.info(f"Static IP set: {ip} =? {Data.get_current_ip()}")
-        #     self.ip = ip
-        # else:
-        #     self.ip = Data.get_current_ip()
-        #     Data.logger.error(f"Failed to set static ip: {ip}")
-        # os.system("/usr/sbin/ifconfig eth0 up")
 
         # https://stackoverflow.com/questions/20420937/how-to-assign-ip-address-to-interface-in-python
         bin_ip = socket.inet_aton(ip)
@@ -276,19 +271,6 @@ class Data:
 
         self.make_publisher(self.team_number, self.table_name, self.udp_port)
 
-    # Obsolete
-    # def resetNetworking(self):
-    #     if not os.system("/usr/sbin/ifconfig eth0 down"):
-    #         if not os.system("/usr/sbin/ifconfig eth0 up"):
-    #             self.ip = Config.getCurrentIP()
-    #             Config.logger.info(
-    #                 f"Networking reset successful - IP might not be static: {self.ip}"
-    #             )
-    #         else:
-    #             Config.logger.error("Networking failed to restart")
-    #     else:
-    #         Config.logger.error("Networking failed to stop")
-
     @staticmethod
     def get_current_ip(interface: str = "eth0"):
         # https://stackoverflow.com/questions/166506/finding-local-ip-addresses-using-pythons-stdlib/9267833#9267833
@@ -298,24 +280,11 @@ class Data:
         try:
             res = fcntl.ioctl(sockfd, SIOCGIFADDR, ifreq)
         except Exception as e:
-            Data.logger.error(
-                f"Could not get current IP - {e} - Returning None")
+            Data.logger.error(f"Could not get current IP - {e} - Returning None")
             return None
 
         ip = struct.unpack("16sH2x4s8x", res)[2]
         return socket.inet_ntoa(ip)
-
-        # try:
-        #     return (
-        #         os.popen('ip addr show eth0 | grep "\\<inet\\>"')
-        #         .read()
-        #         .split()[1]
-        #         .split("/")[0]
-        #         .strip()
-        #     )
-        # except IndexError:
-        #     Data.logger.error("Could not get current IP - Returning None")
-        #     return None
 
     def get_state(self) -> dict:
         return {
@@ -324,13 +293,20 @@ class Data:
             "currentState": self.current_state.value,
             "cameraIDs": list(self.cameras.info.keys()),
             "cameraInCalibration": self.camera_in_calibration,
+            "calibrationType": self.calibration_type.value,
             "boardDims": self.board_dims,
             "calDelay": self.cal_delay,
             "calImgPaths": self.cal_img_paths,
             "reprojectionError": self.reprojection_error,
             "calFilePaths": self.get_cal_file_paths(),
-            "cameraConfigs": {identifier: camera_info.export_configs() for identifier, camera_info in self.cameras.info.items()},
-            "cameraConfigOptions": {identifier: camera_info.export_config_options() for identifier, camera_info in self.cameras.info.items()},
+            "cameraConfigs": {
+                identifier: camera_info.export_configs()
+                for identifier, camera_info in self.cameras.info.items()
+            },
+            "cameraConfigOptions": {
+                identifier: camera_info.export_config_options()
+                for identifier, camera_info in self.cameras.info.items()
+            },
             "ip": self.ip,
             "tagSize": self.tag_size,
             "udpPort": self.udp_port,

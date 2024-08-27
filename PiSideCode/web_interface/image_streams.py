@@ -5,10 +5,9 @@ import numpy as np
 import matplotlib.image as mpimg
 import json
 import eventlet
+import simplejpeg
 
 logger = logging.getLogger(__name__)
-
-STREAM_QUALITY = 80
 
 
 class Buffer:
@@ -25,8 +24,7 @@ class Buffer:
             logger.info("Updated image is NOT none!")
         self.last_none = False
         # img = cv2.resize(img, (img.shape[1] // 2, img.shape[0] // 2))
-        self.output_frame = cv2.imencode(
-            ".jpg", img, [int(cv2.IMWRITE_JPEG_QUALITY), STREAM_QUALITY])[1].tobytes()
+        self.output_frame = simplejpeg.encode_jpeg(img, colorspace="bgr")
 
     def output(self):
         while True:

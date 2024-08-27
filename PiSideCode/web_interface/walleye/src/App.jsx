@@ -67,7 +67,6 @@ function App() {
         function onPerformanceUpdate(time) {
             setLoopTime(time.loopTime);
             setCamReadTime(time.camReadTime);
-            console.log(time);
         }
 
         function onMsgUpdate(msg) {

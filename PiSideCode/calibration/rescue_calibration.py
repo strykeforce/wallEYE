@@ -1,7 +1,7 @@
-from calibration import Calibration
+from calibration import Calibrator
 import os
 
-calibrator = Calibration(
+calibrator = Calibrator(
     0.1,
     (7, 7),
     "Cam_platform-fc880000-usb-usb-0-1-1-0-video-index0",

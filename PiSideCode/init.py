@@ -1,5 +1,6 @@
 import sys
 import os
+
 # import eventlet
 # eventlet.monkey_patch()
 
@@ -25,11 +26,11 @@ logger.info("----------- Starting Up -----------")
 # logger.info(f"Running with niceness of {os.nice(-20)}")
 
 from state import walleye_data, States, CALIBRATION_STATES
-from processing.processing import Processor
+from processing.pose_processing import PoseProcessor
 from camera.camera import Cameras
-from calibration.calibration import Calibration
+from calibration.calibration import Calibrator
 import time
-
+import numpy as np
 
 # Create and intialize cameras
 walleye_data.cameras = Cameras()
@@ -39,7 +40,7 @@ from web_interface.web_interface import (
     socketio,
     app,
     visualization_buffers,
-    display_info
+    display_info,
 )  # After walleye_data.cameras is set
 
 import threading
@@ -71,7 +72,7 @@ try:
     calibrators = {}
 
     # Create network tables publisher and AprilTag Processor
-    pose_estimator = Processor(walleye_data.tag_size)
+    pose_estimator = PoseProcessor(walleye_data.tag_size)
     # walleye_data.make_publisher(
     #     walleye_data.team_number, walleye_data.table_name, walleye_data.udp_port)
     walleye_data.current_state = States.PROCESSING
@@ -93,21 +94,21 @@ try:
             logger.info("Beginning calibration")
 
             # Prepare a calibration object for the camera that is being calibrated with pre-set data
-            # only if cal object does not exist yet
-            if (
-                walleye_data.camera_in_calibration not in calibrators
-                or calibrators[walleye_data.camera_in_calibration] is None
-            ):
-                calibrators[walleye_data.camera_in_calibration] = Calibration(
-                    walleye_data.cal_delay,
-                    walleye_data.board_dims,
-                    walleye_data.camera_in_calibration,
-                    calibration_image_folder(
-                        walleye_data.camera_in_calibration),
-                    walleye_data.cameras.info[
-                        walleye_data.camera_in_calibration
-                    ].resolution,
-                )
+            # # only if cal object does not exist yet
+            # if (
+            #     walleye_data.camera_in_calibration not in calibrators
+            #     or calibrators[walleye_data.camera_in_calibration] is None
+            # ):
+            calibrators[walleye_data.camera_in_calibration] = Calibrator(
+                walleye_data.cal_delay,
+                walleye_data.board_dims,
+                walleye_data.camera_in_calibration,
+                calibration_image_folder(walleye_data.camera_in_calibration),
+                walleye_data.cameras.info[
+                    walleye_data.camera_in_calibration
+                ].resolution,
+                walleye_data.calibration_type,
+            )
             walleye_data.current_state = States.CALIBRATION_CAPTURE
 
         # Take calibration images
@@ -131,9 +132,9 @@ try:
                 if used:
                     walleye_data.cal_img_paths.append(path_saved)
 
-                # Keep a buffer with the images
-                cam_buffers[walleye_data.camera_in_calibration].update(
-                    returned)
+                # Update web stream
+                if walleye_data.should_update_web_stream:
+                    cam_buffers[walleye_data.camera_in_calibration].update(returned)
 
         # Finished Calibration, generate calibration
         elif walleye_data.current_state == States.GENERATE_CALIBRATION:
@@ -147,7 +148,10 @@ try:
                 ].resolution,
             )
 
-            if walleye_data.camera_in_calibration in calibrators and calibrators[walleye_data.camera_in_calibration] is not None:
+            if (
+                walleye_data.camera_in_calibration in calibrators
+                and calibrators[walleye_data.camera_in_calibration] is not None
+            ):
                 # Generate a calibration file to the file path
                 has_generated = calibrators[
                     walleye_data.camera_in_calibration
@@ -182,15 +186,14 @@ try:
                             walleye_data.camera_in_calibration
                         ].resolution,
                     )
+                    display_info("Calibration successful!")
                 else:
                     display_info("Could not generate calibration")
                     walleye_data.cameras.info[
                         walleye_data.camera_in_calibration
                     ].calibration_path = None
             else:
-                display_info(
-                    "Calibrator for current calibration camera is None"
-                )
+                display_info("Calibrator for current calibration camera is None")
             walleye_data.current_state = States.IDLE
             calibrators[walleye_data.camera_in_calibration] = None
 
@@ -207,40 +210,46 @@ try:
             # list_img_time = list(img_time.values())
 
             for idx, val in enumerate(connections.values()):
-                if not val and walleye_data.robot_publisher.getConnectionValue(idx):
+                if not val and walleye_data.robot_publisher.get_connection_value(idx):
                     logger.info("Camera disconnected")
 
-                walleye_data.robot_publisher.setConnectionValue(idx, val)
+                walleye_data.robot_publisher.set_connection_value(idx, val)
 
             # Use the pose_estimator class to find the pose, tags, and ambiguity
-            poses, tags, ambig = pose_estimator.get_pose(
+            poses, tags, ambig, tag_centers = pose_estimator.get_pose(
                 images.values(),
                 walleye_data.cameras.list_k(),
                 walleye_data.cameras.list_d(),
+                np.asarray([i.resolution for i in walleye_data.cameras.info.values()]),
             )
-
             # Publish camera number, timestamp, poses, tags, ambiguity and increase the update number
             # logger.info(f"Poses at {image_time}: {poses}")
 
             for i in range(len(poses)):
                 if poses[i][0].X() < 2000:
-                    walleye_data.robot_publisher.udp_pose_publish([pose[0] for pose in poses], [
-                                                           pose[1] for pose in poses], ambig, [image_time for pose in poses], tags)
+                    walleye_data.robot_publisher.udp_pose_publish(
+                        [pose[0] for pose in poses],
+                        [pose[1] for pose in poses],
+                        ambig,
+                        [image_time for pose in poses],
+                        tags,
+                    )
                     # walleyeData.robotPublisher.publish(
                     #     i, imageTime, poses[i], tags[i], ambig[i]
                     # )
 
             # Update video stream for web interface
-            for i, (identifier, img) in enumerate(images.items()):
-                if i >= len(poses):
-                    break
-                cam_buffers[identifier].update(img)
-                walleye_data.set_pose(identifier, poses[i][0])
-                if walleye_data.visualizing_poses:
-                    visualization_buffers[identifier].update(
-                        (poses[i][0].X(), poses[i][0].Y(),
-                         poses[i][0].Z()), tags[i][1:]
-                    )
+            if walleye_data.should_update_web_stream:
+                for i, (identifier, img) in enumerate(images.items()):
+                    if i >= len(poses):
+                        break
+                    cam_buffers[identifier].update(img)
+                    walleye_data.set_pose(identifier, poses[i][0])
+                    if walleye_data.visualizing_poses:
+                        visualization_buffers[identifier].update(
+                            (poses[i][0].X(), poses[i][0].Y(), poses[i][0].Z()),
+                            tags[i][1:],
+                        )
 
         # Ends the WallEye program through the web interface
         elif walleye_data.current_state == States.SHUTDOWN:
@@ -260,7 +269,8 @@ try:
 
                 ret, img = camera_info.cam.read()
 
-                cam_buffers[camera_info.identifier].update(img)
+                if walleye_data.should_update_web_stream:
+                    cam_buffers[camera_info.identifier].update(img)
 
 except Exception as e:
     # Something bad happened

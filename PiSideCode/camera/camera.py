@@ -1,6 +1,6 @@
 import cv2
 from camera.camera_config import write_config, parse_config
-from calibration.calibration import Calibration
+from calibration.calibration import Calibrator
 import os
 import time
 from sys import platform
@@ -55,8 +55,7 @@ class Cameras:
 
                     # Try to disable auto exposure
                     if cam.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1):
-                        Cameras.logger.info(
-                            f"Auto exposure disabled for {identifier}")
+                        Cameras.logger.info(f"Auto exposure disabled for {identifier}")
                     else:
                         Cameras.logger.warning(
                             f"Failed to disable auto exposure for {identifier}"
@@ -66,14 +65,10 @@ class Cameras:
                     self.import_config(identifier)
 
                     # Save configs
-                    write_config(
-                        identifier,
-                        self.info[identifier]
-                    )
+                    write_config(identifier, self.info[identifier])
 
                 else:
-                    Cameras.logger.error(
-                        f"Failed to open camera: {identifier}")
+                    Cameras.logger.error(f"Failed to open camera: {identifier}")
 
         else:
             Cameras.logger.error("Unsupported platform!")
@@ -82,8 +77,7 @@ class Cameras:
         self.info[identifier].K = K
         self.info[identifier].D = D
 
-        Cameras.logger.info(
-            f"Calibration set for {identifier}, using {K}\n{D}")
+        Cameras.logger.info(f"Calibration set for {identifier}, using {K}\n{D}")
 
     # Return a list of camera matrixs
     def list_k(self) -> list[np.ndarray]:
@@ -108,9 +102,7 @@ class Cameras:
             cam_read_time[identifier] = round(time.perf_counter() - before, 3)
             frames[identifier] = img
             connections[identifier] = ret
-            timestamp[identifier] = camInfo.cam.get(
-                cv2.CAP_PROP_POS_MSEC
-            )
+            timestamp[identifier] = camInfo.cam.get(cv2.CAP_PROP_POS_MSEC)
 
         return (connections, frames, timestamp, cam_read_time)
 
@@ -120,7 +112,7 @@ class Cameras:
 
         # Look for the calibration file
         try:
-            calib = Calibration.parse_calibration(
+            calib = Calibrator.parse_calibration(
                 calibration_path_by_cam(identifier, resolution)
             )
 
@@ -171,11 +163,10 @@ class Cameras:
 
         else:
             self.import_calibration(identifier)
-            Cameras.logger.warning(
-                f"Camera config not found for camera {identifier}")
+            Cameras.logger.warning(f"Camera config not found for camera {identifier}")
 
         return config
-    
+
     def write_configs(self, identifier):
         with open(cam_config_path(identifier), "w") as file:
             json.dump(self.info[identifier].export_configs(), file)

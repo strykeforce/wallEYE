@@ -1,4 +1,4 @@
-import { Card, Button, Image, Col, Row, Badge } from "react-bootstrap";
+import { Card, Button, Image, Col, Row, Badge, ButtonGroup } from "react-bootstrap";
 import CameraSettings from "./CameraSettings";
 import { socket } from "../socket";
 import "bootstrap-icons/font/bootstrap-icons.css";
@@ -24,19 +24,52 @@ export default function CameraStream(props) {
 
             <Card>
                 <Card.Header className="d-flex justify-content-between">
-                    Camera Stream {props.camID} 
+                    Camera Stream {props.camID}
                     <div className="d-flex justify-content-end">
-                        <Badge bg="info" className="mx-1">{props.readTime} secs</Badge>
+                        <Badge bg="info" className="mx-1">
+                            {props.readTime} secs
+                        </Badge>
                         {props.state.calFilePaths[props.camID] ? (
-                            <Badge bg="success" className="mx-1">Calibration loaded!</Badge>
+                            <Badge bg="success" className="mx-1">
+                                Calibration loaded!
+                            </Badge>
                         ) : (
                             props.state.calFilePaths[props.camID] == null && (
-                                <Badge bg="danger" className="mx-1">Calibration not available!!</Badge>
+                                <Badge bg="danger" className="mx-1">
+                                    Calibration not available!!
+                                </Badge>
                             )
                         )}
                     </div>
                 </Card.Header>
                 <Card.Body>
+                    <ButtonGroup className="d-flex">
+                        <Button
+                            variant="outline-success"
+                            onClick={() => {
+                                socket.emit("set_mode", "POSE_ESTIMATION");
+                            }}
+                        >
+                            Pose Estimation
+                        </Button>
+                        <Button
+                            variant="outline-success"
+                            onClick={() => {
+                                socket.emit("set_mode", "TAG_SERVOING");
+                            }}
+                        >
+                            Tag Servoing
+                        </Button>
+                        <Button
+                            variant="outline-success"
+                            onClick={() => {
+                                socket.emit("set_mode", "DISABLED");
+                            }}
+                        >
+                            Disabled
+                        </Button>
+                    </ButtonGroup>
+                    <br/>
                     <Row>
                         {props.showConfig && (
                             <Col>
@@ -78,7 +111,7 @@ export default function CameraStream(props) {
                                 <i class="bi bi-camera-video"></i>
                                 {props.state.currentState ===
                                     "BEGIN_CALIBRATION" ||
-                                    props.state.currentState ===
+                                props.state.currentState ===
                                     "CALIBRATION_CAPTURE"
                                     ? "End Calibration"
                                     : "Start Calibration"}

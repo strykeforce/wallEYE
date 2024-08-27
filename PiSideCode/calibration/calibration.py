@@ -11,11 +11,11 @@ from directory import CONFIG_DIRECTORY
 
 
 class CalibType(Enum):
-    CHESSBOARD = "CHESSBOARD"
-    CIRCLE_GRID = "CIRCLE_GRID"
+    CHESSBOARD = "Chessboard"
+    CIRCLE_GRID = "Circle Grid"
 
 
-class Calibration:
+class Calibrator:
     logger = logging.getLogger(__name__)
 
     # Create a calibration object for the specified camera
@@ -168,7 +168,7 @@ class Calibration:
 
             cv2.imwrite(path_saved, gray)
 
-            Calibration.logger.info(f"Calibration image saved to {path_saved}")
+            Calibrator.logger.info(f"Calibration image saved to {path_saved}")
 
         self.draw_overlay(img)
 
@@ -274,7 +274,7 @@ class Calibration:
     # Generate a calibration and write to a file
     def generate_calibration(self, cal_file: str) -> bool:
         if len(self.obj_points) == 0:
-            Calibration.logger.error("Calibration failed: No image data available")
+            Calibrator.logger.error("Calibration failed: No image data available")
             return False
 
         # Using the saved off 2d and 3d points, it will return a camera matrix
@@ -323,7 +323,7 @@ class Calibration:
                 f,
             )
 
-        Calibration.logger.info(
+        Calibrator.logger.info(
             f"Calibration successfully generated and saved to {cal_file} with resolution {self.resolution}"
         )
 
@@ -385,7 +385,7 @@ class Calibration:
     # calculate error of the calibration
     def get_reprojection_error(self) -> float:
         if len(self.obj_points) == 0:
-            Calibration.logger.error("Cannot compute reprojection error: No image data")
+            Calibrator.logger.error("Cannot compute reprojection error: No image data")
             return
 
         total_error = 0
@@ -415,12 +415,12 @@ class Calibration:
         self.calibration_data["r"] = np.asarray(self.calibration_data["r"])
         self.calibration_data["t"] = np.asarray(self.calibration_data["t"])
 
-        Calibration.logger.info(f"Calibration loaded from {file}")
+        Calibrator.logger.info(f"Calibration loaded from {file}")
 
     # Get calibration data from a calibration file
     @staticmethod
     def parse_calibration(file: str) -> dict[str, np.ndarray]:
-        Calibration.logger.info(f"Looking for calibration stored at {file}")
+        Calibrator.logger.info(f"Looking for calibration stored at {file}")
 
         with open(file, "r") as f:
             calibration_data = json.load(f)
@@ -431,6 +431,6 @@ class Calibration:
             calibration_data["r"] = np.array(calibration_data["r"])
             calibration_data["t"] = np.array(calibration_data["t"])
         except BaseException:
-            Calibration.logger.error(f"Invalid calibration format in {file}")
+            Calibrator.logger.error(f"Invalid calibration format in {file}")
 
         return calibration_data

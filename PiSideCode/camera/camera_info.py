@@ -7,7 +7,7 @@ import json
 from directory import cam_config_path, full_cam_path
 
 EXPOSED_PROPERTIES = re.compile(
-    "[Bb]rightness|Exposure \(Auto\)|Exposure Time, Absolute|Contrast|Saturation|Gamma|Gain")
+    "[Bb]rightness|Exposure \(Auto\)|Exposure Time, Absolute|Exposure, Auto|Exposure \(Absolute\)|Contrast|Saturation|Gamma|Gain")
 
 
 class CameraInfo:

@@ -6,11 +6,12 @@ from directory import CONFIG_ZIP, calibration_path_by_cam, CONFIG_DIRECTORY
 from state import walleye_data, States
 import logging
 import numpy as np
-from web_interface.image_streams import Buffer, LivePlotBuffer
+from web_interface.image_streams import Buffer, 
 import zipfile
 import pathlib
 import io
 import glob
+from calibration.calibration import CalibType
 
 logger = logging.getLogger(__name__)
 
@@ -73,11 +74,13 @@ def update_after(action):
 @update_after
 def connect():
     logger.info("Client connected")
+    walleye_data.should_update_web_stream = True
 
 
 @socketio.on("disconnect")
 def disconnect():
     logger.warning("Client disconnected")
+    walleye_data.should_update_web_stream = False
 
 
 @socketio.on("set")
@@ -105,7 +108,7 @@ def toggle_calibration(cam_id: str):
         walleye_data.reprojection_error = None
         walleye_data.current_state = States.BEGIN_CALIBRATION
         logger.info(f"Starting calibration capture for {cam_id}")
-        display_info("Starting calibration capture for {cam_id}")
+        display_info(f"Starting calibration capture for {cam_id}")
 
     elif walleye_data.current_state == States.CALIBRATION_CAPTURE:
         walleye_data.current_state = States.IDLE
@@ -196,6 +199,7 @@ def export_config():
 def set_table_name(name: str):
     walleye_data.make_publisher(
         walleye_data.team_number, name, walleye_data.udp_port)
+    display_info(f"Table Name set: {walleye_data.table_name}")
 
 
 @socketio.on("set_team_number")
@@ -203,12 +207,14 @@ def set_table_name(name: str):
 def set_team_number(number: int):
     walleye_data.make_publisher(
         int(number), walleye_data.table_name, walleye_data.udp_port)
+    display_info(f"Team number set: {walleye_data.team_number}")
 
 
 @socketio.on("set_tag_size")
 @update_after
 def set_tag_size(size: float):
     walleye_data.set_tag_size(float(size))
+    display_info(f"Tag Size set: {walleye_data.tag_size}")
 
 
 @socketio.on("set_board_dims")
@@ -217,20 +223,41 @@ def set_board_dims(w: int, h: int):
     walleye_data.board_dims = (int(w), int(h))
     walleye_data.set_board_dim(walleye_data.board_dims)
     logger.info(f"Board dimensions set: {(w, h)}")
+    display_info(f"Board dimensions set: {(w, h)}")
+
+
+@socketio.on("set_calibration_type")
+@update_after
+def set_calibration_type(cal_type: str):
+    if cal_type == "Chessboard":
+        walleye_data.calibration_type = CalibType.CHESSBOARD
+    elif cal_type == "Circle Grid":
+        walleye_data.calibration_type = CalibType.CIRCLE_GRID
+    else:
+        logger.error(f"Unrecognized calibration type: {cal_type}")
+
+    display_info(f"Calibration type set: {walleye_data.calibration_type}")
 
 
 @socketio.on("set_udp_port")
 @update_after
-def setUDPPort(port):
+def set_udp_port(port):
     walleye_data.udp_port = port
     logger.info(f"Attempting to set UDP port to {port}")
     walleye_data.set_udp_port(port)
+    display_info(f"UDP Port set: {walleye_data.udp_port}")
 
 
 @socketio.on("set_static_ip")
 @update_after
 def set_static_ip(ip: str):
     walleye_data.set_ip(str(ip))
+
+
+@socketio.on("set_mode")
+@update_after
+def set_mode(mode: str):
+    walleye_data.mode = 
 
 
 @socketio.on("shutdown")

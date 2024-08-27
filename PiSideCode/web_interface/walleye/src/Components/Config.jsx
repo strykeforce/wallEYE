@@ -1,5 +1,5 @@
 import Form from "react-bootstrap/Form";
-import { Button, InputGroup } from "react-bootstrap";
+import { Button, FormLabel, InputGroup } from "react-bootstrap";
 import { socket } from "../socket.js";
 import { useState } from "react";
 
@@ -12,10 +12,12 @@ export default function Config(props) {
     const [newBoardDimsH, setNewBoardDimsH] = useState(
         props.state.boardDims[1]
     );
+
     const [newStaticIP, setNewStaticIP] = useState(props.state.ip);
     const [newTagSize, setNewTagSize] = useState(props.state.tagSize);
     const [newUDPPort, setNewUDPPort] = useState(props.state.udpPort);
-      
+
+
     return (
         <Form>
             <Form.Group className="mb-3">
@@ -56,6 +58,21 @@ export default function Config(props) {
                     >
                         Update
                     </Button>
+                </InputGroup>
+            </Form.Group>
+            <Form.Group className="mb-3">
+                <InputGroup>
+                    <InputGroup.Text>Select Calibration Type</InputGroup.Text>
+                    <Form.Select
+                        onChange={(e) => {
+                            socket.emit("set_calibration_type", e.target.value);
+                        }}
+                        value={props.state.calibrationType}
+                    >
+                        {["Chessboard", "Circle Grid"].map((calType) => (
+                            <option value={calType}>{calType}</option>
+                        ))}
+                    </Form.Select>
                 </InputGroup>
             </Form.Group>
             <Form.Group className="mb-3">
