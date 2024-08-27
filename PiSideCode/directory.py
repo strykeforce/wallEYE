@@ -10,6 +10,8 @@ CALIBRATION_DIRECTORY = os.path.join(CONFIG_DIRECTORY, "calibrations")
 CONFIG_DATA_PATH = os.path.join(CONFIG_DIRECTORY, "system_data.json")
 LOG = os.path.join(PARENT, "walleye.log")
 CONFIG_ZIP = os.path.join(PARENT, "config.zip")
+TAG_LAYOUT_PATH = os.path.join(CONFIG_DIRECTORY, "april_tag_layout.json")
+FALLBACK_TAG_LAYOUT_PATH = os.path.join("processing", "april_tag_layout.json")
 
 pathlib.Path(CONFIG_DIRECTORY).mkdir(parents=True, exist_ok=True)
 

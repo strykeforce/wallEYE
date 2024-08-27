@@ -39,8 +39,13 @@ from web_interface.web_interface import (
     cam_buffers,
     socketio,
     app,
+<<<<<<< HEAD
     visualization_buffers,
     display_info,
+=======
+    # visualization_buffers,
+    display_info
+>>>>>>> wallEYE/untested
 )  # After walleye_data.cameras is set
 
 import threading
@@ -224,7 +229,6 @@ try:
             )
             # Publish camera number, timestamp, poses, tags, ambiguity and increase the update number
             # logger.info(f"Poses at {image_time}: {poses}")
-
             for i in range(len(poses)):
                 if poses[i][0].X() < 2000:
                     walleye_data.robot_publisher.udp_pose_publish(
