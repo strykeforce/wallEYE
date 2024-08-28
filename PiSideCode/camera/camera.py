@@ -1,5 +1,6 @@
 import cv2
-from camera.camera_config import write_config, parse_config
+from camera.camera_config import write_config, parse_config, is_disabled
+from camera.camera_info import Modes
 from calibration.calibration import Calibrator
 import os
 import time
@@ -32,11 +33,8 @@ class Cameras:
 
             # Try all cameras found by the PI
             for identifier in camera_paths:
-                if (
-                    Path("../../../deadeye").is_dir()
-                    and identifier
-                    == "platform-xhci-hcd.9.auto-usb-0:1:1.0-video-index0"
-                ):
+                if is_disabled(identifier):
+                    Cameras.logger.info(f"Skipping {identifier} - DISABLED")
                     continue
 
                 path = full_cam_path(identifier)
@@ -155,6 +153,8 @@ class Cameras:
                     camera_info.set_color_format(value)
                 elif property == "frame_rate":
                     camera_info.set_frame_rate(value)
+                elif property == "mode":
+                    camera_info.mode = Modes(value)
                 else:
                     self.info[identifier].set(property, value)
             self.import_calibration(identifier)

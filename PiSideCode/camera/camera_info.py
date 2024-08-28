@@ -4,7 +4,16 @@ import cv2
 import numpy as np
 import re
 import json
+from enum import Enum
+
 from directory import cam_config_path, full_cam_path
+
+
+class Modes(Enum):
+    POSE_ESTIMATION = "POSE_ESTIMATION"
+    TAG_SERVOING = "TAG_SERVOING"
+    DISABLED = "DISABLED"
+
 
 EXPOSED_PROPERTIES = re.compile(
     "[Bb]rightness|Exposure \(Auto\)|Exposure Time, Absolute|Exposure, Auto|Exposure \(Absolute\)|Contrast|Saturation|Gamma|Gain")
@@ -20,10 +29,9 @@ class CameraInfo:
         K: np.ndarray | None = None,
         D: np.ndarray | None = None,
     ):
-        self.last_image: np.ndarray | None = None
-
         self.cam = cam
         self.identifier = identifier
+        self.mode: Modes = Modes.POSE_ESTIMATION
 
         self.controller = Device(full_cam_path(identifier))
 
@@ -51,12 +59,11 @@ class CameraInfo:
         self.D = D
 
         self.calibration_path: str | None = None
-        
 
     def get_supported_resolutions(self):
         curr_format = self.controller.get_format()
         return self.valid_formats[str(curr_format[0])]
-    
+
     def set_color_format(self, color_format: str) -> bool:
         success = self.set_format(color_format, self.resolution)
 
@@ -72,11 +79,13 @@ class CameraInfo:
         )
 
         return success
-    
+
     def set_resolution(self, resolution: tuple[int, int]) -> bool:
         return self.set_format(self.color_format, resolution)
 
     def set_format(self, color_format: str, resolution: tuple[int, int]) -> bool:
+        if self.cam is None:
+            return False
         try:
             self.cam.set(cv2.CAP_PROP_FRAME_WIDTH, resolution[0])
             self.cam.set(cv2.CAP_PROP_FRAME_HEIGHT, resolution[1])
@@ -96,13 +105,15 @@ class CameraInfo:
         return False
 
     def set_frame_rate(self, frame_rate: int):
+        if self.cam is None:
+            return False
         try:
             self.controller.set_frame_interval(
                 self.valid_frame_rates[frame_rate])
             CameraInfo.logger.info(
                 f"Frame rate set to {frame_rate} in camera {self.identifier}"
             )
-            
+
             return True
 
         except Exception as e:
@@ -111,10 +122,12 @@ class CameraInfo:
         return False
 
     def set(self, control_name: str, value: int | str) -> bool:
+        if self.cam is None:
+            return False
         if control_name not in self.controls:
             CameraInfo.logger.error(f"{control_name} is not available for camera {self.identifier}")
             return False
-        
+
         try:
             control: Menu = self.controls[control_name]
 
@@ -130,7 +143,7 @@ class CameraInfo:
             CameraInfo.logger.info(
                 f"{control_name} set to {value} in camera {self.identifier} (actually {self.get(control_name)})"
             )
-            
+
             return True
 
         except Exception as e:
@@ -169,6 +182,7 @@ class CameraInfo:
         configs["resolution"] = self.resolution
         configs["color_format"] = self.color_format
         configs["frame_rate"] = self.frame_rate
+        configs["mode"] = self.mode.value
 
         return configs
 
@@ -188,6 +202,3 @@ class CameraInfo:
         configs["frame_rate" + "_MENU"] = list(map(lambda f: int(1 / float(f)), (self.valid_frame_rates.values())))
 
         return configs
-    
-    
-        

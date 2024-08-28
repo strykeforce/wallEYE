@@ -2,16 +2,23 @@ from flask import Response, Flask, send_from_directory
 import os
 from flask_socketio import SocketIO
 import json
-from directory import CONFIG_ZIP, calibration_path_by_cam, CONFIG_DIRECTORY
+from directory import (
+    CONFIG_ZIP,
+    calibration_path_by_cam,
+    cam_config_path,
+    CONFIG_DIRECTORY,
+    CONFIG_DATA_PATH,
+)
 from state import walleye_data, States
 import logging
 import numpy as np
-from web_interface.image_streams import Buffer, 
+from web_interface.image_streams import Buffer
 import zipfile
 import pathlib
 import io
 import glob
 from calibration.calibration import CalibType
+from camera.camera_info import Modes
 
 logger = logging.getLogger(__name__)
 
@@ -256,8 +263,17 @@ def set_static_ip(ip: str):
 
 @socketio.on("set_mode")
 @update_after
-def set_mode(mode: str):
-    walleye_data.mode = 
+def set_mode(mode: str, cam_id: str):
+    if mode in (
+        Modes.POSE_ESTIMATION.value,
+        Modes.TAG_SERVOING.value,
+        Modes.DISABLED.value,
+    ):
+        walleye_data.cameras.info[cam_id].mode = Modes(mode)
+        walleye_data.cameras.write_configs(cam_id)
+
+        if mode == Modes.DISABLED.value:
+            display_info("Disabled upon next wallEYE boot")
 
 
 @socketio.on("shutdown")
@@ -325,16 +341,16 @@ def video_feed(cam_id):
     )
 
 
-@app.route("/pose_visualization/<cam_id>")
-def pose_visualization(cam_id):
-    if cam_id not in cam_buffers:
-        logger.error(f"Bad cam id recieved: {cam_id}")
-        return
+# @app.route("/pose_visualization/<cam_id>")
+# def pose_visualization(cam_id):
+#     if cam_id not in cam_buffers:
+#         logger.error(f"Bad cam id recieved: {cam_id}")
+#         return
 
-    return Response(
-        visualization_buffers[cam_id].output(),
-        mimetype="multipart/x-mixed-replace; boundary=frame",
-    )
+#     return Response(
+#         visualization_buffers[cam_id].output(),
+#         mimetype="multipart/x-mixed-replace; boundary=frame",
+#     )
 
 
 @app.route("/", methods=["GET", "POST"])

@@ -27,7 +27,9 @@ logger.info("----------- Starting Up -----------")
 
 from state import walleye_data, States, CALIBRATION_STATES
 from processing.pose_processing import PoseProcessor
+from processing.tag_processing import TagProcessor
 from camera.camera import Cameras
+from camera.camera_info import Modes
 from calibration.calibration import Calibrator
 import time
 import numpy as np
@@ -39,13 +41,8 @@ from web_interface.web_interface import (
     cam_buffers,
     socketio,
     app,
-<<<<<<< HEAD
-    visualization_buffers,
-    display_info,
-=======
     # visualization_buffers,
-    display_info
->>>>>>> wallEYE/untested
+    display_info,
 )  # After walleye_data.cameras is set
 
 import threading
@@ -77,7 +74,8 @@ try:
     calibrators = {}
 
     # Create network tables publisher and AprilTag Processor
-    pose_estimator = PoseProcessor(walleye_data.tag_size)
+    tag_processor = TagProcessor()
+    pose_estimator = PoseProcessor(tag_processor, walleye_data.tag_size)
     # walleye_data.make_publisher(
     #     walleye_data.team_number, walleye_data.table_name, walleye_data.udp_port)
     walleye_data.current_state = States.PROCESSING
@@ -221,21 +219,39 @@ try:
                 walleye_data.robot_publisher.set_connection_value(idx, val)
 
             # Use the pose_estimator class to find the pose, tags, and ambiguity
-            poses, tags, ambig, tag_centers = pose_estimator.get_pose(
-                images.values(),
-                walleye_data.cameras.list_k(),
-                walleye_data.cameras.list_d(),
-                np.asarray([i.resolution for i in walleye_data.cameras.info.values()]),
-            )
+            # poses, tags, ambig, tag_centers = pose_estimator.get_pose(
+            #     images.values(),
+            #     walleye_data.cameras.list_k(),
+            #     walleye_data.cameras.list_d(),
+            #     np.asarray([i.resolution for i in walleye_data.cameras.info.values()]),
+            # )
+            poses, tags, ambig = [], [], []
+            for identifier, image in images.items():
+                if walleye_data.cameras.info[identifier].mode == Modes.POSE_ESTIMATION:
+                    img_pose, img_tags, img_ambig = pose_estimator.get_pose(
+                        image,
+                        walleye_data.cameras.info[identifier].K,
+                        walleye_data.cameras.info[identifier].D,
+                        False
+                    )
+
+                    poses.append(img_pose)
+                    tags.append(img_tags)
+                    ambig.append(img_ambig)
+
+                elif walleye_data.cameras.info[identifier].mode == Modes.TAG_SERVOING:
+                    pass
+
+
             # Publish camera number, timestamp, poses, tags, ambiguity and increase the update number
             # logger.info(f"Poses at {image_time}: {poses}")
             for i in range(len(poses)):
-                if poses[i][0].X() < 2000:
+                if poses[i][0].X() < 2000: # TODO what is this doing here?
                     walleye_data.robot_publisher.udp_pose_publish(
                         [pose[0] for pose in poses],
                         [pose[1] for pose in poses],
                         ambig,
-                        [image_time for pose in poses],
+                        [image_time] * len(poses),
                         tags,
                     )
                     # walleyeData.robotPublisher.publish(
@@ -249,11 +265,11 @@ try:
                         break
                     cam_buffers[identifier].update(img)
                     walleye_data.set_pose(identifier, poses[i][0])
-                    if walleye_data.visualizing_poses:
-                        visualization_buffers[identifier].update(
-                            (poses[i][0].X(), poses[i][0].Y(), poses[i][0].Z()),
-                            tags[i][1:],
-                        )
+                    # if walleye_data.visualizing_poses:
+                    #     visualization_buffers[identifier].update(
+                    #         (poses[i][0].X(), poses[i][0].Y(), poses[i][0].Z()),
+                    #         tags[i][1:],
+                    #     )
 
         # Ends the WallEye program through the web interface
         elif walleye_data.current_state == States.SHUTDOWN:

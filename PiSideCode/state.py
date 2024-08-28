@@ -30,10 +30,6 @@ class States(Enum):
     SHUTDOWN = "SHUTDOWN"
 
 
-class Modes(Enum):
-    POSE_ESTIMATION = "POSE_ESTIMATION"
-    TAG_SERVOING = "TAG_SERVOING"
-    DISABLED = "DISABLED"
 
 
 CALIBRATION_STATES = (
@@ -160,9 +156,9 @@ class Data:
 
         Data.logger.info(f"Robot publisher created: {team_number} - {table_name}")
 
-    def set_pose(self, identifier: str, pose: tuple[np.ndarray, np.ndarray]):
+    def set_pose(self, identifier: str, pose: wpi.Pose3d):
         self.poses[identifier] = (
-            f"Translation: {round(pose[0][0], 2)}, {round(pose[0][1], 2)}, {round(pose[0][2], 2)} - Rotation: {round(pose[1][0], 2)}, {round(pose[1][1], 2)}, {round(pose[1][2], 2)}"
+            f"Translation: {round(pose.X(), 2)}, {round(pose.Y(), 2)}, {round(pose.Z(), 2)} - Rotation: {round(pose.X(), 2)}, {round(pose.Y(), 2)}, {round(pose.Z(), 2)}"
         )
 
     # Return the file path names for each camera

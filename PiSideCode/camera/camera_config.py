@@ -3,6 +3,24 @@ from directory import cam_config_path, CAMERA_CONFIG_DIRECTORY, CALIBRATION_DIRE
 from pathlib import Path
 from camera.camera_info import CameraInfo
 
+
+def is_disabled(identifier: str):
+    config_path = cam_config_path(identifier)
+    try:
+        # Look for config data and return it
+        print(f"Looking for {config_path}")
+        with open(config_path, "r") as data:
+            config = json.load(data)
+
+            if config["mode"] == "DISABLED":
+                return True
+
+    except FileNotFoundError:
+        print("File Not Found")
+
+    return False
+
+
 def parse_config(identifier: str, camera_info: CameraInfo) -> dict[str, float | str | list[int] | None]:
     config_path = cam_config_path(identifier)
     try:
