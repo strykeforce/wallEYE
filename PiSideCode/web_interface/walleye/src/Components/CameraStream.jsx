@@ -53,8 +53,9 @@ export default function CameraStream(props) {
                 <Card.Body>
                     <ButtonGroup className="d-flex">
                         <Button
-                            variant="outline-success"
+                            variant={`${props.state.cameraConfigs[props.camID].mode === "POSE_ESTIMATION" ? "" : "outline-"}success`}
                             onClick={() => {
+                                console.log(props.state);
                                 socket.emit(
                                     "set_mode",
                                     "POSE_ESTIMATION",
@@ -65,7 +66,7 @@ export default function CameraStream(props) {
                             Pose Estimation
                         </Button>
                         <Button
-                            variant="outline-success"
+                            variant={`${props.state.cameraConfigs[props.camID].mode === "TAG_SERVOING" ? "" : "outline-"}success`}
                             onClick={() => {
                                 socket.emit(
                                     "set_mode",
@@ -77,7 +78,7 @@ export default function CameraStream(props) {
                             Tag Servoing
                         </Button>
                         <Button
-                            variant="outline-success"
+                            variant={`${props.state.cameraConfigs[props.camID].mode === "DISABLED" ? "" : "outline-"}success`}
                             onClick={() => {
                                 socket.emit(
                                     "set_mode",
@@ -129,7 +130,7 @@ export default function CameraStream(props) {
                                 <i class="bi bi-camera-video"></i>
                                 {props.state.currentState ===
                                     "BEGIN_CALIBRATION" ||
-                                props.state.currentState ===
+                                    props.state.currentState ===
                                     "CALIBRATION_CAPTURE"
                                     ? "End Calibration"
                                     : "Start Calibration"}

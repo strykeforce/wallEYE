@@ -1,5 +1,5 @@
 import Form from "react-bootstrap/Form";
-import { Button, FormLabel, InputGroup } from "react-bootstrap";
+import { Button, Card, CardBody, CardHeader, Col, FormLabel, InputGroup, Row } from "react-bootstrap";
 import { socket } from "../socket.js";
 import { useState } from "react";
 
@@ -169,26 +169,29 @@ export default function Config(props) {
                     </Button>
                 </InputGroup>
             </Form.Group>
-
-            <div key="inline-checkbox">
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16].map(
-                    (id) => {
-                        console.log(id);
-                        <Form.Check
-                            inline
-                            type="checkbox"
-                            checked={props.state.tagsAllowed.includes(id)}
-                            onChange={(e) => {
-                                socket.emit(
-                                    "set_tag_allowed",
-                                    id,
-                                    e.target.checked
-                                );
-                            }}
-                        />;
-                    }
-                )}
-            </div>
+            <Card>
+                <CardHeader>Valid Tag Ids</CardHeader>
+                <CardBody>
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16].map(
+                        (id) => (
+                            <Form.Check
+                                inline
+                                label={`${id}`}
+                                type="checkbox"
+                                checked={props.state.tagsAllowed.includes(id)}
+                                onChange={(e) => {
+                                    socket.emit(
+                                        "set_tag_allowed",
+                                        id,
+                                        e.target.checked
+                                    );
+                                }}
+                            />
+                        )
+                    )}
+                </CardBody>
+            </Card>
+            <br/>
         </Form>
     );
 }
