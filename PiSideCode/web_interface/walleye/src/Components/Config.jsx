@@ -17,7 +17,6 @@ export default function Config(props) {
     const [newTagSize, setNewTagSize] = useState(props.state.tagSize);
     const [newUDPPort, setNewUDPPort] = useState(props.state.udpPort);
 
-
     return (
         <Form>
             <Form.Group className="mb-3">
@@ -170,6 +169,26 @@ export default function Config(props) {
                     </Button>
                 </InputGroup>
             </Form.Group>
+
+            <div key="inline-checkbox">
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16].map(
+                    (id) => {
+                        console.log(id);
+                        <Form.Check
+                            inline
+                            type="checkbox"
+                            checked={props.state.tagsAllowed.includes(id)}
+                            onChange={(e) => {
+                                socket.emit(
+                                    "set_tag_allowed",
+                                    id,
+                                    e.target.checked
+                                );
+                            }}
+                        />;
+                    }
+                )}
+            </div>
         </Form>
     );
 }

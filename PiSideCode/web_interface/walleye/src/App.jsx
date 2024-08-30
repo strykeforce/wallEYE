@@ -5,7 +5,14 @@ import Config from "./Components/Config.jsx";
 import "./bootstrap.min.css";
 import Dashboard from "./Components/Dashboard.jsx";
 import { socket } from "./socket.js";
-import { Alert, Container, Form, Spinner, Stack, ToastContainer } from "react-bootstrap";
+import {
+    Alert,
+    Container,
+    Form,
+    Spinner,
+    Stack,
+    ToastContainer,
+} from "react-bootstrap";
 import { Helmet } from "react-helmet";
 import "./App.css";
 import PoseVisualizationList from "./Components/PoseVisualizationList.jsx";
@@ -16,7 +23,7 @@ function App() {
     const [state, setState] = useState(null);
     const [isConnected, setIsConnected] = useState(socket.connected);
     const [isDark, setIsDark] = useState(true);
-    const [poses, setPoses] = useState(null);
+    const [imgInfo, setImgInfo] = useState(null);
     const [loopTime, setLoopTime] = useState(2767);
     const [camReadTime, setCamReadTime] = useState(null);
     const [msg, setMsg] = useState("Unknown!!!");
@@ -24,7 +31,7 @@ function App() {
 
     useEffect(() => {
         const interval = setInterval(function () {
-            socket.emit("pose_update");
+            socket.emit("img_info_update");
             socket.emit("performance_update");
             socket.emit("msg_update");
         }, 500);
@@ -60,8 +67,8 @@ function App() {
             alert(error);
         }
 
-        function onPoseUpdate(poses) {
-            setPoses(poses);
+        function onImgInfoUpdate(imgInfo) {
+            setImgInfo(imgInfo);
         }
 
         function onPerformanceUpdate(time) {
@@ -74,12 +81,11 @@ function App() {
             setShowToast(true);
         }
 
-
         socket.on("connect", onConnect);
         socket.on("disconnect", onDisconnect);
         socket.on("state_update", onStateUpdate);
         socket.on("error", onError);
-        socket.on("pose_update", onPoseUpdate);
+        socket.on("img_info_update", onImgInfoUpdate);
         socket.on("performance_update", onPerformanceUpdate);
         socket.on("config_ready", onConfigReady);
         socket.on("msg_update", onMsgUpdate);
@@ -89,7 +95,7 @@ function App() {
             socket.off("disconnect", onDisconnect);
             socket.off("state_update", onStateUpdate);
             socket.off("error", onError);
-            socket.off("pose_update", onPoseUpdate);
+            socket.off("img_info_update", onImgInfoUpdate);
             socket.off("performance_update", onPerformanceUpdate);
             socket.off("config_ready", onConfigReady);
             socket.off("msg_update", onMsgUpdate);
@@ -116,7 +122,11 @@ function App() {
                 <html data-bs-theme={isDark ? "dark" : "light"} />
             </Helmet>
 
-            <ToastContainer position="bottom-start" className="p-3 position-fixed" style={{ zIndex: 1 }}>
+            <ToastContainer
+                position="bottom-start"
+                className="p-3 position-fixed"
+                style={{ zIndex: 1 }}
+            >
                 <AlertToast msg={msg} show={showToast} setShow={setShowToast} />
             </ToastContainer>
 
@@ -148,12 +158,13 @@ function App() {
 
             <Container>
                 {page === "dashboard" && (
-                    <Dashboard state={state} poses={poses} camReadTime={camReadTime} />
+                    <Dashboard
+                        state={state}
+                        imgInfo={imgInfo}
+                        camReadTime={camReadTime}
+                    />
                 )}
                 {page === "config" && <Config state={state} />}
-                {page === "pose_visualization" && (
-                    <PoseVisualizationList state={state} poses={poses} />
-                )}
             </Container>
         </div>
     );

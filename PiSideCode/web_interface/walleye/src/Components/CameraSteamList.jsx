@@ -14,9 +14,13 @@ export default function CameraStreamList(props) {
             <CameraStream
                 camID={camID}
                 state={props.state}
-                poses={props.poses}
+                imgInfo={props.imgInfo}
                 showConfig={props.showConfig}
-                readTime={props.camReadTime ? props.camReadTime[camID] : "Not Updating!"}
+                readTime={
+                    props.camReadTime
+                        ? props.camReadTime[camID]
+                        : "Not Updating!"
+                }
             />
         );
     }

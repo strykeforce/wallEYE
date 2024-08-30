@@ -118,9 +118,8 @@ class PoseProcessor:
             tag_pos.translation() + corner_pos.rotateBy(tag_pos.rotation())
         )
 
-    @staticmethod
     def get_trans_rots(
-        tvecs: np.ndarray, rvecs: np.ndarray, cur_id: int, layout: list[dict]
+        self, tvecs: np.ndarray, rvecs: np.ndarray, cur_id: int
     ) -> tuple[np.ndarray, np.ndarray]:
 
         cam_tvecs = tvecs
@@ -134,7 +133,7 @@ class PoseProcessor:
 
         cam_rot_mat, _ = cv2.Rodrigues(cam_rvecs)
         cam_2_tag = PoseProcessor.get_transform(cam_tvecs, cam_rot_mat)
-        world2_tag = PoseProcessor.get_tag_transform(layout[cur_id - 1]["pose"])
+        world2_tag = PoseProcessor.get_tag_transform(self.tag_layout[cur_id - 1]["pose"])
 
         world_2_cam = np.dot(world2_tag, np.linalg.inv(cam_2_tag))
 
@@ -149,6 +148,7 @@ class PoseProcessor:
         K: np.ndarray,
         D: np.ndarray,
         draw: bool,
+        valid_tags: np.ndarray
     ) -> tuple[tuple[wpi.Pose3d, wpi.Pose3d], list[int], float]:
 
         pose1, pose2 = PoseProcessor.BAD_POSE, PoseProcessor.BAD_POSE
@@ -159,7 +159,7 @@ class PoseProcessor:
         if image is None or K is None or D is None:
             return ((PoseProcessor.BAD_POSE, PoseProcessor.BAD_POSE), None, None, 2767)
 
-        ids, corners = self.tag_processor.get_tags(image, draw)
+        ids, corners = self.tag_processor.get_tags(image, valid_tags, draw)
 
         # If you have corners, find pose
         if len(corners) > 0:
@@ -207,15 +207,13 @@ class PoseProcessor:
 
                 ambig = reproj[0][0] / reproj[1][0]
 
-                t1, r1 = PoseProcessor.get_trans_rots(
-                    tvecs[0].reshape(3, 1), rvecs[0], ids[0], layout
+                t1, r1 = self.get_trans_rots(
+                    tvecs[0].reshape(3, 1), rvecs[0], ids[0]
                 )
-                t2, r2 = PoseProcessor.get_trans_rots(
-                    tvecs[1].reshape(3, 1), rvecs[1], ids[0], layout
-                )
+                t2, r2 = self.get_trans_rots(tvecs[1].reshape(3, 1), rvecs[1], ids[0])
 
-                pose1 = wpi.Pose3d(wpi.Translation3d(*t1), wpi.Rotation3d(*r1))
-                pose2 = wpi.Pose3d(wpi.Translation3d(*t2), wpi.Rotation3d(*r2))
+                pose1 = wpi.Pose3d(wpi.Translation3d(*t1), wpi.Rotation3d(r1))
+                pose2 = wpi.Pose3d(wpi.Translation3d(*t2), wpi.Rotation3d(r2))
 
             # Multi-tag
             else:

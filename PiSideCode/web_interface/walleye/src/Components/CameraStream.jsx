@@ -1,4 +1,12 @@
-import { Card, Button, Image, Col, Row, Badge, ButtonGroup } from "react-bootstrap";
+import {
+    Card,
+    Button,
+    Image,
+    Col,
+    Row,
+    Badge,
+    ButtonGroup,
+} from "react-bootstrap";
 import CameraSettings from "./CameraSettings";
 import { socket } from "../socket";
 import "bootstrap-icons/font/bootstrap-icons.css";
@@ -47,7 +55,11 @@ export default function CameraStream(props) {
                         <Button
                             variant="outline-success"
                             onClick={() => {
-                                socket.emit("set_mode", "POSE_ESTIMATION");
+                                socket.emit(
+                                    "set_mode",
+                                    "POSE_ESTIMATION",
+                                    props.camID
+                                );
                             }}
                         >
                             Pose Estimation
@@ -55,7 +67,11 @@ export default function CameraStream(props) {
                         <Button
                             variant="outline-success"
                             onClick={() => {
-                                socket.emit("set_mode", "TAG_SERVOING");
+                                socket.emit(
+                                    "set_mode",
+                                    "TAG_SERVOING",
+                                    props.camID
+                                );
                             }}
                         >
                             Tag Servoing
@@ -63,13 +79,17 @@ export default function CameraStream(props) {
                         <Button
                             variant="outline-success"
                             onClick={() => {
-                                socket.emit("set_mode", "DISABLED");
+                                socket.emit(
+                                    "set_mode",
+                                    "DISABLED",
+                                    props.camID
+                                );
                             }}
                         >
                             Disabled
                         </Button>
                     </ButtonGroup>
-                    <br/>
+                    <br />
                     <Row>
                         {props.showConfig && (
                             <Col>
@@ -90,11 +110,9 @@ export default function CameraStream(props) {
                             </a>
 
                             <Card.Text>
-                                {" "}
-                                Estimated Pose:{" "}
-                                {props.poses
-                                    ? props.poses[props.camID]
-                                    : "Not available"}{" "}
+                                {props.imgInfo
+                                    ? props.imgInfo[props.camID]
+                                    : "Not available"}
                             </Card.Text>
                             <br />
 

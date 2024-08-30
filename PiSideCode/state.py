@@ -30,8 +30,6 @@ class States(Enum):
     SHUTDOWN = "SHUTDOWN"
 
 
-
-
 CALIBRATION_STATES = (
     States.BEGIN_CALIBRATION,
     States.CALIBRATION_CAPTURE,
@@ -66,9 +64,10 @@ class Data:
 
         self.robot_publisher: NetworkIO = None
 
-        self.poses: dict[str, str] = {}
+        self.img_info: dict[str, str] = {}
 
         # SolvePNP
+        self.valid_tags = np.arange(1, 17)
         self.tag_size = 0.157
         self.udp_port = 5802
 
@@ -86,6 +85,7 @@ class Data:
                 self.board_dims = config["BoardDim"]
                 self.tag_size = config["TagSize"]
                 self.udp_port = config["Port"]
+                self.valid_tags = np.asarray(config["ValidTags"])
 
                 self.set_ip(ip)
 
@@ -110,6 +110,7 @@ class Data:
                 "BoardDim": self.board_dims,
                 "TagSize": self.tag_size,
                 "Port": self.udp_port,
+                "ValidTags": self.valid_tags.tolist(),
             }
             with open(CONFIG_DATA_PATH, "w") as out:
                 json.dump(data_dump, out)
@@ -156,10 +157,14 @@ class Data:
 
         Data.logger.info(f"Robot publisher created: {team_number} - {table_name}")
 
-    def set_pose(self, identifier: str, pose: wpi.Pose3d):
-        self.poses[identifier] = (
-            f"Translation: {round(pose.X(), 2)}, {round(pose.Y(), 2)}, {round(pose.Z(), 2)} - Rotation: {round(pose.X(), 2)}, {round(pose.Y(), 2)}, {round(pose.Z(), 2)}"
-        )
+    def set_web_img_info(self, identifier: str, info: wpi.Pose3d | list):
+        if isinstance(info, wpi.Pose3d):
+            self.img_info[identifier] = (
+                f"Pose: ({round(info.X(), 2)}, {round(info.Y(), 2)}, {round(info.Z(), 2)}) ({round(info.X(), 2)}, {round(info.Y(), 2)}, {round(info.Z(), 2)})"
+            )
+
+        elif isinstance(info, list):
+            self.img_info[identifier] = f"Tag centers: {np.array_str(np.asarray(info), precision=1, suppress_small=True)}"
 
     # Return the file path names for each camera
     def get_cal_file_paths(self):
@@ -284,6 +289,15 @@ class Data:
         ip = struct.unpack("16sH2x4s8x", res)[2]
         return socket.inet_ntoa(ip)
 
+    def set_valid_tags(self, valid_tags: list):
+        self.valid_tags = np.asarray(valid_tags)
+
+        with open(CONFIG_DATA_PATH, "r") as file:
+            config = json.load(file)
+            config["ValidTags"] = valid_tags
+            with open(CONFIG_DATA_PATH, "w") as out:
+                json.dump(config, out)
+
     def get_state(self) -> dict:
         return {
             "teamNumber": self.team_number,
@@ -310,6 +324,7 @@ class Data:
             "udpPort": self.udp_port,
             "visualizingPoses": self.visualizing_poses,
             "status": self.status,
+            "tagsAllowed": self.valid_tags.tolist(),
         }
 
 

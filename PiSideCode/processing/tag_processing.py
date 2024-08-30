@@ -24,29 +24,48 @@ class TagProcessor:
         self.aruco_detector.setDetectorParameters(aruco_params)
 
     # Return camera pose
-    def get_tags(self, img: np.ndarray, draw: bool):
+    def get_tags(self, img: np.ndarray, valid_tags: np.ndarray, draw: bool):
         if img is None:
-            return ([], [])
+            return (np.asarray([]), np.asarray([]))
 
         corners, ids, _ = self.aruco_detector.detectMarkers(img)
 
-        if ids is None:
-            return ([], [])
+        if ids is None or ids.shape[0] == 0:
+            return (np.asarray([]), np.asarray([]))
 
-        mask = (ids >= TagProcessor.MIN_TAG) & (ids <= TagProcessor.MAX_TAG)
-        ids = ids[mask]
-        corners = np.asarray(corners)[mask]
+        ids = ids[0]
 
+        # mask = np.asarray([False] * ids.shape[0])
+        # mask[.nonzero()] = True
+
+        mask = np.in1d(ids, valid_tags)
+        
         if not mask.all():
             TagProcessor.logger.warning(f"Invalid Tags: {ids[~mask]}")
 
+        ids = ids[mask]
+        corners = np.asarray(corners)[mask]
+
+
         if len(corners) > 0:
             # Draw lines around tags for ease of seeing (website)
-            if draw:
-                cv2.aruco.drawDetectedMarkers(img, corners, ids)
 
+            if draw and len(corners) == len(ids):
+                try:
+                    cv2.aruco.drawDetectedMarkers(img, corners, ids)
+                except cv2.error:
+                    TagProcessor.logger.error(f"Could not draw tags: {ids} with corners {corners}")
         else:
             # No tags
-            return ([], [])
+            return (np.asarray([]), np.asarray([]))
 
         return (ids, corners)
+
+    def get_tag_centers(self, img: np.ndarray, valid_tags: np.ndarray,  draw: bool):
+        ids, corners = self.get_tags(img, valid_tags, draw)
+
+        if corners.shape[0] == 0:
+            return (np.asarray([]), np.asarray([]))
+        
+
+        return (ids, corners[0][0].mean(axis=0))

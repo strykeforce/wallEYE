@@ -28,7 +28,11 @@ export default function Dashboard(props) {
                     ? "Stop PnP"
                     : "Start PnP"}
             </Button>
-            <a href="files/walleye_data/walleye.log" className="btn btn-info" role="button">
+            <a
+                href="files/walleye_data/walleye.log"
+                className="btn btn-info"
+                role="button"
+            >
                 {" "}
                 <i class="bi bi-file-earmark-arrow-down"></i> Export Log
             </a>
@@ -56,7 +60,7 @@ export default function Dashboard(props) {
             <h2> Cameras </h2>
             <CameraStreamList
                 state={props.state}
-                poses={props.poses}
+                imgInfo={props.imgInfo}
                 showConfig={true}
                 camReadTime={props.camReadTime}
             />

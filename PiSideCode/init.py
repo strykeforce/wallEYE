@@ -91,9 +91,11 @@ try:
         walleye_data.loop_time = round(curr_time - last_loop_time, 3)
         last_loop_time = curr_time
 
+        curr_state = walleye_data.current_state
+
         # State changes
         # Pre-Calibration
-        if walleye_data.current_state == States.BEGIN_CALIBRATION:
+        if curr_state == States.BEGIN_CALIBRATION:
             logger.info("Beginning calibration")
 
             # Prepare a calibration object for the camera that is being calibrated with pre-set data
@@ -115,7 +117,7 @@ try:
             walleye_data.current_state = States.CALIBRATION_CAPTURE
 
         # Take calibration images
-        elif walleye_data.current_state == States.CALIBRATION_CAPTURE:
+        elif curr_state == States.CALIBRATION_CAPTURE:
             # Read in frames
             ret, img = walleye_data.cameras.info[
                 walleye_data.camera_in_calibration
@@ -140,7 +142,7 @@ try:
                     cam_buffers[walleye_data.camera_in_calibration].update(returned)
 
         # Finished Calibration, generate calibration
-        elif walleye_data.current_state == States.GENERATE_CALIBRATION:
+        elif curr_state == States.GENERATE_CALIBRATION:
             # Get file path for the calibration to be saved
             walleye_data.cameras.info[
                 walleye_data.camera_in_calibration
@@ -201,7 +203,7 @@ try:
             calibrators[walleye_data.camera_in_calibration] = None
 
         # AprilTag processing state
-        elif walleye_data.current_state == States.PROCESSING:
+        elif curr_state == States.PROCESSING:
             # Set tag size, grab camera frames, and grab image timestamp
             pose_estimator.set_tag_size(walleye_data.tag_size)
 
@@ -225,46 +227,53 @@ try:
             #     walleye_data.cameras.list_d(),
             #     np.asarray([i.resolution for i in walleye_data.cameras.info.values()]),
             # )
-            poses, tags, ambig = [], [], []
+            poses, tags, ambig, tag_centers = [], [], [], []
+
             for identifier, image in images.items():
-                if walleye_data.cameras.info[identifier].mode == Modes.POSE_ESTIMATION:
+                curr_mode = walleye_data.cameras.info[identifier].mode
+                if curr_mode == Modes.POSE_ESTIMATION:
                     img_pose, img_tags, img_ambig = pose_estimator.get_pose(
                         image,
                         walleye_data.cameras.info[identifier].K,
                         walleye_data.cameras.info[identifier].D,
-                        False
+                        walleye_data.should_update_web_stream,
+                        walleye_data.valid_tags,
                     )
 
                     poses.append(img_pose)
                     tags.append(img_tags)
                     ambig.append(img_ambig)
 
-                elif walleye_data.cameras.info[identifier].mode == Modes.TAG_SERVOING:
+                elif curr_mode == Modes.TAG_SERVOING:
+                    img_ids, img_tag_centers = tag_processor.get_tag_centers(
+                        image, walleye_data.valid_tags, walleye_data.should_update_web_stream
+                    )
+                    tags.append(img_ids)
+                    tag_centers.append(img_tag_centers)
+
+                else:
                     pass
 
-
-            # Publish camera number, timestamp, poses, tags, ambiguity and increase the update number
-            # logger.info(f"Poses at {image_time}: {poses}")
-            for i in range(len(poses)):
-                if poses[i][0].X() < 2000: # TODO what is this doing here?
-                    walleye_data.robot_publisher.udp_pose_publish(
-                        [pose[0] for pose in poses],
-                        [pose[1] for pose in poses],
-                        ambig,
-                        [image_time] * len(poses),
-                        tags,
-                    )
-                    # walleyeData.robotPublisher.publish(
-                    #     i, imageTime, poses[i], tags[i], ambig[i]
-                    # )
+            if curr_mode == Modes.POSE_ESTIMATION:
+                # Publish camera number, timestamp, poses, tags, ambiguity and increase the update number
+                # for i in range(len(poses)):
+                #     if poses[i][0].X() < 2000: # TODO what is this doing here?
+                walleye_data.robot_publisher.udp_pose_publish(
+                    [pose[0] for pose in poses],
+                    [pose[1] for pose in poses],
+                    ambig,
+                    [image_time] * len(poses),
+                    tags,
+                )  # TODO: is above loop needed?
 
             # Update video stream for web interface
             if walleye_data.should_update_web_stream:
                 for i, (identifier, img) in enumerate(images.items()):
-                    if i >= len(poses):
-                        break
                     cam_buffers[identifier].update(img)
-                    walleye_data.set_pose(identifier, poses[i][0])
+                    if walleye_data.cameras.info[identifier].mode == Modes.POSE_ESTIMATION and i < len(poses):
+                        walleye_data.set_web_img_info(identifier, poses[i][0])
+                    elif walleye_data.cameras.info[identifier].mode == Modes.TAG_SERVOING:
+                        walleye_data.set_web_img_info(identifier, tag_centers)
                     # if walleye_data.visualizing_poses:
                     #     visualization_buffers[identifier].update(
                     #         (poses[i][0].X(), poses[i][0].Y(), poses[i][0].Z()),
@@ -272,7 +281,7 @@ try:
                     #     )
 
         # Ends the WallEye program through the web interface
-        elif walleye_data.current_state == States.SHUTDOWN:
+        elif curr_state == States.SHUTDOWN:
             logger.info("Shutting down")
             socketio.stop()
             logging.shutdown()

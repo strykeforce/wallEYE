@@ -31,8 +31,7 @@ socketio = SocketIO(
     async_mode="eventlet",
 )
 
-cam_buffers = {identifier: Buffer()
-               for identifier in walleye_data.cameras.info.keys()}
+cam_buffers = {identifier: Buffer() for identifier in walleye_data.cameras.info.keys()}
 # visualization_buffers = {
 #     identifier: LivePlotBuffer() for identifier in walleye_data.cameras.info.keys()
 # }
@@ -107,6 +106,7 @@ def set(property: str, cam_id: str, new_value: float | str):
 
     walleye_data.cameras.write_configs(cam_id)
 
+
 @socketio.on("toggle_calibration")
 @update_after
 def toggle_calibration(cam_id: str):
@@ -136,8 +136,7 @@ def generate_calibration(cam_id: str):
 @update_after
 def import_calibration(cam_id: str, file):
     with open(
-        calibration_path_by_cam(
-            cam_id, walleye_data.cameras.info[cam_id].resolution),
+        calibration_path_by_cam(cam_id, walleye_data.cameras.info[cam_id].resolution),
         "w",
     ) as outFile:
         # Save
@@ -148,8 +147,7 @@ def import_calibration(cam_id: str, file):
         # Load
         cal_data["K"] = np.asarray(cal_data["K"])
         cal_data["dist"] = np.asarray(cal_data["dist"])
-        walleye_data.cameras.set_calibration(
-            cam_id, cal_data["K"], cal_data["dist"])
+        walleye_data.cameras.set_calibration(cam_id, cal_data["K"], cal_data["dist"])
         walleye_data.cameras.info[cam_id].calibration_path = calibration_path_by_cam(
             cam_id, walleye_data.cameras.info[cam_id].resolution
         )
@@ -204,8 +202,7 @@ def export_config():
 @socketio.on("set_table_name")
 @update_after
 def set_table_name(name: str):
-    walleye_data.make_publisher(
-        walleye_data.team_number, name, walleye_data.udp_port)
+    walleye_data.make_publisher(walleye_data.team_number, name, walleye_data.udp_port)
     display_info(f"Table Name set: {walleye_data.table_name}")
 
 
@@ -213,7 +210,8 @@ def set_table_name(name: str):
 @update_after
 def set_team_number(number: int):
     walleye_data.make_publisher(
-        int(number), walleye_data.table_name, walleye_data.udp_port)
+        int(number), walleye_data.table_name, walleye_data.udp_port
+    )
     display_info(f"Team number set: {walleye_data.team_number}")
 
 
@@ -261,6 +259,19 @@ def set_static_ip(ip: str):
     walleye_data.set_ip(str(ip))
 
 
+@socketio.on("set_tag_allowed")
+@update_after
+def set_tag_allowed(tag_id: int, allowed: bool):
+    valid = walleye_data.valid_tags.tolist()
+
+    if tag_id in valid and not allowed:
+        valid.remove(tag_id)
+    elif tag_id not in valid and allowed:
+        valid.append(tag_id)
+    
+    walleye_data.set_valid_tags(valid)
+
+
 @socketio.on("set_mode")
 @update_after
 def set_mode(mode: str, cam_id: str):
@@ -271,6 +282,8 @@ def set_mode(mode: str, cam_id: str):
     ):
         walleye_data.cameras.info[cam_id].mode = Modes(mode)
         walleye_data.cameras.write_configs(cam_id)
+
+        display_info(f"Mode set to {mode} for {cam_id}")
 
         if mode == Modes.DISABLED.value:
             display_info("Disabled upon next wallEYE boot")
@@ -307,15 +320,18 @@ def toggle_pose_visualization():
     )
 
 
-@socketio.on("pose_update")
-def pose_update():
-    socketio.emit("pose_update", walleye_data.poses)
+@socketio.on("img_info_update")
+def img_info_update():
+    socketio.emit("img_info_update", walleye_data.img_info)
     socketio.sleep(0)
 
 
 @socketio.on("performance_update")
 def performance_update():
-    socketio.emit("performance_update", {"loopTime": walleye_data.loop_time, "camReadTime": walleye_data.cam_read_time})
+    socketio.emit(
+        "performance_update",
+        {"loopTime": walleye_data.loop_time, "camReadTime": walleye_data.cam_read_time},
+    )
     socketio.sleep(0)
 
 
@@ -337,7 +353,8 @@ def video_feed(cam_id):
         return
 
     return Response(
-        cam_buffers[cam_id].output(), mimetype="multipart/x-mixed-replace; boundary=frame"
+        cam_buffers[cam_id].output(),
+        mimetype="multipart/x-mixed-replace; boundary=frame",
     )
 
 
