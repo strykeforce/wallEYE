@@ -14,7 +14,7 @@ export default function Dashboard(props) {
                     socket.emit("shutdown");
                 }}
             >
-                <i class="bi bi-power"></i>SHUTDOWN
+                <i class="bi bi-power"></i>{" "}SHUTDOWN
             </Button>
             <Button
                 variant="success"
@@ -23,7 +23,7 @@ export default function Dashboard(props) {
                     socket.emit("toggle_pnp");
                 }}
             >
-                <i class="bi bi-motherboard"></i>
+                <i class="bi bi-motherboard"></i>{" "}
                 {props.state.currentState === "PROCESSING"
                     ? "Stop PnP"
                     : "Start PnP"}
@@ -34,7 +34,7 @@ export default function Dashboard(props) {
                 role="button"
             >
                 {" "}
-                <i class="bi bi-file-earmark-arrow-down"></i> Export Log
+                <i class="bi bi-file-earmark-arrow-down"></i> {" "}Export Log
             </a>
             <Button
                 variant="warning"
@@ -43,7 +43,7 @@ export default function Dashboard(props) {
                     socket.emit("export_config");
                 }}
             >
-                <i className="bi bi-file-earmark-arrow-down"></i>Export Config
+                <i className="bi bi-file-earmark-arrow-down"></i>{" "}Export Config
             </Button>
             <br />
             <Form.Label> Import Config</Form.Label>

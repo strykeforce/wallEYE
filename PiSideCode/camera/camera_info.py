@@ -129,7 +129,7 @@ class CameraInfo:
             return False
 
         try:
-            control: Menu = self.controls[control_name]
+            control = self.controls[control_name]
 
             if isinstance(control, Menu):
                 value = next(

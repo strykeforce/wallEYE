@@ -20,8 +20,7 @@ RUN apt-get update && apt-get install -y git libgl1-mesa-glx libsm6 libxext6 lib
 
 RUN --mount=type=cache,target=/root/.cache/pip \
     --mount=type=bind,source=requirements.txt,target=requirements.txt \
-    python -m pip install --extra-index-url=https://wpilib.jfrog.io/artifactory/api/pypi/wpilib-python-release-2024/simple robotpy-wpimath pyntcore \
-    && python -m pip install -r requirements.txt
+    python -m pip install -r requirements.txt
 
 
 # Copy the source code into the container.

@@ -7,8 +7,7 @@ from publisher.network_table_publisher import NetworkIO
 from calibration.calibration import CalibType
 import logging
 import socket
-import struct
-import fcntl
+from networking import set_ip, get_current_ip
 import wpimath.geometry as wpi
 import os
 import numpy as np
@@ -49,7 +48,7 @@ class Data:
         self.visualizing_poses: bool = False
 
         self.loop_time: float = 2767.0
-        self.cam_read_time: dict[str:float] | None = None
+        self.cam_read_delay: dict[str:float] | None = None
 
         # Calibration
         self.calibration_type: CalibType = CalibType.CIRCLE_GRID
@@ -89,7 +88,7 @@ class Data:
 
                 self.set_ip(ip)
 
-                if Data.get_current_ip() != ip:
+                if get_current_ip() != ip:
                     Data.logger.warning("Failed to set static ip, trying again...")
                     self.set_ip(ip)
 
@@ -98,7 +97,7 @@ class Data:
         except (FileNotFoundError, json.decoder.JSONDecodeError, KeyError):
             self.team_number = 2767
             self.table_name = "WallEye"
-            self.ip = Data.get_current_ip()
+            self.ip = get_current_ip()
             Data.logger.info(f"IP is {self.ip}")
 
             self.make_publisher(self.team_number, self.table_name, self.udp_port)
@@ -184,22 +183,6 @@ class Data:
             Data.logger.error(f"Failed to write Dimensions {dim}")
 
     # Set the udp port and save it off
-    def setUDPPort(self, port):
-        try:
-            # Write it in system settings file
-            with open(CONFIG_DATA_PATH, "r") as file:
-                config = json.load(file)
-                config["Port"] = port
-                self.udpPort = port
-                with open("SystemData.json", "w") as out:
-                    json.dump(config, out)
-
-            self.makePublisher(self.teamNumber, self.tableName, self.udpPort)
-        except (FileNotFoundError, json.decoder.JSONDecodeError):
-            Data.logger.error(f"Failed to write port {port}")
-
-    # Set the udp port and save it off
-
     def set_udp_port(self, port):
         try:
             # Write it in system settings file
@@ -230,10 +213,7 @@ class Data:
 
     # Set static IP and write it into system files
     def set_ip(self, ip: str, interface: str = "eth0"):
-        Data.logger.info("Attempting to set static IP")
-
         if not ip:
-            Data.logger.warning("IP is None")
             if not self.robot_publisher:
                 self.make_publisher(self.team_number, self.table_name, self.udp_port)
             return
@@ -242,23 +222,8 @@ class Data:
         if self.robot_publisher:
             self.robot_publisher.destroy()
 
-        # https://stackoverflow.com/questions/20420937/how-to-assign-ip-address-to-interface-in-python
-        bin_ip = socket.inet_aton(ip)
-        ifreq = struct.pack(
-            b"16sH2s4s8s",
-            interface.encode("utf-8"),
-            socket.AF_INET,
-            b"\x00" * 2,
-            bin_ip,
-            b"\x00" * 8,
-        )
-        # https://stackoverflow.com/questions/70310413/python-fcntl-ioctl-errno-1-operation-not-permitted
-        try:
-            fcntl.ioctl(networking_socket, SIOCSIFADDR, ifreq)
-        except Exception as e:
-            Data.logger.info(f"Failed to set IP address: {e}")
+        set_ip(ip, interface)
 
-        Data.logger.info(f"Static IP set: {ip} =? {Data.get_current_ip()}")
         self.ip = ip
 
         try:
@@ -273,21 +238,6 @@ class Data:
             Data.logger.error(f"Failed to write static ip: {ip}")
 
         self.make_publisher(self.team_number, self.table_name, self.udp_port)
-
-    @staticmethod
-    def get_current_ip(interface: str = "eth0"):
-        # https://stackoverflow.com/questions/166506/finding-local-ip-addresses-using-pythons-stdlib/9267833#9267833
-        ifreq = struct.pack(
-            b"16sH14s", interface.encode("utf-8"), socket.AF_INET, b"\x00" * 14
-        )
-        try:
-            res = fcntl.ioctl(sockfd, SIOCGIFADDR, ifreq)
-        except Exception as e:
-            Data.logger.error(f"Could not get current IP - {e} - Returning None")
-            return None
-
-        ip = struct.unpack("16sH2x4s8x", res)[2]
-        return socket.inet_ntoa(ip)
 
     def set_valid_tags(self, valid_tags: list):
         self.valid_tags = np.asarray(valid_tags)

@@ -63,6 +63,7 @@ export default function CameraStream(props) {
                                 );
                             }}
                         >
+                            <i className="bi bi-motherboard-fill" /> {" "}
                             Pose Estimation
                         </Button>
                         <Button
@@ -75,6 +76,7 @@ export default function CameraStream(props) {
                                 );
                             }}
                         >
+                            <i className="bi bi-cursor-fill" />{" "}
                             Tag Servoing
                         </Button>
                         <Button
@@ -87,6 +89,7 @@ export default function CameraStream(props) {
                                 );
                             }}
                         >
+                            <i className="bi bi-camera-video-off-fill" />{" "}
                             Disabled
                         </Button>
                     </ButtonGroup>
@@ -127,7 +130,7 @@ export default function CameraStream(props) {
                                     );
                                 }}
                             >
-                                <i class="bi bi-camera-video"></i>
+                                <i class="bi bi-camera-video"></i> {" "}
                                 {props.state.currentState ===
                                     "BEGIN_CALIBRATION" ||
                                     props.state.currentState ===
@@ -145,7 +148,7 @@ export default function CameraStream(props) {
                                     else action();
                                 }}
                             >
-                                <i class="bi bi-check"></i>
+                                <i class="bi bi-check"></i> {" "}
                                 Generate Calibration
                             </Button>
                         </Col>

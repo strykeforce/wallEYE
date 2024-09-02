@@ -1,13 +1,14 @@
 git+https://github.com/antmicro/pyrav4l2.git
-pyntcore # >= 2023.2.1.2
-robotpy-wpimath
 Flask
 flask[async]
-eventlet
-opencv-contrib-python >= 4.10.0
 flask-socketio
+eventlet
+numpy
+opencv-python-headless >= 4.10.0
 matplotlib
-numpy >= 1.26.4
 Pillow >= 10.3
 cffi
 simplejpeg
+--extra-index-url https://wpilib.jfrog.io/artifactory/api/pypi/wpilib-python-release-2024/simple 
+pyntcore # >= 2023.2.1.2
+robotpy-wpimath

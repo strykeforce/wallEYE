@@ -78,8 +78,8 @@ class Calibrator:
                 ] = (np.arange(0, corner_shape[0]) * 2 + i % 2)
 
         # Set values
-        self.obj_points = []
-        self.img_points = []
+        self.obj_points: list[np.ndarray] = []
+        self.img_points: list[np.ndarray] = []
         self.last_image_used = 0
         self.ready_counts = 0
 
@@ -430,7 +430,7 @@ class Calibrator:
             calibration_data["dist"] = np.array(calibration_data["dist"])
             calibration_data["r"] = np.array(calibration_data["r"])
             calibration_data["t"] = np.array(calibration_data["t"])
-        except BaseException:
+        except KeyError:
             Calibrator.logger.error(f"Invalid calibration format in {file}")
 
         return calibration_data

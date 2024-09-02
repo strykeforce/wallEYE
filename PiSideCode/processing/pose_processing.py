@@ -4,7 +4,7 @@ import logging
 import wpimath.geometry as wpi
 import numpy as np
 import math
-
+# from numba import njit
 
 class PoseProcessor:
     logger = logging.getLogger(__name__)
@@ -14,15 +14,11 @@ class PoseProcessor:
     MIN_TAG = 1
     MAX_TAG = 16
 
-    # Create a pose estimator
     def __init__(self, tag_processor, tag_length):
         # Open tag layout for tag poses
         with open("./processing/april_tag_layout.json", "r") as f:
-            self.tag_layout = json.load(f)
+            self.tag_layout = json.load(f)["tags"]
             PoseProcessor.logger.info("Tag layout loaded")
-
-        # Save layout
-        self.tag_layout = self.tag_layout["tags"]
 
         self.tag_processor = tag_processor
 
@@ -35,6 +31,7 @@ class PoseProcessor:
             self.corner_locs[i] = self.tag_corner * j
 
         self.all_corner_poses = {}
+        self.tag_transforms = {}
 
         # Grab tag pose and calcualte each corner location
         for tag_id in range(PoseProcessor.MIN_TAG, PoseProcessor.MAX_TAG + 1):
@@ -53,6 +50,11 @@ class PoseProcessor:
 
             self.all_corner_poses[tag_id] = corner_poses
 
+            rot = pose.rotation().rotateBy(wpi.Rotation3d(0, 0, np.pi))
+            translation = np.asarray((pose.X(), pose.Y(), pose.Z())).reshape(3, 1)
+            rot, _ = cv2.Rodrigues(np.asarray((rot.X(), rot.Y(), rot.Z())).reshape(3, 1))
+            self.tag_transforms[tag_id] = PoseProcessor.get_transform(translation, rot)
+
     # Set AprilTag side length in meters
     def set_tag_size(self, size: float):
         self.square_length = size
@@ -66,60 +68,55 @@ class PoseProcessor:
     # A method that translates the WPILib coordinate system to the openCV
     # coordinate system
     @staticmethod
-    def wpilib_to_cv2_coords(translation) -> np.ndarray[float]:
+    def wpilib_to_cv2_coords(translation: wpi.Translation3d) -> np.ndarray[float]:
         return np.asarray([-translation.Y(), -translation.Z(), translation.X()])
 
     # Grab AprilTag pose information
     @staticmethod
-    def make_pose_object(temp):
+    def make_pose_object(pose_dict):
         return wpi.Transform3d(
             wpi.Translation3d(
-                temp["translation"]["x"],
-                temp["translation"]["y"],
-                temp["translation"]["z"],
+                pose_dict["translation"]["x"],
+                pose_dict["translation"]["y"],
+                pose_dict["translation"]["z"],
             ),
             wpi.Rotation3d(
                 wpi.Quaternion(
-                    temp["rotation"]["quaternion"]["W"],
-                    temp["rotation"]["quaternion"]["X"],
-                    temp["rotation"]["quaternion"]["Y"],
-                    temp["rotation"]["quaternion"]["Z"],
+                    pose_dict["rotation"]["quaternion"]["W"],
+                    pose_dict["rotation"]["quaternion"]["X"],
+                    pose_dict["rotation"]["quaternion"]["Y"],
+                    pose_dict["rotation"]["quaternion"]["Z"],
                 )
             ).rotateBy(wpi.Rotation3d(0, 0, math.radians(180))),
         )
 
     # ROT MUST BE A 3x3 ROTATION MATRIX
     @staticmethod
+    # @njit
     def get_transform(trans, rot):
         return np.concatenate(
             (np.concatenate((rot, trans), axis=1), np.asarray([[0, 0, 0, 1]])), axis=0
         )
 
     @staticmethod
-    def get_tag_transform(json_id):
-        pose = PoseProcessor.make_pose_object(json_id)
-        rot = pose.rotation().rotateBy(wpi.Rotation3d(0, 0, math.radians(180)))
-        translation = np.asarray([pose.X(), pose.Y(), pose.Z()]).reshape(3, 1)
-        rot, _ = cv2.Rodrigues(np.asarray([rot.X(), rot.Y(), rot.Z()]).reshape(3, 1))
-        return PoseProcessor.get_transform(translation, rot)
-
-    @staticmethod
+    # @njit
     def get_rot_from_transform(transform):
         return transform[:3, :3]
 
     @staticmethod
+    # @njit
     def get_translation_from_transform(transform):
         return transform[:3, 3]
 
     # Translate corner locations
-    @staticmethod
-    def add_corners(tag_pos: wpi.Pose3d, corner_pos):
-        return PoseProcessor.wpilib_to_cv2_coords(
-            tag_pos.translation() + corner_pos.rotateBy(tag_pos.rotation())
-        )
+    # @staticmethod
+    # def add_corners(tag_pos: wpi.Pose3d, corner_pos):
+    #     return PoseProcessor.wpilib_to_cv2_coords(
+    #         tag_pos.translation() + corner_pos.rotateBy(tag_pos.rotation())
+    #     )
 
     def get_trans_rots(
-        self, tvecs: np.ndarray, rvecs: np.ndarray, cur_id: int
+        self, tvecs: np.ndarray, rvecs: np.ndarray, tag_id: int
     ) -> tuple[np.ndarray, np.ndarray]:
 
         cam_tvecs = tvecs
@@ -133,9 +130,9 @@ class PoseProcessor:
 
         cam_rot_mat, _ = cv2.Rodrigues(cam_rvecs)
         cam_2_tag = PoseProcessor.get_transform(cam_tvecs, cam_rot_mat)
-        world2_tag = PoseProcessor.get_tag_transform(self.tag_layout[cur_id - 1]["pose"])
+        world_2_tag = self.tag_transforms[tag_id]
 
-        world_2_cam = np.dot(world2_tag, np.linalg.inv(cam_2_tag))
+        world_2_cam = np.dot(world_2_tag, np.linalg.inv(cam_2_tag))
 
         trans_vec = PoseProcessor.get_translation_from_transform(world_2_cam)
         rvecs = PoseProcessor.get_rot_from_transform(world_2_cam)

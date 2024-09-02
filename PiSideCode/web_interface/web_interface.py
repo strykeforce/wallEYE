@@ -330,7 +330,7 @@ def img_info_update():
 def performance_update():
     socketio.emit(
         "performance_update",
-        {"loopTime": walleye_data.loop_time, "camReadTime": walleye_data.cam_read_time},
+        {"loopTime": walleye_data.loop_time, "camReadTime": walleye_data.cam_read_delay},
     )
     socketio.sleep(0)
 

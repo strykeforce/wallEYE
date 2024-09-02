@@ -38,7 +38,7 @@ class TagProcessor:
         # mask = np.asarray([False] * ids.shape[0])
         # mask[.nonzero()] = True
 
-        mask = np.in1d(ids, valid_tags)
+        mask = np.isin(ids, valid_tags)
         
         if not mask.all():
             TagProcessor.logger.warning(f"Invalid Tags: {ids[~mask]}")

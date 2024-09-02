@@ -11,6 +11,7 @@ from pathlib import Path
 from directory import V4L_PATH, full_cam_path, calibration_path_by_cam, cam_config_path
 import json
 import numpy as np
+from concurrent.futures import ThreadPoolExecutor
 
 
 class Cameras:
@@ -20,6 +21,11 @@ class Cameras:
         # Cameras identified by their path (or whatever unique identifier is
         # available)
         self.info: dict[str, CameraInfo] = {}
+        self.frames: dict[str, np.ndarray] = {}
+        self.connections: dict[str, bool] = {}
+        self.timestamp: dict[str, float] = {}
+        self.cam_read_delay: dict[str, float] = {}
+        self.executor: ThreadPoolExecutor = ThreadPoolExecutor()
 
         if platform == "linux" or platform == "linux2":
             Cameras.logger.info("Platform is linux")
@@ -71,6 +77,9 @@ class Cameras:
         else:
             Cameras.logger.error("Unsupported platform!")
 
+    def __del__(self):
+        self.executor.shutdown()
+
     def set_calibration(self, identifier: str, K: np.ndarray, D: np.ndarray):
         self.info[identifier].K = K
         self.info[identifier].D = D
@@ -88,21 +97,22 @@ class Cameras:
     # Grab frames from each camera specifically for processing
     def get_frames_for_processing(
         self,
-    ) -> tuple[dict[str, bool], dict[str, np.ndarray], dict[str, float]]:
-        frames = {}
-        connections = {}
-        timestamp = {}
-        cam_read_time = {}
-        for identifier, camInfo in self.info.items():
-            before = time.perf_counter()
-            ret, img = camInfo.cam.read()
+    ) -> tuple[
+        dict[str, bool], dict[str, np.ndarray], dict[str, float], dict[str, float]
+    ]:
+        list(self.executor.map(self._read_frame, self.info.keys()))
 
-            cam_read_time[identifier] = round(time.perf_counter() - before, 3)
-            frames[identifier] = img
-            connections[identifier] = ret
-            timestamp[identifier] = camInfo.cam.get(cv2.CAP_PROP_POS_MSEC)
+        return (self.connections, self.frames, self.timestamp, self.cam_read_delay)
 
-        return (connections, frames, timestamp, cam_read_time)
+    def _read_frame(self, identifier):
+        cam_info = self.info[identifier]
+        before = time.perf_counter()
+        ret, img = cam_info.cam.read()
+
+        self.cam_read_delay[identifier] = round(time.perf_counter() - before, 3)
+        self.frames[identifier] = img
+        self.connections[identifier] = ret
+        self.timestamp[identifier] = cam_info.cam.get(cv2.CAP_PROP_POS_MSEC)
 
     # Find a calibration for the camera
     def import_calibration(self, identifier: str) -> bool:

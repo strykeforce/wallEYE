@@ -5,8 +5,7 @@ import socket
 import struct
 import json
 
-from time import clock_gettime_ns, CLOCK_MONOTONIC
-
+import time
 
 class NetworkIO:
     logger = logging.getLogger(__name__)
@@ -135,7 +134,8 @@ class NetworkIO:
                 "Pose1": self.pose_to_dict(pose1[i]),
                 "Pose2": self.pose_to_dict(pose2[i]),
                 "Ambig": str(ambig[i]),
-                "Timestamp": str(ntcore._now() - timestamp[i]),
+                # "Timestamp": str(ntcore._now() - timestamp[i]),
+                "Timestamp": str(ntcore._now() - (time.monotonic_ns() / 1000000 - timestamp[i])),
                 "Tags": str(tags[i]),
             }
             data_dict[self.name + str(i)] = camDict
@@ -184,7 +184,7 @@ class NetworkIO:
         self.ambiguity_sub[index].set(ambig)
         self.tag_sub[index].set(tags)
         self.timestamp_sub[index].set(
-            ntcore._now() - (clock_gettime_ns(CLOCK_MONOTONIC) / 1000000 - time) * 1000
+            ntcore._now() - (time.monotonic_ns() / 1000000 - time) * 1000
         )
 
         self.update_num[index] += 1
