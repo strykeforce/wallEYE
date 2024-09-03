@@ -98,6 +98,35 @@ class Calibrator:
             shutil.rmtree(self.img_path)
         os.mkdir(self.img_path)
 
+    def find_board(
+        self,
+        img: np.ndarray,
+    ) -> tuple[bool, np.ndarray]:
+        if self.calib_type == CalibType.CHESSBOARD:
+            return cv2.findChessboardCorners(
+                img,
+                self.corner_shape,
+                cv2.CALIB_CB_ADAPTIVE_THRESH
+                + cv2.CALIB_CB_NORMALIZE_IMAGE
+                + cv2.CALIB_CB_FAST_CHECK,
+            )
+
+        elif self.calib_type == CalibType.CIRCLE_GRID:
+            keypoints = self.blob_detector.detect(img)
+            img_keypoints = cv2.drawKeypoints(
+                img,
+                keypoints,
+                np.asarray([]),
+                (0, 255, 0),
+                cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS,
+            )
+            return cv2.findCirclesGrid(
+                img_keypoints,
+                self.corner_shape,
+                None,
+                flags=cv2.CALIB_CB_ASYMMETRIC_GRID,
+            )
+
     # Take a frame and process it for calibration
     def process_frame(
         self,
@@ -108,38 +137,24 @@ class Calibrator:
             40,
             0.001,
         ),
+        reduction_factor: int=2,
     ) -> tuple[np.ndarray, bool, str]:
         # Convert it to gray and look for calibration board corners
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         self.img_shape = gray.shape[::-1]
 
-        if self.calib_type == CalibType.CHESSBOARD:
-            found, corners = cv2.findChessboardCorners(
-                gray,
-                self.corner_shape,
-                cv2.CALIB_CB_ADAPTIVE_THRESH
-                + cv2.CALIB_CB_NORMALIZE_IMAGE
-                + cv2.CALIB_CB_FAST_CHECK,
-            )
+        reduced = cv2.resize(
+            gray, (gray.shape[0] // reduction_factor, gray.shape[1] // reduction_factor)
+        )
+        found, _ = self.find_board(reduced)
 
-        elif self.calib_type == CalibType.CIRCLE_GRID:
-            keypoints = self.blob_detector.detect(gray)
-            img_keypoints = cv2.drawKeypoints(
-                img,
-                keypoints,
-                np.array([]),
-                (0, 255, 0),
-                cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS,
-            )
-            found, corners = cv2.findCirclesGrid(
-                img_keypoints,
-                self.corner_shape,
-                None,
-                flags=cv2.CALIB_CB_ASYMMETRIC_GRID,
-            )
+        if not found:
+            return (img, used, None)
 
         used = False
         path_saved = None
+
+        found, corners = self.find_board(gray)
 
         # If there is a board and it has been long enough
         if (
@@ -426,11 +441,11 @@ class Calibrator:
             calibration_data = json.load(f)
 
         try:
-            calibration_data["K"] = np.array(calibration_data["K"])
-            calibration_data["dist"] = np.array(calibration_data["dist"])
-            calibration_data["r"] = np.array(calibration_data["r"])
-            calibration_data["t"] = np.array(calibration_data["t"])
-        except KeyError:
+            calibration_data["K"] = np.asarray(calibration_data["K"])
+            calibration_data["dist"] = np.asarray(calibration_data["dist"])
+            calibration_data["r"] = np.asarray(calibration_data["r"])
+            calibration_data["t"] = np.asarray(calibration_data["t"])
+        except BaseException:
             Calibrator.logger.error(f"Invalid calibration format in {file}")
 
         return calibration_data
