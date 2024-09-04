@@ -64,6 +64,7 @@ class Data:
         self.robot_publisher: NetworkIO = None
 
         self.img_info: dict[str, str] = {}
+        self.cam_nicknames: dict[str, str] = {}
 
         # SolvePNP
         self.valid_tags = np.arange(1, 17)
@@ -85,6 +86,7 @@ class Data:
                 self.tag_size = config["TagSize"]
                 self.udp_port = config["Port"]
                 self.valid_tags = np.asarray(config["ValidTags"])
+                self.cam_nicknames = config["Nicknames"]
 
                 self.set_ip(ip)
 
@@ -110,6 +112,7 @@ class Data:
                 "TagSize": self.tag_size,
                 "Port": self.udp_port,
                 "ValidTags": self.valid_tags.tolist(),
+                "Nicknames": {}
             }
             with open(CONFIG_DATA_PATH, "w") as out:
                 json.dump(data_dump, out)
@@ -275,6 +278,7 @@ class Data:
             "visualizingPoses": self.visualizing_poses,
             "status": self.status,
             "tagsAllowed": self.valid_tags.tolist(),
+            "camNicknames": self.cam_nicknames,
         }
 
 

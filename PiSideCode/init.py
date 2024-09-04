@@ -38,6 +38,10 @@ import time
 cameras = walleye_data.cameras = Cameras()
 camera_infos = walleye_data.cameras.info
 
+for i in camera_infos:
+    if i not in walleye_data.cam_nicknames:
+        walleye_data.cam_nicknames[i] = i
+
 # Initialize web interface after walleye_data.cameras is set
 from web_interface.web_interface import (
     cam_buffers,
@@ -133,9 +137,9 @@ try:
         # Take calibration images
         elif curr_state == States.CALIBRATION_CAPTURE:
             # Read in frames
-            ret, img = camera_infos[curr_calib_cam].cam.read()
+            img = cameras.frames[curr_calib_cam] # camera_infos[curr_calib_cam].cam.read()
 
-            if not ret:
+            if img is None:
                 logger.error(f"Failed to capture image: {curr_calib_cam}")
             else:
                 # Process frames with the calibration object created prior
@@ -270,7 +274,7 @@ try:
                         identifier
                     ].mode == Modes.POSE_ESTIMATION and i < len(poses):
                         walleye_data.set_web_img_info(identifier, poses[i][0])
-                    elif camera_infos.mode == Modes.TAG_SERVOING:
+                    elif camera_infos[identifier].mode == Modes.TAG_SERVOING:
                         walleye_data.set_web_img_info(identifier, tag_centers)
                     # if walleye_data.visualizing_poses:
                     #     visualization_buffers[identifier].update(
@@ -291,9 +295,8 @@ try:
                 if identifier == curr_calib_cam and curr_state in CALIBRATION_STATES:
                     continue
 
-                ret, img = camera_info.cam.read()
-
                 if walleye_data.should_update_web_stream:
+                    img = cameras.frames[identifier] # camera_info.cam.read()
                     cam_buffers[identifier].update(img)
 
 except Exception as e:

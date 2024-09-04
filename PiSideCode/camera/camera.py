@@ -12,7 +12,8 @@ from directory import V4L_PATH, full_cam_path, calibration_path_by_cam, cam_conf
 import json
 import numpy as np
 from concurrent.futures import ThreadPoolExecutor
-
+from threading import Thread, Lock
+import eventlet
 
 class Cameras:
     logger = logging.getLogger(__name__)
@@ -26,6 +27,7 @@ class Cameras:
         self.timestamp: dict[str, float] = {}
         self.cam_read_delay: dict[str, float] = {}
         self.executor: ThreadPoolExecutor = ThreadPoolExecutor()
+        self.new_data_lock: Lock = Lock()
 
         if platform == "linux" or platform == "linux2":
             Cameras.logger.info("Platform is linux")
@@ -74,11 +76,22 @@ class Cameras:
                 else:
                     Cameras.logger.error(f"Failed to open camera: {identifier}")
 
+            Thread(target=self._capture_thread, daemon=True).start()
+
         else:
             Cameras.logger.error("Unsupported platform!")
 
     def __del__(self):
         self.executor.shutdown()
+
+    def _capture_thread(self):
+        while True:
+            list(self.executor.map(self._read_frame, self.info.keys()))
+
+            if self.new_data_lock.locked(): 
+                self.new_data_lock.release()
+
+            # eventlet.sleep(0.001)
 
     def set_calibration(self, identifier: str, K: np.ndarray, D: np.ndarray):
         self.info[identifier].K = K
@@ -100,7 +113,7 @@ class Cameras:
     ) -> tuple[
         dict[str, bool], dict[str, np.ndarray], dict[str, float], dict[str, float]
     ]:
-        list(self.executor.map(self._read_frame, self.info.keys()))
+        self.new_data_lock.acquire()
 
         return (self.connections, self.frames, self.timestamp, self.cam_read_delay)
 

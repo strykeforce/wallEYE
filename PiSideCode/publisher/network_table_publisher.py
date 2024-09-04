@@ -140,7 +140,11 @@ class NetworkIO:
             }
             data_dict[self.name + str(i)] = camDict
         data_str = json.dumps(data_dict)
-        self.sock.sendto(bytes(data_str, "utf-8"), (self.robot_ip, self.robot_port))
+
+        try:
+            self.sock.sendto(bytes(data_str, "utf-8"), (self.robot_ip, self.robot_port))
+        except Exception as e:
+            NetworkIO.logger.error("Failed to publish pose in UDP: ", exc_info=e)
 
     def pose_to_dict(self, pose):
         t = pose.translation()

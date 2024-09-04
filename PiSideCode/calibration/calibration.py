@@ -8,7 +8,7 @@ import logging
 from enum import Enum
 from pathlib import Path
 from directory import CONFIG_DIRECTORY
-
+import datetime
 
 class CalibType(Enum):
     CHESSBOARD = "Chessboard"
@@ -149,7 +149,7 @@ class Calibrator:
         found, _ = self.find_board(reduced)
 
         if not found:
-            return (img, used, None)
+            return (img, False, None)
 
         used = False
         path_saved = None
@@ -334,6 +334,7 @@ class Calibrator:
                     "t": np.asarray(trans).tolist(),
                     "reproj": reproj_error,
                     "resolution": self.resolution,
+                    "timestamp": datetime.datetime.now()
                 },
                 f,
             )
@@ -445,7 +446,7 @@ class Calibrator:
             calibration_data["dist"] = np.asarray(calibration_data["dist"])
             calibration_data["r"] = np.asarray(calibration_data["r"])
             calibration_data["t"] = np.asarray(calibration_data["t"])
-        except BaseException:
+        except Exception:
             Calibrator.logger.error(f"Invalid calibration format in {file}")
 
         return calibration_data

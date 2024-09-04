@@ -268,9 +268,19 @@ def set_tag_allowed(tag_id: int, allowed: bool):
         valid.remove(tag_id)
     elif tag_id not in valid and allowed:
         valid.append(tag_id)
-    
+
     walleye_data.set_valid_tags(valid)
 
+
+@socketio.on("set_cam_nickname")
+@update_after
+def set_cam_nickname(cam_id: str, nickname: str):
+    if len(nickname) == 0:
+        nickname = cam_id
+    
+    walleye_data.cam_nicknames[cam_id] = nickname
+
+    display_info(f"{cam_id} is now named {nickname}")
 
 @socketio.on("set_mode")
 @update_after

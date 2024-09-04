@@ -6,6 +6,8 @@ import {
     Row,
     Badge,
     ButtonGroup,
+    Form,
+    InputGroup,
 } from "react-bootstrap";
 import CameraSettings from "./CameraSettings";
 import { socket } from "../socket";
@@ -29,6 +31,20 @@ export default function CameraStream(props) {
                 action={action}
                 camID={props.camID}
             />
+            <Form>
+                <Form.Group className="mb-3">
+                    <InputGroup>
+                        <InputGroup.Text>Camera Nickname</InputGroup.Text>
+                        <Form.Control
+                            type="text"
+                            value={props.state.camNicknames[props.camID]}
+                            onChange={(e) => {
+                                socket.emit("set_cam_nickname", props.camID, e.target.value);
+                            }}
+                        />
+                    </InputGroup>
+                </Form.Group>
+            </Form>
 
             <Card>
                 <Card.Header className="d-flex justify-content-between">
@@ -53,7 +69,12 @@ export default function CameraStream(props) {
                 <Card.Body>
                     <ButtonGroup className="d-flex">
                         <Button
-                            variant={`${props.state.cameraConfigs[props.camID].mode === "POSE_ESTIMATION" ? "" : "outline-"}success`}
+                            variant={`${
+                                props.state.cameraConfigs[props.camID].mode ===
+                                "POSE_ESTIMATION"
+                                    ? ""
+                                    : "outline-"
+                            }success`}
                             onClick={() => {
                                 console.log(props.state);
                                 socket.emit(
@@ -63,11 +84,16 @@ export default function CameraStream(props) {
                                 );
                             }}
                         >
-                            <i className="bi bi-motherboard-fill" /> {" "}
-                            Pose Estimation
+                            <i className="bi bi-motherboard-fill" /> Pose
+                            Estimation
                         </Button>
                         <Button
-                            variant={`${props.state.cameraConfigs[props.camID].mode === "TAG_SERVOING" ? "" : "outline-"}success`}
+                            variant={`${
+                                props.state.cameraConfigs[props.camID].mode ===
+                                "TAG_SERVOING"
+                                    ? ""
+                                    : "outline-"
+                            }success`}
                             onClick={() => {
                                 socket.emit(
                                     "set_mode",
@@ -76,11 +102,15 @@ export default function CameraStream(props) {
                                 );
                             }}
                         >
-                            <i className="bi bi-cursor-fill" />{" "}
-                            Tag Servoing
+                            <i className="bi bi-cursor-fill" /> Tag Servoing
                         </Button>
                         <Button
-                            variant={`${props.state.cameraConfigs[props.camID].mode === "DISABLED" ? "" : "outline-"}success`}
+                            variant={`${
+                                props.state.cameraConfigs[props.camID].mode ===
+                                "DISABLED"
+                                    ? ""
+                                    : "outline-"
+                            }success`}
                             onClick={() => {
                                 socket.emit(
                                     "set_mode",
@@ -130,10 +160,10 @@ export default function CameraStream(props) {
                                     );
                                 }}
                             >
-                                <i class="bi bi-camera-video"></i> {" "}
+                                <i class="bi bi-camera-video"></i>{" "}
                                 {props.state.currentState ===
                                     "BEGIN_CALIBRATION" ||
-                                    props.state.currentState ===
+                                props.state.currentState ===
                                     "CALIBRATION_CAPTURE"
                                     ? "End Calibration"
                                     : "Start Calibration"}
@@ -148,8 +178,7 @@ export default function CameraStream(props) {
                                     else action();
                                 }}
                             >
-                                <i class="bi bi-check"></i> {" "}
-                                Generate Calibration
+                                <i class="bi bi-check"></i> Generate Calibration
                             </Button>
                         </Col>
                     </Row>
