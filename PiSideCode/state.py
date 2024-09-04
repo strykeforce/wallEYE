@@ -227,7 +227,7 @@ class Data:
 
         set_ip(ip, interface)
 
-        self.ip = ip
+        self.ip = get_current_ip()
 
         try:
             # Write IP to a system file
