@@ -14,18 +14,23 @@ def set_ip(ip: str, interface: str = "eth0"):
         return
 
     # Set IP
-    os.system("/usr/sbin/ifconfig eth0 up")
-    if not os.system(f"/usr/sbin/ifconfig eth0 {ip} netmask 255.255.255.0"):
+    # os.system(
+    #     'nmcli --terse connection show | cut -d : -f 1 | while read name; do echo nmcli connection delete "$name"; done'
+    # )
+    # # os.system("ifconfig eth0 down")
+    # os.system("ifconfig eth0 up")
+    if not os.system(f"ip addr add {ip}/24 dev {interface}") and get_current_ip() == ip:
         logger.info(f"Static IP set: {ip} =? {get_current_ip()}")
     else:
-        logger.error(f"Failed to set static ip: {ip}")
-    os.system("/usr/sbin/ifconfig eth0 up")
+        logger.error(f"Failed to set static ip: {ip}, actually at {get_current_ip()}")
+
 
     logger.info(f"Static IP set: {ip} =? {get_current_ip()}")
 
 
 def get_current_ip(interface: str = "eth0"):
     try:
+        print(os.popen('ip addr show eth0 | grep "\<inet\>"').read())
         return (
             os.popen('ip addr show eth0 | grep "\<inet\>"')
             .read()
