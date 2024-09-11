@@ -56,6 +56,14 @@ class Cameras:
                     # Initialize CameraInfo object
                     self.info[identifier] = CameraInfo(cam, identifier)
 
+                    # Attempt to import config from file
+                    self.import_config(identifier)
+
+                    # Save configs
+                    eventlet.sleep(5)
+                    
+                    write_config(identifier, self.info[identifier])
+
                     # Disable buffer so we always pull the latest image
                     cam.set(cv2.CAP_PROP_BUFFERSIZE, 1)
 
@@ -67,12 +75,6 @@ class Cameras:
                             f"Failed to disable auto exposure for {identifier}"
                         )
 
-                    # Attempt to import config from file
-                    self.import_config(identifier)
-
-                    # Save configs
-                    write_config(identifier, self.info[identifier])
-
                 else:
                     Cameras.logger.error(f"Failed to open camera: {identifier}")
 
@@ -81,17 +83,15 @@ class Cameras:
         else:
             Cameras.logger.error("Unsupported platform!")
 
-    def __del__(self):
-        self.executor.shutdown()
-
     def _capture_thread(self):
+        eventlet.sleep(5)
         while True:
             list(self.executor.map(self._read_frame, self.info.keys()))
 
             if self.new_data_lock.locked(): 
                 self.new_data_lock.release()
 
-            # eventlet.sleep(0.001)
+            eventlet.sleep(0.005)
 
     def set_calibration(self, identifier: str, K: np.ndarray, D: np.ndarray):
         self.info[identifier].K = K
@@ -119,8 +119,14 @@ class Cameras:
 
     def _read_frame(self, identifier):
         cam_info = self.info[identifier]
+        ret, img = False, None
         before = time.perf_counter()
-        ret, img = cam_info.cam.read()
+
+        try:
+            # with cam_info.setting_lock:
+            ret, img = cam_info.cam.read()
+        except Exception as e:
+            Cameras.logger.error(f"Failed to read frame")
 
         self.cam_read_delay[identifier] = round(time.perf_counter() - before, 3)
         self.frames[identifier] = img

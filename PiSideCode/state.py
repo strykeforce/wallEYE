@@ -13,13 +13,6 @@ import os
 import numpy as np
 
 
-SIOCSIFADDR = 0x8916
-SIOCGIFADDR = 0x8915
-SIOCSIFNETMASK = 0x891C
-networking_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-sockfd = networking_socket.fileno()
-
-
 class States(Enum):
     IDLE = "IDLE"
     BEGIN_CALIBRATION = "BEGIN_CALIBRATION"

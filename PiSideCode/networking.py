@@ -30,7 +30,6 @@ def set_ip(ip: str, interface: str = "eth0"):
 
 def get_current_ip(interface: str = "eth0"):
     try:
-        print(os.popen('ip addr show eth0 | grep "\<inet\>"').read())
         return (
             os.popen('ip addr show eth0 | grep "\<inet\>"')
             .read()

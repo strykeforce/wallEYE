@@ -47,25 +47,25 @@ class Calibrator:
             blob_params = cv2.SimpleBlobDetector_Params()
 
             # Change thresholds TODO adjust as necessary
-            # blobParams.minThreshold = 8
-            # blobParams.maxThreshold = 255
+            # blob_params.minThreshold = 8
+            # blob_params.maxThreshold = 255
 
             # # Filter by Area.
-            # blobParams.filterByArea = True
-            # blobParams.minArea = 64
-            # blobParams.maxArea = 2500
+            blob_params.filterByArea = True
+            blob_params.minArea = 6
+            blob_params.maxArea = 250000
 
             # # Filter by Circularity
-            # blobParams.filterByCircularity = True
-            # blobParams.minCircularity = 0.1
+            # blob_params.filterByCircularity = True
+            # blob_params.minCircularity = 0.1
 
             # # Filter by Convexity
-            # blobParams.filterByConvexity = True
-            # blobParams.minConvexity = 0.87
+            # blob_params.filterByConvexity = True
+            # blob_params.minConvexity = 0.87
 
             # # Filter by Inertia
-            # blobParams.filterByInertia = True
-            # blobParams.minInertiaRatio = 0.01
+            # blob_params.filterByInertia = True
+            # blob_params.minInertiaRatio = 0.01
 
             self.blob_detector = cv2.SimpleBlobDetector_create(blob_params)
 
@@ -113,7 +113,7 @@ class Calibrator:
 
         elif self.calib_type == CalibType.CIRCLE_GRID:
             keypoints = self.blob_detector.detect(img)
-            img_keypoints = cv2.drawKeypoints(
+            img = cv2.drawKeypoints(
                 img,
                 keypoints,
                 np.asarray([]),
@@ -121,7 +121,7 @@ class Calibrator:
                 cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS,
             )
             return cv2.findCirclesGrid(
-                img_keypoints,
+                img,
                 self.corner_shape,
                 None,
                 flags=cv2.CALIB_CB_ASYMMETRIC_GRID,
@@ -139,17 +139,17 @@ class Calibrator:
         ),
         reduction_factor: int=2,
     ) -> tuple[np.ndarray, bool, str]:
-        # Convert it to gray and look for calibration board corners
+        # Convert it to gray and look for calibration board
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         self.img_shape = gray.shape[::-1]
 
-        reduced = cv2.resize(
-            gray, (gray.shape[0] // reduction_factor, gray.shape[1] // reduction_factor)
-        )
-        found, _ = self.find_board(reduced)
+        # reduced = cv2.resize(
+        #     gray, (gray.shape[0] // reduction_factor, gray.shape[1] // reduction_factor)
+        # )
+        # found, _ = self.find_board(reduced)
 
-        if not found:
-            return (img, False, None)
+        # if not found:
+        #     return (img, False, None)
 
         used = False
         path_saved = None
@@ -334,7 +334,7 @@ class Calibrator:
                     "t": np.asarray(trans).tolist(),
                     "reproj": reproj_error,
                     "resolution": self.resolution,
-                    "timestamp": datetime.datetime.now()
+                    "timestamp": str(datetime.datetime.now())
                 },
                 f,
             )
