@@ -4,7 +4,7 @@ flask[async]
 flask-socketio
 eventlet
 numpy
-opencv-python-headless >= 4.10.0
+opencv-python >= 4.10.0
 matplotlib
 Pillow >= 10.3
 cffi

@@ -14,7 +14,8 @@ import numpy as np
 from concurrent.futures import ThreadPoolExecutor
 from threading import Thread, Lock
 import eventlet
-
+import sys
+np.set_printoptions(threshold=sys.maxsize)
 class Cameras:
     logger = logging.getLogger(__name__)
 
@@ -22,12 +23,17 @@ class Cameras:
         # Cameras identified by their path (or whatever unique identifier is
         # available)
         self.info: dict[str, CameraInfo] = {}
-        self.frames: dict[str, np.ndarray] = {}
-        self.connections: dict[str, bool] = {}
-        self.timestamp: dict[str, float] = {}
-        self.cam_read_delay: dict[str, float] = {}
+
+        self.frames: list[dict[str, np.ndarray]] = [{}, {}]
+        self.connections: list[dict[str, bool]] = [{}, {}]
+        self.timestamp: list[dict[str, float]] = [{}, {}]
+        self.cam_read_delay: list[dict[str, float]] = [{}, {}]
+
         self.executor: ThreadPoolExecutor = ThreadPoolExecutor()
         self.new_data_lock: Lock = Lock()
+        self.new_data_index: int = 0
+        self.written_index: int = 1
+        self.is_unread: list[bool] = [True, True]
 
         if platform == "linux" or platform == "linux2":
             Cameras.logger.info("Platform is linux")
@@ -41,6 +47,7 @@ class Cameras:
 
             # Try all cameras found by the PI
             for identifier in camera_paths:
+                print("TESTTESTTESTTESTTESTTESTTESTTESTTEST", identifier)
                 if is_disabled(identifier):
                     Cameras.logger.info(f"Skipping {identifier} - DISABLED")
                     continue
@@ -49,6 +56,8 @@ class Cameras:
 
                 # Open camera and check if it is opened
                 cam = cv2.VideoCapture(path, cv2.CAP_V4L2)
+
+                time.sleep(10)
 
                 if cam.isOpened():
                     Cameras.logger.info(f"Camera found: {identifier}")
@@ -61,7 +70,7 @@ class Cameras:
 
                     # Save configs
                     eventlet.sleep(5)
-                    
+
                     write_config(identifier, self.info[identifier])
 
                     # Disable buffer so we always pull the latest image
@@ -84,7 +93,7 @@ class Cameras:
             Cameras.logger.error("Unsupported platform!")
 
     def _capture_thread(self):
-        eventlet.sleep(5)
+        # eventlet.sleep(5)
         while True:
             list(self.executor.map(self._read_frame, self.info.keys()))
 
@@ -107,15 +116,33 @@ class Cameras:
     def list_d(self) -> list[np.ndarray]:
         return [i.D for i in self.info.values()]
 
+    def get_frame(self, identifier: str) -> list[np.ndarray]:
+        if self.is_unread[self.new_data_index]:
+            self.written_index = self.new_data_index
+            self.new_data_index = (self.new_data_index + 1) % 2
+
+        return self.frames[self.written_index][identifier]
+
     # Grab frames from each camera specifically for processing
     def get_frames_for_processing(
         self,
     ) -> tuple[
         dict[str, bool], dict[str, np.ndarray], dict[str, float], dict[str, float]
     ]:
-        self.new_data_lock.acquire()
+        self.want_new_frames()
+        self.is_unread[self.written_index] = True
 
-        return (self.connections, self.frames, self.timestamp, self.cam_read_delay)
+        return (
+            self.connections[self.written_index],
+            self.frames[self.written_index],
+            self.timestamp[self.written_index],
+            self.cam_read_delay[self.written_index],
+        )
+
+    def want_new_frames(self):
+        self.new_data_lock.acquire()
+        self.written_index = self.new_data_index
+        self.new_data_index = (self.new_data_index + 1) % 2
 
     def _read_frame(self, identifier):
         cam_info = self.info[identifier]
@@ -125,13 +152,17 @@ class Cameras:
         try:
             # with cam_info.setting_lock:
             ret, img = cam_info.cam.read()
+            print(ret, img)
         except Exception as e:
-            Cameras.logger.error(f"Failed to read frame")
+            Cameras.logger.error(f"Failed to read frame", exc_info=e)
 
-        self.cam_read_delay[identifier] = round(time.perf_counter() - before, 3)
-        self.frames[identifier] = img
-        self.connections[identifier] = ret
-        self.timestamp[identifier] = cam_info.cam.get(cv2.CAP_PROP_POS_MSEC)
+        self.cam_read_delay[self.new_data_index][identifier] = round(time.perf_counter() - before, 3)
+        self.frames[self.new_data_index][identifier] = img
+        self.connections[self.new_data_index][identifier] = ret
+        self.timestamp[self.new_data_index][identifier] = cam_info.cam.get(
+            cv2.CAP_PROP_POS_MSEC
+        )
+        self.is_unread[self.new_data_index] = True
 
     # Find a calibration for the camera
     def import_calibration(self, identifier: str) -> bool:

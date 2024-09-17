@@ -147,7 +147,6 @@ class PoseProcessor:
         draw: bool,
         valid_tags: np.ndarray
     ) -> tuple[tuple[wpi.Pose3d, wpi.Pose3d], list[int], float]:
-
         pose1, pose2 = PoseProcessor.BAD_POSE, PoseProcessor.BAD_POSE
         ambig = 2767
 
@@ -207,7 +206,7 @@ class PoseProcessor:
                     tvecs[0].reshape(3, 1), rvecs[0], ids[0]
                 )
                 t2, r2 = self.get_trans_rots(tvecs[1].reshape(3, 1), rvecs[1], ids[0])
-               
+
                 pose1 = wpi.Pose3d(wpi.Translation3d(*t1), wpi.Rotation3d(r1))
                 pose2 = wpi.Pose3d(wpi.Translation3d(*t2), wpi.Rotation3d(r2))
 
