@@ -25,6 +25,7 @@ class TagProcessor:
 
     # Return camera pose
     def get_tags(self, img: np.ndarray, valid_tags: np.ndarray, draw: bool):
+        print("TEST 1")
         if img is None:
             return (np.asarray([]), np.asarray([]))
 

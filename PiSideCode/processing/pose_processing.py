@@ -5,7 +5,8 @@ import wpimath.geometry as wpi
 import numpy as np
 import math
 # from numba import njit
-
+import faulthandler
+faulthandler.enable()
 class PoseProcessor:
     logger = logging.getLogger(__name__)
     CORNER_POSE_ORDER = np.asarray([(-1, -1), (1, -1), (1, 1), (-1, 1)])
@@ -147,6 +148,7 @@ class PoseProcessor:
         draw: bool,
         valid_tags: np.ndarray
     ) -> tuple[tuple[wpi.Pose3d, wpi.Pose3d], list[int], float]:
+        print("TEST 0")
         pose1, pose2 = PoseProcessor.BAD_POSE, PoseProcessor.BAD_POSE
         ambig = 2767
 
@@ -156,6 +158,7 @@ class PoseProcessor:
             return ((PoseProcessor.BAD_POSE, PoseProcessor.BAD_POSE), [], 2767)
 
         ids, corners = self.tag_processor.get_tags(image, valid_tags, draw)
+        print("TEST 2")
 
         # If you have corners, find pose
         if len(corners) > 0:
@@ -165,6 +168,7 @@ class PoseProcessor:
             # Loop through each id
             # Extract corner information
             for tag_count, tag_id in enumerate(ids):
+                print("TEST 3")
                 # Do basic solvePNP
                 # Only for drawing axes
                 if draw:
@@ -178,6 +182,8 @@ class PoseProcessor:
                     # Draw axis on the tags
                     cv2.drawFrameAxes(image, K, D, rvec[0], tvec[0], 0.1)
 
+                print("TEST 4")
+
                 # Store image and object points
                 if img_tag_corner_poses is None:
                     img_corner_locs = corners[tag_count][0]
@@ -189,7 +195,8 @@ class PoseProcessor:
                     img_tag_corner_poses = np.concatenate(
                         (img_tag_corner_poses, self.all_corner_poses[tag_id])
                     )
-
+                print("TEST 5")
+            print("TEST 6")
             # Single Tag
             if len(ids) == 1:
                 _, rvecs, tvecs, reproj = cv2.solvePnPGeneric(
@@ -199,6 +206,7 @@ class PoseProcessor:
                     D,
                     flags=cv2.SOLVEPNP_IPPE_SQUARE,
                 )
+                print("TEST 7")
 
                 ambig = reproj[0][0] / reproj[1][0]
 
@@ -207,8 +215,12 @@ class PoseProcessor:
                 )
                 t2, r2 = self.get_trans_rots(tvecs[1].reshape(3, 1), rvecs[1], ids[0])
 
+                print("TEST 9")
+                print(r1)
+                print("test")
                 pose1 = wpi.Pose3d(wpi.Translation3d(*t1), wpi.Rotation3d(r1))
                 pose2 = wpi.Pose3d(wpi.Translation3d(*t2), wpi.Rotation3d(r2))
+                print("TEST 8")
 
             # Multi-tag
             else:

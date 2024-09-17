@@ -47,7 +47,6 @@ class Cameras:
 
             # Try all cameras found by the PI
             for identifier in camera_paths:
-                print("TESTTESTTESTTESTTESTTESTTESTTESTTEST", identifier)
                 if is_disabled(identifier):
                     Cameras.logger.info(f"Skipping {identifier} - DISABLED")
                     continue
@@ -57,7 +56,7 @@ class Cameras:
                 # Open camera and check if it is opened
                 cam = cv2.VideoCapture(path, cv2.CAP_V4L2)
 
-                time.sleep(10)
+                # time.sleep(10)
 
                 if cam.isOpened():
                     Cameras.logger.info(f"Camera found: {identifier}")
@@ -152,7 +151,6 @@ class Cameras:
         try:
             # with cam_info.setting_lock:
             ret, img = cam_info.cam.read()
-            print(ret, img)
         except Exception as e:
             Cameras.logger.error(f"Failed to read frame", exc_info=e)
 

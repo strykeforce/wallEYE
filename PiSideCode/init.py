@@ -52,8 +52,8 @@ from web_interface.web_interface import (
 )
 
 import threading
-import gc
-gc.disable()
+# import gc
+# gc.disable()
 
 def log_performance(walleye_data):
     """Logs loop time and individual camera read times every 30 seconds"""
@@ -61,7 +61,7 @@ def log_performance(walleye_data):
         logger.info(
             f"Loop time: {walleye_data.loop_time} | Cam delay: {walleye_data.cam_read_delay}"
         )
-        eventlet.sleep(0.5)
+        eventlet.sleep(30)
 
 
 # Initialize threads for performance logging and web interface
