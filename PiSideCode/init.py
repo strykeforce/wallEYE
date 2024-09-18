@@ -299,7 +299,7 @@ try:
                     continue
 
                 if walleye_data.should_update_web_stream:
-                    img = cameras.get_frame(img)  # camera_info.cam.read()
+                    img = cameras.get_frame(identifier)  # camera_info.cam.read()
                     cam_buffers[identifier].update(img)
 
 except Exception as e:

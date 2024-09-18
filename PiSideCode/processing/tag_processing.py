@@ -1,7 +1,10 @@
 import cv2
 import logging
 import numpy as np
+import json
 
+
+corner_log = open("corners.txt", "a")
 
 class TagProcessor:
     logger = logging.getLogger(__name__)
@@ -25,7 +28,6 @@ class TagProcessor:
 
     # Return camera pose
     def get_tags(self, img: np.ndarray, valid_tags: np.ndarray, draw: bool):
-        print("TEST 1")
         if img is None:
             return (np.asarray([]), np.asarray([]))
 
@@ -40,20 +42,22 @@ class TagProcessor:
         # mask[.nonzero()] = True
 
         mask = np.isin(ids, valid_tags)
-        
+
         if not mask.all():
             TagProcessor.logger.warning(f"Invalid Tags: {ids[~mask]}")
 
         ids = ids[mask]
-        corners = np.asarray(corners)[mask]
-
+        corners = np.asarray(corners[0])[mask]
 
         if len(corners) > 0:
-            # Draw lines around tags for ease of seeing (website)
+            corner_log.write(
+                str(corners[0].tolist()).replace("[", "").replace("]", "")+"\n"
+            )
 
+            # Draw lines around tags for ease of seeing (website)
             if draw and len(corners) == len(ids):
                 try:
-                    cv2.aruco.drawDetectedMarkers(img, corners, ids)
+                    cv2.aruco.drawDetectedMarkers(img, (corners,), ids)
                 except cv2.error:
                     TagProcessor.logger.error(f"Could not draw tags: {ids} with corners {corners}")
         else:
@@ -67,6 +71,5 @@ class TagProcessor:
 
         if corners.shape[0] == 0:
             return (np.asarray([]), np.asarray([]))
-        
 
         return (ids, corners[0][0].mean(axis=0))

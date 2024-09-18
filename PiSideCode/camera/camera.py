@@ -120,6 +120,7 @@ class Cameras:
             self.written_index = self.new_data_index
             self.new_data_index = (self.new_data_index + 1) % 2
 
+
         return self.frames[self.written_index][identifier]
 
     # Grab frames from each camera specifically for processing
