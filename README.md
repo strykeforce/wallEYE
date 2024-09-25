@@ -24,3 +24,14 @@
 
 ## Maintainers
 See `STYLE-GUIDE.md`
+
+## Fresh Install 
+
+The instructions below were documented for Ubuntu 24.01.1
+
+1. Flash desired image. If balena-etcher keeps failing to create a bootable sd card, try the Raspberry Pi Imager.
+2. Install the correct python version or use a `venv`. We are currently using `python3.11`.
+3. Get pip if not already installed: `wget https://bootstrap.pypa.io/get-pip.py && python3.11 get-pip.py`
+4. Install libraries with `python3.11 -m pip install -r requirements.txt` 
+5. Install necessary packages with `sudo apt install v4l-utils net-tools openssh-server`
+6. Allow modification of networking without root: `sudo chmod 4755 /usr/sbin/ifconfig`
