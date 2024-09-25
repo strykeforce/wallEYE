@@ -3,9 +3,6 @@ import logging
 import numpy as np
 import json
 
-
-corner_log = open("corners.txt", "a")
-
 class TagProcessor:
     logger = logging.getLogger(__name__)
     MIN_TAG = 1
@@ -50,10 +47,6 @@ class TagProcessor:
         corners = np.asarray(corners[0])[mask]
 
         if len(corners) > 0:
-            corner_log.write(
-                str(corners[0].tolist()).replace("[", "").replace("]", "")+"\n"
-            )
-
             # Draw lines around tags for ease of seeing (website)
             if draw and len(corners) == len(ids):
                 try:

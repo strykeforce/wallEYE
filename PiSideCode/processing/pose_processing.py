@@ -5,8 +5,9 @@ import wpimath.geometry as wpi
 import numpy as np
 import math
 # from numba import njit
-import faulthandler
-faulthandler.enable()
+# import faulthandler
+# faulthandler.enable()
+
 class PoseProcessor:
     logger = logging.getLogger(__name__)
     CORNER_POSE_ORDER = np.asarray([(-1, -1), (1, -1), (1, 1), (-1, 1)])

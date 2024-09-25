@@ -105,7 +105,7 @@ class Data:
                 "TagSize": self.tag_size,
                 "Port": self.udp_port,
                 "ValidTags": self.valid_tags.tolist(),
-                "Nicknames": {}
+                "Nicknames": {},
             }
             with open(CONFIG_DATA_PATH, "w") as out:
                 json.dump(data_dump, out)
@@ -152,14 +152,17 @@ class Data:
 
         Data.logger.info(f"Robot publisher created: {team_number} - {table_name}")
 
-    def set_web_img_info(self, identifier: str, info: wpi.Pose3d | list):
-        if isinstance(info, wpi.Pose3d):
+    def set_web_img_info(self, identifier: str, info: tuple[wpi.Pose3d] | list):
+        if isinstance(info[0], wpi.Pose3d):
+            a, b = info
             self.img_info[identifier] = (
-                f"Pose: ({round(info.X(), 2)}, {round(info.Y(), 2)}, {round(info.Z(), 2)}) ({round(info.X(), 2)}, {round(info.Y(), 2)}, {round(info.Z(), 2)})"
+                f"Pose: [({round(a.X(), 2)}, {round(a.Y(), 2)}, {round(a.Z(), 2)}) ({round(a.rotation().X(), 2)}, {round(a.rotation().Y(), 2)}, {round(a.rotation().Z(), 2)})], ({round(b.X(), 2)}, {round(b.Y(), 2)}, {round(b.Z(), 2)}) ({round(b.rotation().X(), 2)}, {round(b.rotation().Y(), 2)}, {round(b.rotation().Z(), 2)})"
             )
 
         elif isinstance(info, list):
-            self.img_info[identifier] = f"Tag centers: {np.array_str(np.asarray(info), precision=1, suppress_small=True)}"
+            self.img_info[identifier] = (
+                f"Tag centers: {np.array_str(np.asarray(info), precision=1, suppress_small=True)}"
+            )
 
     # Return the file path names for each camera
     def get_cal_file_paths(self):
@@ -208,7 +211,7 @@ class Data:
             Data.logger.error(f"Failed to write tag size {size}")
 
     # Set static IP and write it into system files
-    def set_ip(self, ip: str, interface: str = "eth0"):
+    def set_ip(self, ip: str):
         if not ip:
             if not self.robot_publisher:
                 self.make_publisher(self.team_number, self.table_name, self.udp_port)
@@ -218,7 +221,7 @@ class Data:
         if self.robot_publisher:
             self.robot_publisher.destroy()
 
-        set_ip(ip, interface)
+        set_ip(ip)
 
         self.ip = get_current_ip()
 
@@ -226,7 +229,7 @@ class Data:
             # Write IP to a system file
             with open(CONFIG_DATA_PATH, "r") as file:
                 config = json.load(file)
-                config["ip"] = self.ip
+                # config["ip"] = self.ip
                 with open(CONFIG_DATA_PATH, "w") as out:
                     json.dump(config, out)
 

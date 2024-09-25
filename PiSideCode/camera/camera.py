@@ -15,7 +15,7 @@ from concurrent.futures import ThreadPoolExecutor
 from threading import Thread, Lock
 import eventlet
 import sys
-np.set_printoptions(threshold=sys.maxsize)
+# np.set_printoptions(threshold=sys.maxsize)
 class Cameras:
     logger = logging.getLogger(__name__)
 

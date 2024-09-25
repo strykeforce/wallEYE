@@ -276,7 +276,7 @@ try:
                     if camera_infos[
                         identifier
                     ].mode == Modes.POSE_ESTIMATION and i < len(poses):
-                        walleye_data.set_web_img_info(identifier, poses[i][0])
+                        walleye_data.set_web_img_info(identifier, poses[i])
                     elif camera_infos[identifier].mode == Modes.TAG_SERVOING:
                         walleye_data.set_web_img_info(identifier, tag_centers)
                     # if walleye_data.visualizing_poses:
