@@ -29,7 +29,7 @@ class PoseProcessor:
 
         self.corner_locs = np.empty((4, 3))
 
-        for i, j in enumerate(PoseProcessor.CORNER_DRAW_ORDER):
+        for i, j in enumerate(np.asarray([(-1, -1, 0), (1, -1, 0), (1, 1, 0), (-1, 1, 0)])): # CORNER_DRAW_ORDER
             self.corner_locs[i] = self.tag_corner * j
 
         self.all_corner_poses = {}
