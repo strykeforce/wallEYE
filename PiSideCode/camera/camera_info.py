@@ -1,13 +1,7 @@
 from pyrav4l2 import (
     Device,
     Control,
-    FrameSize,
-    ColorFormat,
-    MenuItem,
-    IntegerMenuItem,
-    Item,
     Menu,
-    Stream,
 )
 import logging
 import cv2
@@ -17,7 +11,7 @@ import json
 from enum import Enum
 import time
 from threading import Lock
-from directory import cam_config_path, full_cam_path
+from directory import  full_cam_path
 
 
 class Modes(Enum):
@@ -27,7 +21,7 @@ class Modes(Enum):
 
 
 EXPOSED_PROPERTIES = re.compile(
-    "[Bb]rightness|Exposure \(Auto\)|Exposure Time, Absolute|Exposure, Auto|Exposure \(Absolute\)|Contrast|Saturation|Gamma|Gain"
+    "[Bb]rightness|[Exposure \(Auto\)]|[Exposure Time, Absolute]|[Exposure, Auto]|[Exposure \(Absolute\)]|Contrast|Saturation|Gamma|Gain"
 )
 
 

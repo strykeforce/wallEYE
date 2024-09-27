@@ -107,6 +107,7 @@ try:
         curr_time = time.perf_counter()
         walleye_data.loop_time = round(curr_time - last_loop_time, 3)
         last_loop_time = curr_time
+        # print(walleye_data.loop_time )
 
         # Use when reading for readability
         curr_state = walleye_data.current_state
@@ -309,3 +310,5 @@ except Exception as e:
     logger.info("Shutting down")
     socketio.stop()
     logging.shutdown()
+
+raise Exception

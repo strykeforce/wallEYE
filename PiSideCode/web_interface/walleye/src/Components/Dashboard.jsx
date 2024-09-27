@@ -30,11 +30,19 @@ export default function Dashboard(props) {
             </Button>
             <a
                 href="files/walleye_data/walleye.log"
-                className="btn btn-info"
+                className="btn btn-info m-2"
                 role="button"
             >
                 {" "}
                 <i class="bi bi-file-earmark-arrow-down"></i> {" "}Export Log
+            </a>
+            <a
+                href="files/walleye_data/config_data/april_tag_layout.json"
+                className="btn btn-info m-2"
+                role="button"
+            >
+                {" "}
+                <i class="bi bi-file-earmark-arrow-down"></i> {" "}Export Tag Layout
             </a>
             <Button
                 variant="warning"
@@ -52,6 +60,15 @@ export default function Dashboard(props) {
                 accept=".zip"
                 onChange={(e) => {
                     socket.emit("import_config", e.target.files[0]);
+                }}
+            />
+            <br />
+            <Form.Label> Import Tag Layout</Form.Label>
+            <Form.Control
+                type="file"
+                accept=".json"
+                onChange={(e) => {
+                    socket.emit("import_tag_layout", e.target.files[0]);
                 }}
             />
 

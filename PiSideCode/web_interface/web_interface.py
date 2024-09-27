@@ -8,6 +8,7 @@ from directory import (
     cam_config_path,
     CONFIG_DIRECTORY,
     CONFIG_DATA_PATH,
+    TAG_LAYOUT_PATH
 )
 from state import walleye_data, States
 import logging
@@ -175,6 +176,13 @@ def import_config(file):
     logger.info(f"Configs sucessfully imported for {cam_id}")
     display_info("Configs/Cals loaded")
 
+@socketio.on("import_tag_layout")
+@update_after
+def import_tag_layout(file):
+    logger.info("Importing tag layout")
+    display_info("Importing tag layout")
+    with open(TAG_LAYOUT_PATH, "w") as f:
+        f.write(file.decode("utf-8"))
 
 @socketio.on("export_config")
 @update_after
@@ -278,7 +286,7 @@ def set_cam_nickname(cam_id: str, nickname: str):
     if len(nickname) == 0:
         nickname = cam_id
     
-    walleye_data.cam_nicknames[cam_id] = nickname
+    walleye_data.set_nickname(cam_id, nickname)
 
     display_info(f"{cam_id} is now named {nickname}")
 

@@ -153,7 +153,7 @@ class Data:
         Data.logger.info(f"Robot publisher created: {team_number} - {table_name}")
 
     def set_web_img_info(self, identifier: str, info: tuple[wpi.Pose3d] | list):
-        if isinstance(info[0], wpi.Pose3d):
+        if len(info) > 0 and isinstance(info[0], wpi.Pose3d):
             a, b = info
             self.img_info[identifier] = (
                 f"Pose: [({round(a.X(), 2)}, {round(a.Y(), 2)}, {round(a.Z(), 2)}) ({round(a.rotation().X(), 2)}, {round(a.rotation().Y(), 2)}, {round(a.rotation().Z(), 2)})], ({round(b.X(), 2)}, {round(b.Y(), 2)}, {round(b.Z(), 2)}) ({round(b.rotation().X(), 2)}, {round(b.rotation().Y(), 2)}, {round(b.rotation().Z(), 2)})"
@@ -244,6 +244,15 @@ class Data:
         with open(CONFIG_DATA_PATH, "r") as file:
             config = json.load(file)
             config["ValidTags"] = valid_tags
+            with open(CONFIG_DATA_PATH, "w") as out:
+                json.dump(config, out)
+
+    def set_nickname(self, identifier: str, nickname: str):
+        self.cam_nicknames[identifier] = nickname
+
+        with open(CONFIG_DATA_PATH, "r") as file:
+            config = json.load(file)
+            config["Nicknames"][identifier] = nickname 
             with open(CONFIG_DATA_PATH, "w") as out:
                 json.dump(config, out)
 

@@ -33,7 +33,7 @@ export default function CameraStreamList(props) {
                 value={currentCam}
             >
                 {props.state.cameraIDs.map((camID) => (
-                    <option value={camID}>{camID}</option>
+                    <option value={camID}>{props.state.camNicknames[camID]}</option>
                 ))}
             </Form.Select>
             <br />

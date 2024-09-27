@@ -33,7 +33,7 @@ class UdpPublisher:
         for i in range(len(pose1)):
             self.update_num[i] += 1
             camDict = {
-                "Mode": "0",
+                "Mode": "0", # Use!
                 "Update": str(self.update_num[i]),
                 "Pose1": self.pose_to_dict(pose1[i]),
                 "Pose2": self.pose_to_dict(pose2[i]),

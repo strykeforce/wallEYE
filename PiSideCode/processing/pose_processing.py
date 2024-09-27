@@ -4,23 +4,31 @@ import logging
 import wpimath.geometry as wpi
 import numpy as np
 import math
+from directory import TAG_LAYOUT_PATH, FALLBACK_TAG_LAYOUT_PATH
 # from numba import njit
 # import faulthandler
 # faulthandler.enable()
 
+
 class PoseProcessor:
     logger = logging.getLogger(__name__)
     CORNER_POSE_ORDER = np.asarray([(-1, -1), (1, -1), (1, 1), (-1, 1)])
-    CORNER_DRAW_ORDER = np.asarray([(1, 1, 0), (-1, 1, 0), (1, -1, 0), (-1, -1, 0)])
+    CORNER_DRAW_ORDER = np.asarray([(-1, 1, 0), (1, 1, 0), (1, -1, 0), (-1, -1, 0)])
     BAD_POSE = wpi.Pose3d(wpi.Translation3d(2767, 2767, 2767), wpi.Rotation3d())
     MIN_TAG = 1
     MAX_TAG = 16
 
     def __init__(self, tag_processor, tag_length):
         # Open tag layout for tag poses
-        with open("./processing/april_tag_layout.json", "r") as f:
-            self.tag_layout = json.load(f)["tags"]
-            PoseProcessor.logger.info("Tag layout loaded")
+        try: 
+            with open(TAG_LAYOUT_PATH, "r") as f:
+                self.tag_layout = json.load(f)["tags"]
+                PoseProcessor.logger.info("Tag layout loaded")
+
+        except (FileNotFoundError, json.decoder.JSONDecodeError, KeyError):
+            with open(FALLBACK_TAG_LAYOUT_PATH, "r") as f:
+                self.tag_layout = json.load(f)["tags"]
+                PoseProcessor.logger.warning("FALLBACK Tag layout loaded")
 
         self.tag_processor = tag_processor
 
@@ -29,7 +37,7 @@ class PoseProcessor:
 
         self.corner_locs = np.empty((4, 3))
 
-        for i, j in enumerate(np.asarray([(-1, -1, 0), (1, -1, 0), (1, 1, 0), (-1, 1, 0)])): # CORNER_DRAW_ORDER
+        for i, j in enumerate(PoseProcessor.CORNER_DRAW_ORDER):
             self.corner_locs[i] = self.tag_corner * j
 
         self.all_corner_poses = {}
@@ -37,7 +45,9 @@ class PoseProcessor:
 
         # Grab tag pose and calcualte each corner location
         for tag_id in range(PoseProcessor.MIN_TAG, PoseProcessor.MAX_TAG + 1):
-            pose = PoseProcessor.make_pose_object(self.tag_layout[int(tag_id - 1)]["pose"])
+            pose = PoseProcessor.make_pose_object(
+                self.tag_layout[int(tag_id - 1)]["pose"]
+            )
 
             corner_poses = np.empty((4, 3))
 
@@ -54,7 +64,9 @@ class PoseProcessor:
 
             rot = pose.rotation().rotateBy(wpi.Rotation3d(0, 0, np.pi))
             translation = np.asarray((pose.X(), pose.Y(), pose.Z())).reshape(3, 1)
-            rot, _ = cv2.Rodrigues(np.asarray((rot.X(), rot.Y(), rot.Z())).reshape(3, 1))
+            rot, _ = cv2.Rodrigues(
+                np.asarray((rot.X(), rot.Y(), rot.Z())).reshape(3, 1)
+            )
             self.tag_transforms[tag_id] = PoseProcessor.get_transform(translation, rot)
 
     # Set AprilTag side length in meters
@@ -147,7 +159,7 @@ class PoseProcessor:
         K: np.ndarray,
         D: np.ndarray,
         draw: bool,
-        valid_tags: np.ndarray
+        valid_tags: np.ndarray,
     ) -> tuple[tuple[wpi.Pose3d, wpi.Pose3d], list[int], float]:
         pose1, pose2 = PoseProcessor.BAD_POSE, PoseProcessor.BAD_POSE
         ambig = 2767
@@ -180,7 +192,6 @@ class PoseProcessor:
                     # Draw axis on the tags
                     cv2.drawFrameAxes(image, K, D, rvec[0], tvec[0], 0.1)
 
-
                 # Store image and object points
                 if img_tag_corner_poses is None:
                     img_corner_locs = corners[tag_count][0]
@@ -204,9 +215,7 @@ class PoseProcessor:
 
                 ambig = reproj[0][0] / reproj[1][0]
 
-                t1, r1 = self.get_trans_rots(
-                    tvecs[0].reshape(3, 1), rvecs[0], ids[0]
-                )
+                t1, r1 = self.get_trans_rots(tvecs[0].reshape(3, 1), rvecs[0], ids[0])
                 t2, r2 = self.get_trans_rots(tvecs[1].reshape(3, 1), rvecs[1], ids[0])
 
                 pose1 = wpi.Pose3d(wpi.Translation3d(*t1), wpi.Rotation3d(r1))

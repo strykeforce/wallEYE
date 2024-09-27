@@ -17,6 +17,7 @@ import { useState } from "react";
 
 export default function CameraStream(props) {
     const [showCalWarning, setShowCalWarning] = useState(false);
+    const [camNickname, setCamNickname] = useState(props.state.camNicknames[props.camID]);
 
     function action() {
         socket.emit("generate_calibration", props.camID);
@@ -37,18 +38,24 @@ export default function CameraStream(props) {
                         <InputGroup.Text>Camera Nickname</InputGroup.Text>
                         <Form.Control
                             type="text"
-                            value={props.state.camNicknames[props.camID]}
-                            onChange={(e) => {
-                                socket.emit("set_cam_nickname", props.camID, e.target.value);
-                            }}
+                            value={camNickname}
+                            onChange={(e) => setCamNickname(e.target.value)}
                         />
+                        <Button
+                            variant="info"
+                            onClick={() => {
+                                socket.emit("set_cam_nickname", props.camID, camNickname);
+                            }}
+                        >
+                            Update
+                        </Button>
                     </InputGroup>
                 </Form.Group>
             </Form>
 
             <Card>
                 <Card.Header className="d-flex justify-content-between">
-                    Camera Stream {props.camID}
+                    Camera Stream {props.state.camNicknames[props.camID]}
                     <div className="d-flex justify-content-end">
                         <Badge bg="info" className="mx-1">
                             {props.readTime} secs
@@ -69,12 +76,11 @@ export default function CameraStream(props) {
                 <Card.Body>
                     <ButtonGroup className="d-flex">
                         <Button
-                            variant={`${
-                                props.state.cameraConfigs[props.camID].mode ===
+                            variant={`${props.state.cameraConfigs[props.camID].mode ===
                                 "POSE_ESTIMATION"
-                                    ? ""
-                                    : "outline-"
-                            }success`}
+                                ? ""
+                                : "outline-"
+                                }success`}
                             onClick={() => {
                                 console.log(props.state);
                                 socket.emit(
@@ -88,12 +94,11 @@ export default function CameraStream(props) {
                             Estimation
                         </Button>
                         <Button
-                            variant={`${
-                                props.state.cameraConfigs[props.camID].mode ===
+                            variant={`${props.state.cameraConfigs[props.camID].mode ===
                                 "TAG_SERVOING"
-                                    ? ""
-                                    : "outline-"
-                            }success`}
+                                ? ""
+                                : "outline-"
+                                }success`}
                             onClick={() => {
                                 socket.emit(
                                     "set_mode",
@@ -105,12 +110,11 @@ export default function CameraStream(props) {
                             <i className="bi bi-cursor-fill" /> Tag Servoing
                         </Button>
                         <Button
-                            variant={`${
-                                props.state.cameraConfigs[props.camID].mode ===
+                            variant={`${props.state.cameraConfigs[props.camID].mode ===
                                 "DISABLED"
-                                    ? ""
-                                    : "outline-"
-                            }success`}
+                                ? ""
+                                : "outline-"
+                                }success`}
                             onClick={() => {
                                 socket.emit(
                                     "set_mode",
@@ -163,7 +167,7 @@ export default function CameraStream(props) {
                                 <i class="bi bi-camera-video"></i>{" "}
                                 {props.state.currentState ===
                                     "BEGIN_CALIBRATION" ||
-                                props.state.currentState ===
+                                    props.state.currentState ===
                                     "CALIBRATION_CAPTURE"
                                     ? "End Calibration"
                                     : "Start Calibration"}

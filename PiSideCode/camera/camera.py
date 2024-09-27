@@ -15,6 +15,8 @@ from concurrent.futures import ThreadPoolExecutor
 from threading import Thread, Lock
 import eventlet
 import sys
+
+
 # np.set_printoptions(threshold=sys.maxsize)
 class Cameras:
     logger = logging.getLogger(__name__)
@@ -33,7 +35,7 @@ class Cameras:
         self.new_data_lock: Lock = Lock()
         self.new_data_index: int = 0
         self.written_index: int = 1
-        self.is_unread: list[bool] = [True, True]
+        self.fresh_data: list[bool] = [False, False]
 
         if platform == "linux" or platform == "linux2":
             Cameras.logger.info("Platform is linux")
@@ -92,14 +94,13 @@ class Cameras:
             Cameras.logger.error("Unsupported platform!")
 
     def _capture_thread(self):
-        # eventlet.sleep(5)
         while True:
             list(self.executor.map(self._read_frame, self.info.keys()))
 
-            if self.new_data_lock.locked(): 
+            if self.new_data_lock.locked():
                 self.new_data_lock.release()
 
-            eventlet.sleep(0.005)
+            self.fresh_data[self.new_data_index] = True
 
     def set_calibration(self, identifier: str, K: np.ndarray, D: np.ndarray):
         self.info[identifier].K = K
@@ -116,10 +117,8 @@ class Cameras:
         return [i.D for i in self.info.values()]
 
     def get_frame(self, identifier: str) -> list[np.ndarray]:
-        if self.is_unread[self.new_data_index]:
-            self.written_index = self.new_data_index
-            self.new_data_index = (self.new_data_index + 1) % 2
-
+        self.want_new_frames()
+        self.fresh_data[self.written_index] = False
 
         return self.frames[self.written_index][identifier]
 
@@ -129,8 +128,9 @@ class Cameras:
     ) -> tuple[
         dict[str, bool], dict[str, np.ndarray], dict[str, float], dict[str, float]
     ]:
+
         self.want_new_frames()
-        self.is_unread[self.written_index] = True
+        self.fresh_data[self.written_index] = False
 
         return (
             self.connections[self.written_index],
@@ -140,7 +140,15 @@ class Cameras:
         )
 
     def want_new_frames(self):
-        self.new_data_lock.acquire()
+        # New data at our read index
+        if self.fresh_data[self.written_index]:
+            return
+
+        # Both slots have old data
+        if not self.fresh_data[self.new_data_index]:
+            self.new_data_lock.acquire()
+
+        # Old data at current index but new in other
         self.written_index = self.new_data_index
         self.new_data_index = (self.new_data_index + 1) % 2
 
@@ -155,13 +163,14 @@ class Cameras:
         except Exception as e:
             Cameras.logger.error(f"Failed to read frame", exc_info=e)
 
-        self.cam_read_delay[self.new_data_index][identifier] = round(time.perf_counter() - before, 3)
+        self.cam_read_delay[self.new_data_index][identifier] = round(
+            time.perf_counter() - before, 3
+        )
         self.frames[self.new_data_index][identifier] = img
         self.connections[self.new_data_index][identifier] = ret
         self.timestamp[self.new_data_index][identifier] = cam_info.cam.get(
             cv2.CAP_PROP_POS_MSEC
         )
-        self.is_unread[self.new_data_index] = True
 
     # Find a calibration for the camera
     def import_calibration(self, identifier: str) -> bool:
