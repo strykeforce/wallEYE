@@ -30,13 +30,13 @@ class TagProcessor:
 
         corners, ids, _ = self.aruco_detector.detectMarkers(img)
 
-        if ids is None or ids.shape[0] == 0:
+        if ids is None:
             return (np.asarray([]), np.asarray([]))
 
-        ids = ids[0]
+        ids = np.asarray(ids.squeeze())
 
-        # mask = np.asarray([False] * ids.shape[0])
-        # mask[.nonzero()] = True
+        if ids.shape == 0:
+            return (np.asarray([]), np.asarray([]))
 
         mask = np.isin(ids, valid_tags)
 
@@ -44,13 +44,18 @@ class TagProcessor:
             TagProcessor.logger.warning(f"Invalid Tags: {ids[~mask]}")
 
         ids = ids[mask]
-        corners = np.asarray(corners[0])[mask]
+        corners = np.asarray(corners)[mask]
+
+
+        if len(corners.shape) == 5:
+            corners = corners[0]
+
 
         if len(corners) > 0:
             # Draw lines around tags for ease of seeing (website)
             if draw and len(corners) == len(ids):
                 try:
-                    cv2.aruco.drawDetectedMarkers(img, (corners,), ids)
+                    cv2.aruco.drawDetectedMarkers(img, corners, ids)
                 except cv2.error:
                     TagProcessor.logger.error(f"Could not draw tags: {ids} with corners {corners}")
         else:

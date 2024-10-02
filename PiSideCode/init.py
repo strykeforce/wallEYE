@@ -24,7 +24,9 @@ logging.getLogger("engineio").setLevel(logging.ERROR)
 
 logger = logging.getLogger(__name__)
 logger.info("----------- Starting Up -----------")
-# logger.info   (f"Running with niceness of {os.nice(-20)}")
+
+import datetime
+logger.info(f"Current Time: {str(datetime.datetime.now())}")
 
 from state import walleye_data, States, CALIBRATION_STATES
 from processing.pose_processing import PoseProcessor
@@ -47,13 +49,10 @@ from web_interface.web_interface import (
     cam_buffers,
     socketio,
     app,
-    # visualization_buffers,
     display_info,
 )
 
 import threading
-# import gc
-# gc.disable()
 
 def log_performance(walleye_data):
     """Logs loop time and individual camera read times every 30 seconds"""
