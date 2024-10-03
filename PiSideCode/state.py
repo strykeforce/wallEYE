@@ -36,7 +36,7 @@ class Data:
         self.current_state: States = States.PROCESSING
         self.status: str = "Running"
         self.should_update_web_stream = False
-        self.ip: str | None = None
+        self.ip: str = "10.27.67.99"
 
         self.visualizing_poses: bool = False
 

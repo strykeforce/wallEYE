@@ -139,7 +139,7 @@ export default function CameraStream(props) {
                         )}
 
                         <Col>
-                            <a href={"video_feed/" + props.camID}>
+                            <a href={"video_feed/" + props.camID} target="_blank">
                                 <Image
                                     src={"video_feed/" + props.camID}
                                     alt="Camera stream failed"

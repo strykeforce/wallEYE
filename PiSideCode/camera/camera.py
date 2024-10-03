@@ -128,7 +128,6 @@ class Cameras:
     ) -> tuple[
         dict[str, bool], dict[str, np.ndarray], dict[str, float], dict[str, float]
     ]:
-
         self.want_new_frames()
         self.fresh_data[self.written_index] = False
 

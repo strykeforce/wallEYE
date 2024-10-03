@@ -69,5 +69,4 @@ class TagProcessor:
 
         if corners.shape[0] == 0:
             return (np.asarray([]), np.asarray([]))
-
-        return (ids, corners[0][0])
+        return (ids, np.mean(corners[:, 0], axis=1))

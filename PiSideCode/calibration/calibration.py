@@ -47,25 +47,25 @@ class Calibrator:
             blob_params = cv2.SimpleBlobDetector_Params()
 
             # Change thresholds TODO adjust as necessary
-            # blob_params.minThreshold = 8
-            # blob_params.maxThreshold = 255
+            blob_params.minThreshold = 8
+            blob_params.maxThreshold = 255
 
             # # Filter by Area.
             blob_params.filterByArea = True
-            blob_params.minArea = 6
+            blob_params.minArea = 100
             blob_params.maxArea = 250000
 
-            # # Filter by Circularity
-            # blob_params.filterByCircularity = True
-            # blob_params.minCircularity = 0.1
+            # Filter by Circularity
+            blob_params.filterByCircularity = True
+            blob_params.minCircularity = 0.1
 
-            # # Filter by Convexity
-            # blob_params.filterByConvexity = True
-            # blob_params.minConvexity = 0.87
+            # Filter by Convexity
+            blob_params.filterByConvexity = True
+            blob_params.minConvexity = 0.9
 
-            # # Filter by Inertia
-            # blob_params.filterByInertia = True
-            # blob_params.minInertiaRatio = 0.01
+            # Filter by Inertia
+            blob_params.filterByInertia = True
+            blob_params.minInertiaRatio = 0.1
 
             self.blob_detector = cv2.SimpleBlobDetector_create(blob_params)
 
@@ -93,6 +93,8 @@ class Calibrator:
         self.prev_used_corner2 = np.zeros(2)
 
         self.overlay = np.zeros((resolution[1], resolution[0], 3), np.uint8)
+
+        self.expect_board = False
 
         if os.path.isdir(self.img_path):
             shutil.rmtree(self.img_path)
@@ -137,24 +139,29 @@ class Calibrator:
             40,
             0.001,
         ),
-        reduction_factor: int=2,
+        reduction_factor: int=0.3,
     ) -> tuple[np.ndarray, bool, str]:
         # Convert it to gray and look for calibration board
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         self.img_shape = gray.shape[::-1]
+        
+        # if not self.expect_board:
+        #     reduced = cv2.resize(
+        #         gray, (0, 0), fx=reduction_factor, fy=reduction_factor
+        #     )
+        #     found, _ = self.find_board(reduced)
 
-        # reduced = cv2.resize(
-        #     gray, (gray.shape[0] // reduction_factor, gray.shape[1] // reduction_factor)
-        # )
-        # found, _ = self.find_board(reduced)
-
-        # if not found:
-        #     return (img, False, None)
+        #     if not found:
+        #         self.draw_overlay(img)
+        #         return (img, False, None)
+            
 
         used = False
         path_saved = None
 
         found, corners = self.find_board(gray)
+
+        self.expect_board = found
 
         # If there is a board and it has been long enough
         if (
@@ -355,7 +362,7 @@ class Calibrator:
         self.prev_corner1 = corner1
         self.prev_corner2 = corner2
 
-        threshold = self.resolution[0] / 200
+        threshold = self.resolution[0] / 50
 
         self.last_image_stable = speed1 < threshold and speed2 < threshold
 
