@@ -53,6 +53,10 @@ class Cameras:
                     Cameras.logger.info(f"Skipping {identifier} - DISABLED")
                     continue
 
+                if "-usbv2-" in identifier:
+                    Cameras.logger.info(f"Skipping {identifier} - DUPLICATE")
+                    continue
+
                 path = full_cam_path(identifier)
 
                 # Open camera and check if it is opened
