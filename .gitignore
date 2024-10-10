@@ -7,7 +7,7 @@ PiSideCode/camera/camera_configs/*
 profile.html
 profile.json
 PiSideCode/config.zip
-
+PiSideCode/env
 ### Gradle ###
 .gradle
 /build/

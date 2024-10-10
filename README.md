@@ -38,3 +38,5 @@ The instructions below were documented for Ubuntu 24.01.1
 7. Make `walleye.service` in `/etc/systemd/system` and enable it.
 8. Install Node.js and run `npm install react react-dom`. 
 9. In `wallEYE/PiSideCode/web_interface/walleye` run `npm install`
+
+OR run `chmod +x install.sh` and `./install.sh`
