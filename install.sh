@@ -35,18 +35,18 @@ sudo chmod 4755 /usr/sbin/ifconfig
 
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
 
+nvm install 20
+
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" 
 echo "Node.js and npm version: $(node -v) $(npm -v)"
 
-nvm install 20
-
 cd web_interface/walleye
 npm install
 
 # Service file
-sudo echo "[Unit]
+echo "[Unit]
 Description=WallEYE Vision System Service
 After=default.target
 StartLimitIntervalSec=0
@@ -61,8 +61,8 @@ ExecStart=+/home/${USER}/wallEYE/PiSideCode/env/bin/python3.12 /home/${USER}/wal
 [Install]
 WantedBy=default.target" > /etc/systemd/system/walleye.service
 
-sudo systemctl enable walleye
-sudo systemctl start walleye
+systemctl enable walleye
+systemctl start walleye
 
 chmod -R 777 "/home/${USER}/wallEYE"
 
