@@ -29,32 +29,46 @@ import java.util.function.DoubleSupplier;
 
 /** A robot side code interface to interact and pull data from an Orange Pi running WallEye */
 public class WallEyeCam {
+  // Subscribers
   private DoubleArraySubscriber pose1Sub;
   private DoubleArraySubscriber pose2Sub;
   private DoubleSubscriber timestampSub;
   private DoubleSubscriber ambiguitySub;
   private IntegerArraySubscriber tagsSub;
   private BooleanSubscriber connectSub;
-  private int curUpdateNum = 0;
   private IntegerSubscriber updateSub;
+  
+  private int curUpdateNum = 0;
   private Transform3d camToCenter;
-  private DatagramSocket socket;
-  byte[] udpData = new byte[65535];
-  String udpNumTargets = "0";
-  DoubleSupplier gyro;
-  int currentGyroIndex = 0;
-  private final int maxGyroResultSize = 100;
-  DIOGyroResult[] gyroResults;
-  boolean hasTurnedOff;
-  Notifier dioLoop = new Notifier(this::grabGyro);
-  Notifier udpLoop = new Notifier(this::grabUDPdata);
-  int dioPort = -1;
-  private int camIndex = -1;
-  int udpPort;
-  String camName;
-  WallEyeResult curData = new WallEyeResult(null, null, 0, 0, 0, 0, null, 0);
-  int newUpdateNum = 0;
 
+  // UDP
+  private int udpPort;
+  private byte[] udpData = new byte[65535];
+  private String udpNumTargets = "0";
+  private DatagramSocket socket;
+  private Notifier udpLoop = new Notifier(this::grabUDPdata);
+
+  // Gyro
+  private int dioPort = -1;
+  private int currentGyroIndex = 0;
+  private final int maxGyroResultSize = 100;
+  private DoubleSupplier gyro;
+  private DIOGyroResult[] gyroResults;
+  private boolean hasTurnedOff;
+  private Notifier dioLoop = new Notifier(this::grabGyro);
+
+  // Camera
+  private int camIndex = -1;
+  private String camName;
+
+  // Data
+  private long timestamp = -1;
+  private ArrayList<ArrayList<Double[]>> tagCenters;
+  private int[] tags;
+  private WallEyeResult curData = new WallEyePoseResult(null, null, 0, 0, 0, 0, null, 0);
+  private int newUpdateNum = 0;
+
+  // Constants
   private final int kIntByteSize = 4;
   private final int kDoubleByteSize = 8;
   private final int kLongByteSize = 8;
@@ -73,6 +87,9 @@ public class WallEyeCam {
    */
   public WallEyeCam(String tableName, int camIndex, int udpPort, int dioPort) {
     this.udpPort = udpPort;
+    this.camName = tableName;
+    this.camIndex = camIndex;
+
     try {
       socket = new DatagramSocket(udpPort);
     } catch (SocketException e) {
@@ -81,23 +98,24 @@ public class WallEyeCam {
 
     gyroResults = new DIOGyroResult[maxGyroResultSize];
     hasTurnedOff = false;
-    this.camIndex = camIndex;
     // this.gyro = gyro;
 
     if (dioPort > 0) {
       this.dioPort = dioPort;
       dioLoop.startPeriodic(0.05);
     }
+
     udpLoop.startPeriodic(0.01);
+
     camToCenter = new Transform3d();
+
     NetworkTableInstance nt = NetworkTableInstance.getDefault();
     nt.startServer();
-
-    NetworkTable table = nt.getTable(tableName);
 
     double[] def = {2767.0, 2767.0, 2767.0, 2767.0, 2767.0, 2767.0, 2767.0};
     long[] defInt = {-1};
 
+    NetworkTable table = nt.getTable(tableName);
     NetworkTable subTable = table.getSubTable("Result" + camIndex);
 
     pose1Sub = subTable.getDoubleArrayTopic("Pose1").subscribe(def);
@@ -108,14 +126,13 @@ public class WallEyeCam {
 
     updateSub = table.getIntegerTopic("Update" + camIndex).subscribe(0);
     connectSub = table.getBooleanTopic("Connected" + camIndex).subscribe(false);
-    this.camName = tableName;
   }
 
   /** A method that checks the DIO port for an input and upon input will grab gyro and timestamp */
   private void grabGyro() {
     if (!hasTurnedOff) {
       gyroResults[currentGyroIndex] =
-          new DIOGyroResult(0.0 /*gyro.getAsDouble()*/, RobotController.getFPGATime());
+          new DIOGyroResult(0.0 /* gyro.getAsDouble() */, RobotController.getFPGATime());
       currentGyroIndex++;
       currentGyroIndex %= maxGyroResultSize;
       hasTurnedOff = true;
@@ -145,11 +162,12 @@ public class WallEyeCam {
 
   private void grabUDPdata() {
     DatagramPacket receive = new DatagramPacket(udpData, udpData.length);
+
     try {
       socket.receive(receive);
-      //   System.out.println(udpData);
+      // System.out.println(udpData);
     } catch (IOException e) {
-      System.err.println("COULD NOT RECEIVE DATA");
+      System.err.println("COULD NOT RECEIVE UDP DATA: " + e.toString());
     }
 
     // its all a json...
@@ -164,27 +182,72 @@ public class WallEyeCam {
     // An array containing all tags is under "Tags"
 
     String rawDataString = parseDataString(udpData).toString();
+
     try {
       JsonObject data = JsonParser.parseString(rawDataString).getAsJsonObject();
+
       Map<String, JsonElement> dataMap = data.asMap();
       Map<String, JsonElement> dataCam = dataMap.get(camName + camIndex).getAsJsonObject().asMap();
+
       if (dataCam != null) {
         int mode = dataCam.get("Mode").getAsInt();
+
         switch (mode) {
           case 0:
             newUpdateNum = dataCam.get("Update").getAsInt();
+
             Pose3d pose1 = parseJsonPose3d(dataCam.get("Pose1").getAsJsonObject().asMap());
             Pose3d pose2 = parseJsonPose3d(dataCam.get("Pose2").getAsJsonObject().asMap());
+
             double ambig = dataCam.get("Ambig").getAsDouble();
-            long timestamp = RobotController.getFPGATime() - dataCam.get("Timestamp").getAsLong();
-            int[] tags =
+            timestamp = RobotController.getFPGATime() - dataCam.get("Timestamp").getAsLong();
+
+            tags =
                 getTagsArray(
                     JsonParser.parseString(dataCam.get("Tags").toString().replace("\"", ""))
                         .getAsJsonArray()
                         .asList());
             curData =
-                new WallEyeResult(
+                new WallEyePoseResult(
                     pose1, pose2, timestamp, camIndex, newUpdateNum, tags.length, tags, ambig);
+            break;
+
+          case 1:
+            newUpdateNum = dataCam.get("Update").getAsInt();
+
+            tagCenters = new ArrayList<>();
+
+            // [tag index][center index][x/y]
+            List<JsonElement> tagData = dataCam.get("TagCenters").getAsJsonArray().asList();
+
+            for (int tagIndex = 0; tagIndex < tagData.size(); tagIndex++) {
+              List<JsonElement> centerData = tagData.get(tagIndex).getAsJsonArray().asList();
+
+              tagCenters.add(new ArrayList<Double[]>());
+
+              for (int centerIndex = 0; centerIndex < centerData.size(); centerIndex++) {
+                JsonElement[] centerCoordsObj = new JsonElement[2];
+                Double[] centerCoords = new Double[2];
+
+                centerData.get(centerIndex).getAsJsonArray().asList().toArray(centerCoordsObj);
+
+                centerCoords[0] = centerCoordsObj[0].getAsDouble();
+                centerCoords[1] = centerCoordsObj[1].getAsDouble();
+
+                tagCenters.get(tagIndex).add(centerCoords);
+              }
+            }
+
+            timestamp = RobotController.getFPGATime() - dataCam.get("Timestamp").getAsLong();
+
+            tags =
+                getTagsArray(
+                    JsonParser.parseString(dataCam.get("Tags").toString().replace("\"", ""))
+                        .getAsJsonArray()
+                        .asList());
+            curData =
+                new WallEyeTagResult(
+                    tagCenters, timestamp, camIndex, newUpdateNum, tags.length, tags);
             break;
           default:
             break;
@@ -193,12 +256,17 @@ public class WallEyeCam {
     } catch (Exception e) {
       System.err.println(e.toString());
     }
+
     udpData = new byte[65535];
   }
 
   private int[] getTagsArray(List<JsonElement> tagsList) {
     int[] tags = new int[tagsList.size()];
-    for (int i = 0; i < tagsList.size(); ++i) tags[i] = tagsList.get(i).getAsInt();
+
+    for (int i = 0; i < tagsList.size(); ++i) {
+      tags[i] = tagsList.get(i).getAsInt();
+    }
+
     return tags;
   }
 
@@ -209,11 +277,12 @@ public class WallEyeCam {
     double rX = poseData.get("rX").getAsDouble();
     double rY = poseData.get("rY").getAsDouble();
     double rZ = poseData.get("rZ").getAsDouble();
+
     return new Pose3d(new Translation3d(tX, tY, tZ), new Rotation3d(rX, rY, rZ));
   }
 
   public WallEyeResult getResults() {
-    // WallEyeResult result;
+    // WallEyePoseResult result;
     // curUpdateNum = (int) updateSub.get();
     // double[] tempPose1 = pose1Sub.get();
     // double[] tempPose2 = pose2Sub.get();
@@ -228,19 +297,23 @@ public class WallEyeCam {
     // Pose3d pose2 = getPoseFromArray(tempPose2);
 
     // result =
-    //     new WallEyeResult(
-    //         pose1, pose2, timestamp, camIndex, curUpdateNum, tags.length, tagsNew, ambiguity);
+    // new WallEyePoseResult(
+    // pose1, pose2, timestamp, camIndex, curUpdateNum, tags.length, tagsNew,
+    // ambiguity);
 
     // return result;
     curUpdateNum = curData.getUpdateNum();
+
     return curData;
   }
 
-  private int[] IntegerArrayToInt(Integer[] input) {
+  private int[] integerArrayToInt(Integer[] input) {
     int[] tags = new int[input.length];
+
     for (int i = 0; i < input.length; ++i) {
       tags[i] = input[i];
     }
+
     return tags;
   }
 
@@ -249,6 +322,7 @@ public class WallEyeCam {
     Integer[] tagsArray;
     int tagID = 0;
     int numTags = 0;
+
     while (tagID != kFinalTagInt) {
       tagID =
           parseDataInt(
@@ -261,17 +335,22 @@ public class WallEyeCam {
       tags.add(tagID);
       numTags++;
     }
+
     tagsArray = new Integer[tags.size()];
     tags.toArray(tagsArray);
+
     return tagsArray;
   }
 
   private Pose3d parseDataPose(String str) {
     double[] coords = new double[6];
-    for (int i = 0; i < 6; ++i)
+
+    for (int i = 0; i < 6; ++i) {
       coords[i] =
           parseDataDouble(
               stringToByte(str.substring(kDoubleByteSize * i, kDoubleByteSize * (i + 1))));
+    }
+
     return new Pose3d(
         new Translation3d(coords[0], coords[1], coords[2]),
         new Rotation3d(coords[3], coords[4], coords[5]));
@@ -298,12 +377,15 @@ public class WallEyeCam {
 
   private StringBuilder parseDataString(byte[] a) {
     if (a == null) return null;
+
     StringBuilder ret = new StringBuilder();
     int i = 0;
+
     while (a[i] != 0) {
       ret.append((char) a[i]);
       i++;
     }
+
     return ret;
   }
 
@@ -315,6 +397,7 @@ public class WallEyeCam {
    */
   private Pose3d getPoseFromArray(double[] arr) {
     assert arr.length == 6;
+
     return new Pose3d(
         new Translation3d(arr[0], arr[1], arr[2]), new Rotation3d(arr[3], arr[4], arr[5]));
   }
@@ -330,11 +413,20 @@ public class WallEyeCam {
    */
   public DIOGyroResult findGyro(long timestamp, int camIndex, double yaw) {
     int index = currentGyroIndex - 1;
-    if (index < 0) index += maxGyroResultSize;
+
+    if (index < 0) {
+      index += maxGyroResultSize;
+    }
+
     while ((long) gyroResults[index].getTimestamp() > timestamp) {
       index--;
-      if (index < 0) index += maxGyroResultSize;
-      if (index == currentGyroIndex) return new DIOGyroResult(yaw, timestamp);
+
+      if (index < 0) {
+        index += maxGyroResultSize;
+      }
+      if (index == currentGyroIndex) {
+        return new DIOGyroResult(yaw, timestamp);
+      }
     }
     return gyroResults[index];
   }

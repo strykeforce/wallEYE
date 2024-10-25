@@ -1,0 +1,80 @@
+package WallEye;
+
+import edu.wpi.first.math.geometry.Pose3d;
+
+/**
+ * The data that the WallEye class will return when asked for new poses. Each object has an
+ * associated Pose, an associated timestamp as well as an associated camera.
+ *
+ * @see WallEye
+ */
+public class WallEyePoseResult extends WallEyeResult {
+  private Pose3d cameraPose1;
+  private Pose3d cameraPose2;
+  private double ambiguity;
+
+  /**
+   * Creates a WallEyePoseResult object with an associated Pose, timestamp and what cam produced
+   * this pose
+   *
+   * @param pose1 the first pose that the SolvePNP returned
+   * @param pose2 the second pose that the SolvePNP returned
+   * @param ambiguity a double that represents to confidence of the pose
+   */
+  public WallEyePoseResult(
+      Pose3d pose1,
+      Pose3d pose2,
+      double timeStamp,
+      int originCam,
+      int updateNum,
+      int numTags,
+      int[] tags,
+      double ambiguity) {
+
+    super(timeStamp, originCam, updateNum, numTags, tags);
+
+    this.cameraPose1 = pose1;
+    this.cameraPose2 = pose2;
+    this.ambiguity = ambiguity;
+  }
+
+  /**
+   * Getter for the ambiguity
+   *
+   * @return double that represents pose confidence (higher is worse [1.0 is the max])
+   */
+  public double getAmbiguity() {
+    return ambiguity;
+  }
+  /**
+   * Getter for the pose
+   *
+   * @return Pose3d of the camera's pose (Will return first pose if given two pose solution)
+   */
+  public Pose3d getCameraPose() {
+    return cameraPose1;
+  }
+
+  /**
+   * Getter for the first pose
+   *
+   * @return Pose3d of the camera's first pose as given by SolvePNP
+   */
+  public Pose3d getFirstPose() {
+    return cameraPose1;
+  }
+
+  /**
+   * Getter for the second pose
+   *
+   * @return Pose3d of the camera's second pose as given by SolvePNP
+   */
+  public Pose3d getSecondPose() {
+    return cameraPose2;
+  }
+
+  @Override
+  public String toString() {
+    return "Update: " + updateNum + " | Pose1: " + cameraPose1 + " | Timestamp: " + timeStamp;
+  }
+}
