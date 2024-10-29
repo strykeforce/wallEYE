@@ -3,6 +3,8 @@ echo "Beginning wallEYE Installation..."
 
 USER="$(whoami)"
 
+echo "Installing as ${USER}"
+
 # Python dependencies
 sudo add-apt-repository ppa:deadsnakes/ppa
 sudo apt-get update
