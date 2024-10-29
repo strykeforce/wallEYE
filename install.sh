@@ -47,7 +47,7 @@ cd web_interface/walleye
 npm install
 
 # Service file
-sudo echo "[Unit]
+sudo bash -c 'echo "[Unit]
 Description=WallEYE Vision System Service
 After=default.target
 StartLimitIntervalSec=0
@@ -60,7 +60,7 @@ User=${USER}
 ExecStart=+/home/${USER}/wallEYE/PiSideCode/env/bin/python3.12 /home/${USER}/wallEYE/PiSideCode/init.py
 
 [Install]
-WantedBy=default.target" > /etc/systemd/system/walleye.service
+WantedBy=default.target" > /etc/systemd/system/walleye.service'
 
 sudo systemctl enable walleye
 sudo systemctl start walleye
