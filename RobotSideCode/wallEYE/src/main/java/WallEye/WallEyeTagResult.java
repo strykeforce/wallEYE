@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * @see WallEye
  */
 public class WallEyeTagResult extends WallEyeResult {
-  private ArrayList<ArrayList<Double[]>> tagCenters;
+  private ArrayList<Double[]> tagCenters;
 
   /**
    * Creates a WallEyeTagResult object with an associated Tag centers, timestamp and what cam
@@ -20,7 +20,7 @@ public class WallEyeTagResult extends WallEyeResult {
    * @param ambiguity a double that represents to confidence of the pose
    */
   public WallEyeTagResult(
-      ArrayList<ArrayList<Double[]>> tagCenters,
+      ArrayList<Double[]> tagCenters,
       double timeStamp,
       int originCam,
       int updateNum,
@@ -37,7 +37,7 @@ public class WallEyeTagResult extends WallEyeResult {
    *
    * @return int[][] of the tag centers
    */
-  public ArrayList<ArrayList<Double[]>> getTagCenters() {
+  public ArrayList<Double[]> getTagCenters() {
     return tagCenters;
   }
 

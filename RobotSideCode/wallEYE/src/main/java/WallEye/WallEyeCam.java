@@ -37,7 +37,7 @@ public class WallEyeCam {
   private IntegerArraySubscriber tagsSub;
   private BooleanSubscriber connectSub;
   private IntegerSubscriber updateSub;
-  
+
   private int curUpdateNum = 0;
   private Transform3d camToCenter;
 
@@ -63,7 +63,7 @@ public class WallEyeCam {
 
   // Data
   private long timestamp = -1;
-  private ArrayList<ArrayList<Double[]>> tagCenters;
+  private ArrayList<Double[]> tagCenters;
   private int[] tags;
   private WallEyeResult curData = new WallEyePoseResult(null, null, 0, 0, 0, 0, null, 0);
   private int newUpdateNum = 0;
@@ -223,18 +223,18 @@ public class WallEyeCam {
             for (int tagIndex = 0; tagIndex < tagData.size(); tagIndex++) {
               List<JsonElement> centerData = tagData.get(tagIndex).getAsJsonArray().asList();
 
-              tagCenters.add(new ArrayList<Double[]>());
+              // tagCenters.add(new ArrayList<Double[]>());
 
               for (int centerIndex = 0; centerIndex < centerData.size(); centerIndex++) {
-                JsonElement[] centerCoordsObj = new JsonElement[2];
                 Double[] centerCoords = new Double[2];
 
-                centerData.get(centerIndex).getAsJsonArray().asList().toArray(centerCoordsObj);
+                List<JsonElement> centerCoordsObj =
+                    centerData.get(centerIndex).getAsJsonArray().asList();
 
-                centerCoords[0] = centerCoordsObj[0].getAsDouble();
-                centerCoords[1] = centerCoordsObj[1].getAsDouble();
+                centerCoords[0] = centerCoordsObj.get(0).getAsDouble();
+                centerCoords[1] = centerCoordsObj.get(1).getAsDouble();
 
-                tagCenters.get(tagIndex).add(centerCoords);
+                tagCenters.add(centerCoords);
               }
             }
 

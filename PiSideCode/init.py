@@ -254,7 +254,8 @@ try:
 
                 else:
                     pass
-
+            
+            # Pose mode
             if len(poses) > 0:
                 # Publish camera number, timestamp, poses, tags, ambiguity and increase the update number
                 # for i in range(len(poses)):
@@ -267,6 +268,10 @@ try:
                     list(img_time.values()),
                     tags,
                 )  # TODO: is above loop needed?
+
+            # Tag servoing mode
+            if len(tag_centers) > 0:
+                walleye_data.robot_publisher.udp_tag_centers_publish(tags, tag_centers, list(img_time.values()))
 
             # Update video stream for web interface
             if walleye_data.should_update_web_stream:

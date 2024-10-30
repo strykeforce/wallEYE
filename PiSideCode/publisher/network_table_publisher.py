@@ -123,7 +123,7 @@ class NetworkIO:
     def set_table(self, name: str):
         self.table = self.inst.getTable(name)
 
-    def udp_pose_publish(self, pose1, pose2, ambig, timestamp, tags):
+    def udp_pose_publish(self, pose1, pose2, ambig, timestamps, tags):
         data_dict = {}
 
         for i in range(len(pose1)):
@@ -135,7 +135,7 @@ class NetworkIO:
                 "Pose2": self.pose_to_dict(pose2[i]),
                 "Ambig": str(ambig[i]),
                 # "Timestamp": str(ntcore._now() - timestamp[i]),
-                "Timestamp": str(ntcore._now() - (time.monotonic_ns() / 1000000 - timestamp[i])),
+                "Timestamp": str(ntcore._now() - (time.monotonic_ns() / 1000000 - timestamps[i])),
                 "Tags": str(tags[i]),
             }
             data_dict[self.name + str(i)] = camDict
@@ -147,9 +147,34 @@ class NetworkIO:
             # NetworkIO.logger.error("Failed to publish pose in UDP: ", exc_info=e)
             pass
 
+    def udp_tag_centers_publish(self, tags, tag_centers, timestamps):
+        data_dict = {}
+
+        # Loop through each camera
+        for i in range(len(tags)):
+            self.update_num[i] += 1 # Is it ok to update the same counter?
+
+            # Data for camera i
+            data_dict[self.name + str(i)] = {
+                "Mode": "1",
+                "Update": str(self.update_num[i]),
+                "Tags": str(tags[i]),
+                "TagCenters": str(tag_centers[i]),
+                "Timestamp": str(ntcore._now() - (time.monotonic_ns() / 1000000 - timestamps[i])),
+            }
+
+        data_str = json.dumps(data_dict)
+
+        try:
+            self.sock.sendto(bytes(data_str, "utf-8"), (self.robot_ip, self.robot_port))
+        except Exception as e:
+            # NetworkIO.logger.error("Failed to publish pose in UDP: ", exc_info=e)
+            pass
+
     def pose_to_dict(self, pose):
         t = pose.translation()
         r = pose.rotation()
+
         return {
             "tX": str(t.X()),
             "tY": str(t.Y()),
@@ -159,14 +184,14 @@ class NetworkIO:
             "rZ": str(r.Z()),
         }
 
-    def pose_to_byte(self, pose):
-        t = pose.translation()
-        r = pose.rotation()
-        axes = [t.X(), t.Y(), t.Z(), r.X(), r.Y(), r.Z()]
-        byte_arr = []
-        for axis in axes:
-            byte_arr += bytearray(struct.pack("d", axis))
-        return byte_arr
+    # def pose_to_byte(self, pose):
+    #     t = pose.translation()
+    #     r = pose.rotation()
+    #     axes = [t.X(), t.Y(), t.Z(), r.X(), r.Y(), r.Z()]
+    #     byte_arr = []
+    #     for axis in axes:
+    #         byte_arr += bytearray(struct.pack("d", axis))
+    #     return byte_arr
 
     # Publishes the supplied pose information in the corresponding publisher
     def publish(
