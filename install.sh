@@ -1,9 +1,9 @@
 set -e
 echo "Beginning wallEYE Installation..."
 
-USER=$(whoami)
+user=$(whoami)
 
-echo "Installing as ${USER}"
+echo "Installing as ${user}"
 
 # Python dependencies
 sudo add-apt-repository ppa:deadsnakes/ppa
@@ -57,9 +57,9 @@ StartLimitIntervalSec=0
 Type=simple
 Restart=always
 RestartSec=1
-WorkingDirectory=/home/${USER}/wallEYE/PiSideCode
-User=${USER}
-ExecStart=+/home/${USER}/wallEYE/PiSideCode/env/bin/python3.12 /home/${USER}/wallEYE/PiSideCode/init.py
+WorkingDirectory=/home/${user}/wallEYE/PiSideCode
+User=${user}
+ExecStart=+/home/${user}/wallEYE/PiSideCode/env/bin/python3.12 /home/${user}/wallEYE/PiSideCode/init.py
 
 [Install]
 WantedBy=default.target" > /etc/systemd/system/walleye.service'
