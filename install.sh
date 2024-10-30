@@ -69,4 +69,7 @@ sudo systemctl start walleye
 
 sudo chmod -R 777 "/home/${user}/wallEYE"
 
-echo "wallEYE Installation Complete!"
+echo -e "\033[1;92m wallEYE Installation Complete!"
+echo -e "\033[1;91m    Remember to disable autosuspend / sync the clock"
+echo -e "\033[1;91m    Remember to disable autosuspend / sync the clock"
+echo -e "\033[1;91m    Remember to disable autosuspend / sync the clock"
