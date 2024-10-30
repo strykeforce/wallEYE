@@ -1,7 +1,8 @@
 # WallEYE
-  WallEYE is an Apriltag processing software for use in FRC application. This software has a robotside implementation as well as a website interface. This software was made for Orange Pi 5 running Ubuntu (Joshua Riek), but it should run fine on a Linux os with V4L2 and a recent Python version (tested with 3.11.9).
+  _See bottom for updated instructions._
+  WallEYE is an Apriltag processing software for use in FRC application. This software has a robotside implementation as well as a website interface. This software was made for Orange Pi 5 running Ubuntu (Joshua Riek or Armbian), but it should run fine on a Linux os with V4L2 and a recent Python version (tested with 3.12.3).
 
-  Use `python3.11 init.py` to run. If changes are made to the web interface (frontend portion), `cd WebInterface/walleye` and `npm run build` are required to update the site.  
+  Use `python3.12 init.py` to run. If changes are made to the web interface (frontend portion), `cd web_interface/walleye` and `npm run build` are required to update the site.  
 
   If using from source, `sudo chmod 4755 /sbin/ifconfig` is required prior to running the first time.
 
@@ -39,4 +40,4 @@ The instructions below were documented for Ubuntu 24.01.1
 8. Install Node.js and run `npm install react react-dom`. 
 9. In `wallEYE/PiSideCode/web_interface/walleye` run `npm install`
 
-OR run `chmod +x install.sh` and `./install.sh`
+OR run `chmod +x install.sh` and `sudo -i -u {USERNAME} ./install.sh` - Tested on Armbian (24.8.1) (Ubuntu 24.04.1)
