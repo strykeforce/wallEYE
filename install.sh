@@ -1,7 +1,7 @@
 set -e
 echo "Beginning wallEYE Installation..."
 
-USER="$(whoami)"
+USER=$(whoami)
 
 echo "Installing as ${USER}"
 
