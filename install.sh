@@ -67,6 +67,6 @@ WantedBy=default.target\" > /etc/systemd/system/walleye.service"
 sudo systemctl enable walleye
 sudo systemctl start walleye
 
-chmod -R 777 "/home/${user}/wallEYE"
+sudo chmod -R 777 "/home/${user}/wallEYE"
 
 echo "wallEYE Installation Complete!"
