@@ -1,7 +1,9 @@
 set -e
 echo "Beginning wallEYE Installation..."
 
-USER="$(whoami)"
+user=$(whoami)
+
+echo "Installing as ${user}"
 
 # Python dependencies
 sudo add-apt-repository ppa:deadsnakes/ppa
@@ -35,18 +37,19 @@ sudo chmod 4755 /usr/sbin/ifconfig
 
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
 
-nvm install 20
-
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" 
+
+nvm install 20
+
 echo "Node.js and npm version: $(node -v) $(npm -v)"
 
 cd web_interface/walleye
 npm install
 
 # Service file
-echo "[Unit]
+sudo bash -c "echo \"[Unit]
 Description=WallEYE Vision System Service
 After=default.target
 StartLimitIntervalSec=0
@@ -54,16 +57,16 @@ StartLimitIntervalSec=0
 Type=simple
 Restart=always
 RestartSec=1
-WorkingDirectory=/home/${USER}/wallEYE/PiSideCode
-User=${USER}
-ExecStart=+/home/${USER}/wallEYE/PiSideCode/env/bin/python3.12 /home/${USER}/wallEYE/PiSideCode/init.py
+WorkingDirectory=/home/${user}/wallEYE/PiSideCode
+User=${user}
+ExecStart=+/home/${user}/wallEYE/PiSideCode/env/bin/python3.12 /home/${user}/wallEYE/PiSideCode/init.py
 
 [Install]
-WantedBy=default.target" > /etc/systemd/system/walleye.service
+WantedBy=default.target\" > /etc/systemd/system/walleye.service"
 
-systemctl enable walleye
-systemctl start walleye
+sudo systemctl enable walleye
+sudo systemctl start walleye
 
-chmod -R 777 "/home/${USER}/wallEYE"
+sudo chmod -R 777 "/home/${user}/wallEYE"
 
 echo "wallEYE Installation Complete!"
