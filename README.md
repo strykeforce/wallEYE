@@ -39,5 +39,6 @@ The instructions below were documented for Ubuntu 24.01.1
 7. Make `walleye.service` in `/etc/systemd/system` and enable it.
 8. Install Node.js and run `npm install react react-dom`. 
 9. In `wallEYE/PiSideCode/web_interface/walleye` run `npm install`
+10. *Disable Autosuspend!!* and sync clock.
 
 OR run `chmod +x install.sh` and `sudo -i -u {USERNAME} ./install.sh` - Tested on Armbian (24.8.1) (Ubuntu 24.04.1)
