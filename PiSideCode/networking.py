@@ -4,7 +4,7 @@ import os
 
 logger = logging.getLogger(__name__)
 
-ETHERNET = "end0" # 22.04 eth0
+ETHERNET = "end1" # 22.04 eth0
 
 
 # Set static IP and write it into system files
