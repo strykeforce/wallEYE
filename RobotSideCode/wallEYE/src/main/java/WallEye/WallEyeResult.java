@@ -75,6 +75,9 @@ public class WallEyeResult {
     return tags;
   }
 
+  /**
+   * @return String
+   */
   @Override
   public String toString() {
     return "Update: " + updateNum + " Timestamp: " + timeStamp;

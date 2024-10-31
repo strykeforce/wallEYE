@@ -17,9 +17,14 @@ public class WallEyePoseResult extends WallEyeResult {
    * Creates a WallEyePoseResult object with an associated Pose, timestamp and what cam produced
    * this pose
    *
-   * @param pose1 the first pose that the SolvePNP returned
-   * @param pose2 the second pose that the SolvePNP returned
-   * @param ambiguity a double that represents to confidence of the pose
+   * @param pose1 One of the poses produced by SolvePnP
+   * @param pose2 The other pose produced by SolvePnP
+   * @param timeStamp The time the camera captured this data
+   * @param originCam The camera's index that gave this data
+   * @param updateNum The nth result from wallEYE
+   * @param numTags The number of tags used to calculate these poses
+   * @param tags List of tags used to calculate these poses
+   * @param ambiguity Ambiguity of this result
    */
   public WallEyePoseResult(
       Pose3d pose1,
@@ -73,6 +78,9 @@ public class WallEyePoseResult extends WallEyeResult {
     return cameraPose2;
   }
 
+  /**
+   * @return String
+   */
   @Override
   public String toString() {
     return "Update: " + updateNum + " | Pose1: " + cameraPose1 + " | Timestamp: " + timeStamp;

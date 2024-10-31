@@ -160,6 +160,7 @@ public class WallEyeCam {
     return camIndex;
   }
 
+  /** Background thread to recieve UDP data from Pi */
   private void grabUDPdata() {
     DatagramPacket receive = new DatagramPacket(udpData, udpData.length);
 
@@ -260,6 +261,12 @@ public class WallEyeCam {
     udpData = new byte[65535];
   }
 
+  /**
+   * Converts List of JsonElement of tag ids to int tag ids
+   *
+   * @param tagsList
+   * @return List of casted int tag ids
+   */
   private int[] getTagsArray(List<JsonElement> tagsList) {
     int[] tags = new int[tagsList.size()];
 
@@ -270,6 +277,10 @@ public class WallEyeCam {
     return tags;
   }
 
+  /**
+   * @param poseData
+   * @return Pose3d
+   */
   private Pose3d parseJsonPose3d(Map<String, JsonElement> poseData) {
     double tX = poseData.get("tX").getAsDouble();
     double tY = poseData.get("tY").getAsDouble();
@@ -281,6 +292,11 @@ public class WallEyeCam {
     return new Pose3d(new Translation3d(tX, tY, tZ), new Rotation3d(rX, rY, rZ));
   }
 
+  /**
+   * Returns WallEyeResult object with the corresponding data
+   *
+   * @return Most recent WallEyeResult
+   */
   public WallEyeResult getResults() {
     // WallEyePoseResult result;
     // curUpdateNum = (int) updateSub.get();

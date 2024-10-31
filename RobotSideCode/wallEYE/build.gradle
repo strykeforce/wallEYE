@@ -87,7 +87,7 @@ test {
 // knows where to look for our Robot Class.
 java {
     withSourcesJar()
-    // withJavadocJar()
+    withJavadocJar()
 }
 
 publishing {

@@ -15,9 +15,12 @@ public class WallEyeTagResult extends WallEyeResult {
    * Creates a WallEyeTagResult object with an associated Tag centers, timestamp and what cam
    * produced this
    *
-   * @param pose1 the first pose that the SolvePNP returned
-   * @param pose2 the second pose that the SolvePNP returned
-   * @param ambiguity a double that represents to confidence of the pose
+   * @param tagCenters The image coordinates (height, width) of the tag centers
+   * @param timeStamp The time the camera captured this data
+   * @param originCam The index of the camera that captured this data
+   * @param updateNum The nth result from wallEYE
+   * @param numTags The number of tags in the image
+   * @param tags The tag ids detected in this image
    */
   public WallEyeTagResult(
       ArrayList<Double[]> tagCenters,
@@ -41,6 +44,9 @@ public class WallEyeTagResult extends WallEyeResult {
     return tagCenters;
   }
 
+  /**
+   * @return String
+   */
   @Override
   public String toString() {
     return "Update: "
