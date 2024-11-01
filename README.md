@@ -28,8 +28,8 @@ See `STYLE-GUIDE.md`
 
 ## Fresh Installation
 
-The instructions below were documented for Ubuntu 24.01.1
-
+The instructions below were documented for Ubuntu 24.04.1 (Joshua Riek image)
+0. If `install.sh` still works, use that instead (see below).
 1. Flash desired image. If balena-etcher keeps failing to create a bootable sd card, try the Raspberry Pi Imager.
 2. Install the correct python version or use a `venv`. We are currently using `python3.11`.
 3. Get pip if not already installed: `wget https://bootstrap.pypa.io/get-pip.py && python3.11 get-pip.py`
@@ -39,9 +39,9 @@ The instructions below were documented for Ubuntu 24.01.1
 7. Make `walleye.service` in `/etc/systemd/system` and enable it.
 8. Install Node.js and run `npm install react react-dom`. 
 9. In `wallEYE/PiSideCode/web_interface/walleye` run `npm install`
-10. *Disable Autosuspend!!* and sync clock.
+10. *Disable Autosuspend!!* and sync clock (if appropriate). 
 
-OR run `chmod +x install.sh` and `sudo -i -u {USERNAME} ./install.sh` - Tested on Armbian (24.8.1) (Ubuntu 24.04.1)
+OR run `chmod +x install.sh` and `sudo -i -u {USERNAME} [PATH_TO_install.sh_FROM_HOME]` - Tested on Ubuntu 24.04.1 (Joshua Riek and Armbian)
 
 ## Distribution
 
