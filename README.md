@@ -42,3 +42,10 @@ The instructions below were documented for Ubuntu 24.01.1
 10. *Disable Autosuspend!!* and sync clock.
 
 OR run `chmod +x install.sh` and `sudo -i -u {USERNAME} ./install.sh` - Tested on Armbian (24.8.1) (Ubuntu 24.04.1)
+
+## Distribution
+
+This section documents how to easily distribute wallEYE to OrangePis on the robot.
+
+On your PC, run `git daemon --base-path=. --export-all` in the wallEYE folder.
+SSH into the orangepi and run `git pull git://[YOUR_IP]/wallEYE`
