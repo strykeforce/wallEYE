@@ -40,12 +40,13 @@ The instructions below were documented for Ubuntu 24.04.1 (Joshua Riek image)
 8. Install Node.js and run `npm install react react-dom`. 
 9. In `wallEYE/PiSideCode/web_interface/walleye` run `npm install`
 10. *Disable Autosuspend!!* and sync clock (if appropriate). 
+11. Disable ipv6. This can sometimes cause problems!
 
-OR run `chmod +x install.sh` and `sudo -i -u {USERNAME} [PATH_TO_install.sh_FROM_HOME]` - Tested on Ubuntu 24.04.1 (Joshua Riek and Armbian)
+OR run `chmod +x install.sh` and `sudo -i -u {USERNAME} [PATH_TO_install.sh_FROM_HOME]` - Tested on Ubuntu 24.04.1 (Joshua Riek and Armbian) AND Disable ipv6. This can sometimes cause problems!
 
 ## Distribution
 
 This section documents how to easily distribute wallEYE to OrangePis on the robot.
 
-On your PC, run `git daemon --base-path=. --export-all` in the wallEYE folder (after committing)
-SSH into the orangepi and run `git pull git://[YOUR_IP]/wallEYE`
+On your PC, run `git daemon --base-path=. --export-all` in the directory containing the wallEYE folder (after committing)
+In another terminal, SSH into the orangepi and run `git pull git://[YOUR_IP]/wallEYE`
