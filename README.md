@@ -47,5 +47,5 @@ OR run `chmod +x install.sh` and `sudo -i -u {USERNAME} [PATH_TO_install.sh_FROM
 
 This section documents how to easily distribute wallEYE to OrangePis on the robot.
 
-On your PC, run `git daemon --base-path=. --export-all` in the wallEYE folder.
+On your PC, run `git daemon --base-path=. --export-all` in the wallEYE folder (after committing)
 SSH into the orangepi and run `git pull git://[YOUR_IP]/wallEYE`

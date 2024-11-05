@@ -229,7 +229,7 @@ class Data:
             # Write IP to a system file
             with open(CONFIG_DATA_PATH, "r") as file:
                 config = json.load(file)
-                # config["ip"] = self.ip
+                config["ip"] = self.ip
                 with open(CONFIG_DATA_PATH, "w") as out:
                     json.dump(config, out)
 
