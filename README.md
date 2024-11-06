@@ -50,3 +50,5 @@ This section documents how to easily distribute wallEYE to OrangePis on the robo
 
 On your PC, run `git daemon --base-path=. --export-all` in the directory containing the wallEYE folder (after committing)
 In another terminal, SSH into the orangepi and run `git pull git://[YOUR_IP]/wallEYE`
+
+Internet connection on orange pis can cause headaches...
