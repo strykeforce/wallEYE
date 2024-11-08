@@ -21,11 +21,12 @@ def set_ip(ip: str, interface: str = ETHERNET):
     # )
     # # os.system("ifconfig eth0 down")
     os.system(f"ifconfig {interface} up")
+    os.system(f"ip addr flush {interface}")
     if not os.system(f"/usr/sbin/ifconfig {interface} {ip} netmask 255.255.255.0") and get_current_ip() == ip:
         logger.info(f"Static IP set: {ip} =? {get_current_ip()}")
     else:
         logger.error(f"Failed to set static ip: {ip}, actually at {get_current_ip()}")
-    os.system(f"/usr/sbin/ifconfig {interface} up")
+    # os.system(f"/usr/sbin/ifconfig {interface} up")
 
 
     logger.info(f"Static IP set: {ip} =? {get_current_ip()}")
