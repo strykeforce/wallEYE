@@ -105,8 +105,6 @@ public class WallEyeCam {
       dioLoop.startPeriodic(0.05);
     }
 
-    udpLoop.startPeriodic(0.01);
-
     camToCenter = new Transform3d();
 
     NetworkTableInstance nt = NetworkTableInstance.getDefault();
@@ -126,6 +124,8 @@ public class WallEyeCam {
 
     updateSub = table.getIntegerTopic("Update" + camIndex).subscribe(0);
     connectSub = table.getBooleanTopic("Connected" + camIndex).subscribe(false);
+
+    udpLoop.startPeriodic(0.01);
   }
 
   /** A method that checks the DIO port for an input and upon input will grab gyro and timestamp */
@@ -182,13 +182,24 @@ public class WallEyeCam {
     // The timestamp is under "Timestamp"
     // An array containing all tags is under "Tags"
 
-    String rawDataString = parseDataString(udpData).toString();
+    String rawDataString =
+        new String(
+            receive.getData(), 0, receive.getLength()); // parseDataString(udpData).toString();
+    udpData = new byte[65535]; // Clear buffer
+
+    System.out.println(rawDataString);
 
     try {
       JsonObject data = JsonParser.parseString(rawDataString).getAsJsonObject();
 
       Map<String, JsonElement> dataMap = data.asMap();
-      Map<String, JsonElement> dataCam = dataMap.get(camName + camIndex).getAsJsonObject().asMap();
+      String camId = camName + camIndex;
+
+      if (!dataMap.containsKey(camId)) {
+        return; // No vision update
+      }
+      // System.out.println("Want " + camName + camIndex);
+      Map<String, JsonElement> dataCam = dataMap.get(camId).getAsJsonObject().asMap();
 
       if (dataCam != null) {
         int mode = dataCam.get("Mode").getAsInt();
@@ -201,7 +212,8 @@ public class WallEyeCam {
             Pose3d pose2 = parseJsonPose3d(dataCam.get("Pose2").getAsJsonObject().asMap());
 
             double ambig = dataCam.get("Ambig").getAsDouble();
-            timestamp = RobotController.getFPGATime() - dataCam.get("Timestamp").getAsLong();
+            timestamp =
+                RobotController.getFPGATime() - (long) dataCam.get("Timestamp").getAsDouble();
 
             tags =
                 getTagsArray(
@@ -257,8 +269,6 @@ public class WallEyeCam {
     } catch (Exception e) {
       System.err.println(e.toString());
     }
-
-    udpData = new byte[65535];
   }
 
   /**

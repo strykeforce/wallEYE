@@ -90,6 +90,7 @@ class Data:
         # If no system file is found boot with base settings and create system
         # settings
         except (FileNotFoundError, json.decoder.JSONDecodeError, KeyError):
+            Data.logger.error(f"Failed to load system data, setting defaults!")
             self.team_number = 2767
             self.table_name = "WallEye"
             self.ip = get_current_ip()
@@ -155,14 +156,14 @@ class Data:
     def set_web_img_info(self, identifier: str, info: tuple[wpi.Pose3d] | list):
         if len(info) > 0 and isinstance(info[0], wpi.Pose3d):
             a, b = info
-            self.img_info[identifier] = (
-                f"Pose: [({round(a.X(), 2)}, {round(a.Y(), 2)}, {round(a.Z(), 2)}) ({round(a.rotation().X(), 2)}, {round(a.rotation().Y(), 2)}, {round(a.rotation().Z(), 2)})], ({round(b.X(), 2)}, {round(b.Y(), 2)}, {round(b.Z(), 2)}) ({round(b.rotation().X(), 2)}, {round(b.rotation().Y(), 2)}, {round(b.rotation().Z(), 2)})"
-            )
+            self.img_info[
+                identifier
+            ] = f"Pose: [({round(a.X(), 2)}, {round(a.Y(), 2)}, {round(a.Z(), 2)}) ({round(a.rotation().X(), 2)}, {round(a.rotation().Y(), 2)}, {round(a.rotation().Z(), 2)})], ({round(b.X(), 2)}, {round(b.Y(), 2)}, {round(b.Z(), 2)}) ({round(b.rotation().X(), 2)}, {round(b.rotation().Y(), 2)}, {round(b.rotation().Z(), 2)})"
 
         elif isinstance(info, list):
-            self.img_info[identifier] = (
-                f"Tag centers: {np.array_str(np.asarray(info), precision=1, suppress_small=True)}"
-            )
+            self.img_info[
+                identifier
+            ] = f"Tag centers: {np.array_str(np.asarray(info), precision=1, suppress_small=True)}"
 
     # Return the file path names for each camera
     def get_cal_file_paths(self):
@@ -178,23 +179,25 @@ class Data:
                 with open(CONFIG_DATA_PATH, "w") as out:
                     json.dump(config, out)
 
-        except (FileNotFoundError, json.decoder.JSONDecodeError):
-            Data.logger.error(f"Failed to write Dimensions {dim}")
+        except (FileNotFoundError, json.decoder.JSONDecodeError) as e:
+            Data.logger.error(f"Failed to write Dimensions {dim}: {e}")
 
     # Set the udp port and save it off
     def set_udp_port(self, port):
         try:
             # Write it in system settings file
-            with open(CONFIG_DATA_PATH, "w+") as file:
+            with open(CONFIG_DATA_PATH, "r") as file:
                 config = json.load(file)
                 config["Port"] = port
                 self.udp_port = port
-                json.dump(config, file)
+
+                with open(CONFIG_DATA_PATH, "w") as out:
+                    json.dump(config, out)
 
             self.make_publisher(self.team_number, self.table_name, self.udp_port)
 
-        except (FileNotFoundError, json.decoder.JSONDecodeError):
-            Data.logger.error(f"Failed to write port {port}")
+        except (FileNotFoundError, json.decoder.JSONDecodeError) as e:
+            Data.logger.error(f"Failed to write port {port}: {e}")
 
     # Set Tag Size (meters) and set it in system settings
 
@@ -207,8 +210,8 @@ class Data:
                 with open(CONFIG_DATA_PATH, "w") as out:
                     json.dump(config, out)
 
-        except (FileNotFoundError, json.decoder.JSONDecodeError):
-            Data.logger.error(f"Failed to write tag size {size}")
+        except (FileNotFoundError, json.decoder.JSONDecodeError) as e:
+            Data.logger.error(f"Failed to write tag size {size}: {e}")
 
     # Set static IP and write it into system files
     def set_ip(self, ip: str):
@@ -233,8 +236,8 @@ class Data:
                 with open(CONFIG_DATA_PATH, "w") as out:
                     json.dump(config, out)
 
-        except (FileNotFoundError, json.decoder.JSONDecodeError):
-            Data.logger.error(f"Failed to write static ip: {ip}")
+        except (FileNotFoundError, json.decoder.JSONDecodeError) as e:
+            Data.logger.error(f"Failed to write static ip: {ip}: {e}")
 
         self.make_publisher(self.team_number, self.table_name, self.udp_port)
 
@@ -252,7 +255,7 @@ class Data:
 
         with open(CONFIG_DATA_PATH, "r") as file:
             config = json.load(file)
-            config["Nicknames"][identifier] = nickname 
+            config["Nicknames"][identifier] = nickname
             with open(CONFIG_DATA_PATH, "w") as out:
                 json.dump(config, out)
 

@@ -195,11 +195,11 @@ def export_config():
         logger.info(f"Opening {CONFIG_ZIP} for writing")
 
         for f in glob.iglob(f"{CONFIG_DIRECTORY}/**/*", recursive=True):
-            config.write(f)
             logger.info(f"Zipping {f}")
+            config.write(f)
 
-        config.write(CONFIG_ZIP)
         logger.info(f"Zipping {CONFIG_ZIP}")
+        config.write(CONFIG_ZIP)
 
     logger.info(f"Config sucessfully zipped")
     display_info("Config.zip ready")

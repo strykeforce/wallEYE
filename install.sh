@@ -32,8 +32,10 @@ deactivate
 
 # Dependencies
 sudo apt install v4l-utils net-tools openssh-server
+sudo apt install --reinstall linux-headers-$(uname -r)
 
 sudo chmod 4755 /usr/sbin/ifconfig
+sudo chmod 4755 /usr/sbin/ip
 
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
 
