@@ -135,7 +135,7 @@ class NetworkIO:
                 "Pose2": self.pose_to_dict(pose2[i]),
                 "Ambig": str(ambig[i]),
                 # "Timestamp": str(ntcore._now() - timestamp[i]),
-                "Timestamp": str(ntcore._now() - (time.monotonic_ns() / 1000000 - timestamps[i])),
+                "Timestamp": str(time.monotonic_ns() / 1000000 - timestamps[i]),
                 "Tags": str(tags[i]),
             }
             data_dict[self.name + str(i)] = camDict
@@ -194,31 +194,31 @@ class NetworkIO:
     #     return byte_arr
 
     # Publishes the supplied pose information in the corresponding publisher
-    def publish(
-        self,
-        index: int,
-        time: int,
-        pose: wpi.Pose3d,
-        tags: list[int],
-        ambig: list[float],
-    ):
-        pose1 = pose[0]
-        pose2 = pose[1]
-        t1 = pose1.translation()
-        r1 = pose1.rotation()
-        t2 = pose2.translation()
-        r2 = pose2.rotation()
+    # def publish(
+    #     self,
+    #     index: int,
+    #     time: int,
+    #     pose: wpi.Pose3d,
+    #     tags: list[int],
+    #     ambig: list[float],
+    # ):
+    #     pose1 = pose[0]
+    #     pose2 = pose[1]
+    #     t1 = pose1.translation()
+    #     r1 = pose1.rotation()
+    #     t2 = pose2.translation()
+    #     r2 = pose2.rotation()
 
-        self.pose1_sub[index].set([t1.X(), t1.Y(), t1.Z(), r1.X(), r1.Y(), r1.Z()])
-        self.pose2_sub[index].set([t2.X(), t2.Y(), t2.Z(), r2.X(), r2.Y(), r2.Z()])
-        self.ambiguity_sub[index].set(ambig)
-        self.tag_sub[index].set(tags)
-        self.timestamp_sub[index].set(
-            ntcore._now() - (time.monotonic_ns() / 1000000 - time) * 1000
-        )
+    #     self.pose1_sub[index].set([t1.X(), t1.Y(), t1.Z(), r1.X(), r1.Y(), r1.Z()])
+    #     self.pose2_sub[index].set([t2.X(), t2.Y(), t2.Z(), r2.X(), r2.Y(), r2.Z()])
+    #     self.ambiguity_sub[index].set(ambig)
+    #     self.tag_sub[index].set(tags)
+    #     self.timestamp_sub[index].set(
+    #         ntcore._now() - (time.monotonic_ns() / 1000000 - time) * 1000
+    #     )
 
-        self.update_num[index] += 1
-        self.publish_update[index].set(self.update_num[index])
+    #     self.update_num[index] += 1
+    #     self.publish_update[index].set(self.update_num[index])
 
     # Publish a new update number
     def increase_update_num(self):

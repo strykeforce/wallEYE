@@ -212,8 +212,10 @@ public class WallEyeCam {
             // System.out.println(pose2);
 
             double ambig = dataCam.get("Ambig").getAsDouble();
+            System.out.println("transfered " + dataCam.get("Timestamp"));
             timestamp =
                 RobotController.getFPGATime() - (long) dataCam.get("Timestamp").getAsDouble();
+            // dataCam.get("Timestamp").getAsDouble();
 
             tags =
                 getTagsArray(
