@@ -187,7 +187,7 @@ public class WallEyeCam {
             receive.getData(), 0, receive.getLength()); // parseDataString(udpData).toString();
     udpData = new byte[65535]; // Clear buffer
 
-    System.out.println(rawDataString);
+    // System.out.println(rawDataString);
 
     try {
       JsonObject data = JsonParser.parseString(rawDataString).getAsJsonObject();
@@ -200,16 +200,16 @@ public class WallEyeCam {
       }
       // System.out.println("Want " + camName + camIndex);
       Map<String, JsonElement> dataCam = dataMap.get(camId).getAsJsonObject().asMap();
-
       if (dataCam != null) {
         int mode = dataCam.get("Mode").getAsInt();
 
         switch (mode) {
           case 0:
             newUpdateNum = dataCam.get("Update").getAsInt();
-
             Pose3d pose1 = parseJsonPose3d(dataCam.get("Pose1").getAsJsonObject().asMap());
             Pose3d pose2 = parseJsonPose3d(dataCam.get("Pose2").getAsJsonObject().asMap());
+            // System.out.println(pose1);
+            // System.out.println(pose2);
 
             double ambig = dataCam.get("Ambig").getAsDouble();
             timestamp =
@@ -217,7 +217,13 @@ public class WallEyeCam {
 
             tags =
                 getTagsArray(
-                    JsonParser.parseString(dataCam.get("Tags").toString().replace("\"", ""))
+                    JsonParser.parseString(
+                            dataCam
+                                .get("Tags")
+                                .toString()
+                                .replace("\"", "")
+                                .replace(" ", ",")
+                                .replace("[,", "["))
                         .getAsJsonArray()
                         .asList());
             curData =
