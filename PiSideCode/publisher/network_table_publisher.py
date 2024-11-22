@@ -135,7 +135,7 @@ class NetworkIO:
                 "Pose2": self.pose_to_dict(pose2[i]),
                 "Ambig": str(ambig[i]),
                 # "Timestamp": str(ntcore._now() - timestamp[i]),
-                "Timestamp": str(time.monotonic_ns() / 1000000 - timestamps[i]),
+                "Timestamp": str((time.monotonic_ns() / 1000000 - timestamps[i])),
                 "Tags": str(tags[i]),
             }
             data_dict[self.name + str(i)] = camDict

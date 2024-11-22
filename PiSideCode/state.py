@@ -148,7 +148,7 @@ class Data:
         # Create the robot publisher
         Data.logger.info("Creating publisher")
         self.robot_publisher = NetworkIO(
-            False, self.team_number, self.table_name, self.udp_port
+            False, self.team_number, self.table_name, self.udp_port, 2
         )
 
         Data.logger.info(f"Robot publisher created: {team_number} - {table_name}")
