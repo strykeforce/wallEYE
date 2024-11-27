@@ -4,6 +4,7 @@ import wpimath.geometry as wpi
 import socket
 import struct
 import json
+from processing.pose_processing import PoseProcessor
 
 import time
 
@@ -127,6 +128,9 @@ class NetworkIO:
         data_dict = {}
 
         for i in range(len(pose1)):
+            if pose1[i] == PoseProcessor.BAD_POSE:
+                continue
+
             self.update_num[i] += 1
             camDict = {
                 "Mode": "0",
@@ -152,7 +156,10 @@ class NetworkIO:
 
         # Loop through each camera
         for i in range(len(tags)):
-            self.update_num[i] += 1 # Is it ok to update the same counter?
+            if len(tags) == 0:
+                continue
+
+            self.update_num[i] += 1 
 
             # Data for camera i
             data_dict[self.name + str(i)] = {

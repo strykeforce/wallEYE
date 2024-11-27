@@ -187,7 +187,7 @@ public class WallEyeCam {
             receive.getData(), 0, receive.getLength()); // parseDataString(udpData).toString();
     udpData = new byte[65535]; // Clear buffer
 
-    // System.out.println(rawDataString);
+    System.out.println(rawDataString);
 
     try {
       JsonObject data = JsonParser.parseString(rawDataString).getAsJsonObject();
@@ -212,9 +212,9 @@ public class WallEyeCam {
             // System.out.println(pose2);
 
             double ambig = dataCam.get("Ambig").getAsDouble();
-            System.out.println("transfered " + dataCam.get("Timestamp"));
             timestamp =
-                RobotController.getFPGATime() - (long) dataCam.get("Timestamp").getAsDouble();
+                RobotController.getFPGATime()
+                    - (long) dataCam.get("Timestamp").getAsDouble() * 1000; // Recieved ms, want us
             // dataCam.get("Timestamp").getAsDouble();
 
             tags =
