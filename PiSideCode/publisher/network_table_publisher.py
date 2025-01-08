@@ -139,8 +139,8 @@ class NetworkIO:
                 "Pose2": self.pose_to_dict(pose2[i]),
                 "Ambig": str(ambig[i]),
                 # "Timestamp": str(ntcore._now() - timestamp[i]),
-                "Timestamp": str((time.monotonic_ns() / 1000000 - timestamps[i])),
-                "Tags": str(tags[i]),
+                "Timestamp": str(time.monotonic_ns() / 1000000 - timestamps[i]),
+                "Tags": str(tags[i]),  # FUTURE TODO: json.dumps here !!!
             }
             data_dict[self.name + str(i)] = camDict
         data_str = json.dumps(data_dict)
@@ -165,9 +165,9 @@ class NetworkIO:
             data_dict[self.name + str(i)] = {
                 "Mode": "1",
                 "Update": str(self.update_num[i]),
-                "Tags": str(tags[i]),
-                "TagCenters": str(tag_centers[i]),
-                "Timestamp": str(ntcore._now() - (time.monotonic_ns() / 1000000 - timestamps[i])),
+                "Tags": str(tags[i]), # FUTURE TODO: json.dumps here too!!!
+                "TagCenters": json.dumps(tag_centers[i]),
+                "Timestamp": str(time.monotonic_ns() / 1000000 - timestamps[i]),
             }
 
         data_str = json.dumps(data_dict)

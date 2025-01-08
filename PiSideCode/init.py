@@ -239,6 +239,7 @@ try:
                         walleye_data.valid_tags,
                     )
 
+
                     poses.append(img_pose)
                     tags.append(img_tags)
                     ambig.append(img_ambig)
