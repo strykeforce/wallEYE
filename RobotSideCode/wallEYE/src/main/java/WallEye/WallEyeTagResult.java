@@ -1,6 +1,6 @@
 package WallEye;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The data that the WallEye class will return when asked for new poses. Each object has an
@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * @see WallEye
  */
 public class WallEyeTagResult extends WallEyeResult {
-  private ArrayList<Double[]> tagCenters;
+  private List<List<Double>> tagCenters;
 
   /**
    * Creates a WallEyeTagResult object with an associated Tag centers, timestamp and what cam
@@ -23,7 +23,7 @@ public class WallEyeTagResult extends WallEyeResult {
    * @param tags The tag ids detected in this image
    */
   public WallEyeTagResult(
-      ArrayList<Double[]> tagCenters,
+      List<List<Double>> tagCenters,
       double timeStamp,
       int originCam,
       int updateNum,
@@ -40,7 +40,7 @@ public class WallEyeTagResult extends WallEyeResult {
    *
    * @return int[][] of the tag centers
    */
-  public ArrayList<Double[]> getTagCenters() {
+  public List<List<Double>> getTagCenters() {
     return tagCenters;
   }
 

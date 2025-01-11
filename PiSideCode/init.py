@@ -231,7 +231,7 @@ try:
             for identifier, image in images.items():
                 curr_mode = camera_infos[identifier].mode
                 if curr_mode == Modes.POSE_ESTIMATION:
-                    img_pose, img_tags, img_ambig = pose_estimator.get_pose(
+                    img_pose, img_tags, img_tag_centers, img_ambig = pose_estimator.get_pose(
                         image,
                         camera_infos[identifier].K,
                         camera_infos[identifier].D,
@@ -242,6 +242,7 @@ try:
 
                     poses.append(img_pose)
                     tags.append(img_tags)
+                    tag_centers.append(img_tag_centers)
                     ambig.append(img_ambig)
 
                 elif curr_mode == Modes.TAG_SERVOING:

@@ -22,6 +22,7 @@ import java.lang.reflect.Type;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.function.DoubleSupplier;
 
@@ -54,7 +55,7 @@ public class WallEyeCam {
 
   // Data
   private long timestamp = -1;
-  private ArrayList<Double[]> tagCenters;
+  private List<List<Double>> tagCenters;
   private int[] tags;
   private WallEyeResult curData = new WallEyePoseResult(null, null, 0, 0, 0, 0, null, 0);
   private int newUpdateNum = 0;
@@ -221,42 +222,16 @@ public class WallEyeCam {
         case 1:
           newUpdateNum = dataCam.get("Update").getAsInt();
 
-          tagCenters = new ArrayList<>();
-
           // [tag index][center index][x/y]
-          System.out.println("JSON!!!!!!!!!!!!!!!!!!!!");
 
-          Type listType = new TypeToken<ArrayList<ArrayList<Double[]>>>() {}.getType();
+          Type listType = new TypeToken<List<List<Double>>>() {}.getType();
+          String tagListString = new Gson().fromJson(dataCam.get("TagCenters"), String.class);
 
-          ArrayList<ArrayList<Double[]>> tagCenters =
-              new Gson().fromJson(dataCam.get("TagCenters"), listType);
-          System.out.println(tagCenters);
-          // List<JsonElement> tagData =
-          //     dataCam.get("TagCenters").getAsJsonObject().getAsJsonArray().asList();
-
-          // for (int tagIndex = 0; tagIndex < tagData.size(); tagIndex++) {
-          //   List<JsonElement> centerData = tagData.get(tagIndex).getAsJsonArray().asList();
-
-          //   // tagCenters.add(new ArrayList<Double[]>());
-
-          //   for (int centerIndex = 0; centerIndex < centerData.size(); centerIndex++) {
-          //     Double[] centerCoords = new Double[2];
-
-          //     List<JsonElement> centerCoordsObj =
-          //         centerData.get(centerIndex).getAsJsonArray().asList();
-
-          //     centerCoords[0] = centerCoordsObj.get(0).getAsDouble();
-          //     centerCoords[1] = centerCoordsObj.get(1).getAsDouble();
-
-          //     tagCenters.add(centerCoords);
-          //   }
-          //   System.out.println(tagCenters);
-          // }
-          // System.out.println(tagCenters);
+          tagCenters = new Gson().fromJson(tagListString.replace("\"", ""), listType);
 
           curData =
               new WallEyeTagResult(
-                  tagCenters.get(0), timestamp, camIndex, newUpdateNum, tags.length, tags);
+                  tagCenters, timestamp, camIndex, newUpdateNum, tags.length, tags);
           break;
         default:
           break;

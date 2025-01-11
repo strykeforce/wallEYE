@@ -124,7 +124,7 @@ class NetworkIO:
     def set_table(self, name: str):
         self.table = self.inst.getTable(name)
 
-    def udp_pose_publish(self, pose1, pose2, ambig, timestamps, tags):
+    def udp_pose_publish(self, pose1, pose2, ambig, timestamps, tags, tag_centers):
         data_dict = {}
 
         for i in range(len(pose1)):
@@ -141,6 +141,7 @@ class NetworkIO:
                 # "Timestamp": str(ntcore._now() - timestamp[i]),
                 "Timestamp": str(time.monotonic_ns() / 1000000 - timestamps[i]),
                 "Tags": str(tags[i]),  # FUTURE TODO: json.dumps here !!!
+                "TagCenters": json.dumps(tag_centers[i].tolist()),
             }
             data_dict[self.name + str(i)] = camDict
         data_str = json.dumps(data_dict)

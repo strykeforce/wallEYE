@@ -5,6 +5,7 @@ import wpimath.geometry as wpi
 import numpy as np
 import math
 from directory import TAG_LAYOUT_PATH, FALLBACK_TAG_LAYOUT_PATH
+
 # from numba import njit
 # import faulthandler
 # faulthandler.enable()
@@ -20,7 +21,7 @@ class PoseProcessor:
 
     def __init__(self, tag_processor, tag_length):
         # Open tag layout for tag poses
-        try: 
+        try:
             with open(TAG_LAYOUT_PATH, "r") as f:
                 self.tag_layout = json.load(f)["tags"]
                 PoseProcessor.logger.info("Tag layout loaded")
@@ -132,7 +133,6 @@ class PoseProcessor:
     def get_trans_rots(
         self, tvecs: np.ndarray, rvecs: np.ndarray, tag_id: int
     ) -> tuple[np.ndarray, np.ndarray]:
-
         cam_tvecs = tvecs
         cam_rvecs = rvecs
 
@@ -258,4 +258,13 @@ class PoseProcessor:
                         rot3D,
                     )
 
-        return ((pose1, pose2), ids, ambig)
+        return (
+            (pose1, pose2),
+            ids,
+            (
+                np.mean(corners[:, 0], axis=1)
+                if corners.shape[0] == 0
+                else (np.asarray([]), np.asarray([]))
+            ),
+            ambig,
+        )
