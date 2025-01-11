@@ -1,8 +1,10 @@
 package WallEye;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -16,10 +18,10 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import java.lang.reflect.Type;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.function.DoubleSupplier;
 
@@ -223,33 +225,38 @@ public class WallEyeCam {
 
           // [tag index][center index][x/y]
           System.out.println("JSON!!!!!!!!!!!!!!!!!!!!");
-          System.out.println(dataCam.get("TagCenters").getAsJsonObject());
-          List<JsonElement> tagData =
-              dataCam.get("TagCenters").getAsJsonObject().getAsJsonArray().asList();
 
-          for (int tagIndex = 0; tagIndex < tagData.size(); tagIndex++) {
-            List<JsonElement> centerData = tagData.get(tagIndex).getAsJsonArray().asList();
+          Type listType = new TypeToken<ArrayList<ArrayList<Double[]>>>() {}.getType();
 
-            // tagCenters.add(new ArrayList<Double[]>());
-
-            for (int centerIndex = 0; centerIndex < centerData.size(); centerIndex++) {
-              Double[] centerCoords = new Double[2];
-
-              List<JsonElement> centerCoordsObj =
-                  centerData.get(centerIndex).getAsJsonArray().asList();
-
-              centerCoords[0] = centerCoordsObj.get(0).getAsDouble();
-              centerCoords[1] = centerCoordsObj.get(1).getAsDouble();
-
-              tagCenters.add(centerCoords);
-            }
-            System.out.println(tagCenters);
-          }
+          ArrayList<ArrayList<Double[]>> tagCenters =
+              new Gson().fromJson(dataCam.get("TagCenters"), listType);
           System.out.println(tagCenters);
+          // List<JsonElement> tagData =
+          //     dataCam.get("TagCenters").getAsJsonObject().getAsJsonArray().asList();
+
+          // for (int tagIndex = 0; tagIndex < tagData.size(); tagIndex++) {
+          //   List<JsonElement> centerData = tagData.get(tagIndex).getAsJsonArray().asList();
+
+          //   // tagCenters.add(new ArrayList<Double[]>());
+
+          //   for (int centerIndex = 0; centerIndex < centerData.size(); centerIndex++) {
+          //     Double[] centerCoords = new Double[2];
+
+          //     List<JsonElement> centerCoordsObj =
+          //         centerData.get(centerIndex).getAsJsonArray().asList();
+
+          //     centerCoords[0] = centerCoordsObj.get(0).getAsDouble();
+          //     centerCoords[1] = centerCoordsObj.get(1).getAsDouble();
+
+          //     tagCenters.add(centerCoords);
+          //   }
+          //   System.out.println(tagCenters);
+          // }
+          // System.out.println(tagCenters);
 
           curData =
               new WallEyeTagResult(
-                  tagCenters, timestamp, camIndex, newUpdateNum, tags.length, tags);
+                  tagCenters.get(0), timestamp, camIndex, newUpdateNum, tags.length, tags);
           break;
         default:
           break;
