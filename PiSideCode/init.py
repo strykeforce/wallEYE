@@ -269,10 +269,11 @@ try:
                     # [image_time] * len(poses),
                     list(img_time.values()),
                     tags,
-                )  # TODO: is above loop needed?
+                    tag_centers
+                )
 
             # Tag servoing mode
-            if len(tag_centers) > 0:
+            elif len(tag_centers) > 0:
                 walleye_data.robot_publisher.udp_tag_centers_publish(tags, tag_centers, list(img_time.values()))
 
             # Update video stream for web interface
