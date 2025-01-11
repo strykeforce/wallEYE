@@ -166,7 +166,7 @@ class NetworkIO:
                 "Mode": "1",
                 "Update": str(self.update_num[i]),
                 "Tags": str(tags[i]), # FUTURE TODO: json.dumps here too!!!
-                "TagCenters": json.dumps(tag_centers[i].tolist()),
+                "TagCenters": tag_centers[i].tolist(),
                 "Timestamp": str(time.monotonic_ns() / 1000000 - timestamps[i]),
             }
 

@@ -222,7 +222,10 @@ public class WallEyeCam {
           tagCenters = new ArrayList<>();
 
           // [tag index][center index][x/y]
-          List<JsonElement> tagData = dataCam.get("TagCenters").getAsJsonArray().asList();
+          System.out.println("JSON!!!!!!!!!!!!!!!!!!!!");
+          System.out.println(dataCam.get("TagCenters").getAsJsonObject());
+          List<JsonElement> tagData =
+              dataCam.get("TagCenters").getAsJsonObject().getAsJsonArray().asList();
 
           for (int tagIndex = 0; tagIndex < tagData.size(); tagIndex++) {
             List<JsonElement> centerData = tagData.get(tagIndex).getAsJsonArray().asList();
@@ -242,6 +245,7 @@ public class WallEyeCam {
             }
             System.out.println(tagCenters);
           }
+          System.out.println(tagCenters);
 
           curData =
               new WallEyeTagResult(
