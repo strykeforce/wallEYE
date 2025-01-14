@@ -6,7 +6,7 @@ package WallEye;
  *
  * @see WallEye
  */
-public class WallEyeResult {
+public abstract class WallEyeResult {
   protected double timeStamp;
   protected int updateNum;
   protected int numTags;

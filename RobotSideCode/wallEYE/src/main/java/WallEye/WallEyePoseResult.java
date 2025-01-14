@@ -1,6 +1,7 @@
 package WallEye;
 
 import edu.wpi.first.math.geometry.Pose3d;
+import java.util.List;
 
 /**
  * The data that the WallEye class will return when asked for new poses. Each object has an
@@ -8,7 +9,7 @@ import edu.wpi.first.math.geometry.Pose3d;
  *
  * @see WallEye
  */
-public class WallEyePoseResult extends WallEyeResult {
+public class WallEyePoseResult extends WallEyeTagResult {
   private Pose3d cameraPose1;
   private Pose3d cameraPose2;
   private double ambiguity;
@@ -29,6 +30,7 @@ public class WallEyePoseResult extends WallEyeResult {
   public WallEyePoseResult(
       Pose3d pose1,
       Pose3d pose2,
+      List<List<Double>> tagCenters,
       double timeStamp,
       int originCam,
       int updateNum,
@@ -36,7 +38,7 @@ public class WallEyePoseResult extends WallEyeResult {
       int[] tags,
       double ambiguity) {
 
-    super(timeStamp, originCam, updateNum, numTags, tags);
+    super(tagCenters, timeStamp, originCam, updateNum, numTags, tags);
 
     this.cameraPose1 = pose1;
     this.cameraPose2 = pose2;
