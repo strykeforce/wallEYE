@@ -64,9 +64,9 @@ class TagProcessor:
 
         return (ids, corners)
 
-    def get_tag_centers(self, img: np.ndarray, valid_tags: np.ndarray,  draw: bool):
-        ids, corners = self.get_tags(img, valid_tags, draw)
+    # def get_tag_centers(self, img: np.ndarray, valid_tags: np.ndarray,  draw: bool):
+    #     ids, corners = self.get_tags(img, valid_tags, draw)
 
-        if corners.shape[0] == 0:
-            return (np.asarray([]), np.asarray([]))
-        return (ids, np.mean(corners[:, 0], axis=1))
+    #     if corners.shape[0] == 0:
+    #         return (np.asarray([]), np.asarray([]))
+    #     return (ids, np.mean(corners[:, 0], axis=1))

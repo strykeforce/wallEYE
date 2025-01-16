@@ -30,7 +30,7 @@ public class WallEyePoseResult extends WallEyeTagResult {
   public WallEyePoseResult(
       Pose3d pose1,
       Pose3d pose2,
-      List<List<Double>> tagCenters,
+      List<List<List<Double>>> tagCorners,
       double timeStamp,
       int originCam,
       int updateNum,
@@ -38,7 +38,7 @@ public class WallEyePoseResult extends WallEyeTagResult {
       int[] tags,
       double ambiguity) {
 
-    super(tagCenters, timeStamp, originCam, updateNum, numTags, tags);
+    super(tagCorners, timeStamp, originCam, updateNum, numTags, tags);
 
     this.cameraPose1 = pose1;
     this.cameraPose2 = pose2;

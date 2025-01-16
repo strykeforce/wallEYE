@@ -226,12 +226,12 @@ try:
             #     walleye_data.cameras.list_d(),
             #     np.asarray([i.resolution for i in walleye_data.cameras.info.values()]),
             # )
-            poses, tags, ambig, tag_centers = [], [], [], []
+            poses, tags, ambig, tag_corners = [], [], [], []
 
             for identifier, image in images.items():
                 curr_mode = camera_infos[identifier].mode
                 if curr_mode == Modes.POSE_ESTIMATION:
-                    img_pose, img_tags, img_tag_centers, img_ambig = pose_estimator.get_pose(
+                    img_pose, img_tags, img_tag_corners, img_ambig = pose_estimator.get_pose(
                         image,
                         camera_infos[identifier].K,
                         camera_infos[identifier].D,
@@ -242,17 +242,17 @@ try:
 
                     poses.append(img_pose)
                     tags.append(img_tags)
-                    tag_centers.append(img_tag_centers)
+                    tag_corners.append(img_tag_corners)
                     ambig.append(img_ambig)
 
                 elif curr_mode == Modes.TAG_SERVOING:
-                    img_ids, img_tag_centers = tag_processor.get_tag_centers(
+                    img_ids, img_tag_corners = tag_processor.get_tags(
                         image,
                         walleye_data.valid_tags,
                         walleye_data.should_update_web_stream,
                     )
                     tags.append(img_ids)
-                    tag_centers.append(img_tag_centers)
+                    tag_corners.append(img_tag_corners)
 
                 else:
                     pass
@@ -269,12 +269,12 @@ try:
                     # [image_time] * len(poses),
                     list(img_time.values()),
                     tags,
-                    tag_centers
+                    tag_corners
                 )
 
             # Tag servoing mode
-            elif len(tag_centers) > 0:
-                walleye_data.robot_publisher.udp_tag_centers_publish(tags, tag_centers, list(img_time.values()))
+            elif len(tag_corners) > 0:
+                walleye_data.robot_publisher.udp_tag_publish(tags, tag_corners, list(img_time.values()))
 
             # Update video stream for web interface
             if walleye_data.should_update_web_stream:
@@ -286,7 +286,7 @@ try:
                     ].mode == Modes.POSE_ESTIMATION and i < len(poses):
                         walleye_data.set_web_img_info(identifier, poses[i])
                     elif camera_infos[identifier].mode == Modes.TAG_SERVOING:
-                        walleye_data.set_web_img_info(identifier, tag_centers)
+                        walleye_data.set_web_img_info(identifier, tag_corners)
                     # if walleye_data.visualizing_poses:
                     #     visualization_buffers[identifier].update(
                     #         (poses[i][0].X(), poses[i][0].Y(), poses[i][0].Z()),

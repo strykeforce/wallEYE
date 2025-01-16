@@ -163,17 +163,17 @@ class PoseProcessor:
     ) -> tuple[tuple[wpi.Pose3d, wpi.Pose3d], list[int], float]:
         pose1, pose2 = PoseProcessor.BAD_POSE, PoseProcessor.BAD_POSE
         ambig = 2767
-        tagCenters = (np.asarray([]), np.asarray([]))
+        tagCorners = (np.asarray([]), np.asarray([]), np.asarray([]), np.asarray([]))
 
         # If an invalid image is given or no calibration return an error
         # pose
         if image is None or K is None or D is None:
-            return ((PoseProcessor.BAD_POSE, PoseProcessor.BAD_POSE), [], tagCenters, 2767)
+            return ((PoseProcessor.BAD_POSE, PoseProcessor.BAD_POSE), [], tagCorners, 2767)
 
         ids, corners = self.tag_processor.get_tags(image, valid_tags, draw)
 
         if corners.shape[0] > 0:
-            tagCenters = np.mean(corners[:, 0], axis=1)
+            tagCorners = corners
 
         # If you have corners, find pose
         if len(corners) > 0:
@@ -265,6 +265,6 @@ class PoseProcessor:
         return (
             (pose1, pose2),
             ids,
-            tagCenters,
+            tagCorners,
             ambig,
         )

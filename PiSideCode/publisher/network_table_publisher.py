@@ -124,7 +124,7 @@ class NetworkIO:
     def set_table(self, name: str):
         self.table = self.inst.getTable(name)
 
-    def udp_pose_publish(self, pose1, pose2, ambig, timestamps, tags, tag_centers):
+    def udp_pose_publish(self, pose1, pose2, ambig, timestamps, tags, tag_corners):
         data_dict = {}
 
         for i in range(len(pose1)):
@@ -141,7 +141,7 @@ class NetworkIO:
                 # "Timestamp": str(ntcore._now() - timestamp[i]),
                 "Timestamp": str(time.monotonic_ns() / 1000000 - timestamps[i]),
                 "Tags": str(tags[i]),  # FUTURE TODO: json.dumps here !!!
-                "TagCenters": json.dumps(tag_centers[i].tolist()),
+                "TagCorners": json.dumps(tag_corners[i].tolist()),
             }
             data_dict[self.name + str(i)] = camDict
         data_str = json.dumps(data_dict)
@@ -152,7 +152,7 @@ class NetworkIO:
             # NetworkIO.logger.error("Failed to publish pose in UDP: ", exc_info=e)
             pass
 
-    def udp_tag_centers_publish(self, tags, tag_centers, timestamps):
+    def udp_tag_publish(self, tags, tag_corners, timestamps):
         data_dict = {}
 
         # Loop through each camera
@@ -167,7 +167,7 @@ class NetworkIO:
                 "Mode": "1",
                 "Update": str(self.update_num[i]),
                 "Tags": str(tags[i]), # FUTURE TODO: json.dumps here too!!!
-                "TagCenters": json.dumps(tag_centers[i].tolist()),
+                "TagCorners": json.dumps(tag_corners[i].tolist()),
                 "Timestamp": str(time.monotonic_ns() / 1000000 - timestamps[i]),
             }
 

@@ -163,7 +163,7 @@ class Data:
         elif isinstance(info, list):
             self.img_info[
                 identifier
-            ] = f"Tag centers: {np.array_str(np.asarray(info), precision=1, suppress_small=True)}"
+            ] = f"Tag corners: {np.array_str(np.asarray(info), precision=1, suppress_small=True)}"
 
     # Return the file path names for each camera
     def get_cal_file_paths(self):

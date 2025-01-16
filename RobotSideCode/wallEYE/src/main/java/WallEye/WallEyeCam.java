@@ -55,7 +55,7 @@ public class WallEyeCam {
 
   // Data
   private long timestamp = -1;
-  private List<List<Double>> tagCenters;
+  private List<List<List<Double>>> tagCorners;
   private int[] tags;
   private WallEyeResult curData = new WallEyePoseResult(null, null, null, 0, 0, 0, 0, null, 0);
   private int newUpdateNum = 0;
@@ -204,7 +204,7 @@ public class WallEyeCam {
         tags[i] = (int) parsedTagIds.get(i);
       }
 
-      tagCenters = parseTagArray(dataCam);
+      tagCorners = parseTagArray(dataCam);
 
       switch (mode) {
         case 0:
@@ -220,7 +220,7 @@ public class WallEyeCam {
               new WallEyePoseResult(
                   pose1,
                   pose2,
-                  tagCenters,
+                  tagCorners,
                   timestamp,
                   camIndex,
                   newUpdateNum,
@@ -236,7 +236,7 @@ public class WallEyeCam {
 
           curData =
               new WallEyeTagResult(
-                  tagCenters, timestamp, camIndex, newUpdateNum, tags.length, tags);
+                  tagCorners, timestamp, camIndex, newUpdateNum, tags.length, tags);
           break;
         default:
           break;
@@ -247,9 +247,9 @@ public class WallEyeCam {
     // }
   }
 
-  private List<List<Double>> parseTagArray(Map<String, JsonElement> data) {
-    Type listType = new TypeToken<List<List<Double>>>() {}.getType();
-    String tagListString = new Gson().fromJson(data.get("TagCenters"), String.class);
+  private List<List<List<Double>>> parseTagArray(Map<String, JsonElement> data) {
+    Type listType = new TypeToken<List<List<List<Double>>>>() {}.getType();
+    String tagListString = new Gson().fromJson(data.get("TagCorners"), String.class);
 
     return new Gson().fromJson(tagListString.replace("\"", ""), listType);
   }

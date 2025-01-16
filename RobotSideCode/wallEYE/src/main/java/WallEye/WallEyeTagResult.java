@@ -9,7 +9,7 @@ import java.util.List;
  * @see WallEye
  */
 public class WallEyeTagResult extends WallEyeResult {
-  private List<List<Double>> tagCenters;
+  private List<List<List<Double>>> tagCorners;
 
   /**
    * Creates a WallEyeTagResult object with an associated Tag centers, timestamp and what cam
@@ -23,7 +23,7 @@ public class WallEyeTagResult extends WallEyeResult {
    * @param tags The tag ids detected in this image
    */
   public WallEyeTagResult(
-      List<List<Double>> tagCenters,
+      List<List<List<Double>>> tagCorners,
       double timeStamp,
       int originCam,
       int updateNum,
@@ -32,7 +32,7 @@ public class WallEyeTagResult extends WallEyeResult {
 
     super(timeStamp, originCam, updateNum, numTags, tags);
 
-    this.tagCenters = tagCenters;
+    this.tagCorners = tagCorners;
   }
 
   /**
@@ -40,8 +40,8 @@ public class WallEyeTagResult extends WallEyeResult {
    *
    * @return int[][] of the tag centers
    */
-  public List<List<Double>> getTagCenters() {
-    return tagCenters;
+  public List<List<List<Double>>> getTagCorners() {
+    return tagCorners;
   }
 
   /**
@@ -51,8 +51,8 @@ public class WallEyeTagResult extends WallEyeResult {
   public String toString() {
     return "Update: "
         + updateNum
-        + " | Tag Centers: "
-        + tagCenters.toString()
+        + " | Tag Corners: "
+        + tagCorners.toString()
         + " | Timestamp: "
         + timeStamp;
   }
