@@ -61,7 +61,7 @@ class TagProcessor:
             # No tags
             return (np.asarray([]), np.asarray([]))
 
-        return (ids, corners)
+        return (ids, corners[:, 0])
 
     # def get_tag_centers(self, img: np.ndarray, valid_tags: np.ndarray,  draw: bool):
     #     ids, corners = self.get_tags(img, valid_tags, draw)

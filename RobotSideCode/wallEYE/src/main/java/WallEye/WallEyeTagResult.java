@@ -59,6 +59,10 @@ public class WallEyeTagResult extends WallEyeResult {
     return centers;
   }
 
+  // public double getTagArea() {
+  //   return 
+  // }
+
   /**
    * @return String
    */

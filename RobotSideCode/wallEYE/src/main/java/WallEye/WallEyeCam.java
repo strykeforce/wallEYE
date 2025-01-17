@@ -203,11 +203,9 @@ public class WallEyeCam {
       for (int i = 0; i < tags.length; i++) {
         tags[i] = (int) parsedTagIds.get(i);
       }
-      System.out.println(parsedTagIds);
       if (parsedTagIds.size() == 0) {
         return;
       }
-      System.out.println(parsedTagIds.size());
       tagCorners = parseTagArray(dataCam);
 
       switch (mode) {
@@ -255,7 +253,7 @@ public class WallEyeCam {
     Type listType = new TypeToken<List<List<List<Double>>>>() {}.getType();
     String tagListString =
         new Gson().fromJson(data.get("TagCorners"), String.class).replace("\"", "");
-    System.out.println(tagListString);
+    
     List<List<List<Double>>> parsed = new Gson().fromJson(tagListString, listType);
 
     return parsed;

@@ -242,7 +242,7 @@ try:
 
                     poses.append(img_pose)
                     tags.append(img_tags)
-                    tag_corners.append(img_tag_corners[0] if len(img_tag_corners) > 0 else img_tag_corners)
+                    tag_corners.append(img_tag_corners)
                     ambig.append(img_ambig)
 
                 elif curr_mode == Modes.TAG_SERVOING:
