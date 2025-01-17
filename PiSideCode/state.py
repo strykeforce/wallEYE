@@ -160,7 +160,7 @@ class Data:
                 identifier
             ] = f"Pose: [({round(a.X(), 2)}, {round(a.Y(), 2)}, {round(a.Z(), 2)}) ({round(a.rotation().X(), 2)}, {round(a.rotation().Y(), 2)}, {round(a.rotation().Z(), 2)})], ({round(b.X(), 2)}, {round(b.Y(), 2)}, {round(b.Z(), 2)}) ({round(b.rotation().X(), 2)}, {round(b.rotation().Y(), 2)}, {round(b.rotation().Z(), 2)})"
 
-        elif len(info) > 0 and isinstance(info[0], list):
+        elif len(info) > 0:
             display = []
             corners = np.asarray(info[1]).tolist()
 
