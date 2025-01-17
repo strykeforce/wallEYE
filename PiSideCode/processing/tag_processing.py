@@ -23,20 +23,19 @@ class TagProcessor:
         aruco_params.cornerRefinementMaxIterations = 30
         self.aruco_detector.setDetectorParameters(aruco_params)
 
-    # Return camera pose
     def get_tags(self, img: np.ndarray, valid_tags: np.ndarray, draw: bool):
         if img is None:
-            return (np.asarray([]), np.asarray([]))
+            return (np.asarray([]), np.asarray([]), np.asarray([]), np.asarray([]))
 
         corners, ids, _ = self.aruco_detector.detectMarkers(img)
 
         if ids is None:
-            return (np.asarray([]), np.asarray([]))
+            return (np.asarray([]), np.asarray([]), np.asarray([]), np.asarray([]))
 
         ids = np.asarray(ids.squeeze())
 
         if ids.shape == 0:
-            return (np.asarray([]), np.asarray([]))
+            return (np.asarray([]), np.asarray([]), np.asarray([]), np.asarray([]))
 
         mask = np.isin(ids, valid_tags)
 
@@ -60,7 +59,7 @@ class TagProcessor:
                     TagProcessor.logger.error(f"Could not draw tags: {ids} with corners {corners}")
         else:
             # No tags
-            return (np.asarray([]), np.asarray([]))
+            return (np.asarray([]), np.asarray([]), np.asarray([]), np.asarray([]))
 
         return (ids, corners)
 

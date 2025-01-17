@@ -161,7 +161,7 @@ class Data:
             ] = f"Pose: [({round(a.X(), 2)}, {round(a.Y(), 2)}, {round(a.Z(), 2)}) ({round(a.rotation().X(), 2)}, {round(a.rotation().Y(), 2)}, {round(a.rotation().Z(), 2)})], ({round(b.X(), 2)}, {round(b.Y(), 2)}, {round(b.Z(), 2)}) ({round(b.rotation().X(), 2)}, {round(b.rotation().Y(), 2)}, {round(b.rotation().Z(), 2)})"
 
         elif len(info) > 0 and isinstance(info[0], list):
-            display = ["<br />"]
+            display = []
             corners = np.asarray(info[1]).tolist()
 
             for tag_id, c in zip(info[0], corners):
@@ -169,7 +169,7 @@ class Data:
 
             self.img_info[
                 identifier
-            ] = f"Tag corners: {"<br />".join(display)}"
+            ] = f"Tag corners: {"<br>".join(display)}"
 
     # Return the file path names for each camera
     def get_cal_file_paths(self):
