@@ -165,11 +165,11 @@ class Data:
             corners = np.asarray(info[1]).tolist()
 
             for tag_id, c in zip(info[0], corners):
-                display.append(f"[{tag_id}]:    {' '.join(str(c))}")
+                display.append(f"[{tag_id}]:    {str(c)}")
 
             self.img_info[
                 identifier
-            ] = f"Tag corners: {"<br>".join(display)}"
+            ] = f"Tag corners: {display}"
 
     # Return the file path names for each camera
     def get_cal_file_paths(self):
