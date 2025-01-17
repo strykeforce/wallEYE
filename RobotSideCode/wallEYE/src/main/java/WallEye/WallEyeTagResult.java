@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class WallEyeTagResult extends WallEyeResult {
   private List<List<List<Double>>> tagCorners;
-  private List<List<Double>> centers;
+  private List<List<Double>> centers = new ArrayList<>();
 
   /**
    * Creates a WallEyeTagResult object with an associated Tag centers, timestamp and what cam
