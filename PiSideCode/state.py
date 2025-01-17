@@ -165,7 +165,7 @@ class Data:
             corners = np.asarray(info[1]).tolist()
 
             for tag_id, c in zip(info[0], corners):
-                display.append(f"[{tag_id}]:    {' '.join(c)}")
+                display.append(f"[{tag_id}]:    {' '.join(str(c))}")
 
             self.img_info[
                 identifier
