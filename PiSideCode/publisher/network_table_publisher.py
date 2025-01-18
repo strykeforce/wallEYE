@@ -1,6 +1,5 @@
 import ntcore
 import logging
-import wpimath.geometry as wpi
 import socket
 import struct
 import json
@@ -27,11 +26,7 @@ class NetworkIO:
         self.inst.startClient4("WallEye_Client")
         self.update_num = []
         self.connection = []
-        self.pose1_sub = []
-        self.pose2_sub = []
-        self.timestamp_sub = []
-        self.ambiguity_sub = []
-        self.tag_sub = []
+      
         if test:
             self.inst.setServer("127.0.0.1", 5810)
         else:
@@ -48,65 +43,6 @@ class NetworkIO:
 
         # Pose publisher
         for index in range(num_cams):
-            self.publishers.append(self.table.getSubTable("Result" + str(index)))
-
-            self.pose1_sub.append(
-                self.publishers[index]
-                .getDoubleArrayTopic("Pose1")
-                .publish(
-                    ntcore.PubSubOptions(
-                        periodic=0.01, sendAll=True, keepDuplicates=True
-                    )
-                )
-            )
-
-            self.timestamp_sub.append(
-                self.publishers[index]
-                .getDoubleTopic("timestamp")
-                .publish(
-                    ntcore.PubSubOptions(
-                        periodic=0.01, sendAll=True, keepDuplicates=True
-                    )
-                )
-            )
-
-            self.pose2_sub.append(
-                self.publishers[index]
-                .getDoubleArrayTopic("Pose2")
-                .publish(
-                    ntcore.PubSubOptions(
-                        periodic=0.01, sendAll=True, keepDuplicates=True
-                    )
-                )
-            )
-
-            self.ambiguity_sub.append(
-                self.publishers[index]
-                .getDoubleTopic("ambiguity")
-                .publish(
-                    ntcore.PubSubOptions(
-                        periodic=0.01, sendAll=True, keepDuplicates=True
-                    )
-                )
-            )
-
-            self.tag_sub.append(
-                self.publishers[index]
-                .getIntegerArrayTopic("tags")
-                .publish(
-                    ntcore.PubSubOptions(
-                        periodic=0.01, sendAll=True, keepDuplicates=True
-                    )
-                )
-            )
-
-            self.publish_update.append(
-                self.table.getIntegerTopic("Update" + str(index)).publish(
-                    ntcore.PubSubOptions(
-                        periodic=0.01, sendAll=True, keepDuplicates=True
-                    )
-                )
-            )
             self.publish_connection.append(
                 self.table.getBooleanTopic("Connected" + str(index)).publish(
                     ntcore.PubSubOptions(
@@ -133,15 +69,15 @@ class NetworkIO:
 
             self.update_num[i] += 1
             camDict = {
-                "Mode": "0",
-                "Update": str(self.update_num[i]),
+                "Mode": 0,
+                "Update": self.update_num[i],
                 "Pose1": self.pose_to_dict(pose1[i]),
                 "Pose2": self.pose_to_dict(pose2[i]),
-                "Ambig": str(ambig[i]),
+                "Ambig": ambig[i],
                 # "Timestamp": str(ntcore._now() - timestamp[i]),
-                "Timestamp": str(time.monotonic_ns() / 1000000 - timestamps[i]),
-                "Tags": str(tags[i]),  # FUTURE TODO: json.dumps here !!!
-                "TagCorners": json.dumps(tag_corners[i].tolist()),
+                "Timestamp": (time.monotonic_ns() / 1000000 - timestamps[i]),
+                "Tags": tags[i],
+                "TagCorners": tag_corners[i].tolist(),
             }
             data_dict[self.name + str(i)] = camDict
         data_str = json.dumps(data_dict)
@@ -164,11 +100,11 @@ class NetworkIO:
 
             # Data for camera i
             data_dict[self.name + str(i)] = {
-                "Mode": "1",
-                "Update": str(self.update_num[i]),
-                "Tags": str(tags[i]), # FUTURE TODO: json.dumps here too!!!
-                "TagCorners": json.dumps(tag_corners[i].tolist()),
-                "Timestamp": str(time.monotonic_ns() / 1000000 - timestamps[i]),
+                "Mode": 1,
+                "Update": (self.update_num[i]),
+                "Tags": tags[i], 
+                "TagCorners": tag_corners[i].tolist(),
+                "Timestamp": (time.monotonic_ns() / 1000000 - timestamps[i]),
             }
 
         data_str = json.dumps(data_dict)
@@ -191,42 +127,6 @@ class NetworkIO:
             "rY": str(r.Y()),
             "rZ": str(r.Z()),
         }
-
-    # def pose_to_byte(self, pose):
-    #     t = pose.translation()
-    #     r = pose.rotation()
-    #     axes = [t.X(), t.Y(), t.Z(), r.X(), r.Y(), r.Z()]
-    #     byte_arr = []
-    #     for axis in axes:
-    #         byte_arr += bytearray(struct.pack("d", axis))
-    #     return byte_arr
-
-    # Publishes the supplied pose information in the corresponding publisher
-    # def publish(
-    #     self,
-    #     index: int,
-    #     time: int,
-    #     pose: wpi.Pose3d,
-    #     tags: list[int],
-    #     ambig: list[float],
-    # ):
-    #     pose1 = pose[0]
-    #     pose2 = pose[1]
-    #     t1 = pose1.translation()
-    #     r1 = pose1.rotation()
-    #     t2 = pose2.translation()
-    #     r2 = pose2.rotation()
-
-    #     self.pose1_sub[index].set([t1.X(), t1.Y(), t1.Z(), r1.X(), r1.Y(), r1.Z()])
-    #     self.pose2_sub[index].set([t2.X(), t2.Y(), t2.Z(), r2.X(), r2.Y(), r2.Z()])
-    #     self.ambiguity_sub[index].set(ambig)
-    #     self.tag_sub[index].set(tags)
-    #     self.timestamp_sub[index].set(
-    #         ntcore._now() - (time.monotonic_ns() / 1000000 - time) * 1000
-    #     )
-
-    #     self.update_num[index] += 1
-    #     self.publish_update[index].set(self.update_num[index])
 
     # Publish a new update number
     def increase_update_num(self):

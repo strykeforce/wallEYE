@@ -174,6 +174,7 @@ public class WallEyeCam {
     timestamp = recievedTime - (long) (dataCam.get("Timestamp").getAsDouble() * 1000);
 
     int mode = dataCam.get("Mode").getAsInt();
+    System.out.println(dataCam.toString());
     tags = GSON.fromJson(dataCam.get("Tags").toString(), int[].class);
     tagCorners = parseTagArray(dataCam.get("TagCorners").toString());
 

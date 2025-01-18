@@ -3,6 +3,7 @@ import logging
 import numpy as np
 import json
 
+
 class TagProcessor:
     logger = logging.getLogger(__name__)
     MIN_TAG = 1
@@ -45,10 +46,8 @@ class TagProcessor:
         ids = ids[mask]
         corners = np.asarray(corners)[mask]
 
-
         if len(corners.shape) == 5:
             corners = corners[0]
-
 
         if len(corners) > 0:
             # Draw lines around tags for ease of seeing (website)
@@ -56,7 +55,9 @@ class TagProcessor:
                 try:
                     cv2.aruco.drawDetectedMarkers(img, corners, ids)
                 except cv2.error:
-                    TagProcessor.logger.error(f"Could not draw tags: {ids} with corners {corners}")
+                    TagProcessor.logger.error(
+                        f"Could not draw tags: {ids} with corners {corners}"
+                    )
         else:
             # No tags
             return (np.asarray([]), np.asarray([]))
