@@ -121,43 +121,6 @@ public class WallEyeCam {
 
     // System.out.println(this.udpPort + " " + rawDataString);
 
-    // try {
-
-    // Map<String, JsonElement> dataMap = data.asMap();
-
-    // if (!dataMap.containsKey(camId)) {
-    // System.err.println("Exiting, no data for " + camId);
-    // System.err.println(rawDataString);
-    // return; // No vision update
-    // }
-
-    // System.out.println(rawDataString);
-    // System.out.println("Want " + camName + camIndex);
-    // Map<String, JsonElement> dataCam = dataMap.get(camId).getAsJsonObject().asMap();
-    // if (dataCam != null) {
-    // ArrayList<Integer> parsedTagIds = new ArrayList<Integer>();
-
-    // for (String s :
-    //     dataCam
-    //         .get("Tags")
-    //         .toString()
-    //         .replace("\"", "")
-    //         .replace("]", "")
-    //         .replace("[", "")
-    //         .split("\\s+")) {
-    //   if (!s.isEmpty()) {
-    //     parsedTagIds.add(Integer.parseInt(s));
-    //   }
-    // }
-    // tags = new int[parsedTagIds.size()];
-    // for (int i = 0; i < tags.length; i++) {
-    //   tags[i] = (int) parsedTagIds.get(i);
-    // }
-    // if (parsedTagIds.size() == 0) {
-    //   return;
-    // }
-    // tagCorners = parseTagArray(dataCam);
-
     if (rawDataString == null || rawDataString.isEmpty()) {
       return;
     }
@@ -174,7 +137,6 @@ public class WallEyeCam {
     timestamp = recievedTime - (long) (dataCam.get("Timestamp").getAsDouble() * 1000);
 
     int mode = dataCam.get("Mode").getAsInt();
-    System.out.println(dataCam.toString());
     tags = GSON.fromJson(dataCam.get("Tags").toString(), int[].class);
     tagCorners = parseTagArray(dataCam.get("TagCorners").toString());
 
@@ -225,32 +187,6 @@ public class WallEyeCam {
 
     return new Pose3d(new Translation3d(tX, tY, tZ), new Rotation3d(rX, rY, rZ));
   }
-
-  // private List<List<List<Double>>> parseTagArray(Map<String, JsonElement> data) {
-  //   Type listType = new TypeToken<List<List<List<Double>>>>() {}.getType();
-  //   String tagListString =
-  //       new Gson().fromJson(data.get("TagCorners"), String.class).replace("\"", "");
-
-  //   List<List<List<Double>>> parsed = new Gson().fromJson(tagListString, listType);
-
-  //   return parsed;
-  // }
-
-  /**
-   * Converts List of JsonElement of tag ids to int tag ids
-   *
-   * @param tagsList
-   * @return List of casted int tag ids
-   */
-  // private int[] getTagsArray(String[] tagsList) {
-  //   int[] tags = new int[tagsList.length];
-
-  //   for (int i = 0; i < tagsList.length; ++i) {
-  //     tags[i] = Integer.parseInt(tagsList[i]);
-  //   }
-
-  //   return tags;
-  // }
 
   /**
    * Returns WallEyeResult object with the corresponding data
