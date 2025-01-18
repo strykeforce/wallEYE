@@ -12,6 +12,7 @@ import java.util.List;
 public class WallEyeTagResult extends WallEyeResult {
   private List<List<List<Double>>> tagCorners;
   private List<List<Double>> centers = new ArrayList<>();
+  private List<Double> tagAreas = new ArrayList<>();
 
   /**
    * Creates a WallEyeTagResult object with an associated Tag centers, timestamp and what cam
@@ -39,9 +40,15 @@ public class WallEyeTagResult extends WallEyeResult {
     if (tagCorners != null) {
       for (List<List<Double>> tag : tagCorners) {
         List<Double> center = new ArrayList<Double>();
-        center.add((tag.get(0).get(0) + tag.get(2).get(0)) / 2.0);
-        center.add((tag.get(0).get(1) + tag.get(2).get(1)) / 2.0);
+        center.add(
+            (tag.get(0).get(0) + tag.get(1).get(0) + tag.get(2).get(0) + tag.get(3).get(0)) / 4.0);
+        center.add(
+            (tag.get(0).get(1) + tag.get(1).get(1) + tag.get(2).get(1) + tag.get(3).get(1)) / 4.0);
         this.centers.add(center);
+
+        this.tagAreas.add(
+            Math.abs(tag.get(0).get(0) - tag.get(2).get(0))
+                * Math.abs(tag.get(0).get(1) - tag.get(2).get(1)));
       }
     }
   }
@@ -59,9 +66,9 @@ public class WallEyeTagResult extends WallEyeResult {
     return centers;
   }
 
-  // public double getTagArea() {
-  //   return 
-  // }
+  public List<Double> getTagAreas() {
+    return tagAreas;
+  }
 
   /**
    * @return String

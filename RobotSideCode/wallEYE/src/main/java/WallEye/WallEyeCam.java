@@ -253,7 +253,7 @@ public class WallEyeCam {
     Type listType = new TypeToken<List<List<List<Double>>>>() {}.getType();
     String tagListString =
         new Gson().fromJson(data.get("TagCorners"), String.class).replace("\"", "");
-    
+
     List<List<List<Double>>> parsed = new Gson().fromJson(tagListString, listType);
 
     return parsed;
