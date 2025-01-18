@@ -76,7 +76,7 @@ class NetworkIO:
                 "Ambig": ambig[i],
                 # "Timestamp": str(ntcore._now() - timestamp[i]),
                 "Timestamp": (time.monotonic_ns() / 1000000 - timestamps[i]),
-                "Tags": tags[i],
+                "Tags": tags[i].tolist(),
                 "TagCorners": tag_corners[i].tolist(),
             }
             data_dict[self.name + str(i)] = camDict
@@ -102,7 +102,7 @@ class NetworkIO:
             data_dict[self.name + str(i)] = {
                 "Mode": 1,
                 "Update": (self.update_num[i]),
-                "Tags": tags[i], 
+                "Tags": tags[i].tolist(), 
                 "TagCorners": tag_corners[i].tolist(),
                 "Timestamp": (time.monotonic_ns() / 1000000 - timestamps[i]),
             }
