@@ -1,41 +1,24 @@
 package WallEye;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.BooleanSubscriber;
-import edu.wpi.first.networktables.DoubleArraySubscriber;
-import edu.wpi.first.networktables.DoubleSubscriber;
-import edu.wpi.first.networktables.IntegerArraySubscriber;
-import edu.wpi.first.networktables.IntegerSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
-import java.lang.reflect.Type;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.function.DoubleSupplier;
 
 /** A robot side code interface to interact and pull data from an Orange Pi running WallEye */
 public class WallEyeCam {
   // Subscribers
-  private DoubleArraySubscriber pose1Sub;
-  private DoubleArraySubscriber pose2Sub;
-  private DoubleSubscriber timestampSub;
-  private DoubleSubscriber ambiguitySub;
-  private IntegerArraySubscriber tagsSub;
   private BooleanSubscriber connectSub;
-  private IntegerSubscriber updateSub;
 
   private int curUpdateNum = 0;
   private Transform3d camToCenter;
@@ -59,13 +42,7 @@ public class WallEyeCam {
   private int[] tags;
   private WallEyeResult curData = new WallEyePoseResult(null, null, null, 0, 0, 0, 0, null, 0);
   private int newUpdateNum = 0;
-
-  // Constants
-  private final int kIntByteSize = 4;
-  private final int kDoubleByteSize = 8;
-  private final int kLongByteSize = 8;
-  private final int kPoseByteSize = kDoubleByteSize * 6;
-  private final int kFinalTagInt = -1;
+  private static final Gson GSON = new Gson();
 
   /**
    * Creates a WallEye object that can pull pose location and timestamp data from Network Tables.
@@ -94,19 +71,7 @@ public class WallEyeCam {
     NetworkTableInstance nt = NetworkTableInstance.getDefault();
     nt.startServer();
 
-    double[] def = {2767.0, 2767.0, 2767.0, 2767.0, 2767.0, 2767.0, 2767.0};
-    long[] defInt = {-1};
-
     NetworkTable table = nt.getTable(tableName);
-    NetworkTable subTable = table.getSubTable("Result" + camIndex);
-
-    pose1Sub = subTable.getDoubleArrayTopic("Pose1").subscribe(def);
-    pose2Sub = subTable.getDoubleArrayTopic("Pose2").subscribe(def);
-    timestampSub = subTable.getDoubleTopic("timestamp").subscribe(0.0);
-    ambiguitySub = subTable.getDoubleTopic("ambiguity").subscribe(1.0);
-    tagsSub = subTable.getIntegerArrayTopic("tags").subscribe(defInt);
-
-    updateSub = table.getIntegerTopic("Update" + camIndex).subscribe(0);
     connectSub = table.getBooleanTopic("Connected" + camIndex).subscribe(false);
   }
 
@@ -142,11 +107,7 @@ public class WallEyeCam {
     return camIndex;
   }
 
-  public void processUDP(String rawDataString) {
-    if (rawDataString == null) {
-      return;
-    }
-
+  public void processUDP(String rawDataString, long recievedTime) {
     // its all a json...
     // The json is formated as such
     // All data from a camera is under tablename + index number
@@ -161,125 +122,99 @@ public class WallEyeCam {
     // System.out.println(this.udpPort + " " + rawDataString);
 
     // try {
-    JsonObject data =
-        JsonParser.parseString(rawDataString)
-            .getAsJsonObject(); // Could move to UDP subscriber for performance
 
-    Map<String, JsonElement> dataMap = data.asMap();
+    // Map<String, JsonElement> dataMap = data.asMap();
 
-    String camId = camName + camIndex;
-
-    if (!dataMap.containsKey(camId)) {
-      // System.err.println("Exiting, no data for " + camId);
-      // System.err.println(rawDataString);
-      return; // No vision update
-    }
+    // if (!dataMap.containsKey(camId)) {
+    // System.err.println("Exiting, no data for " + camId);
+    // System.err.println(rawDataString);
+    // return; // No vision update
+    // }
 
     // System.out.println(rawDataString);
     // System.out.println("Want " + camName + camIndex);
-    Map<String, JsonElement> dataCam = dataMap.get(camId).getAsJsonObject().asMap();
-    if (dataCam != null) {
-      int mode = dataCam.get("Mode").getAsInt();
+    // Map<String, JsonElement> dataCam = dataMap.get(camId).getAsJsonObject().asMap();
+    // if (dataCam != null) {
+    // ArrayList<Integer> parsedTagIds = new ArrayList<Integer>();
 
-      timestamp =
-          RobotController.getFPGATime()
-              - (long) (dataCam.get("Timestamp").getAsDouble() * 1000); // Recieved ms, want us
-
-      ArrayList<Integer> parsedTagIds = new ArrayList<Integer>();
-
-      for (String s :
-          dataCam
-              .get("Tags")
-              .toString()
-              .replace("\"", "")
-              .replace("]", "")
-              .replace("[", "")
-              .split("\\s+")) {
-        if (!s.isEmpty()) {
-          parsedTagIds.add(Integer.parseInt(s));
-        }
-      }
-      tags = new int[parsedTagIds.size()];
-      for (int i = 0; i < tags.length; i++) {
-        tags[i] = (int) parsedTagIds.get(i);
-      }
-      if (parsedTagIds.size() == 0) {
-        return;
-      }
-      tagCorners = parseTagArray(dataCam);
-
-      switch (mode) {
-        case 0:
-          newUpdateNum = dataCam.get("Update").getAsInt();
-          Pose3d pose1 = parseJsonPose3d(dataCam.get("Pose1").getAsJsonObject().asMap());
-          Pose3d pose2 = parseJsonPose3d(dataCam.get("Pose2").getAsJsonObject().asMap());
-          // System.out.println(this.udpPort + " " + pose1);
-          // System.out.println(pose2);
-
-          double ambig = dataCam.get("Ambig").getAsDouble();
-
-          curData =
-              new WallEyePoseResult(
-                  pose1,
-                  pose2,
-                  tagCorners,
-                  timestamp,
-                  camIndex,
-                  newUpdateNum,
-                  tags.length,
-                  tags,
-                  ambig);
-          break;
-
-        case 1:
-          newUpdateNum = dataCam.get("Update").getAsInt();
-
-          // [tag index][center index][x/y]
-
-          curData =
-              new WallEyeTagResult(
-                  tagCorners, timestamp, camIndex, newUpdateNum, tags.length, tags);
-          break;
-        default:
-          break;
-      }
-    }
-    // } catch (Exception e) {
-    //   System.err.println(e.toString());
+    // for (String s :
+    //     dataCam
+    //         .get("Tags")
+    //         .toString()
+    //         .replace("\"", "")
+    //         .replace("]", "")
+    //         .replace("[", "")
+    //         .split("\\s+")) {
+    //   if (!s.isEmpty()) {
+    //     parsedTagIds.add(Integer.parseInt(s));
+    //   }
     // }
-  }
+    // tags = new int[parsedTagIds.size()];
+    // for (int i = 0; i < tags.length; i++) {
+    //   tags[i] = (int) parsedTagIds.get(i);
+    // }
+    // if (parsedTagIds.size() == 0) {
+    //   return;
+    // }
+    // tagCorners = parseTagArray(dataCam);
 
-  private List<List<List<Double>>> parseTagArray(Map<String, JsonElement> data) {
-    Type listType = new TypeToken<List<List<List<Double>>>>() {}.getType();
-    String tagListString =
-        new Gson().fromJson(data.get("TagCorners"), String.class).replace("\"", "");
-
-    List<List<List<Double>>> parsed = new Gson().fromJson(tagListString, listType);
-
-    return parsed;
-  }
-
-  /**
-   * Converts List of JsonElement of tag ids to int tag ids
-   *
-   * @param tagsList
-   * @return List of casted int tag ids
-   */
-  private int[] getTagsArray(String[] tagsList) {
-    int[] tags = new int[tagsList.length];
-
-    for (int i = 0; i < tagsList.length; ++i) {
-      tags[i] = Integer.parseInt(tagsList[i]);
+    if (rawDataString == null || rawDataString.isEmpty()) {
+      return;
     }
 
-    return tags;
+    JsonObject data = JsonParser.parseString(rawDataString).getAsJsonObject();
+    String camId = camName + camIndex;
+
+    if (!data.has(camId)) {
+      return; // No vision update
+    }
+
+    JsonObject dataCam = data.getAsJsonObject(camId);
+
+    timestamp = recievedTime - (long) (dataCam.get("Timestamp").getAsDouble() * 1000);
+
+    int mode = dataCam.get("Mode").getAsInt();
+    tags = GSON.fromJson(dataCam.get("Tags").toString(), int[].class);
+    tagCorners = parseTagArray(dataCam.get("TagCorners").toString());
+
+    switch (mode) {
+      case 0 -> processPoseMode(dataCam);
+      case 1 -> processTagMode(dataCam);
+    }
   }
 
-  /**
-   * @param poseData
-   * @return Pose3d
-   */
-  private Pose3d parseJsonPose3d(Map<String, JsonElement> poseData) {
+  private void processPoseMode(JsonObject dataCam) {
+    newUpdateNum = dataCam.get("Update").getAsInt();
+    Pose3d pose1 = parsePose3d(dataCam.get("Pose1").getAsJsonObject());
+    Pose3d pose2 = parsePose3d(dataCam.get("Pose2").getAsJsonObject());
+    double ambiguity = dataCam.get("Ambig").getAsDouble();
+
+    curData =
+        new WallEyePoseResult(
+            pose1,
+            pose2,
+            tagCorners,
+            timestamp,
+            camIndex,
+            newUpdateNum,
+            tags.length,
+            tags,
+            ambiguity);
+  }
+
+  private void processTagMode(JsonObject dataCam) {
+    newUpdateNum = dataCam.get("Update").getAsInt();
+    curData =
+        new WallEyeTagResult(tagCorners, timestamp, camIndex, newUpdateNum, tags.length, tags);
+  }
+
+  private List<List<List<Double>>> parseTagArray(String tagCornersJson) {
+    return GSON.fromJson(
+        tagCornersJson,
+        new com.google.gson.reflect.TypeToken<List<List<List<Double>>>>() {}.getType());
+  }
+
+  private Pose3d parsePose3d(JsonObject poseData) {
     double tX = poseData.get("tX").getAsDouble();
     double tY = poseData.get("tY").getAsDouble();
     double tZ = poseData.get("tZ").getAsDouble();
@@ -290,132 +225,41 @@ public class WallEyeCam {
     return new Pose3d(new Translation3d(tX, tY, tZ), new Rotation3d(rX, rY, rZ));
   }
 
+  // private List<List<List<Double>>> parseTagArray(Map<String, JsonElement> data) {
+  //   Type listType = new TypeToken<List<List<List<Double>>>>() {}.getType();
+  //   String tagListString =
+  //       new Gson().fromJson(data.get("TagCorners"), String.class).replace("\"", "");
+
+  //   List<List<List<Double>>> parsed = new Gson().fromJson(tagListString, listType);
+
+  //   return parsed;
+  // }
+
+  /**
+   * Converts List of JsonElement of tag ids to int tag ids
+   *
+   * @param tagsList
+   * @return List of casted int tag ids
+   */
+  // private int[] getTagsArray(String[] tagsList) {
+  //   int[] tags = new int[tagsList.length];
+
+  //   for (int i = 0; i < tagsList.length; ++i) {
+  //     tags[i] = Integer.parseInt(tagsList[i]);
+  //   }
+
+  //   return tags;
+  // }
+
   /**
    * Returns WallEyeResult object with the corresponding data
    *
    * @return Most recent WallEyeResult
    */
   public WallEyeResult getResults() {
-    // WallEyePoseResult result;
-    // curUpdateNum = (int) updateSub.get();
-    // double[] tempPose1 = pose1Sub.get();
-    // double[] tempPose2 = pose2Sub.get();
-    // double timestamp = RobotController.getFPGATime() - timestampSub.get();
-    // double ambiguity = ambiguitySub.get();
-    // long[] tags = tagsSub.get();
-    // int[] tagsNew = new int[tags.length];
-
-    // for (int i = 0; i < tags.length; ++i) tagsNew[i] = (int) tags[i];
-
-    // Pose3d pose1 = getPoseFromArray(tempPose1);
-    // Pose3d pose2 = getPoseFromArray(tempPose2);
-
-    // result =
-    // new WallEyePoseResult(
-    // pose1, pose2, timestamp, camIndex, curUpdateNum, tags.length, tagsNew,
-    // ambiguity);
-
-    // return result;
     curUpdateNum = curData.getUpdateNum();
 
-    // System.out.println("Called " + curUpdateNum);
-
     return curData;
-  }
-
-  private int[] integerArrayToInt(Integer[] input) {
-    int[] tags = new int[input.length];
-
-    for (int i = 0; i < input.length; ++i) {
-      tags[i] = input[i];
-    }
-
-    return tags;
-  }
-
-  private Integer[] parseDataTags(String str) {
-    ArrayList<Integer> tags = new ArrayList<Integer>();
-    Integer[] tagsArray;
-    int tagID = 0;
-    int numTags = 0;
-
-    while (tagID != kFinalTagInt) {
-      tagID =
-          parseDataInt(
-              stringToByte(str.substring(kIntByteSize * numTags, kIntByteSize * (numTags + 1))));
-      if (tagID == kFinalTagInt) {
-        tagsArray = new Integer[tags.size()];
-        tags.toArray(tagsArray);
-        return tagsArray;
-      }
-      tags.add(tagID);
-      numTags++;
-    }
-
-    tagsArray = new Integer[tags.size()];
-    tags.toArray(tagsArray);
-
-    return tagsArray;
-  }
-
-  private Pose3d parseDataPose(String str) {
-    double[] coords = new double[6];
-
-    for (int i = 0; i < 6; ++i) {
-      coords[i] =
-          parseDataDouble(
-              stringToByte(str.substring(kDoubleByteSize * i, kDoubleByteSize * (i + 1))));
-    }
-
-    return new Pose3d(
-        new Translation3d(coords[0], coords[1], coords[2]),
-        new Rotation3d(coords[3], coords[4], coords[5]));
-  }
-
-  private double parseDataDouble(byte[] a) {
-    if (a == null) return 0;
-    return ByteBuffer.wrap(a).getDouble();
-  }
-
-  private long parseDataLong(byte[] a) {
-    if (a == null) return 0;
-    return ByteBuffer.wrap(a).getLong();
-  }
-
-  private int parseDataInt(byte[] a) {
-    if (a == null) return 0;
-    return ByteBuffer.wrap(a).getInt();
-  }
-
-  private byte[] stringToByte(String str) {
-    return str.getBytes(StandardCharsets.UTF_8);
-  }
-
-  private StringBuilder parseDataString(byte[] a) {
-    if (a == null) return null;
-
-    StringBuilder ret = new StringBuilder();
-    int i = 0;
-
-    while (a[i] != 0) {
-      ret.append((char) a[i]);
-      i++;
-    }
-
-    return ret;
-  }
-
-  /**
-   * Takes an array of length 6 to turn into a pose
-   *
-   * @return Pose3d from the given array
-   * @throws AssertionError
-   */
-  private Pose3d getPoseFromArray(double[] arr) {
-    assert arr.length == 6;
-
-    return new Pose3d(
-        new Translation3d(arr[0], arr[1], arr[2]), new Rotation3d(arr[3], arr[4], arr[5]));
   }
 
   /**

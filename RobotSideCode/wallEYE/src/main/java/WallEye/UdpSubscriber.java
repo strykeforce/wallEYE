@@ -1,20 +1,19 @@
 package WallEye;
 
 import edu.wpi.first.wpilibj.Notifier;
+import edu.wpi.first.wpilibj.RobotController;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
 public class UdpSubscriber {
-  private int port;
   private byte[] data = new byte[65535];
   private DatagramSocket socket;
   private Notifier udpLoop = new Notifier(this::grabUDPdata);
   private WallEyeCam[] cams;
 
   public UdpSubscriber(int port, WallEyeCam... cams) {
-    this.port = port;
     this.cams = cams;
 
     try {
@@ -35,10 +34,12 @@ public class UdpSubscriber {
       System.err.println("COULD NOT RECEIVE UDP DATA: " + e.toString());
     }
 
+    long recievedTime = RobotController.getFPGATime();
+
     String parsedData = new String(receive.getData(), 0, receive.getLength());
 
     for (WallEyeCam cam : cams) {
-      cam.processUDP(parsedData);
+      cam.processUDP(parsedData, recievedTime);
     }
 
     data = new byte[65535];

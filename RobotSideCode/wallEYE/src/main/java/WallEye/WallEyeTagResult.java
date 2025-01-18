@@ -1,29 +1,27 @@
 package WallEye;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * The data that the WallEye class will return when asked for new poses. Each object has an
  * associated Pose, an associated timestamp as well as an associated camera.
- *
- * @see WallEye
  */
 public class WallEyeTagResult extends WallEyeResult {
-  private List<List<List<Double>>> tagCorners;
-  private List<List<Double>> centers = new ArrayList<>();
-  private List<Double> tagAreas = new ArrayList<>();
+  private final List<Tag> tags;
+  private final double[] tagAreas;
+  private final List<Point> centers;
 
   /**
-   * Creates a WallEyeTagResult object with an associated Tag centers, timestamp and what cam
-   * produced this
+   * Creates a WallEyeTagResult object with associated tag data.
    *
-   * @param tagCenters The image coordinates (height, width) of the tag centers
+   * @param tagCorners The corner coordinates of the tags
    * @param timeStamp The time the camera captured this data
    * @param originCam The index of the camera that captured this data
-   * @param updateNum The nth result from wallEYE
+   * @param updateNum The nth result from WallEye
    * @param numTags The number of tags in the image
-   * @param tags The tag ids detected in this image
+   * @param tags The tag IDs detected in this image
    */
   public WallEyeTagResult(
       List<List<List<Double>>> tagCorners,
@@ -35,51 +33,45 @@ public class WallEyeTagResult extends WallEyeResult {
 
     super(timeStamp, originCam, updateNum, numTags, tags);
 
-    this.tagCorners = tagCorners;
+    if (tagCorners == null) {
+      this.tags = Collections.emptyList();
+      this.centers = Collections.emptyList();
+      this.tagAreas = new double[0];
+    } else {
+      this.tags = new ArrayList<>(tagCorners.size());
+      this.centers = new ArrayList<>(tagCorners.size());
+      this.tagAreas = new double[tagCorners.size()];
 
-    if (tagCorners != null) {
-      for (List<List<Double>> tag : tagCorners) {
-        List<Double> center = new ArrayList<Double>();
-        center.add(
-            (tag.get(0).get(0) + tag.get(1).get(0) + tag.get(2).get(0) + tag.get(3).get(0)) / 4.0);
-        center.add(
-            (tag.get(0).get(1) + tag.get(1).get(1) + tag.get(2).get(1) + tag.get(3).get(1)) / 4.0);
-        this.centers.add(center);
+      for (List<List<Double>> tagData : tagCorners) {
+        Point[] corners = new Point[4];
 
-        this.tagAreas.add(
-            Math.abs(tag.get(0).get(0) - tag.get(2).get(0))
-                * Math.abs(tag.get(0).get(1) - tag.get(2).get(1)));
+        for (int i = 0; i < 4; i++) {
+          corners[i] = new Point(tagData.get(i).get(0), tagData.get(i).get(1));
+        }
+
+        Tag tag = new Tag(corners);
+        this.tags.add(tag);
+
+        this.centers.add(tag.getCenter());
+        this.tagAreas[this.tags.size() - 1] = tag.getArea();
       }
     }
   }
 
-  /**
-   * Getter for the tag centers array
-   *
-   * @return int[][] of the tag centers
-   */
-  public List<List<List<Double>>> getTagCorners() {
-    return tagCorners;
+  public List<Tag> getTags() {
+    return tags;
   }
 
-  public List<List<Double>> getTagCenters() {
+  public List<Point> getTagCenters() {
     return centers;
   }
 
-  public List<Double> getTagAreas() {
+  public double[] getTagAreas() {
     return tagAreas;
   }
 
-  /**
-   * @return String
-   */
   @Override
   public String toString() {
-    return "Update: "
-        + updateNum
-        + " | Tag Corners: "
-        + tagCorners.toString()
-        + " | Timestamp: "
-        + timeStamp;
+    return "Update: " + updateNum + " | Tags: " + tags + " | Timestamp: " + timeStamp;
   }
 }
