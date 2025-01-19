@@ -153,7 +153,9 @@ class Data:
 
         Data.logger.info(f"Robot publisher created: {team_number} - {table_name}")
 
-    def set_web_img_info(self, identifier: str, info: tuple[wpi.Pose3d] | tuple[list[int], list]):
+    def set_web_img_info(
+        self, identifier: str, info: tuple[wpi.Pose3d] | tuple[list[int], list]
+    ):
         if len(info) > 0 and isinstance(info[0], wpi.Pose3d):
             a, b = info
             self.img_info[
@@ -167,9 +169,7 @@ class Data:
             for tag_id, c in zip(info[0], corners):
                 display.append(f"[{tag_id}]:    {str(c)}")
 
-            self.img_info[
-                identifier
-            ] = f"Tag corners: {display}"
+            self.img_info[identifier] = f"Tag corners: {display}"
 
     # Return the file path names for each camera
     def get_cal_file_paths(self):

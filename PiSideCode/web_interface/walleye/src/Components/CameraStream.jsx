@@ -147,7 +147,7 @@ export default function CameraStream(props) {
                                 />
                             </a>
 
-                            <Card.Text>
+                            <Card.Text style={{ whiteSpace: "pre-line" }} dangerouslySetInnerHTML={{ __html: text }}>
                                 {props.imgInfo
                                     ? props.imgInfo[props.camID]
                                     : "Not available"}

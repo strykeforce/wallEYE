@@ -168,7 +168,12 @@ class PoseProcessor:
         # If an invalid image is given or no calibration return an error
         # pose
         if image is None or K is None or D is None:
-            return ((PoseProcessor.BAD_POSE, PoseProcessor.BAD_POSE), [], tagCorners, 2767)
+            return (
+                (PoseProcessor.BAD_POSE, PoseProcessor.BAD_POSE),
+                [],
+                tagCorners,
+                2767,
+            )
 
         ids, corners = self.tag_processor.get_tags(image, valid_tags, draw)
 

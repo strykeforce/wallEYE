@@ -19,9 +19,10 @@ class TagProcessor:
 
         # Change params to balance speed and accuracy
         aruco_params = cv2.aruco.DetectorParameters()
-        aruco_params.cornerRefinementMethod = cv2.aruco.CORNER_REFINE_SUBPIX
+        aruco_params.cornerRefinementMethod = cv2.aruco.CORNER_REFINE_SUBPIX # Can use CORNER_REFINE_APRILTAG
         aruco_params.cornerRefinementMinAccuracy = 0.1
         aruco_params.cornerRefinementMaxIterations = 30
+        aruco_params.useAruco3Detection = True # FIXME TEST!!!
         self.aruco_detector.setDetectorParameters(aruco_params)
 
     def get_tags(self, img: np.ndarray, valid_tags: np.ndarray, draw: bool):
@@ -63,10 +64,3 @@ class TagProcessor:
             return (np.asarray([]), np.asarray([]))
 
         return (ids, corners[:, 0])
-
-    # def get_tag_centers(self, img: np.ndarray, valid_tags: np.ndarray,  draw: bool):
-    #     ids, corners = self.get_tags(img, valid_tags, draw)
-
-    #     if corners.shape[0] == 0:
-    #         return (np.asarray([]), np.asarray([]))
-    #     return (ids, np.mean(corners[:, 0], axis=1))
