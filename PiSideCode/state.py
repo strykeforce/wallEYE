@@ -160,14 +160,18 @@ class Data:
             a, b = info
             self.img_info[
                 identifier
-            ] = f"Pose: [({round(a.X(), 2)}, {round(a.Y(), 2)}, {round(a.Z(), 2)}) ({round(a.rotation().X(), 2)}, {round(a.rotation().Y(), 2)}, {round(a.rotation().Z(), 2)})], ({round(b.X(), 2)}, {round(b.Y(), 2)}, {round(b.Z(), 2)}) ({round(b.rotation().X(), 2)}, {round(b.rotation().Y(), 2)}, {round(b.rotation().Z(), 2)})"
+            ] = f"Poses: \n\
+                    T1: ({round(a.X(), 2)}, {round(a.Y(), 2)}, {round(a.Z(), 2)}) \n\
+                    R1: ({round(a.rotation().X(), 2)}, {round(a.rotation().Y(), 2)}\n\n\
+                    T2: {round(a.rotation().Z(), 2)})]\n({round(b.X(), 2)}, {round(b.Y(), 2)}, {round(b.Z(), 2)}) \n\
+                    R2: ({round(b.rotation().X(), 2)}, {round(b.rotation().Y(), 2)}, {round(b.rotation().Z(), 2)})"
 
         elif len(info) > 0:
             display = []
             corners = np.asarray(info[1]).tolist()
 
             for tag_id, c in zip(info[0], corners):
-                display.append(f"[{tag_id}]:    {str(c)}")
+                display.append(f"\n[{tag_id}]: {", ".join([str(round(cx, 2), round(cy, 2)) for (cx, cy) in c])}")
 
             self.img_info[identifier] = f"Tag corners: {display}"
 
@@ -206,7 +210,6 @@ class Data:
             Data.logger.error(f"Failed to write port {port}: {e}")
 
     # Set Tag Size (meters) and set it in system settings
-
     def set_tag_size(self, size: float):
         try:
             # Write it in system settings file

@@ -4,11 +4,11 @@ flask[async]
 flask-socketio
 eventlet
 numpy < 2 # wpimath segfaults with numpy 2
-opencv-python >= 4.10.0
+opencv-python >= 4.11.0
 matplotlib
 Pillow >= 10.3
 cffi
 simplejpeg
---extra-index-url https://wpilib.jfrog.io/artifactory/api/pypi/wpilib-python-release-2024/simple 
+--extra-index-url https://wpilib.jfrog.io/artifactory/api/pypi/wpilib-python-release-2025/simple 
 pyntcore # >= 2023.2.1.2
 robotpy-wpimath
