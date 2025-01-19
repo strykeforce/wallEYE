@@ -7,7 +7,7 @@ import json
 class TagProcessor:
     logger = logging.getLogger(__name__)
     MIN_TAG = 1
-    MAX_TAG = 16
+    MAX_TAG = 22
 
     # Create a pose estimator
     def __init__(self):
@@ -22,7 +22,6 @@ class TagProcessor:
         aruco_params.cornerRefinementMethod = cv2.aruco.CORNER_REFINE_SUBPIX # Can use CORNER_REFINE_APRILTAG
         aruco_params.cornerRefinementMinAccuracy = 0.1
         aruco_params.cornerRefinementMaxIterations = 30
-        aruco_params.useAruco3Detection = True # FIXME TEST!!!
         self.aruco_detector.setDetectorParameters(aruco_params)
 
     def get_tags(self, img: np.ndarray, valid_tags: np.ndarray, draw: bool):
@@ -47,7 +46,7 @@ class TagProcessor:
         ids = ids[mask]
         corners = np.asarray(corners)[mask]
 
-        if len(corners.shape) == 5:
+        if len(corners.shape) == 5 and len(corners) > 0:
             corners = corners[0]
 
         if len(corners) > 0:

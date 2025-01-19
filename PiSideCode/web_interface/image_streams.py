@@ -32,7 +32,7 @@ class Buffer:
                 b"--frame\r\n"
                 b"Content-Type: image/jpeg\r\n\r\n" + self.output_frame + b"\r\n"
             )
-            eventlet.sleep(0.3)
+            eventlet.sleep(0.1)
 
 
 class LivePlotBuffer(Buffer):

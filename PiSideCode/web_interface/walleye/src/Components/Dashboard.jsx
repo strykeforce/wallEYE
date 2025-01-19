@@ -25,8 +25,8 @@ export default function Dashboard(props) {
             >
                 <i class="bi bi-motherboard"></i>{" "}
                 {props.state.currentState === "PROCESSING"
-                    ? "Stop PnP"
-                    : "Start PnP"}
+                    ? "Stop Processing"
+                    : "Start Processing"}
             </Button>
             <a
                 href="files/walleye_data/walleye.log"

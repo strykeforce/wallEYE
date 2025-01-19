@@ -162,8 +162,8 @@ class Data:
                 identifier
             ] = f"Poses: \n\
                     T1: ({round(a.X(), 2)}, {round(a.Y(), 2)}, {round(a.Z(), 2)}) \n\
-                    R1: ({round(a.rotation().X(), 2)}, {round(a.rotation().Y(), 2)}\n\n\
-                    T2: {round(a.rotation().Z(), 2)})]\n({round(b.X(), 2)}, {round(b.Y(), 2)}, {round(b.Z(), 2)}) \n\
+                    R1: ({round(a.rotation().X(), 2)}, {round(a.rotation().Y(), 2)}, {round(a.rotation().Z(), 2)})\n\n\
+                    T2: ({round(b.X(), 2)}, {round(b.Y(), 2)}, {round(b.Z(), 2)}) \n\
                     R2: ({round(b.rotation().X(), 2)}, {round(b.rotation().Y(), 2)}, {round(b.rotation().Z(), 2)})"
 
         elif len(info) > 0:
@@ -171,9 +171,9 @@ class Data:
             corners = np.asarray(info[1]).tolist()
 
             for tag_id, c in zip(info[0], corners):
-                display.append(f"\n[{tag_id}]: {", ".join([str(round(cx, 2), round(cy, 2)) for (cx, cy) in c])}")
+                display.append(f"[{tag_id}]: {", ".join([str((round(cx, 3), round(cy, 3))) for (cx, cy) in c])}")
 
-            self.img_info[identifier] = f"Tag corners: {display}"
+            self.img_info[identifier] = f"Tag corners: \n{"\n".join(display)}"
 
     # Return the file path names for each camera
     def get_cal_file_paths(self):

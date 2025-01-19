@@ -8,7 +8,7 @@ echo "Installing as ${user}"
 # Python dependencies
 sudo add-apt-repository ppa:deadsnakes/ppa
 sudo apt-get update
-sudo apt-get install python3.12 python3.12-venv
+sudo apt-get install python3.12 python3.12-venv python3.12-dev
 
 cd ~
 
@@ -61,6 +61,8 @@ Restart=always
 RestartSec=1
 WorkingDirectory=/home/${user}/wallEYE/PiSideCode
 User=${user}
+ExecStartPre=+/sbin/rmmod uvcvideo
+ExecStartPre=+/sbin/modprobe uvcvideo nodrop=1 timeout=5000 quirks=0x80
 ExecStart=+/home/${user}/wallEYE/PiSideCode/env/bin/python3.12 /home/${user}/wallEYE/PiSideCode/init.py
 
 [Install]

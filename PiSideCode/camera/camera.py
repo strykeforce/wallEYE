@@ -156,12 +156,13 @@ class Cameras:
         self.new_data_index = (self.new_data_index + 1) % 2
 
     def _read_frame(self, identifier):
+        # eventlet.sleep(0.1) # FIXME cam returns None sometimes, delay could help???
+        # [ WARN:1@259.552] global cap_v4l.cpp:1048 tryIoctl VIDEOIO(V4L2 select() timeout.
         cam_info = self.info[identifier]
         ret, img = False, None
         before = time.perf_counter()
 
         try:
-            # with cam_info.setting_lock:
             ret, img = cam_info.cam.read()
         except Exception as e:
             Cameras.logger.error(f"Failed to read frame", exc_info=e)
