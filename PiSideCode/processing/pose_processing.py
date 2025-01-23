@@ -249,7 +249,7 @@ class PoseProcessor:
                     pose1 = pose2 = PoseProcessor.BAD_POSE
                     ambig = 2767
 
-                    return ((pose1, pose2), ids, ambig)
+                    return ((pose1, pose2), ids, tagCorners, ambig)
                 else:
                     # Grab the rotation matrix and find the translation vector
                     rot_mat, _ = cv2.Rodrigues(rvecs)
