@@ -203,11 +203,11 @@ class PoseProcessor:
 
                 # Store image and object points
                 if img_tag_corner_poses is None:
-                    img_corner_locs = corners[tag_count][0]
+                    img_corner_locs = corners[tag_count]
                     img_tag_corner_poses = self.all_corner_poses[tag_id]
                 else:
                     img_corner_locs = np.concatenate(
-                        (img_corner_locs, corners[tag_count][0]), axis=0
+                        (img_corner_locs, corners[tag_count]), axis=0
                     )
                     img_tag_corner_poses = np.concatenate(
                         (img_tag_corner_poses, self.all_corner_poses[tag_id])
