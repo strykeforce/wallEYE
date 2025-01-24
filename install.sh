@@ -13,7 +13,7 @@ sudo apt-get install python3.13 python3.13-venv python3.13-dev
 
 cd ~
 
-git clone https://github.com/strykeforce/wallEYE.git -b Refactoring --single-branch
+git clone https://github.com/strykeforce/wallEYE.git # -b Refactoring --single-branch
 
 cd wallEYE/PiSideCode
 
@@ -62,7 +62,6 @@ Restart=always
 RestartSec=1
 WorkingDirectory=/home/${user}/wallEYE/PiSideCode
 User=${user}
-ExecStartPre=+/sbin/rmmod uvcvideo
 ExecStartPre=+/sbin/modprobe uvcvideo nodrop=1 timeout=5000 quirks=0x80
 ExecStart=+/home/${user}/wallEYE/PiSideCode/env/bin/python3.13 /home/${user}/wallEYE/PiSideCode/init.py
 
