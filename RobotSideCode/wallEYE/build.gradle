@@ -1,12 +1,12 @@
 plugins {
     id "java"
     id "maven-publish"
-    id "edu.wpi.first.GradleRIO" version "2024.3.2"
+    id "edu.wpi.first.GradleRIO" version "2025.2.1"
     id "com.diffplug.spotless" version "6.12.1"
 }
 
 group = "org.strykeforce"
-version = '24.3.0-SNAPSHOT'
+version = '25.0.0'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
