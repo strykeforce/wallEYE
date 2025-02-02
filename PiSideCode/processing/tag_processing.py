@@ -6,9 +6,7 @@ import json
 
 class TagProcessor:
     logger = logging.getLogger(__name__)
-    MIN_TAG = 1
-    MAX_TAG = 22
-
+    
     # Create a pose estimator
     def __init__(self):
         # Create an aruco detector (finds the tags in images)

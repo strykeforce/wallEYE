@@ -60,7 +60,7 @@ class Data:
         self.cam_nicknames: dict[str, str] = {}
 
         # SolvePNP
-        self.valid_tags = np.arange(1, 17)
+        self.valid_tags = np.arange(1, 23)
         self.tag_size = 0.157
         self.udp_port = 5802
 
