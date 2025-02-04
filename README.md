@@ -42,7 +42,7 @@ The instructions below were documented for Ubuntu 24.04.1 (Joshua Riek image)
 10. *Disable Autosuspend!!* and sync clock (if appropriate). 
 11. Disable ipv6. This can sometimes cause problems!
 
-OR run `chmod +x install.sh` and `sudo -i -u {USERNAME} [PATH_TO_install.sh_FROM_HOME]` - Tested on Ubuntu 24.04.1 (Joshua Riek and Armbian) AND Disable ipv6. This can sometimes cause problems!
+OR run `chmod +x install.sh` and `sudo -i -u {USERNAME} [PATH_TO_install.sh_FROM_HOME]` - Tested on Ubuntu 24.04.1 (Joshua Riek (https://github.com/Joshua-Riek/ubuntu-rockchip/releases/download/v2.4.0/ubuntu-24.04-preinstalled-desktop-arm64-orangepi-5.img.xz) and Armbian) AND Disable ipv6 (settings -> network -> gear icon -> ipv6 -> disable). This can sometimes cause problems!
 
 ## Distribution
 
