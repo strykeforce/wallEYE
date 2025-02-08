@@ -183,18 +183,19 @@ class CameraInfo:
     def get_format(self) -> None:
         try:
             curr_format = self.controller.get_format()
+            self.valid_frame_rates = {
+                round(1 / float(i)): i
+                for i in self.controller.get_available_frame_intervals(*curr_format)
+            }
+
+            self.frame_rate = round(1 / float(self.controller.get_frame_interval()))
+
+            self.color_format = curr_format[0].description
+            self.resolution: tuple[int, int] = (curr_format[1].width, curr_format[1].height)
+            
         except FileNotFoundError:
             CameraInfo.logger.fatal(f"Camera {self.identifier} disconnected. Cannot read information.")
 
-        self.valid_frame_rates = {
-            round(1 / float(i)): i
-            for i in self.controller.get_available_frame_intervals(*curr_format)
-        }
-
-        self.frame_rate = round(1 / float(self.controller.get_frame_interval()))
-
-        self.color_format = curr_format[0].description
-        self.resolution: tuple[int, int] = (curr_format[1].width, curr_format[1].height)
 
     def export_configs(self) -> dict[str : int | str | float | bool]:
         self.get_format()
