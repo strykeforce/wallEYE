@@ -71,7 +71,11 @@ class CameraInfo:
         self.calibration_path: str | None = None
 
     def get_supported_resolutions(self):
-        curr_format = self.controller.get_format()
+        try:
+            curr_format = self.controller.get_format()
+        except FileNotFoundError:
+            CameraInfo.logger.fatal(f"Camera {self.identifier} disconnected. Cannot read information.")
+            
         return self.valid_formats[str(curr_format[0])]
 
     def set_color_format(self, color_format: str) -> bool:
@@ -177,7 +181,10 @@ class CameraInfo:
         return self.controller.get_control_value(self.controls[control_name])
 
     def get_format(self) -> None:
-        curr_format = self.controller.get_format()
+        try:
+            curr_format = self.controller.get_format()
+        except FileNotFoundError:
+            CameraInfo.logger.fatal(f"Camera {self.identifier} disconnected. Cannot read information.")
 
         self.valid_frame_rates = {
             round(1 / float(i)): i
