@@ -76,7 +76,7 @@ class Cameras:
                     # Save configs
                     eventlet.sleep(5)
 
-                    write_config(identifier, self.info[identifier])
+                    # write_config(identifier, self.info[identifier])
 
                     # Disable buffer so we always pull the latest image
                     cam.set(cv2.CAP_PROP_BUFFERSIZE, 1)
