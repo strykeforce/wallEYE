@@ -149,6 +149,14 @@ public class WallEyeCam {
   private void processPoseMode(JsonObject dataCam) {
     newUpdateNum = dataCam.get("Update").getAsInt();
     Pose3d pose1 = parsePose3d(dataCam.get("Pose1").getAsJsonObject());
+
+    if (pose1 == null) {
+      System.err.println(
+          "POSE IS NULL POSE IS NULL POSE IS NULL POSE IS NULL POSE IS NULL POSE IS NULL POSE IS NULL");
+      System.err.println(dataCam.toString());
+      return;
+    }
+
     Pose3d pose2 = parsePose3d(dataCam.get("Pose2").getAsJsonObject());
     double ambiguity = dataCam.get("Ambig").getAsDouble();
 

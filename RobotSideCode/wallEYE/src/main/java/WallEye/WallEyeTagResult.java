@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class WallEyeTagResult extends WallEyeResult {
   private final List<Tag> tags;
-  private final double[] tagAreas;
+  private final double[] tagDiag;
   private final List<Point> centers;
 
   /**
@@ -36,11 +36,11 @@ public class WallEyeTagResult extends WallEyeResult {
     if (tagCorners == null) {
       this.tags = Collections.emptyList();
       this.centers = Collections.emptyList();
-      this.tagAreas = new double[0];
+      this.tagDiag = new double[0];
     } else {
       this.tags = new ArrayList<>(tagCorners.size());
       this.centers = new ArrayList<>(tagCorners.size());
-      this.tagAreas = new double[tagCorners.size()];
+      this.tagDiag = new double[tagCorners.size()];
 
       for (List<List<Double>> tagData : tagCorners) {
         Point[] corners = new Point[4];
@@ -53,7 +53,7 @@ public class WallEyeTagResult extends WallEyeResult {
         this.tags.add(tag);
 
         this.centers.add(tag.getCenter());
-        this.tagAreas[this.tags.size() - 1] = tag.getArea();
+        this.tagDiag[this.tags.size() - 1] = tag.getAvgDiag();
       }
     }
   }
@@ -66,8 +66,8 @@ public class WallEyeTagResult extends WallEyeResult {
     return centers;
   }
 
-  public double[] getTagAreas() {
-    return tagAreas;
+  public double[] getTagDiags() {
+    return tagDiag;
   }
 
   @Override
