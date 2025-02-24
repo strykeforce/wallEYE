@@ -10,8 +10,8 @@ from directory import TAG_LAYOUT_PATH, FALLBACK_TAG_LAYOUT_PATH
 # import faulthandler
 # faulthandler.enable()
 
- cv2.setNumThreads(3)
- 
+cv2.setNumThreads(3)
+
 class PoseProcessor:
     logger = logging.getLogger(__name__)
     CORNER_POSE_ORDER = np.asarray([(-1, -1), (1, -1), (1, 1), (-1, 1)])
