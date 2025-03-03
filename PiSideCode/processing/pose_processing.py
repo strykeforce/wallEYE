@@ -66,10 +66,7 @@ class PoseProcessor:
 
             rot = pose.rotation().rotateBy(wpi.Rotation3d(0, 0, np.pi))
             translation = np.asarray((pose.X(), pose.Y(), pose.Z())).reshape(3, 1)
-            rot, _ = cv2.Rodrigues(
-                np.asarray((rot.X(), rot.Y(), rot.Z())).reshape(3, 1)
-            )
-            self.tag_transforms[tag_id] = PoseProcessor.get_transform(translation, rot)
+            self.tag_transforms[tag_id] = PoseProcessor.get_transform(translation, rot.toMatrix())
 
     # Set AprilTag side length in meters
     def set_tag_size(self, size: float):
