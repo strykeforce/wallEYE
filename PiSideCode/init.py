@@ -215,7 +215,9 @@ try:
 
             for idx, val in enumerate(connections.values()):
                 if not val and walleye_data.robot_publisher.get_connection_value(idx):
-                    logger.info("Camera disconnected")
+                    logger.critical(f"Camera disconnected! Quitting!!")
+                    raise RuntimeError("A camera has disconnected. Restarting wallEYE!!")
+
 
                 walleye_data.robot_publisher.set_connection_value(idx, val)
 
