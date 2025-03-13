@@ -265,6 +265,7 @@ try:
                 # for i in range(len(poses)):
                 #     if poses[i][0].X() < 2000: # TODO what is this doing here?
                 walleye_data.robot_publisher.udp_pose_publish(
+                    [walleye_data.cam_nicknames[identifier] for identifier in images.keys()],
                     [pose[0] for pose in poses],
                     [pose[1] for pose in poses],
                     ambig,
@@ -276,7 +277,7 @@ try:
 
             # Tag servoing mode
             elif len(tag_corners) > 0:
-                walleye_data.robot_publisher.udp_tag_publish(tags, tag_corners, list(img_time.values()))
+                walleye_data.robot_publisher.udp_tag_publish([walleye_data.cam_nicknames[identifier] for identifier in images.keys()], tags, tag_corners, list(img_time.values()))
 
             # Update video stream for web interface
             if walleye_data.should_update_web_stream:

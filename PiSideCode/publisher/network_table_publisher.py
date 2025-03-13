@@ -60,7 +60,7 @@ class NetworkIO:
     def set_table(self, name: str):
         self.table = self.inst.getTable(name)
 
-    def udp_pose_publish(self, pose1, pose2, ambig, timestamps, tags, tag_corners):
+    def udp_pose_publish(self, names, pose1, pose2, ambig, timestamps, tags, tag_corners):
         data_dict = {}
 
         for i in range(len(pose1)):
@@ -79,7 +79,7 @@ class NetworkIO:
                 "Tags": tags[i].tolist(),
                 "TagCorners": tag_corners[i].tolist(),
             }
-            data_dict[self.name + str(i)] = camDict
+            data_dict[names[i]] = camDict
         data_str = json.dumps(data_dict)
 
         try:
@@ -88,7 +88,7 @@ class NetworkIO:
             # NetworkIO.logger.error("Failed to publish pose in UDP: ", exc_info=e)
             pass
 
-    def udp_tag_publish(self, tags, tag_corners, timestamps):
+    def udp_tag_publish(self, names, tags, tag_corners, timestamps):
         data_dict = {}
 
         # Loop through each camera
@@ -99,7 +99,7 @@ class NetworkIO:
             self.update_num[i] += 1 
 
             # Data for camera i
-            data_dict[self.name + str(i)] = {
+            data_dict[names[i]] = {
                 "Mode": 1,
                 "Update": (self.update_num[i]),
                 "Tags": tags[i].tolist(), 
