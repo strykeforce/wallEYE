@@ -48,7 +48,7 @@ class Cameras:
                 Cameras.logger.error("No cameras detected!!")
 
             # Try all cameras found by the PI
-            for identifier in camera_paths:
+            for identifier in sorted(camera_paths):
                 if is_disabled(identifier):
                     Cameras.logger.info(f"Skipping {identifier} - DISABLED")
                     continue
