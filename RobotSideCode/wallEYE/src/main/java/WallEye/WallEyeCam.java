@@ -53,9 +53,8 @@ public class WallEyeCam {
    * @param dioPort NOT IMPLEMENTED an int that corresponds to the dioport that the strobe is
    *     connected to (-1 to disable it)
    */
-  public WallEyeCam(String tableName, int camIndex, int dioPort) {
-    this.camName = tableName;
-    this.camIndex = camIndex;
+  public WallEyeCam(String camName, int dioPort) {
+    this.camName = camName;
 
     gyroResults = new DIOGyroResult[maxGyroResultSize];
     hasTurnedOff = false;
@@ -71,7 +70,7 @@ public class WallEyeCam {
     NetworkTableInstance nt = NetworkTableInstance.getDefault();
     nt.startServer();
 
-    NetworkTable table = nt.getTable(tableName);
+    NetworkTable table = nt.getTable(camName);
     connectSub = table.getBooleanTopic("Connected" + camIndex).subscribe(false);
   }
 
@@ -126,13 +125,12 @@ public class WallEyeCam {
     }
 
     JsonObject data = JsonParser.parseString(rawDataString).getAsJsonObject();
-    String camId = camName + camIndex;
 
-    if (!data.has(camId)) {
+    if (!data.has(camName)) {
       return; // No vision update
     }
 
-    JsonObject dataCam = data.getAsJsonObject(camId);
+    JsonObject dataCam = data.getAsJsonObject(camName);
 
     timestamp = recievedTime - (long) (dataCam.get("Timestamp").getAsDouble() * 1000);
 
