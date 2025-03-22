@@ -318,6 +318,7 @@ except Exception as e:
     display_info(f"CRITICAL ERROR: {e}")
     logging.critical(e, exc_info=True)
     logger.info("Shutting down")
+    walleye_data.robot_publisher.destroy()
     socketio.stop()
     logging.shutdown()
 
