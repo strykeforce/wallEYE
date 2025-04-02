@@ -53,12 +53,16 @@ from web_interface.web_interface import (
 )
 
 import threading
+import subprocess
+
+def get_temp_data():
+    return subprocess.run(["sensors"], capture_output=True).stdout.decode("utf-8")
 
 def log_performance(walleye_data):
     """Logs loop time and individual camera read times every 30 seconds"""
     while True:
         logger.info(
-            f"Loop time: {walleye_data.loop_time} | Cam delay: {walleye_data.cam_read_delay}"
+            f"Loop time: {walleye_data.loop_time} | Cam delay: {walleye_data.cam_read_delay} | {get_temp_data()}"
         )
         eventlet.sleep(30)
 
@@ -216,6 +220,7 @@ try:
             for idx, val in enumerate(connections.values()):
                 if not val and walleye_data.robot_publisher.get_connection_value(idx):
                     logger.critical(f"Camera disconnected! Quitting!!")
+                    logger.critical(get_temp_data())
                     raise RuntimeError("A camera has disconnected. Restarting wallEYE!!")
 
 
