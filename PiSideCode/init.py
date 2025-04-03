@@ -56,7 +56,7 @@ import threading
 import subprocess
 
 def get_temp_data():
-    return subprocess.run(["sensors | grep temp"], capture_output=True).stdout.decode("utf-8")
+    return subprocess.run(["sensors"], capture_output=True).stdout.decode("utf-8")
 
 def log_performance(walleye_data):
     """Logs loop time and individual camera read times every 30 seconds"""
