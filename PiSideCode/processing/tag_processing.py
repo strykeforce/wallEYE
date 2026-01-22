@@ -17,7 +17,16 @@ class TagProcessor:
 
         # Change params to balance speed and accuracy
         aruco_params = cv2.aruco.DetectorParameters()
-        aruco_params.cornerRefinementMethod = cv2.aruco.CORNER_REFINE_SUBPIX # Can use CORNER_REFINE_APRILTAG
+        aruco_params.adaptiveThreshWinSizeMin = 3 #default=3, 13 seems ok
+        aruco_params.adaptiveThreshWinSizeMax = 23 #default=23
+        aruco_params.adaptiveThreshWinSizeStep = 10 #default=10
+        # Setting threshold constant to 13 reduces latency by cutting down the number of contours
+        aruco_params.adaptiveThreshConstant = 13 #default=7
+        aruco_params.minMarkerPerimeterRate = 0.03 #default=0.03
+        #aruco_params.maxMarkerPerimeterRate = 4.00
+        aruco_params.perspectiveRemovePixelPerCell = 4
+        # Method should be CORNER_REFINE_CONTOUR or CORNER_REFINE_SUBPIX, not CORNER_REFINE_APRILTAG (verrry slow)
+        aruco_params.cornerRefinementMethod = cv2.aruco.CORNER_REFINE_SUBPIX
         aruco_params.cornerRefinementMinAccuracy = 0.1
         aruco_params.cornerRefinementMaxIterations = 30
         self.aruco_detector.setDetectorParameters(aruco_params)
