@@ -99,6 +99,14 @@ class Cameras:
 
     def _capture_thread(self):
         while True:
+            '''
+            # TODO: determine if this is useful
+            # High-speed grab loop to discard stale frames
+            for identifier in self.info.keys():
+                cam_info = self.info[identifier]
+                cam_info.cam.grab() 
+            '''
+           
             list(self.executor.map(self._read_frame, self.info.keys()))
 
             if self.new_data_lock.locked():
@@ -166,15 +174,18 @@ class Cameras:
             ret, img = cam_info.cam.read()
         except Exception as e:
             Cameras.logger.error(f"Failed to read frame", exc_info=e)
+        stream_time_ms = cam_info.cam.get(cv2.CAP_PROP_POS_MSEC)
 
         self.cam_read_delay[self.new_data_index][identifier] = round(
             time.perf_counter() - before, 3
         )
         self.frames[self.new_data_index][identifier] = img
         self.connections[self.new_data_index][identifier] = ret
-        self.timestamp[self.new_data_index][identifier] = cam_info.cam.get(
-            cv2.CAP_PROP_POS_MSEC
-        )
+
+        exp_time_ms = cam_info.get("Exposure Time, Absolute")
+        usb_transfer_time_ms = 16.7 #TODO: Get this from somewhere?
+        glass_time_ms = stream_time_ms - usb_transfer_time_ms - 0.5*exp_time_ms
+        self.timestamp[self.new_data_index][identifier] = glass_time_ms
 
     # Find a calibration for the camera
     def import_calibration(self, identifier: str) -> bool:
