@@ -1,4 +1,7 @@
 import sys
+import os
+import datetime
+import time
 
 import eventlet
 
@@ -25,8 +28,17 @@ logging.getLogger("engineio").setLevel(logging.ERROR)
 logger = logging.getLogger(__name__)
 logger.info("----------- Starting Up -----------")
 
-import datetime
 logger.info(f"Current Time: {str(datetime.datetime.now())}")
+
+# Restart the camera
+logger.info("Restarting Camera...")
+os.system("gpioset gpiochip4 3=0")
+time.sleep(0.5)
+os.system("gpioset gpiochip4 3=1")
+time.sleep(0.5)
+os.system("gpioset gpiochip4 3=0")
+time.sleep(1.0)
+logger.info("Camera restart complete")
 
 from state import walleye_data, States, CALIBRATION_STATES
 from processing.pose_processing import PoseProcessor
@@ -34,7 +46,6 @@ from processing.tag_processing import TagProcessor
 from camera.camera import Cameras
 from camera.camera_info import Modes
 from calibration.calibration import Calibrator
-import time
 
 # Create and intialize cameras, save to local var
 cameras = walleye_data.cameras = Cameras()
