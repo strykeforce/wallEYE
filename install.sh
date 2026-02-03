@@ -32,26 +32,11 @@ python3.13 -m pip install -r requirements.txt
 deactivate
 
 # Dependencies
-sudo apt install v4l-utils net-tools openssh-server
+sudo apt install v4l-utils net-tools openssh-server gpiod
 sudo apt install --reinstall linux-headers-$(uname -r)
 
 sudo chmod 4755 /usr/sbin/ifconfig
 sudo chmod 4755 /usr/sbin/ip
-
-# Install gpio dependencies
-sudo apt install gpiod
-# Create the group and add the user
-sudo groupadd -f gpio
-sudo usermod -aG gpio $USER
-# Apply immediate manual permissions
-sudo chgrp gpio /dev/gpiochip*
-sudo chmod 660 /dev/gpiochip*
-# Create a rule to make the gpio not require sudo in the future
-GPIO_RULE='SUBSYSTEM=="gpio", KERNEL=="gpiochip*", ACTION=="add", GROUP:="gpio", MODE:="0660"'
-echo "$GPIO_RULE" | sudo tee /etc/udev/rules.d/99-gpio.rules > /dev/null
-# Final refresh
-sudo udevadm control --reload-rules && sudo udevadm trigger
-exec su - $USER
 
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
 
