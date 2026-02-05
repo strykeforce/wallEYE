@@ -18,7 +18,7 @@ class PoseProcessor:
     CORNER_DRAW_ORDER = np.asarray([(-1, 1, 0), (1, 1, 0), (1, -1, 0), (-1, -1, 0)])
     BAD_POSE = wpi.Pose3d(wpi.Translation3d(2767, 2767, 2767), wpi.Rotation3d())
     MIN_TAG = 1
-    MAX_TAG = 22
+    MAX_TAG = 32
 
     def __init__(self, tag_processor, tag_length):
         # Open tag layout for tag poses
