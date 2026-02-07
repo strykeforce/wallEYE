@@ -33,6 +33,7 @@ deactivate
 
 # Dependencies
 sudo apt install v4l-utils net-tools openssh-server gpiod
+sudo apt install -y nodejs npm
 sudo apt install --reinstall linux-headers-$(uname -r)
 
 sudo chmod 4755 /usr/sbin/ifconfig
@@ -50,6 +51,7 @@ echo "Node.js and npm version: $(node -v) $(npm -v)"
 
 cd web_interface/walleye
 npm install
+npm run build
 
 # Service file
 sudo bash -c "echo \"[Unit]
