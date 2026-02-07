@@ -253,6 +253,7 @@ class PoseProcessor:
                     rot_mat, _ = cv2.Rodrigues(rvecs)
                     trans_vec = -np.dot(np.transpose(rot_mat), tvecs)
                     trans_vec = np.asarray([trans_vec[2], -trans_vec[0], -trans_vec[1]])
+                    trans_vec = np.squeeze(trans_vec)
 
                     rots, _ = cv2.Rodrigues(rot_mat)
                     rot_mat, _ = cv2.Rodrigues(np.asarray([rots[2], -rots[0], rots[1]]))
