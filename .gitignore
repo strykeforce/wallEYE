@@ -1,4 +1,5 @@
 PiSideCode/web_interface/walleye/node_modules/*
+PiSideCode/web_interface/walleye/build/
 PiSideCode/walleye.log*
 PiSideCode/walleye_data/*
 **/__pycache__
