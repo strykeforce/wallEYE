@@ -242,8 +242,6 @@ class Cameras:
                     self.info[identifier].set(property, value)
             self.import_calibration(identifier)
 
-            self.write_configs(identifier)
-
         else:
             self.import_calibration(identifier)
             Cameras.logger.warning(f"Camera config not found for camera {identifier}")
