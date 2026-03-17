@@ -2,7 +2,7 @@ package WallEye;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -12,6 +12,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+
 import java.util.List;
 import java.util.function.DoubleSupplier;
 
@@ -106,31 +107,12 @@ public class WallEyeCam {
     return camIndex;
   }
 
-  public void processUDP(String rawDataString, long recievedTime) {
-    // its all a json...
-    // The json is formated as such
-    // All data from a camera is under tablename + index number
-    // The mode the camera is in is under "Mode"
-    // The update number is under "Update"
-    // In mode 0 pose1 and pose2 are under "Pose1" and "Pose2" respectively
-    // Each axis in the pose is under "tX", "tY", "tZ", "rX", "rY", "rZ"
-    // Pose ambiguity is under "Ambig"
-    // The timestamp is under "Timestamp"
-    // An array containing all tags is under "Tags"
-
-    // System.out.println(this.udpPort + " " + rawDataString);
-
-    if (rawDataString == null || rawDataString.isEmpty()) {
-      return;
+  public void processUDP(JsonObject allData, long recievedTime) {
+    if (allData == null || !allData.has(camName)) {
+        return;
     }
 
-    JsonObject data = JsonParser.parseString(rawDataString).getAsJsonObject();
-
-    if (!data.has(camName)) {
-      return; // No vision update
-    }
-
-    JsonObject dataCam = data.getAsJsonObject(camName);
+    JsonObject dataCam = allData.getAsJsonObject(camName);
 
     timestamp = recievedTime - (long) (dataCam.get("Timestamp").getAsDouble() * 1000);
 
