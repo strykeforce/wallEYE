@@ -1,15 +1,13 @@
 package WallEye;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
-
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
-
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 public class UdpSubscriber {
   private byte[] data = new byte[4096];
@@ -32,11 +30,11 @@ public class UdpSubscriber {
 
   private void grabUDPdata() {
     try {
-      receivePacket.setLength(data.length); 
+      receivePacket.setLength(data.length);
       socket.receive(receivePacket);
 
       long recievedTime = RobotController.getFPGATime();
-      
+
       String parsedData = new String(receivePacket.getData(), 0, receivePacket.getLength());
       if (parsedData != null && !parsedData.isEmpty()) {
         // Parse the string once
@@ -46,7 +44,7 @@ public class UdpSubscriber {
           cam.processUDP(allData, recievedTime);
         }
       }
-      
+
     } catch (IOException e) {
       System.err.println("COULD NOT RECEIVE UDP DATA: " + e.toString());
     }
