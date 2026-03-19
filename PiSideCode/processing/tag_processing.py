@@ -26,7 +26,7 @@ class TagProcessor:
         #aruco_params.maxMarkerPerimeterRate = 4.00
         aruco_params.perspectiveRemovePixelPerCell = 4
         # Method should be CORNER_REFINE_CONTOUR or CORNER_REFINE_SUBPIX, not CORNER_REFINE_APRILTAG (verrry slow)
-        aruco_params.cornerRefinementMethod = cv2.aruco.CORNER_REFINE_CONTOUR
+        aruco_params.cornerRefinementMethod = cv2.aruco.CORNER_REFINE_SUBPIX
         aruco_params.cornerRefinementMinAccuracy = 0.1
         aruco_params.cornerRefinementMaxIterations = 30
         self.aruco_detector.setDetectorParameters(aruco_params)
