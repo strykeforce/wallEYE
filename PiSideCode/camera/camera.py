@@ -59,38 +59,43 @@ class Cameras:
 
                 path = full_cam_path(identifier)
 
-                # Open camera and check if it is opened
-                cam = cv2.VideoCapture(path, cv2.CAP_V4L2)
+                for attempt in range(3):
+                    # Open camera and check if it is opened
+                    cam = cv2.VideoCapture(path, cv2.CAP_V4L2)
 
-                # time.sleep(10)
+                    # time.sleep(10)
 
-                if cam.isOpened():
-                    Cameras.logger.info(f"Camera found: {identifier}")
+                    if cam.isOpened():
+                        Cameras.logger.info(f"Camera found: {identifier}")
 
-                    # Initialize CameraInfo object
-                    self.info[identifier] = CameraInfo(cam, identifier)
+                        # Initialize CameraInfo object
+                        self.info[identifier] = CameraInfo(cam, identifier)
 
-                    # Attempt to import config from file
-                    self.import_config(identifier)
+                        # Attempt to import config from file
+                        self.import_config(identifier)
 
-                    # Save configs
-                    eventlet.sleep(5)
+                        # Save configs
+                        eventlet.sleep(1)
 
-                    # write_config(identifier, self.info[identifier])
+                        # write_config(identifier, self.info[identifier])
 
-                    # Disable buffer so we always pull the latest image
-                    cam.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+                        # Disable buffer so we always pull the latest image
+                        cam.set(cv2.CAP_PROP_BUFFERSIZE, 1)
 
-                    # Try to disable auto exposure
-                    if cam.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1):
-                        Cameras.logger.info(f"Auto exposure disabled for {identifier}")
+                        # Try to disable auto exposure
+                        if cam.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1):
+                            Cameras.logger.info(f"Auto exposure disabled for {identifier}")
+                        else:
+                            Cameras.logger.warning(
+                                f"Failed to disable auto exposure for {identifier}"
+                            )
+                        break
+
                     else:
-                        Cameras.logger.warning(
-                            f"Failed to disable auto exposure for {identifier}"
-                        )
+                        cam.release()
 
-                else:
-                    Cameras.logger.error(f"Failed to open camera: {identifier}")
+                        Cameras.logger.warning(f"Failed to open camera (attempt {attempt + 1}): for {identifier}")
+                        eventlet.sleep(0.5)
 
             Thread(target=self._capture_thread, daemon=True).start()
 
