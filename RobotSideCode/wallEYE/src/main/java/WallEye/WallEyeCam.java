@@ -2,7 +2,6 @@ package WallEye;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -12,7 +11,6 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
-
 import java.util.List;
 import java.util.function.DoubleSupplier;
 
@@ -109,7 +107,7 @@ public class WallEyeCam {
 
   public void processUDP(JsonObject allData, long recievedTime) {
     if (allData == null || !allData.has(camName)) {
-        return;
+      return;
     }
 
     JsonObject dataCam = allData.getAsJsonObject(camName);
