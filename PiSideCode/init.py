@@ -50,6 +50,8 @@ from calibration.calibration import Calibrator
 # Create and intialize cameras, save to local var
 cameras = walleye_data.cameras = Cameras()
 camera_infos = walleye_data.cameras.info
+last_connected_time = {idx: time.time() for idx in camera_infos}
+disconnect_timeout = 5.0 # Give it 5 seconds to recover
 
 for i in camera_infos:
     if i not in walleye_data.cam_nicknames:
@@ -228,14 +230,25 @@ try:
                 cameras.get_frames_for_processing()
             )
 
-            for idx, val in enumerate(connections.values()):
-                if not val and walleye_data.robot_publisher.get_connection_value(idx):
-                    logger.critical(f"Camera disconnected! Quitting!!")
-                    logger.critical(get_temp_data())
-                    raise RuntimeError("A camera has disconnected. Restarting wallEYE!!")
+            for idx, is_connected in enumerate(connections.values()):
+                was_connected = walleye_data.robot_publisher.get_connection_value(idx)
 
+                if is_connected:
+                    # Is connected so update 'last connected time' and publisher
+                    last_connected_time[idx] = time.time()
+                    walleye_data.robot_publisher.set_connection_value(idx, True)
+                elif was_connected:
+                    # Not connected but was connected = lost it
 
-                walleye_data.robot_publisher.set_connection_value(idx, val)
+                    # Calculate down time
+                    down_duration = time.time() - last_connected_time[idx]
+
+                    # Only kill app if it stays disconnected for a while
+                    if down_duration >= disconnect_timeout:
+                        walleye_data.robot_publisher.set_connection_value(idx, False)
+                        
+                        logger.critical(f"Camera unrecoverable! Quitting!!")
+                        raise RuntimeError("A camera has disconnected and not recovered: Restarting wallEYE!!")
 
             # Use the pose_estimator class to find the pose, tags, and ambiguity
             # poses, tags, ambig, tag_centers = pose_estimator.get_pose(
@@ -247,6 +260,10 @@ try:
             poses, tags, ambig, tag_corners = [], [], [], []
 
             for identifier, image in images.items():
+                # Ignore when there is no image
+                if image is None or not connections[identifier]:
+                    continue
+                
                 curr_mode = camera_infos[identifier].mode
                 if curr_mode == Modes.POSE_ESTIMATION:
                     img_pose, img_tags, img_tag_corners, img_ambig = pose_estimator.get_pose(

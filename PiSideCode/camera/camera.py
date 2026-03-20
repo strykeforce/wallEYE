@@ -75,7 +75,7 @@ class Cameras:
                         self.import_config(identifier)
 
                         # Save configs
-                        eventlet.sleep(1)
+                        eventlet.sleep(0.1)
 
                         # write_config(identifier, self.info[identifier])
 
@@ -95,13 +95,46 @@ class Cameras:
                         cam.release()
 
                         Cameras.logger.warning(f"Failed to open camera (attempt {attempt + 1}): for {identifier}")
-                        eventlet.sleep(0.5)
+                        eventlet.sleep(0.2)
 
             Thread(target=self._capture_thread, daemon=True).start()
 
         else:
             Cameras.logger.error("Unsupported platform!")
 
+    def reopen(self, identifier):
+        cam_info = self.info[identifier]
+        path = full_cam_path(identifier)
+        
+        # Ensure the old handle is closed first
+        if cam_info.cam is not None:
+            cam_info.cam.release()
+
+        for attempt in range(3):
+            cam = cv2.VideoCapture(path, cv2.CAP_V4L2)
+            
+            if cam.isOpened():
+                Cameras.logger.info(f"Camera {identifier} RECOVERED on attempt {attempt + 1}")
+                
+                # Re-assign the new camera object to the existing info
+                cam_info.cam = cam
+                
+                # Import config from file
+                self.import_config(identifier)
+                
+                # Disable buffer so we always pull the latest image
+                cam.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+                
+                # Try to disable auto exposure
+                cam.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)
+                return True
+            else:
+                cam.release()
+                Cameras.logger.warning(f"Recovery attempt {attempt + 1} failed for {identifier}")
+                time.sleep(0.2) # Wait for USB bus to settle
+
+        return False
+    
     def _capture_thread(self):
         while True:
             '''
@@ -172,25 +205,66 @@ class Cameras:
         # eventlet.sleep(0.1) # FIXME cam returns None sometimes, delay could help???
         # [ WARN:1@259.552] global cap_v4l.cpp:1048 tryIoctl VIDEOIO(V4L2 select() timeout.
         cam_info = self.info[identifier]
+
+        # If this camera is currently being re-opened, don't try to read it
+        if cam_info.is_recovering:
+            # Populate data and exit
+            self.frames[self.new_data_index][identifier] = None
+            self.connections[self.new_data_index][identifier] = False
+            self.timestamp[self.new_data_index][identifier] = 0.0
+            self.cam_read_delay[self.new_data_index][identifier] = 0.0
+            return
+
         ret, img = False, None
         before = time.perf_counter()
 
         try:
             ret, img = cam_info.cam.read()
+
+            if not ret:
+                # Read fails, shift to recovery mode and start the recovery background thread
+                cam_info.is_recovering = True
+                Cameras.logger.warning(f"Read failed for {identifier}. Starting background recovery...")
+                Thread(target=self._background_reopen, args=(identifier,), daemon=True).start()
+
+                # Populate data and exit
+                self.frames[self.new_data_index][identifier] = None
+                self.connections[self.new_data_index][identifier] = False
+                self.timestamp[self.new_data_index][identifier] = 0.0
+                self.cam_read_delay[self.new_data_index][identifier] = 0.0
+                return
+            else:
+                # Grab timestamps first
+                stream_time_ms = cam_info.cam.get(cv2.CAP_PROP_POS_MSEC)
+                after = time.perf_counter()
+
+                # Calculate glass time
+                exp_time_ms = cam_info.get("Exposure Time, Absolute")
+                usb_transfer_time_ms = 16.7 #TODO: Get this from somewhere?
+                glass_time_ms = stream_time_ms - usb_transfer_time_ms - 0.5*exp_time_ms
+
+                # Populate normal data
+                self.frames[self.new_data_index][identifier] = img
+                self.connections[self.new_data_index][identifier] = ret
+                self.timestamp[self.new_data_index][identifier] = glass_time_ms
+                self.cam_read_delay[self.new_data_index][identifier] = round(after - before, 3)
+
         except Exception as e:
             Cameras.logger.error(f"Failed to read frame", exc_info=e)
-        stream_time_ms = cam_info.cam.get(cv2.CAP_PROP_POS_MSEC)
 
-        self.cam_read_delay[self.new_data_index][identifier] = round(
-            time.perf_counter() - before, 3
-        )
-        self.frames[self.new_data_index][identifier] = img
-        self.connections[self.new_data_index][identifier] = ret
-
-        exp_time_ms = cam_info.get("Exposure Time, Absolute")
-        usb_transfer_time_ms = 16.7 #TODO: Get this from somewhere?
-        glass_time_ms = stream_time_ms - usb_transfer_time_ms - 0.5*exp_time_ms
-        self.timestamp[self.new_data_index][identifier] = glass_time_ms
+    def _background_reopen(self, identifier):
+        # Background recovery thread.
+        try:
+            time.sleep(0.2)
+            # This calls your existing reopen() which handles release, open, and import_config
+            success = self.reopen(identifier)
+            if success:
+                Cameras.logger.info(f"Background recovery successful for {identifier}")
+            else:
+                Cameras.logger.error(f"Background recovery failed for {identifier}")
+        finally:
+            # Always clear the flag so _read_frame can try again next loop
+            self.info[identifier].is_recovering = False
 
     # Find a calibration for the camera
     def import_calibration(self, identifier: str) -> bool:

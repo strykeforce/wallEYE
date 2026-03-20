@@ -37,6 +37,7 @@ class CameraInfo:
     ):
         self.cam = cam
         self.identifier = identifier
+        self.is_recovering = False
         self.mode: Modes = Modes.POSE_ESTIMATION
         self.setting_lock = Lock()
 
@@ -109,7 +110,7 @@ class CameraInfo:
                 resolution[1],
             )
 
-            time.sleep(1)
+            time.sleep(0.1)
             self.get_format()
 
             CameraInfo.logger.info(
@@ -130,7 +131,7 @@ class CameraInfo:
             
             # self.controller.set_frame_interval(self.valid_frame_rates[frame_rate])
             self.cam.set(cv2.CAP_PROP_FPS, frame_rate)
-            time.sleep(1)
+            time.sleep(0.1)
 
             self.get_format()
 
