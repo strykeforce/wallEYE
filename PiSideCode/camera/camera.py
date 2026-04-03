@@ -239,7 +239,7 @@ class Cameras:
                 after = time.perf_counter()
 
                 # Calculate glass time
-                exp_time_ms = cam_info.get("Exposure Time, Absolute")
+                exp_time_ms = cam_info.get("Exposure Time, Absolute") * 0.1
                 usb_transfer_time_ms = 16.7 #TODO: Get this from somewhere?
                 glass_time_ms = stream_time_ms - usb_transfer_time_ms - 0.5*exp_time_ms
 
