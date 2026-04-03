@@ -31,14 +31,12 @@ logger.info("----------- Starting Up -----------")
 logger.info(f"Current Time: {str(datetime.datetime.now())}")
 
 # Restart the camera
-logger.info("Restarting Camera...")
-os.system("gpioset gpiochip4 3=0")
-time.sleep(0.5)
-os.system("gpioset gpiochip4 3=1")
-time.sleep(0.5)
+logger.info("Toggle USB-A port power off then back on...")
 os.system("gpioset gpiochip4 3=0")
 time.sleep(1.0)
-logger.info("Camera restart complete")
+os.system("gpioset gpiochip4 3=1")
+time.sleep(1.0)
+logger.info("Camera repower complete!")
 
 from state import walleye_data, States, CALIBRATION_STATES
 from processing.pose_processing import PoseProcessor
