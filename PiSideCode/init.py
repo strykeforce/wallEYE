@@ -258,10 +258,6 @@ try:
             poses, tags, ambig, tag_corners = [], [], [], []
 
             for identifier, image in images.items():
-                # Ignore when there is no image
-                if image is None or not connections[identifier]:
-                    continue
-                
                 curr_mode = camera_infos[identifier].mode
                 if curr_mode == Modes.POSE_ESTIMATION:
                     img_pose, img_tags, img_tag_corners, img_ambig = pose_estimator.get_pose(
